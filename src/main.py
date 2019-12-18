@@ -22,14 +22,14 @@ def __get_data_path():
     return path
 
 
-def __index_containing_substring(the_list, substring):
-    for i, s in enumerate(the_list):
+def __index_containing_substring(list_of_string: list, substring: str):
+    for i, s in enumerate(list_of_string):
         if substring in s:
             return i
     return -1
 
 
-def __separate_ati_and_other_files(files, folder):
+def __separate_ati_and_other_files(files: list, folder: str):
     ati_file_index = __index_containing_substring(files, consts.ACTIVITY_TRACKER_FILE_NAME)
     ati_file = None
     ati_id = None
