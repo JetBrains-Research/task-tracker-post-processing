@@ -3,11 +3,14 @@ import numpy as np
 from src import consts
 
 
+# Todo: add logger
+
+
 def profile_column_handler(data, column, default_value):
     values = data[column].unique()
     index = np.argwhere((values == default_value) | pd.isnull(values))
     if (index.shape[0] == 0 and len(values) > 1) or len(values) > 2:
-        # it is a invalid file
+        # it is an invalid file
         return -1
     values = np.delete(values, index)
     if len(values) == 1:
@@ -17,17 +20,19 @@ def profile_column_handler(data, column, default_value):
 
 def __get_extension(file_name):
     parts = file_name.split(".")
-    return parts[len(parts) - 1]
+    return parts[-1]
 
 
 def __get_language_name(extension):
-    if consts.LANGUAGES_DICT.get(extension):
-        return consts.LANGUAGES_DICT[extension]
-    return consts.NOT_DEFINED_LANGUAGE
+    return consts.LANGUAGES_DICT.get(extension, consts.NOT_DEFINED_LANGUAGE)
 
 
-# if we have note 1 language, we return NOT_DEFINED
-# Get 1 language for all files
+# If we have a few languages, we return NOT_DEFINED, else we return the language.
+# If all files have the same extension, then we return a language, which matches to this extension (it works for all
+# languages for LANGUAGES_DICT from const file)
+# For example, we have a set of files: a.py, b.py. The function returns PYTHON because we have one extension for all
+# files.
+# For a case: a.py, b.p and c.java the function returns NOT_DEFINED because the files have different extensions
 def get_language(data):
     values = data[consts.COLUMN.FILE_NAME.value].unique()
     extensions = list(map(__get_extension, values))
@@ -36,10 +41,9 @@ def get_language(data):
     return consts.NOT_DEFINED_LANGUAGE
 
 
-# get new column with languages for each row from dataset
+# Get new column with languages for each row from dataset
 def get_language_column(data):
     languages = []
     for index, row in data.iterrows():
         languages.append(__get_language_name(__get_extension(row[consts.COLUMN.FILE_NAME.value])))
     return languages
-
