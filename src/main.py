@@ -13,12 +13,12 @@ def __get_data_path():
     args = sys.argv
     if len(args) < 3 or consts.PATH_CMD_ARG not in args:
         raise NameError('List of arguments must have required 1 element: path!')
-    path = None
-    for i in range(1, len(args), 2):
-        if args[i] == '-path':
-            path = args[i + 1]
-    if path is None:
+    try:
+        path = args[args.index(consts.PATH_CMD_ARG) + 1]
+    except ValueError:
         raise NameError('List of arguments does not have the argument -path')
+    except IndexError:
+        raise NameError('List of arguments does not have a value after the argument -path')
     return path
 
 
