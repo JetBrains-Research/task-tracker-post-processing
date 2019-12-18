@@ -6,7 +6,7 @@ from src import consts
 # Todo: add logger
 
 
-def profile_column_handler(data, column, default_value):
+def profile_column_handler(data: pd.DataFrame, column: str, default_value):
     values = data[column].unique()
     index = np.argwhere((values == default_value) | pd.isnull(values))
     if (index.shape[0] == 0 and len(values) > 1) or len(values) > 2:
@@ -18,12 +18,12 @@ def profile_column_handler(data, column, default_value):
     return default_value
 
 
-def __get_extension(file_name):
+def __get_extension(file_name: str):
     parts = file_name.split(".")
     return parts[-1]
 
 
-def __get_language_name(extension):
+def __get_language_name(extension: str):
     return consts.LANGUAGES_DICT.get(extension, consts.NOT_DEFINED_LANGUAGE)
 
 
@@ -33,7 +33,7 @@ def __get_language_name(extension):
 # For example, we have a set of files: a.py, b.py. The function returns PYTHON because we have one extension for all
 # files.
 # For a case: a.py, b.p and c.java the function returns NOT_DEFINED because the files have different extensions
-def get_language(data):
+def get_language(data: pd.DataFrame):
     values = data[consts.COLUMN.FILE_NAME.value].unique()
     extensions = list(map(__get_extension, values))
     if len(extensions) == 1:
@@ -42,7 +42,7 @@ def get_language(data):
 
 
 # Get new column with languages for each row from dataset
-def get_language_column(data):
+def get_language_column(data: pd.DataFrame):
     languages = []
     for index, row in data.iterrows():
         languages.append(__get_language_name(__get_extension(row[consts.COLUMN.FILE_NAME.value])))
