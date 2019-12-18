@@ -23,16 +23,6 @@ def __get_data_path():
     return path
 
 
-# def __count_and_last_index_containing_substring(list_of_string: list, substring: str):
-#     count = 0
-#     index = -1
-#     for i, s in enumerate(list_of_string):
-#         if substring in s:
-#             count += 1
-#             index = i
-#     return count, index
-
-
 def __count_containing_substring(list_of_string: list, substring: str):
     count = 0
     for i, s in enumerate(list_of_string):
@@ -89,13 +79,16 @@ def main():
     # Get child folders for the root folder from generator
     folders = next(os.walk(path))[1]
     for folder in folders:
+        log.info('Start to handle the folder ' + folder)
         files = next(os.walk(path + folder))[2]
         files, ati_file, ati_id = __separate_ati_and_other_files(files, folder, path + folder)
         for file in files:
+            log.info('Start to handle the file ' + file)
             # Todo: add a handler for each file
             # df = pd.read_csv(path + folder + '/' + file, encoding=consts.ENCODING)
             pass
         # Todo: add a handler for activity tracker file
+        log.info('Finish to handle the folder ' + folder)
 
 
 if __name__ == "__main__":
