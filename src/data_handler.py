@@ -6,7 +6,7 @@ from src import consts
 # Todo: add logger
 
 
-def profile_column_handler(data: pd.DataFrame, column: str, default_value):
+def profile_column_handler(data: pd.DataFrame, column: consts.COLUMN, default_value: consts.DEFAULT_VALUES):
     values = data[column].unique()
     index = np.argwhere((values == default_value) | pd.isnull(values))
     if (index.shape[0] == 0 and len(values) > 1) or len(values) > 2:
