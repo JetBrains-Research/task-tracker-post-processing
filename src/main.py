@@ -1,4 +1,5 @@
 from src import data_handler as dh
+from src import activity_tracker_handler as ath
 from src import consts
 import pandas as pd
 import logging
@@ -76,18 +77,30 @@ def main():
         log.error('There is not a folder! Path is ' + path)
         sys.exit(1)
 
+    # Add / to the end of the path
+    if path[-1] != '/':
+        path += '/'
+
     # Get child folders for the root folder from generator
     folders = next(os.walk(path))[1]
     for folder in folders:
         log.info('Start to handle the folder ' + folder)
         files = next(os.walk(path + folder))[2]
         files, ati_file, ati_id = __separate_ati_and_other_files(files, folder, path + folder)
+        ati_df = None
+        if ati_file:
+            ati_df = pd.read_csv(path + folder + '/' + ati_file, encoding=consts.ENCODING,
+                                 names=consts.ACTIVITY_TRACKER_COLUMNS)
         for file in files:
             log.info('Start to handle the file ' + file)
-            # Todo: add a handler for each file
-            # df = pd.read_csv(path + folder + '/' + file, encoding=consts.ENCODING)
+            ct_df = pd.read_csv(path + folder + '/' + file, encoding=consts.ENCODING)
+            if ati_file is None:
+                ati_new_data = pd.DataFrame(ath.get_default_columns_for_ati(ct_df.shape[0]))
+            else:
+                ati_new_data = pd.DataFrame(ath.merge_code_tracker_and_activity_tracker_data(ct_df, ati_df))
+            ct_df = ct_df.join(ati_new_data)
+            # Todo: add a handler for each file - profile, language, id activity tracker
             pass
-        # Todo: add a handler for activity tracker file
         log.info('Finish to handle the folder ' + folder)
 
 

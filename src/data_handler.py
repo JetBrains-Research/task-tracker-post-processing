@@ -44,6 +44,7 @@ def get_language(data: pd.DataFrame):
 # Get new column with languages for each row from dataset
 def get_language_column(data: pd.DataFrame):
     languages = []
-    for index, row in data.iterrows():
+    for _, row in data.iterrows():
         languages.append(__get_language_name(__get_extension(row[consts.COLUMN.FILE_NAME.value])))
     return languages
+
