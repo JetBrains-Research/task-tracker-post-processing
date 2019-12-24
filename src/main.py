@@ -95,7 +95,7 @@ def main():
             log.info('Start to handle the file ' + file)
             ct_df = pd.read_csv(path + folder + '/' + file, encoding=consts.ENCODING)
             if ati_file is None:
-                ati_new_data = pd.DataFrame(ath.get_default_columns_for_ati(ct_df.shape[0]))
+                ati_new_data = pd.DataFrame(ath.get_full_default_columns_for_ati(ct_df.shape[0]))
             else:
                 ati_new_data = pd.DataFrame(ath.merge_code_tracker_and_activity_tracker_data(ct_df, ati_df))
             ct_df = ct_df.join(ati_new_data)

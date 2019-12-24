@@ -23,7 +23,7 @@ def __corrected_time(timestamp: str):
     return re.sub(r'([-+]\d{2}):(\d{2})(?:(\d{2}))?$', r'\1\2\3', timestamp)
 
 
-# Find the closest time to activity tracker tine from code tracker time
+# Find the closest time to activity tracker time from code tracker time
 # if dif between ati_time more ct_current_time then consts.MAX_DIF_SEC, then the function return -1
 # if ati_time equals ct_current_time, then the function return 0
 # if ati_time equals ct_next_time, then the function return 1
@@ -66,11 +66,33 @@ def __get_default_dict_for_ati():
     }
 
 
-def get_default_columns_for_ati(count_rows: int):
+# Todo: maybe rename it?
+def get_full_default_columns_for_ati(count_rows: int):
     res = __get_default_dict_for_ati()
     for i in range(count_rows):
         __add_empty_value(res)
     return res
+
+
+def __add_values_in_ati_dict(ati_dict: dict, timestamp: str,  event_type: str, event_data: str):
+    ati_dict[consts.COLUMN.TIMESTAMP_ATI.value].append(timestamp)
+    ati_dict[consts.COLUMN.EVENT_TYPE.value].append(event_type)
+    ati_dict[consts.COLUMN.EVENT_DATA.value].append(event_data)
+
+
+def __get_datetime_by_format(date, datetime_format=consts.DATE_TIME_FORMAT):
+    return datetime.strptime(__corrected_time(date), datetime_format)
+
+
+# Get a first valid index from activity tracker data, which is more or equal then first_code_tracker_time
+def __get_first_index_for_activity_tracker_data(activity_tracker_data: pd.DataFrame, first_code_tracker_time: datetime,
+                                                start_index=0):
+    for index in range(start_index, activity_tracker_data.shape[0]):
+        ati_time = __get_datetime_by_format(activity_tracker_data[consts.COLUMN.TIMESTAMP_ATI.value].iloc[index])
+        time_dif = (ati_time - first_code_tracker_time).total_seconds()
+        if 0 <= time_dif <= consts.MAX_DIF_SEC:
+            return index
+    return -1
 
 
 def merge_code_tracker_and_activity_tracker_data(code_tracker_data: pd.DataFrame, activity_tracker_data: pd.DataFrame):
@@ -80,35 +102,39 @@ def merge_code_tracker_and_activity_tracker_data(code_tracker_data: pd.DataFrame
     res = __get_default_dict_for_ati()
 
     ati_i = 0
-    for ct_i in range(0, code_tracker_data.shape[0] - 1):
-        if ati_i >= activity_tracker_data.shape[0]:
+    code_tracker_data_size = code_tracker_data.shape[0]
+    for ct_i in range(0, code_tracker_data_size - 1):
+        ati_i = __get_first_index_for_activity_tracker_data(activity_tracker_data, __get_datetime_by_format(
+            code_tracker_data[consts.COLUMN.DATE.value].iloc[ct_i]), ati_i)
+        if ati_i == -1 or ati_i >= activity_tracker_data.shape[0]:
             __add_empty_value(res)
             continue
 
-        ati_time = datetime.strptime(
-            __corrected_time(activity_tracker_data[consts.COLUMN.TIMESTAMP_ATI.value].iloc[ati_i]),
-            consts.DATE_TIME_FORMAT)
-        ct_current_time = datetime.strptime(
-            __corrected_time(code_tracker_data[consts.COLUMN.DATE.value].iloc[ct_i]), consts.DATE_TIME_FORMAT)
-        ct_next_time = datetime.strptime(
-            __corrected_time(code_tracker_data[consts.COLUMN.DATE.value].iloc[ct_i + 1]), consts.DATE_TIME_FORMAT)
+        ati_time = __get_datetime_by_format(activity_tracker_data[consts.COLUMN.TIMESTAMP_ATI.value].iloc[ati_i])
+        ct_current_time = __get_datetime_by_format(code_tracker_data[consts.COLUMN.DATE.value].iloc[ct_i])
+        ct_next_time = __get_datetime_by_format(code_tracker_data[consts.COLUMN.DATE.value].iloc[ct_i + 1])
         closest_time = __get_closest_time(ati_time, ct_current_time, ct_next_time)
         if closest_time == 0:
-            res[consts.COLUMN.TIMESTAMP_ATI.value].append(
-                activity_tracker_data[consts.COLUMN.TIMESTAMP_ATI.value].iloc[ati_i])
-            res[consts.COLUMN.EVENT_TYPE.value].append(
-                activity_tracker_data[consts.COLUMN.EVENT_TYPE.value].iloc[ati_i])
-            res[consts.COLUMN.EVENT_DATA.value].append(
-                activity_tracker_data[consts.COLUMN.EVENT_DATA.value].iloc[ati_i])
+            __add_values_in_ati_dict(res, activity_tracker_data[consts.COLUMN.TIMESTAMP_ATI.value].iloc[ati_i],
+                                     activity_tracker_data[consts.COLUMN.EVENT_TYPE.value].iloc[ati_i],
+                                     activity_tracker_data[consts.COLUMN.EVENT_DATA.value].iloc[ati_i])
             ati_i += 1
         else:
             __add_empty_value(res)
 
-    if activity_tracker_data.shape[0] < code_tracker_data.shape[0]:
-        __add_empty_value(res)
+    # handle the last element from code tracker data
+    if ati_i != -1 and ati_i < activity_tracker_data.shape[0]:
+        ati_i = __get_first_index_for_activity_tracker_data(activity_tracker_data,
+                                                            code_tracker_data[consts.COLUMN.DATE.value].iloc[
+                                                              code_tracker_data_size - 1], ati_i)
+        if ati_i != -1:
+            __add_values_in_ati_dict(res, activity_tracker_data[consts.COLUMN.TIMESTAMP_ATI.value].iloc[ati_i],
+                                     activity_tracker_data[consts.COLUMN.EVENT_TYPE.value].iloc[ati_i],
+                                     activity_tracker_data[consts.COLUMN.EVENT_DATA.value].iloc[ati_i])
+        else:
+            __add_empty_value(res)
     else:
-        # Todo: add handler
-        pass
+        __add_empty_value(res)
 
     log.info('finish getting activity tracker info')
     return res
