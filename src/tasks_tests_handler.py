@@ -4,10 +4,12 @@ import os
 
 TASKS_TESTS_PATH = './resources/tasks_tests/'
 SOURCE_FILE_NAME = 'source.py'
+TASKS = ['pies', 'max_3', 'zero', 'election', 'brackets', 'max_digit']
+PYTHON_INPUT_FILE_NAME = 'in.py'
 
 
-def __create_source_code_file(source_code: str, task: str):
-    with open(TASKS_TESTS_PATH + task + '/' + SOURCE_FILE_NAME, 'w') as f:
+def __create_source_code_file(source_code: str, task: str, source_file_name=SOURCE_FILE_NAME):
+    with open(TASKS_TESTS_PATH + task + '/' + source_file_name, 'w') as f:
         f.write(source_code)
 
 
@@ -50,6 +52,14 @@ def __check_test_for_task(source_code: str, in_file: str, out_file: str, task: s
     return res
 
 
+def __create_py_input_file(txt_in_file: str, task: str, file_name=PYTHON_INPUT_FILE_NAME):
+    code = ''
+    with open(TASKS_TESTS_PATH + task + '/' + txt_in_file, 'r') as f:
+        for line in f:
+            code += 'print(' + line.strip('\n') + ')' + '\n'
+    __create_source_code_file(code, task, file_name)
+
+
 def check_task(task: str, source_code: str):
     files = next(os.walk(TASKS_TESTS_PATH + task))[2]
     in_files, out_files = __separate_in_and_out_files(files)
@@ -57,15 +67,19 @@ def check_task(task: str, source_code: str):
     passed_tests = 0
 
     for cur_in in in_files:
+        __create_py_input_file(cur_in, task)
         out_index = __get_index_out_file_for_in_file(cur_in, out_files)
         if out_index == -1:
-            pass
+            continue
         count_tests += 1
-        res = __check_test_for_task(source_code, cur_in, out_files[__get_index_out_file_for_in_file(cur_in, out_files)],
-                                    task)
+        res = __check_test_for_task(source_code, PYTHON_INPUT_FILE_NAME,
+                                    out_files[__get_index_out_file_for_in_file(cur_in, out_files)],task)
         if res:
             passed_tests += 1
+    __drop_source_code_file(PYTHON_INPUT_FILE_NAME, task)
     return count_tests, passed_tests
 
 
-print(check_task('pies', 'a = int(input())\nb = int(input())\nn = int(input())\nprint(str(a * n) + " " + str((b * n)))'))
+code_1 = 'a = int(input())\nb = int(input())\nn = int(input())\nprint(str(a * n) + " " + str((b * n)))'
+code_2 = 'a = int(input())\nb = int(input())\nc = int(input())\nprint(max(a, b, c))'
+print(check_task('pies', code_2))
