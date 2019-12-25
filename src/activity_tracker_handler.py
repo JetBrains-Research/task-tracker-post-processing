@@ -84,15 +84,19 @@ def __get_datetime_by_format(date, datetime_format=consts.DATE_TIME_FORMAT):
     return datetime.strptime(__corrected_time(date), datetime_format)
 
 
-# Get a first valid index from activity tracker data, which is more or equal then first_code_tracker_time
+# Get an indicator if first_code_tracker_time is included in activity tracker data and a first valid index from
+# activity tracker data, which is more or equal then first_code_tracker_time
+# Note: return -1, if activity tracker data  does not contain a necessary time and 1 in the other cases
 def __get_first_index_for_activity_tracker_data(activity_tracker_data: pd.DataFrame, first_code_tracker_time: datetime,
                                                 start_index=0):
     for index in range(start_index, activity_tracker_data.shape[0]):
         ati_time = __get_datetime_by_format(activity_tracker_data[consts.COLUMN.TIMESTAMP_ATI.value].iloc[index])
         time_dif = (ati_time - first_code_tracker_time).total_seconds()
         if 0 <= time_dif <= consts.MAX_DIF_SEC:
-            return index
-    return -1
+            return 1, index
+        elif time_dif > consts.MAX_DIF_SEC:
+            return -1, index
+    return -1, activity_tracker_data.shape[0]
 
 
 def merge_code_tracker_and_activity_tracker_data(code_tracker_data: pd.DataFrame, activity_tracker_data: pd.DataFrame):
@@ -104,9 +108,9 @@ def merge_code_tracker_and_activity_tracker_data(code_tracker_data: pd.DataFrame
     ati_i = 0
     code_tracker_data_size = code_tracker_data.shape[0]
     for ct_i in range(0, code_tracker_data_size - 1):
-        ati_i = __get_first_index_for_activity_tracker_data(activity_tracker_data, __get_datetime_by_format(
+        is_valid, ati_i = __get_first_index_for_activity_tracker_data(activity_tracker_data, __get_datetime_by_format(
             code_tracker_data[consts.COLUMN.DATE.value].iloc[ct_i]), ati_i)
-        if ati_i == -1 or ati_i >= activity_tracker_data.shape[0]:
+        if is_valid == -1 or ati_i >= activity_tracker_data.shape[0]:
             __add_empty_value(res)
             continue
 
@@ -123,11 +127,11 @@ def merge_code_tracker_and_activity_tracker_data(code_tracker_data: pd.DataFrame
             __add_empty_value(res)
 
     # handle the last element from code tracker data
-    if ati_i != -1 and ati_i < activity_tracker_data.shape[0]:
-        ati_i = __get_first_index_for_activity_tracker_data(activity_tracker_data,
+    if ati_i < activity_tracker_data.shape[0]:
+        is_valid, ati_i = __get_first_index_for_activity_tracker_data(activity_tracker_data,
                                                             code_tracker_data[consts.COLUMN.DATE.value].iloc[
                                                               code_tracker_data_size - 1], ati_i)
-        if ati_i != -1:
+        if is_valid != -1:
             __add_values_in_ati_dict(res, activity_tracker_data[consts.COLUMN.TIMESTAMP_ATI.value].iloc[ati_i],
                                      activity_tracker_data[consts.COLUMN.EVENT_TYPE.value].iloc[ati_i],
                                      activity_tracker_data[consts.COLUMN.EVENT_DATA.value].iloc[ati_i])
