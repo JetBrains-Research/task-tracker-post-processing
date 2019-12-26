@@ -82,4 +82,5 @@ def check_task(task: str, source_code: str):
 
 code_1 = 'a = int(input())\nb = int(input())\nn = int(input())\nprint(str(a * n) + " " + str((b * n)))'
 code_2 = 'a = int(input())\nb = int(input())\nc = int(input())\nprint(max(a, b, c))'
-print(check_task('pies', code_2))
+code_3 = 'a = int(input())\nb = int(input())\nc = int(input())\nd = int(input())\nprint(max(a, b, c))'
+print(check_task('pies', code_3))
