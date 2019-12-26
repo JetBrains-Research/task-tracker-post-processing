@@ -6,7 +6,7 @@ from src import consts
 # Todo: add logger
 
 
-def profile_column_handler(data: pd.DataFrame, column: consts.COLUMN, default_value: consts.DEFAULT_VALUES):
+def profile_column_handler(data: pd.DataFrame, column: consts.CODE_TRACKER_COLUMN, default_value: consts.DEFAULT_VALUES):
     values = data[column].unique()
     index = np.argwhere((values == default_value) | pd.isnull(values))
     if (index.shape[0] == 0 and len(values) > 1) or len(values) > 2:
@@ -34,10 +34,10 @@ def __get_language_name(extension: str):
 # files.
 # For a case: a.py, b.p and c.java the function returns NOT_DEFINED because the files have different extensions
 def get_language(data: pd.DataFrame):
-    values = data[consts.COLUMN.FILE_NAME.value].unique()
-    extensions = list(map(__get_extension, values))
+    values = data[consts.CODE_TRACKER_COLUMN.FILE_NAME.value].unique()
+    extensions = set(map(__get_extension, values))
     if len(extensions) == 1:
-        return __get_language_name(extensions[0])
+        return __get_language_name(extensions.pop())
     return consts.NOT_DEFINED_LANGUAGE
 
 
@@ -45,6 +45,6 @@ def get_language(data: pd.DataFrame):
 def get_language_column(data: pd.DataFrame):
     languages = []
     for _, row in data.iterrows():
-        languages.append(__get_language_name(__get_extension(row[consts.COLUMN.FILE_NAME.value])))
+        languages.append(__get_language_name(__get_extension(row[consts.CODE_TRACKER_COLUMN.FILE_NAME.value])))
     return languages
 

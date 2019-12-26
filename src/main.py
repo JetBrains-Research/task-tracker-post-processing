@@ -90,7 +90,7 @@ def main():
         ati_df = None
         if ati_file:
             ati_df = pd.read_csv(path + folder + '/' + ati_file, encoding=consts.ENCODING,
-                                 names=consts.ACTIVITY_TRACKER_COLUMNS)
+                                 names=consts.ACTIVITY_TRACKER_COLUMN.activity_tracker_columns())
         for file in files:
             log.info('Start to handle the file ' + file)
             ct_df = pd.read_csv(path + folder + '/' + file, encoding=consts.ENCODING)
