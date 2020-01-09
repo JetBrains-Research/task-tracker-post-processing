@@ -1,5 +1,6 @@
 from src import string_helper as sh
 from subprocess import Popen, PIPE
+from src import consts
 import os
 
 TASKS_TESTS_PATH = './resources/tasks_tests/'
@@ -8,7 +9,15 @@ TASKS = ['pies', 'max_3', 'zero', 'election', 'brackets', 'max_digit']
 PYTHON_INPUT_FILE_NAME = 'in.py'
 
 
-def __create_source_code_file(source_code: str, task: str, source_file_name=SOURCE_FILE_NAME):
+def __get_extension_by_language(items_dict: dict, language: str):
+    extensions = [k for k, v in items_dict.items() if v == language]
+    print(extensions)
+    pass
+
+# __get_extension_by_language(consts.LANGUAGES_DICT, 'PYTHON')
+
+
+def __create_source_code_file(source_code: str, task: str, language: str, source_file_name=SOURCE_FILE_NAME):
     with open(TASKS_TESTS_PATH + task + '/' + source_file_name, 'w') as f:
         f.write(source_code)
 
@@ -45,8 +54,8 @@ def __run_test(in_file: str, out: str, task: str):
     return False
 
 
-def __check_test_for_task(source_code: str, in_file: str, out_file: str, task: str):
-    __create_source_code_file(source_code, task)
+def __check_test_for_task(source_code: str, in_file: str, out_file: str, task: str, language: str):
+    __create_source_code_file(source_code, task, language)
     res = __run_test(in_file, __get_out_from_out_file(out_file), task)
     __drop_source_code_file(SOURCE_FILE_NAME, task)
     return res
@@ -60,7 +69,7 @@ def __create_py_input_file(txt_in_file: str, task: str, file_name=PYTHON_INPUT_F
     __create_source_code_file(code, task, file_name)
 
 
-def check_task(task: str, source_code: str):
+def check_task(task: str, source_code: str, language: str):
     files = next(os.walk(TASKS_TESTS_PATH + task))[2]
     in_files, out_files = __separate_in_and_out_files(files)
     count_tests = 0
@@ -73,14 +82,14 @@ def check_task(task: str, source_code: str):
             continue
         count_tests += 1
         res = __check_test_for_task(source_code, PYTHON_INPUT_FILE_NAME,
-                                    out_files[__get_index_out_file_for_in_file(cur_in, out_files)],task)
+                                    out_files[__get_index_out_file_for_in_file(cur_in, out_files)], task, language)
         if res:
             passed_tests += 1
     __drop_source_code_file(PYTHON_INPUT_FILE_NAME, task)
     return count_tests, passed_tests
 
 
-code_1 = 'a = int(input())\nb = int(input())\nn = int(input())\nprint(str(a * n) + " " + str((b * n)))'
-code_2 = 'a = int(input())\nb = int(input())\nc = int(input())\nprint(max(a, b, c))'
-code_3 = 'a = int(input())\nb = int(input())\nc = int(input())\nd = int(input())\nprint(max(a, b, c))'
-print(check_task('pies', code_3))
+# code_1 = 'a = int(input())\nb = int(input())\nn = int(input())\nprint(str(a * n) + " " + str((b * n)))'
+# code_2 = 'a = int(input())\nb = int(input())\nc = int(input())\nprint(max(a, b, c))'
+# code_3 = 'a = int(input())\nb = int(input())\nc = int(input())\nd = int(input())\nprint(max(a, b, c))'
+# print(check_task('pies', code_3))
