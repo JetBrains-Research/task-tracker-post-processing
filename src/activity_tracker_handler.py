@@ -7,8 +7,8 @@ import re
 log = logging.getLogger(consts.LOGGER_NAME)
 
 
-# Delete not necessary events from activity-tracker data
-# Necessary events can see in the const file: ACTIVITY_TRACKER_EVENTS and ACTION_EVENTS
+# Filtering the activity-tracker data: returns a new activity-tracker data with deleted not necessary events
+# Necessary events can be seen in the const file: ACTIVITY_TRACKER_EVENTS and ACTION_EVENTS
 def __filter_ati_data(ati_data: pd.DataFrame):
     event_types = [consts.ACTIVITY_TRACKER_EVENTS.ACTION.value,
                    consts.ACTIVITY_TRACKER_EVENTS.COMPILATION_FINISHED.value]
@@ -18,20 +18,21 @@ def __filter_ati_data(ati_data: pd.DataFrame):
     return ati_data
 
 
-# Delete : symbol from hours in timestamp for correcting convert to datetime
+# Delete : symbol from hours in timestamp for the correct conversion to datetime
 # For example 2019-12-09T18:41:28.548+03:00 -> 2019-12-09T18:41:28.548+0300
 def __corrected_time(timestamp: str):
-    return re.sub(r'([-+]\d{2}):(\d{2})(?:(\d{2}))?$', r'\1\2\3', timestamp)
+    # Todo: add tests
+    return re.sub(r'([-+]\d{2}):(\d{2})$', r'\1\2', timestamp)
 
 
 # Find the closest time to activity tracker time from code tracker time
-# if dif between ati_time more ct_current_time then consts.MAX_DIF_SEC, then the function return -1
-# if ati_time equals ct_current_time, then the function return 0
-# if ati_time equals ct_next_time, then the function return 1
+# if dif between ati_time is more ct_current_time than consts.MAX_DIF_SEC, then the function returns -1
+# if ati_time equals ct_current_time, then the function returns 0
+# if ati_time equals ct_next_time, then the function returns 1
 # In other cases consider differences between ati_time, ct_current_time and ati_time, ct_next_time
-# If difference less or equals consts.MAX_DIF_SEC, then the function return a index of time, witch has smallest
+# If difference is less or equals consts.MAX_DIF_SEC, then the function returns the index of time, wich has the smallest
 # difference (0 for ct_current_time and 1 for ct_next_time)
-# In other cases function return -1
+# In other cases function returns -1
 def __get_closest_time(ati_time: datetime, ct_current_time: datetime, ct_next_time: datetime):
     current_dif = (ati_time - ct_current_time).total_seconds()
     # Todo: maybe it can make better???
@@ -81,7 +82,7 @@ def __get_datetime_by_format(date, datetime_format=consts.DATE_TIME_FORMAT):
 
 
 # Get an indicator if first_code_tracker_time is included in activity tracker data and a first valid index from
-# activity tracker data, which is more or equal then first_code_tracker_time
+# activity tracker data, which is more or equal than first_code_tracker_time
 # Note: return -1, if activity tracker data  does not contain a necessary time and 1 in the other cases
 def __get_first_index_for_activity_tracker_data(activity_tracker_data: pd.DataFrame, first_code_tracker_time: datetime,
                                                 start_index=0):

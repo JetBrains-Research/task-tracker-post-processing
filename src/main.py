@@ -24,39 +24,25 @@ def __get_data_path():
     return path
 
 
-def __count_containing_substring(list_of_string: list, substring: str):
-    count = 0
-    for i, s in enumerate(list_of_string):
-        if substring in s:
-            count += 1
-    return count
-
-
-def __index_containing_substring(list_of_string: list, substring: str):
-    for i, s in enumerate(list_of_string):
-        if substring in s:
-            return i
-    return -1
-
-
 def __get_real_ati_file_index(path: str, files: list, ati_key: str):
     sniffer = csv.Sniffer()
     sample_bytes = 1024
+    count_ati = 0
+    ati_index = -1
     for i, f in enumerate(files):
         if ati_key in f:
             if not sniffer.has_header(open(path + '/' + f, encoding=consts.ENCODING).read(sample_bytes)):
-                return i
-    return -1
+                count_ati += 1
+                ati_index = i
+                if count_ati >= 2:
+                    raise ValueError('Count of activity tracker files is more 1')
+    return ati_index
 
 
 def __separate_ati_and_other_files(files: list, folder: str, full_path: str):
-    count_ati = __count_containing_substring(files, consts.ACTIVITY_TRACKER_FILE_NAME)
+    ati_file_index = __get_real_ati_file_index(full_path, files, consts.ACTIVITY_TRACKER_FILE_NAME)
     ati_file = None
     ati_id = None
-    if count_ati > 1:
-        ati_file_index = __get_real_ati_file_index(full_path, files, consts.ACTIVITY_TRACKER_FILE_NAME)
-    else:
-        ati_file_index = __index_containing_substring(files, consts.ACTIVITY_TRACKER_FILE_NAME)
     if ati_file_index != -1:
         ati_file = files[ati_file_index]
         del files[ati_file_index]
@@ -86,6 +72,7 @@ def main():
     for folder in folders:
         log.info('Start to handle the folder ' + folder)
         files = next(os.walk(path + folder))[2]
+        # Todo: maybe add 'try except'
         files, ati_file, ati_id = __separate_ati_and_other_files(files, folder, path + folder)
         ati_df = None
         if ati_file:
