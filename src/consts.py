@@ -38,7 +38,7 @@ class ACTIVITY_TRACKER_EVENTS(Enum):
     def action_events(cls):
         return ['Run', 'Rerun', 'RunClass', 'DebugClass', 'ToggleLineBreakpoint', 'Debugger.AddToWatch', 'Debug',
                 'Stop', 'Resume', 'StepInto', 'CompileDirty', 'EditorCopy', 'EditorPaste', 'EditorCut', 'ReformatCode',
-                '$Undo', '$Paste', '$Copy']
+                '$Undo', '$Paste', '$Copy', 'ChooseRunConfiguration', 'CopyElement', 'PasteElement', 'CutElement']
 
 
 class DEFAULT_VALUES(Enum):

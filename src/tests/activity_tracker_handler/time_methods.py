@@ -17,7 +17,3 @@ class TestTimeMethods(unittest.TestCase):
 
     def test_corrected_negative_time(self):
         self.assertTrue(get_res_for_corrected_negative_time_test())
-
-
-
-
