@@ -70,6 +70,7 @@ def main():
     # Get child folders for the root folder from generator
     folders = next(os.walk(path))[1]
     for folder in folders:
+        # Todo: fix encoding files names in code tracker data and activity tracker data
         log.info('Start to handle the folder ' + folder)
         files = next(os.walk(path + folder))[2]
         # Todo: maybe add 'try except'
@@ -84,7 +85,8 @@ def main():
             if ati_file is None:
                 ati_new_data = pd.DataFrame(ath.get_full_default_columns_for_ati(ct_df.shape[0]))
             else:
-                ati_new_data = pd.DataFrame(ath.merge_code_tracker_and_activity_tracker_data(ct_df, ati_df))
+                ct_df, ati_new_data = ath.merge_code_tracker_and_activity_tracker_data(ct_df, ati_df)
+                ati_new_data = pd.DataFrame(ati_new_data)
             ct_df = ct_df.join(ati_new_data)
             # Todo: add a handler for each file - profile, language, id activity tracker
             pass
