@@ -21,7 +21,6 @@ def __filter_ati_data(ati_data: pd.DataFrame):
 # Delete : symbol from hours in timestamp for the correct conversion to datetime
 # For example 2019-12-09T18:41:28.548+03:00 -> 2019-12-09T18:41:28.548+0300
 def __corrected_time(timestamp: str):
-    # Todo: add tests
     return re.sub(r'([-+]\d{2}):(\d{2})$', r'\1\2', timestamp)
 
 
@@ -97,12 +96,38 @@ def __get_first_index_for_activity_tracker_data(activity_tracker_data: pd.DataFr
     return -1, activity_tracker_data.shape[0]
 
 
-# Todo: do it
-def __handle_missed_at_elements(activity_tracker_data: pd.DataFrame, cur_code_tracker_time: datetime,
-                                next_code_tracker_time: datetime, start_index: int, end_index: int, res: dict):
-    for index in range(start_index, end_index):
-        pass
-    pass
+# Insert a row to the dataframe before the row_number position.
+# For example, we have the dataset with 1 column and 3 rows: A C D
+# If we have row_number = 1 and row_value = B, the function returns the dataset with rows: A B C D
+def __insert_row(df: pd.DataFrame, row_number: int, row_value: list):
+    if row_number > df.index.max() + 1:
+        raise ValueError('Invalid row_number in the method __insert_row')
+    df1 = df[0:row_number]
+    df2 = df[row_number:]
+    df1.loc[row_number] = row_value
+    df_result = pd.concat([df1, df2])
+    df_result.index = [*range(df_result.shape[0])]
+    return df_result
+
+
+def __handle_missed_at_elements(activity_tracker_data: pd.DataFrame, code_tracker_data: pd.DataFrame, ct_index: int,
+                                start_ati_index: int, end_ati_index: int, res: dict):
+    ct_current_time = __get_datetime_by_format(code_tracker_data[consts.CODE_TRACKER_COLUMN.DATE.value].iloc[ct_index])
+    ct_next_time = __get_datetime_by_format(code_tracker_data[consts.CODE_TRACKER_COLUMN.DATE.value].iloc[ct_index + 1])
+    ct_current_row = list(code_tracker_data.iloc[ct_index])
+    ct_next_row = list(code_tracker_data.iloc[ct_index + 1])
+    for ati_index in range(start_ati_index, end_ati_index):
+        ati_time = __get_datetime_by_format(
+            activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.TIMESTAMP_ATI.value].iloc[ati_index])
+        cur_dif = abs((ati_time - ct_current_time).total_seconds())
+        next_dif = abs((ati_time - ct_next_time).total_seconds())
+        if next_dif < cur_dif:
+            code_tracker_data = __insert_row(code_tracker_data, ct_index + 2, ct_next_row)
+        else:
+            code_tracker_data = __insert_row(code_tracker_data, ct_index + 1, ct_current_row)
+        ct_index += 1
+        __add_values_in_ati_dict_by_at_index(res, activity_tracker_data, ati_index)
+    return code_tracker_data
 
 
 def __add_values_in_ati_dict_by_at_index(res_dict: dict, activity_tracker_data: pd.DataFrame, index: int):
@@ -112,13 +137,18 @@ def __add_values_in_ati_dict_by_at_index(res_dict: dict, activity_tracker_data: 
                              activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.EVENT_DATA.value].iloc[index])
 
 
+# Todo: add tests
 def merge_code_tracker_and_activity_tracker_data(code_tracker_data: pd.DataFrame, activity_tracker_data: pd.DataFrame):
     log.info('...starting to filter activity tracker data')
     activity_tracker_data = __filter_ati_data(activity_tracker_data)
     log.info('finish to filter activity tracker data')
     res = __get_default_dict_for_ati()
 
-    ati_i = 0
+    # Get first valid index for the code tracker data
+    _, ati_i = __get_first_index_for_activity_tracker_data(activity_tracker_data,
+                                                           __get_datetime_by_format(code_tracker_data[
+                                                                                        consts.CODE_TRACKER_COLUMN.DATE.value].iloc[
+                                                                                        0]))
     code_tracker_data_size = code_tracker_data.shape[0]
     for ct_i in range(0, code_tracker_data_size - 1):
         is_valid, new_ati_i = __get_first_index_for_activity_tracker_data(activity_tracker_data,
@@ -127,8 +157,8 @@ def merge_code_tracker_and_activity_tracker_data(code_tracker_data: pd.DataFrame
                                                                                                        ct_i]), ati_i)
 
         if new_ati_i - ati_i > 1:
-            # Todo: add handler for missed indexes
-            pass
+            code_tracker_data = __handle_missed_at_elements(activity_tracker_data, code_tracker_data, ct_i, ati_i,
+                                                            new_ati_i, res)
         ati_i = new_ati_i
 
         if is_valid == -1 or ati_i >= activity_tracker_data.shape[0]:
@@ -149,9 +179,9 @@ def merge_code_tracker_and_activity_tracker_data(code_tracker_data: pd.DataFrame
     # handle the last element from code tracker data
     if ati_i < activity_tracker_data.shape[0]:
         is_valid, ati_i = __get_first_index_for_activity_tracker_data(activity_tracker_data,
-                                                                      code_tracker_data[
-                                                                          consts.ACTIVITY_TRACKER_COLUMN.DATE.value].iloc[
-                                                                          code_tracker_data_size - 1], ati_i)
+                                                                      __get_datetime_by_format(code_tracker_data[
+                                                                          consts.CODE_TRACKER_COLUMN.DATE.value].iloc[
+                                                                          code_tracker_data_size - 1]), ati_i)
         if is_valid != -1:
             __add_values_in_ati_dict_by_at_index(res, activity_tracker_data, ati_i)
         else:
