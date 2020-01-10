@@ -5,7 +5,8 @@ import logging
 log = logging.getLogger(consts.LOGGER_NAME)
 
 test_modules = [
-    'src.tests.activity_tracker_handler.time_methods'
+    'src.tests.activity_tracker_handler.time_methods',
+    'src.tests.activity_tracker_handler.dataframe_methods'
 ]
 
 suite = unittest.TestSuite()
