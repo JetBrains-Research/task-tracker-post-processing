@@ -24,6 +24,10 @@ def __corrected_time(timestamp: str):
     return re.sub(r'([-+]\d{2}):(\d{2})$', r'\1\2', timestamp)
 
 
+def __get_datetime_by_format(date, datetime_format=consts.DATE_TIME_FORMAT):
+    return datetime.strptime(__corrected_time(date), datetime_format)
+
+
 # Find the closest time to activity tracker time from code tracker time
 # if dif between ati_time is more ct_current_time than consts.MAX_DIF_SEC, then the function returns -1
 # if ati_time equals ct_current_time, then the function returns 0
@@ -35,7 +39,6 @@ def __corrected_time(timestamp: str):
 def __get_closest_time(ati_time: datetime, ct_current_time: datetime, ct_next_time: datetime):
     current_dif = (ati_time - ct_current_time).total_seconds()
     # Todo: maybe it can make better???
-    # Todo: add comparing for files names???
     if current_dif > consts.MAX_DIF_SEC:
         return -1
     if current_dif == 0:
@@ -76,24 +79,16 @@ def __add_values_in_ati_dict(ati_dict: dict, timestamp="", event_type="", event_
     ati_dict[consts.ACTIVITY_TRACKER_COLUMN.EVENT_DATA.value].append(event_data)
 
 
-def __get_datetime_by_format(date, datetime_format=consts.DATE_TIME_FORMAT):
-    return datetime.strptime(__corrected_time(date), datetime_format)
+def __add_values_in_ati_dict_by_at_index(res_dict: dict, activity_tracker_data: pd.DataFrame, index: int):
+    __add_values_in_ati_dict(res_dict,
+                             activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.TIMESTAMP_ATI.value].iloc[index],
+                             activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.EVENT_TYPE.value].iloc[index],
+                             activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.EVENT_DATA.value].iloc[index])
 
 
-# Get an indicator if first_code_tracker_time is included in activity tracker data and a first valid index from
-# activity tracker data, which is more or equal than first_code_tracker_time
-# Note: return -1, if activity tracker data  does not contain a necessary time and 1 in the other cases
-def __get_first_index_for_activity_tracker_data(activity_tracker_data: pd.DataFrame, first_code_tracker_time: datetime,
-                                                start_index=0):
-    for index in range(start_index, activity_tracker_data.shape[0]):
-        ati_time = __get_datetime_by_format(
-            activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.TIMESTAMP_ATI.value].iloc[index])
-        time_dif = (ati_time - first_code_tracker_time).total_seconds()
-        if 0 <= time_dif <= consts.MAX_DIF_SEC:
-            return 1, index
-        elif time_dif > consts.MAX_DIF_SEC:
-            return -1, index
-    return -1, activity_tracker_data.shape[0]
+def __is_same_files(code_tracker_file_name: str, activity_tracker_file_path: str):
+    activity_tracker_file_name = activity_tracker_file_path.split('/')[-1]
+    return code_tracker_file_name == activity_tracker_file_name
 
 
 # Insert a row to the dataframe before the row_number position.
@@ -110,8 +105,45 @@ def __insert_row(df: pd.DataFrame, row_number: int, row_value: list):
     return df_result
 
 
-def __handle_missed_at_elements(activity_tracker_data: pd.DataFrame, code_tracker_data: pd.DataFrame, ct_index: int,
-                                start_ati_index: int, end_ati_index: int, res: dict):
+# Get an indicator if first_code_tracker_time is included in activity tracker data and a first valid index from
+# activity tracker data, which is more or equal than first_code_tracker_time
+# Note: return -1, if activity tracker data  does not contain a necessary time and 1 in the other cases
+def __get_first_index_for_activity_tracker_data(activity_tracker_data: pd.DataFrame, first_code_tracker_time: datetime,
+                                                code_tracker_file_name: str, start_index=0):
+    count_other_files = 0
+    for index in range(start_index, activity_tracker_data.shape[0]):
+        ati_time = __get_datetime_by_format(
+            activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.TIMESTAMP_ATI.value].iloc[index])
+        time_dif = (ati_time - first_code_tracker_time).total_seconds()
+        activity_tracker_file_path = activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.CURRENT_FILE.value].iloc[
+            index]
+        if not __is_same_files(activity_tracker_file_path, code_tracker_file_name):
+            count_other_files += 1
+            continue
+        if 0 <= time_dif <= consts.MAX_DIF_SEC:
+            return 1, index, count_other_files
+        elif time_dif > consts.MAX_DIF_SEC:
+            return -1, index, count_other_files
+    return -1, activity_tracker_data.shape[0], count_other_files
+
+
+def __get_ati_index_for_same_file(code_tracker_data: pd.DataFrame, activity_tracker_data: pd.DataFrame,
+                                  current_ati_i=0, current_ct_i=0):
+    is_same_files = False
+    code_tracker_file_name = code_tracker_data[consts.CODE_TRACKER_COLUMN.FILE_NAME.value].iloc[current_ct_i]
+    while not is_same_files:
+        activity_tracker_file_path = activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.CURRENT_FILE.value].iloc[
+            current_ati_i]
+        is_same_files = __is_same_files(code_tracker_file_name, activity_tracker_file_path)
+        if not is_same_files:
+            current_ati_i += 1
+        if current_ati_i == activity_tracker_data.shape[0]:
+            return current_ati_i
+    return current_ati_i
+
+
+def __handle_missed_ati_elements(activity_tracker_data: pd.DataFrame, code_tracker_data: pd.DataFrame, ct_index: int,
+                                 start_ati_index: int, end_ati_index: int, res: dict):
     ct_current_time = __get_datetime_by_format(code_tracker_data[consts.CODE_TRACKER_COLUMN.DATE.value].iloc[ct_index])
     ct_next_time = __get_datetime_by_format(code_tracker_data[consts.CODE_TRACKER_COLUMN.DATE.value].iloc[ct_index + 1])
     ct_current_row = list(code_tracker_data.iloc[ct_index])
@@ -130,11 +162,22 @@ def __handle_missed_at_elements(activity_tracker_data: pd.DataFrame, code_tracke
     return code_tracker_data
 
 
-def __add_values_in_ati_dict_by_at_index(res_dict: dict, activity_tracker_data: pd.DataFrame, index: int):
-    __add_values_in_ati_dict(res_dict,
-                             activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.TIMESTAMP_ATI.value].iloc[index],
-                             activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.EVENT_TYPE.value].iloc[index],
-                             activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.EVENT_DATA.value].iloc[index])
+# Check activity tracker elements and add new rows in code tracker data if activity tracker data has some values which
+# are not comparable with timestamps from code tracker data item by the current_ct_i position
+def __handle_current_ati_element(code_tracker_data: pd.DataFrame, activity_tracker_data: pd.DataFrame,
+                                 current_ct_i: int, current_ati_i: int, res: dict):
+    first_code_tracker_time = __get_datetime_by_format(
+        code_tracker_data[consts.CODE_TRACKER_COLUMN.DATE.value].iloc[current_ct_i])
+    code_tracker_file_name = code_tracker_data[consts.CODE_TRACKER_COLUMN.FILE_NAME.value].iloc[current_ct_i]
+    is_valid, new_ati_i, count_other_files = __get_first_index_for_activity_tracker_data(activity_tracker_data,
+                                                                                         first_code_tracker_time,
+                                                                                         code_tracker_file_name,
+                                                                                         current_ati_i)
+
+    if new_ati_i - current_ati_i - count_other_files > 1:
+        code_tracker_data = __handle_missed_ati_elements(activity_tracker_data, code_tracker_data, current_ct_i,
+                                                         current_ati_i, new_ati_i, res)
+    return code_tracker_data, new_ati_i, is_valid
 
 
 # Todo: add tests
@@ -144,22 +187,12 @@ def merge_code_tracker_and_activity_tracker_data(code_tracker_data: pd.DataFrame
     log.info('finish to filter activity tracker data')
     res = __get_default_dict_for_ati()
 
-    # Get first valid index for the code tracker data
-    _, ati_i = __get_first_index_for_activity_tracker_data(activity_tracker_data,
-                                                           __get_datetime_by_format(code_tracker_data[
-                                                                                        consts.CODE_TRACKER_COLUMN.DATE.value].iloc[
-                                                                                        0]))
+    # Miss other files
+    ati_i = __get_ati_index_for_same_file(code_tracker_data, activity_tracker_data)
     code_tracker_data_size = code_tracker_data.shape[0]
     for ct_i in range(0, code_tracker_data_size - 1):
-        is_valid, new_ati_i = __get_first_index_for_activity_tracker_data(activity_tracker_data,
-                                                                          __get_datetime_by_format(code_tracker_data[
-                                                                                                       consts.CODE_TRACKER_COLUMN.DATE.value].iloc[
-                                                                                                       ct_i]), ati_i)
-
-        if new_ati_i - ati_i > 1:
-            code_tracker_data = __handle_missed_at_elements(activity_tracker_data, code_tracker_data, ct_i, ati_i,
-                                                            new_ati_i, res)
-        ati_i = new_ati_i
+        code_tracker_data, ati_i, is_valid = __handle_current_ati_element(code_tracker_data, activity_tracker_data,
+                                                                          ct_i, ati_i, res)
 
         if is_valid == -1 or ati_i >= activity_tracker_data.shape[0]:
             __add_values_in_ati_dict(res)
@@ -178,10 +211,9 @@ def merge_code_tracker_and_activity_tracker_data(code_tracker_data: pd.DataFrame
 
     # handle the last element from code tracker data
     if ati_i < activity_tracker_data.shape[0]:
-        is_valid, ati_i = __get_first_index_for_activity_tracker_data(activity_tracker_data,
-                                                                      __get_datetime_by_format(code_tracker_data[
-                                                                          consts.CODE_TRACKER_COLUMN.DATE.value].iloc[
-                                                                          code_tracker_data_size - 1]), ati_i)
+        code_tracker_data, ati_i, is_valid = __handle_current_ati_element(code_tracker_data, activity_tracker_data,
+                                                                          code_tracker_data_size - 1, ati_i, res)
+
         if is_valid != -1:
             __add_values_in_ati_dict_by_at_index(res, activity_tracker_data, ati_i)
         else:
@@ -190,4 +222,4 @@ def merge_code_tracker_and_activity_tracker_data(code_tracker_data: pd.DataFrame
         __add_values_in_ati_dict(res)
 
     log.info('finish getting activity tracker info')
-    return res
+    return code_tracker_data, res
