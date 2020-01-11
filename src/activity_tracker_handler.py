@@ -7,14 +7,31 @@ import re
 log = logging.getLogger(consts.LOGGER_NAME)
 
 
+# Unification of similar activity tracker events. For example, an action Run by pressed the button Run and by
+# pressing a combination of buttons is not similar in the source data. After the unification, the function returns a
+# new activity tracker data with the union this kind of events
+def __unification_of_activity_tracker_columns(ati_data: pd.DataFrame):
+    action_events = consts.ACTIVITY_TRACKER_EVENTS.action_events()
+    for index in range(ati_data.shape[0]):
+        current_focused_component = ati_data[consts.ACTIVITY_TRACKER_COLUMN.FOCUSED_COMPONENT.value].iloc[index]
+        if current_focused_component in action_events:
+            # Todo: rewrite with __setitem__
+            ati_data[consts.ACTIVITY_TRACKER_COLUMN.EVENT_DATA.value].iloc[index] \
+                = ati_data[consts.ACTIVITY_TRACKER_COLUMN.FOCUSED_COMPONENT.value].iloc[index]
+            ati_data[consts.ACTIVITY_TRACKER_COLUMN.EVENT_TYPE.value].iloc[index] \
+                = consts.ACTIVITY_TRACKER_EVENTS.ACTION.value
+    return ati_data
+
+
 # Filtering the activity-tracker data: returns a new activity-tracker data with deleted not necessary events
 # Necessary events can be seen in the const file: ACTIVITY_TRACKER_EVENTS and ACTION_EVENTS
 def __filter_ati_data(ati_data: pd.DataFrame):
     event_types = [consts.ACTIVITY_TRACKER_EVENTS.ACTION.value,
                    consts.ACTIVITY_TRACKER_EVENTS.COMPILATION_FINISHED.value]
+    action_events = consts.ACTIVITY_TRACKER_EVENTS.action_events()
     ati_data = ati_data[(ati_data[consts.ACTIVITY_TRACKER_COLUMN.EVENT_TYPE.value].isin(event_types))
-                        & (ati_data[consts.ACTIVITY_TRACKER_COLUMN.EVENT_DATA.value].isin(
-        consts.ACTIVITY_TRACKER_EVENTS.action_events()))]
+                        & (ati_data[consts.ACTIVITY_TRACKER_COLUMN.EVENT_DATA.value].isin(action_events))]
+    ati_data.index = [*range(ati_data.shape[0])]
     return ati_data
 
 
@@ -87,6 +104,8 @@ def __add_values_in_ati_dict_by_at_index(res_dict: dict, activity_tracker_data: 
 
 
 def __is_same_files(code_tracker_file_name: str, activity_tracker_file_path: str):
+    if pd.isnull(activity_tracker_file_path):
+        return False
     activity_tracker_file_name = activity_tracker_file_path.split('/')[-1]
     return code_tracker_file_name == activity_tracker_file_name
 
@@ -99,6 +118,7 @@ def __insert_row(df: pd.DataFrame, row_number: int, row_value: list):
         raise ValueError('Invalid row_number in the method __insert_row')
     df1 = df[0:row_number]
     df2 = df[row_number:]
+    # Todo: maybe create a new data frame and join?
     df1.loc[row_number] = row_value
     df_result = pd.concat([df1, df2])
     df_result.index = [*range(df_result.shape[0])]
@@ -110,7 +130,7 @@ def __insert_row(df: pd.DataFrame, row_number: int, row_value: list):
 # Note: return -1, if activity tracker data  does not contain a necessary time and 1 in the other cases
 def __get_first_index_for_activity_tracker_data(activity_tracker_data: pd.DataFrame, first_code_tracker_time: datetime,
                                                 code_tracker_file_name: str, start_index=0):
-    count_other_files = 0
+    other_files = []
     for index in range(start_index, activity_tracker_data.shape[0]):
         ati_time = __get_datetime_by_format(
             activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.TIMESTAMP_ATI.value].iloc[index])
@@ -118,13 +138,13 @@ def __get_first_index_for_activity_tracker_data(activity_tracker_data: pd.DataFr
         activity_tracker_file_path = activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.CURRENT_FILE.value].iloc[
             index]
         if not __is_same_files(code_tracker_file_name, activity_tracker_file_path):
-            count_other_files += 1
+            other_files.append(index)
             continue
         if 0 <= time_dif <= consts.MAX_DIF_SEC:
-            return 1, index, count_other_files
+            return 1, index, other_files
         elif time_dif > consts.MAX_DIF_SEC:
-            return -1, index, count_other_files
-    return -1, activity_tracker_data.shape[0], count_other_files
+            return -1, index, other_files
+    return -1, activity_tracker_data.shape[0], other_files
 
 
 def __get_ati_index_for_same_file(code_tracker_data: pd.DataFrame, activity_tracker_data: pd.DataFrame,
@@ -144,7 +164,7 @@ def __get_ati_index_for_same_file(code_tracker_data: pd.DataFrame, activity_trac
 
 
 def __handle_missed_ati_elements(activity_tracker_data: pd.DataFrame, code_tracker_data: pd.DataFrame, ct_index: int,
-                                 start_ati_index: int, end_ati_index: int, res: dict):
+                                 start_ati_index: int, end_ati_index: int, res: dict, other_files: list):
     ct_current_time = __get_datetime_by_format(code_tracker_data[consts.CODE_TRACKER_COLUMN.DATE.value].iloc[ct_index])
     ct_current_row = list(code_tracker_data.iloc[ct_index])
     if ct_index == code_tracker_data.shape[0] - 1:
@@ -154,6 +174,8 @@ def __handle_missed_ati_elements(activity_tracker_data: pd.DataFrame, code_track
         ct_next_time = __get_datetime_by_format(code_tracker_data[consts.CODE_TRACKER_COLUMN.DATE.value].iloc[ct_index + 1])
         ct_next_row = list(code_tracker_data.iloc[ct_index + 1])
     for ati_index in range(start_ati_index, end_ati_index):
+        if ati_index in other_files:
+            continue
         ati_time = __get_datetime_by_format(
             activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.TIMESTAMP_ATI.value].iloc[ati_index])
         cur_dif = abs((ati_time - ct_current_time).total_seconds())
@@ -174,19 +196,23 @@ def __handle_current_ati_element(code_tracker_data: pd.DataFrame, activity_track
     first_code_tracker_time = __get_datetime_by_format(
         code_tracker_data[consts.CODE_TRACKER_COLUMN.DATE.value].iloc[current_ct_i])
     code_tracker_file_name = code_tracker_data[consts.CODE_TRACKER_COLUMN.FILE_NAME.value].iloc[current_ct_i]
-    is_valid, new_ati_i, count_other_files = __get_first_index_for_activity_tracker_data(activity_tracker_data,
-                                                                                         first_code_tracker_time,
-                                                                                         code_tracker_file_name,
-                                                                                         current_ati_i)
+    is_valid, new_ati_i, other_files = __get_first_index_for_activity_tracker_data(activity_tracker_data,
+                                                                                   first_code_tracker_time,
+                                                                                   code_tracker_file_name,
+                                                                                   current_ati_i)
 
-    if new_ati_i - current_ati_i - count_other_files > 1:
+    if new_ati_i - current_ati_i > 1:
         code_tracker_data = __handle_missed_ati_elements(activity_tracker_data, code_tracker_data, current_ct_i,
-                                                         current_ati_i, new_ati_i, res)
+                                                         current_ati_i, new_ati_i, res, other_files)
     return code_tracker_data, new_ati_i, is_valid
 
 
 # Todo: add tests
 def merge_code_tracker_and_activity_tracker_data(code_tracker_data: pd.DataFrame, activity_tracker_data: pd.DataFrame):
+    log.info('...starting to unificate activity tracker data')
+    activity_tracker_data = __unification_of_activity_tracker_columns(activity_tracker_data)
+    log.info('finish to unificate activity tracker data')
+
     log.info('...starting to filter activity tracker data')
     activity_tracker_data = __filter_ati_data(activity_tracker_data)
     log.info('finish to filter activity tracker data')
@@ -219,15 +245,17 @@ def merge_code_tracker_and_activity_tracker_data(code_tracker_data: pd.DataFrame
             __add_values_in_ati_dict(res)
 
     # handle the last element from code tracker data
-    if ati_i < activity_tracker_data.shape[0]:
+    while ati_i < activity_tracker_data.shape[0] - 1:
         code_tracker_data, ati_i, is_valid = __handle_current_ati_element(code_tracker_data, activity_tracker_data,
-                                                                          code_tracker_data_size - 1, ati_i, res)
-
+                                                                          code_tracker_data.shape[0] - 1, ati_i, res)
         if is_valid != -1:
-            __add_values_in_ati_dict_by_at_index(res, activity_tracker_data, ati_i)
-        else:
-            __add_values_in_ati_dict(res)
-    else:
+            __handle_missed_ati_elements(activity_tracker_data, code_tracker_data, code_tracker_data.shape[0] - 1,
+                                         ati_i, ati_i, res, [])
+        ati_i += 1
+
+    # Todo: fix it - get size of current res by a normal way
+    last_dif = code_tracker_data.shape[0] - len(res[consts.ACTIVITY_TRACKER_COLUMN.TIMESTAMP_ATI.value])
+    if last_dif > 0:
         __add_values_in_ati_dict(res)
 
     log.info('finish getting activity tracker info')
