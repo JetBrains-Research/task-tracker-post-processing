@@ -65,3 +65,5 @@ ACTIVITY_TRACKER_FILE_NAME = 'ide-events'
 
 DATE_TIME_FORMAT = '%Y-%m-%dT%H:%M:%S.%f%z'
 MAX_DIF_SEC = 30
+
+TEST_DATA_PATH = '../../resources/data_tests'

@@ -1,4 +1,5 @@
 from src import activity_tracker_handler as ath
+from src import consts
 import pandas as pd
 import unittest
 
@@ -44,6 +45,55 @@ def get_data_for_insert_at_the_end_test():
     return res_test_df, right_df
 
 
+def get_data_for_unification_test():
+    folder = 'preparing'
+    ati_df = pd.read_csv(consts.TEST_DATA_PATH + '/' + folder + '/' + 'ide-events_1.csv', encoding=consts.ENCODING,
+                         names=consts.ACTIVITY_TRACKER_COLUMN.activity_tracker_columns())
+    ati_df = ath.__unification_of_activity_tracker_columns(ati_df)
+
+    ati_df_right = pd.read_csv(consts.TEST_DATA_PATH + '/' + folder + '/' + 'ide-events_1_uni_res.csv',
+                               encoding=consts.ENCODING,
+                               names=consts.ACTIVITY_TRACKER_COLUMN.activity_tracker_columns())
+    return ati_df, ati_df_right
+
+
+def get_data_for_filter_test():
+    folder = 'preparing'
+    ati_df = pd.read_csv(consts.TEST_DATA_PATH + '/' + folder + '/' + 'ide-events_1_uni_res.csv',
+                         encoding=consts.ENCODING,
+                         names=consts.ACTIVITY_TRACKER_COLUMN.activity_tracker_columns())
+    ati_df = ath.__filter_ati_data(ati_df)
+
+    ati_df_right = pd.read_csv(consts.TEST_DATA_PATH + '/' + folder + '/' + 'ide-events_1_filter_res.csv',
+                               encoding=consts.ENCODING,
+                               names=consts.ACTIVITY_TRACKER_COLUMN.activity_tracker_columns())
+    return ati_df, ati_df_right
+
+
+def __replace_nan_in_ati_columns(merged_data: pd.DataFrame):
+    activity_tracker_columns = [consts.ACTIVITY_TRACKER_COLUMN.TIMESTAMP_ATI.value,
+                                consts.ACTIVITY_TRACKER_COLUMN.EVENT_TYPE.value,
+                                consts.ACTIVITY_TRACKER_COLUMN.EVENT_DATA.value]
+    for column in activity_tracker_columns:
+        merged_data[column].fillna('', inplace=True)
+    return merged_data
+
+
+def get_data_for_merging_test_1():
+    ati_folder = 'ati_1'
+    ati_df = pd.read_csv(consts.TEST_DATA_PATH + '/' + ati_folder + '/' + 'ide-events_1.csv', encoding=consts.ENCODING,
+                         names=consts.ACTIVITY_TRACKER_COLUMN.activity_tracker_columns())
+    ct_df = pd.read_csv(consts.TEST_DATA_PATH + '/' + ati_folder + '/' + 'task_1.csv', encoding=consts.ENCODING)
+    ct_df_right = __replace_nan_in_ati_columns(
+        pd.read_csv(consts.TEST_DATA_PATH + '/' + ati_folder + '/' + 'union_task_1.csv', encoding=consts.ENCODING))
+
+    ct_df, ati_new_data = ath.merge_code_tracker_and_activity_tracker_data(ct_df, ati_df)
+    ati_new_data = pd.DataFrame(ati_new_data)
+    ct_df = ct_df.join(ati_new_data)
+
+    return ct_df, ct_df_right
+
+
 def is_equals(df_1: pd.DataFrame, df_2: pd.DataFrame):
     return df_1.equals(df_2)
 
@@ -64,4 +114,16 @@ class TestDataFrameMethods(unittest.TestCase):
 
     def test_data_for_insert_at_the_end_test(self):
         res_test_df, res_right_df = get_data_for_insert_at_the_end_test()
+        self.assertTrue(is_equals(res_test_df, res_right_df))
+
+    def test_unification_data(self):
+        res_test_df, res_right_df = get_data_for_unification_test()
+        self.assertTrue(is_equals(res_test_df, res_right_df))
+
+    def test_filter_data(self):
+        res_test_df, res_right_df = get_data_for_filter_test()
+        self.assertTrue(is_equals(res_test_df, res_right_df))
+
+    def test_data_for_merging_1(self):
+        res_test_df, res_right_df = get_data_for_merging_test_1()
         self.assertTrue(is_equals(res_test_df, res_right_df))

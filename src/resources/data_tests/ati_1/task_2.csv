@@ -1,0 +1,4 @@
+date,fileName,fragment
+2019-12-09T17:30:52.404+03:00,task_2.py,n=int(input())
+2019-12-09T17:49:52.404+03:00,task_2.py,n=int(input())
+2019-12-09T17:50:52.404+03:00,task_2.py,n=int(input())
