@@ -82,12 +82,14 @@ def main():
         for file in files:
             log.info('Start to handle the file ' + file)
             ct_df = pd.read_csv(path + folder + '/' + file, encoding=consts.ENCODING)
+            # Todo: get a value for file name column
             if ati_file is None:
                 ati_new_data = pd.DataFrame(ath.get_full_default_columns_for_ati(ct_df.shape[0]))
             else:
                 ct_df, ati_new_data = ath.merge_code_tracker_and_activity_tracker_data(ct_df, ati_df)
                 ati_new_data = pd.DataFrame(ati_new_data)
             ct_df = ct_df.join(ati_new_data)
+
             # Todo: add a handler for each file - profile, language, id activity tracker
             pass
         log.info('Finish to handle the folder ' + folder)
