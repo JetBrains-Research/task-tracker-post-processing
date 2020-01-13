@@ -15,7 +15,7 @@ def __unification_of_activity_tracker_columns(ati_data: pd.DataFrame):
     for index in range(ati_data.shape[0]):
         current_focused_component = ati_data[consts.ACTIVITY_TRACKER_COLUMN.FOCUSED_COMPONENT.value].iloc[index]
         if current_focused_component in action_events:
-            # Todo: rewrite with __setitem__
+            # Todo: rewrite with __setitem__ ??
             ati_data[consts.ACTIVITY_TRACKER_COLUMN.EVENT_DATA.value].iloc[index] \
                 = ati_data[consts.ACTIVITY_TRACKER_COLUMN.FOCUSED_COMPONENT.value].iloc[index]
             ati_data[consts.ACTIVITY_TRACKER_COLUMN.EVENT_TYPE.value].iloc[index] \
@@ -46,31 +46,29 @@ def __get_datetime_by_format(date, datetime_format=consts.DATE_TIME_FORMAT):
 
 
 # Find the closest time to activity tracker time from code tracker time
-# if dif between ati_time is more ct_current_time than consts.MAX_DIF_SEC, then the function returns -1
-# if ati_time equals ct_current_time, then the function returns 0
-# if ati_time equals ct_next_time, then the function returns 1
-# In other cases consider differences between ati_time, ct_current_time and ati_time, ct_next_time
-# If difference is less or equals consts.MAX_DIF_SEC, then the function returns the index of time, wich has the smallest
-# difference (0 for ct_current_time and 1 for ct_next_time)
+# The function returns 0 if the current code tracker time is the closest time
+# The function returns 1 if the next code tracker time is the closest time
+# The function returns 2 if the current code tracker time is not the closest time, but the next code tracker time
+# is more than the activity tracker time
 # In other cases function returns -1
 def __get_closest_time(ati_time: datetime, ct_current_time: datetime, ct_next_time: datetime):
     current_dif = (ati_time - ct_current_time).total_seconds()
     # Todo: maybe it can make better???
-    if current_dif > consts.MAX_DIF_SEC:
-        return -1
     if current_dif == 0:
         return 0
     next_dif = (ct_next_time - ati_time).total_seconds()
     if next_dif == 0:
         return 1
-    if current_dif <= consts.MAX_DIF_SEC and next_dif <= consts.MAX_DIF_SEC:
+    if current_dif <= consts.MAX_DIF_SEC and 0 <= next_dif <= consts.MAX_DIF_SEC:
         if current_dif < next_dif:
             return 0
         return 1
     if current_dif <= consts.MAX_DIF_SEC:
         return 0
-    if next_dif <= consts.MAX_DIF_SEC:
+    if 0 <= next_dif <= consts.MAX_DIF_SEC:
         return 1
+    if current_dif > consts.MAX_DIF_SEC and next_dif >= 0:
+        return 2
     return -1
 
 
@@ -143,7 +141,7 @@ def __get_first_index_for_activity_tracker_data(activity_tracker_data: pd.DataFr
         if 0 <= time_dif <= consts.MAX_DIF_SEC:
             return 1, index, other_files
         elif time_dif > consts.MAX_DIF_SEC:
-            return -1, index, other_files
+            return 1, index, other_files
     return -1, activity_tracker_data.shape[0], other_files
 
 
@@ -157,7 +155,7 @@ def __get_ati_index_for_same_file(code_tracker_data: pd.DataFrame, activity_trac
         is_same_files = __is_same_files(code_tracker_file_name, activity_tracker_file_path)
         if is_same_files:
             return current_ati_i
-        if current_ati_i == activity_tracker_data.shape[0]:
+        if current_ati_i == activity_tracker_data.shape[0] - 1:
             return current_ati_i
         current_ati_i += 1
     return current_ati_i
@@ -207,7 +205,39 @@ def __handle_current_ati_element(code_tracker_data: pd.DataFrame, activity_track
     return code_tracker_data, new_ati_i, is_valid
 
 
-# Todo: add tests
+# The function handles the closest time result
+# If the closest time result is 0, then the current code tracker time is valid for the current activity tracker data
+# and we should add the activity tracker value to the current code tracker row and give a next activity tracker element
+# If the closest time result is 1, then the next code tracker time is valid and we should miss the current code tracker
+# item
+# If the closest time result is 2, then we should duplicate the current code tracker row and union it with the current
+# activity tracker row
+# In the other cases we should miss the current code tracker item because the next code tracker time is valid
+def __handle_closest_time_result(closest_time_res: int, ati_i: int, ct_i: int, activity_tracker_data: pd.DataFrame,
+                                 code_tracker_data: pd.DataFrame, res: dict):
+    if closest_time_res != 0 and closest_time_res != 2:
+        __add_values_in_ati_dict(res)
+        ct_i += 1
+    if closest_time_res == 0:
+        __add_values_in_ati_dict_by_at_index(res, activity_tracker_data, ati_i)
+        ati_i += 1
+    elif closest_time_res == 2:
+        code_tracker_data = __handle_missed_ati_elements(activity_tracker_data, code_tracker_data, ct_i, ati_i,
+                                                         ati_i + 1, res, [])
+        ati_i += 1
+    return ati_i, ct_i, code_tracker_data
+
+
+# Get size of result for activity tracker data
+def __get_dict_lists_size(res: dict):
+    size = 0
+    for key in res.keys():
+        if size != 0 and len(res[key]) != size:
+            raise ValueError('Lists in the res dict have different sizes')
+        size = len(res[key])
+    return size
+
+
 def merge_code_tracker_and_activity_tracker_data(code_tracker_data: pd.DataFrame, activity_tracker_data: pd.DataFrame):
     log.info('...starting to unificate activity tracker data')
     activity_tracker_data = __unification_of_activity_tracker_columns(activity_tracker_data)
@@ -221,7 +251,8 @@ def merge_code_tracker_and_activity_tracker_data(code_tracker_data: pd.DataFrame
     # Miss other files
     ati_i = __get_ati_index_for_same_file(code_tracker_data, activity_tracker_data)
     code_tracker_data_size = code_tracker_data.shape[0]
-    for ct_i in range(0, code_tracker_data_size - 1):
+    ct_i = 0
+    while ct_i < code_tracker_data_size - 1:
         code_tracker_data, ati_i, is_valid = __handle_current_ati_element(code_tracker_data, activity_tracker_data,
                                                                           ct_i, ati_i, res)
 
@@ -231,6 +262,7 @@ def merge_code_tracker_and_activity_tracker_data(code_tracker_data: pd.DataFrame
 
         if is_valid == -1 or ati_i >= activity_tracker_data.shape[0]:
             __add_values_in_ati_dict(res)
+            ct_i += 1
             continue
 
         ati_time = __get_datetime_by_format(
@@ -238,23 +270,20 @@ def merge_code_tracker_and_activity_tracker_data(code_tracker_data: pd.DataFrame
         ct_current_time = __get_datetime_by_format(code_tracker_data[consts.CODE_TRACKER_COLUMN.DATE.value].iloc[ct_i])
         ct_next_time = __get_datetime_by_format(code_tracker_data[consts.CODE_TRACKER_COLUMN.DATE.value].iloc[ct_i + 1])
         closest_time = __get_closest_time(ati_time, ct_current_time, ct_next_time)
-        if closest_time == 0:
-            __add_values_in_ati_dict_by_at_index(res, activity_tracker_data, ati_i)
-            ati_i += 1
-        else:
-            __add_values_in_ati_dict(res)
 
-    # handle the last element from code tracker data
+        ati_i, ct_i, code_tracker_data = __handle_closest_time_result(closest_time, ati_i, ct_i, activity_tracker_data,
+                                                                      code_tracker_data, res)
+
+    # handle the last element from the code tracker data
     while ati_i < activity_tracker_data.shape[0] - 1:
         code_tracker_data, ati_i, is_valid = __handle_current_ati_element(code_tracker_data, activity_tracker_data,
                                                                           code_tracker_data.shape[0] - 1, ati_i, res)
         if is_valid != -1:
-            __handle_missed_ati_elements(activity_tracker_data, code_tracker_data, code_tracker_data.shape[0] - 1,
-                                         ati_i, ati_i, res, [])
+            code_tracker_data = __handle_missed_ati_elements(activity_tracker_data, code_tracker_data,
+                                                             code_tracker_data.shape[0] - 1, ati_i, ati_i + 1, res, [])
         ati_i += 1
 
-    # Todo: fix it - get size of current res by a normal way
-    last_dif = code_tracker_data.shape[0] - len(res[consts.ACTIVITY_TRACKER_COLUMN.TIMESTAMP_ATI.value])
+    last_dif = code_tracker_data.shape[0] - __get_dict_lists_size(res)
     if last_dif > 0:
         __add_values_in_ati_dict(res)
 
