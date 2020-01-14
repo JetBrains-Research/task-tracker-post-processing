@@ -28,21 +28,22 @@ def __get_data_path():
 def __get_real_ati_file_index(path: str, files: list, ati_key: str):
     sniffer = csv.Sniffer()
     sample_bytes = 1024
+    count_ati = 0
+    ati_index = -1
     for i, f in enumerate(files):
         if ati_key in f:
             if not sniffer.has_header(open(path + '/' + f, encoding=consts.ENCODING).read(sample_bytes)):
-                return i
-    return -1
+                count_ati += 1
+                ati_index = i
+                if count_ati >= 2:
+                    raise ValueError('Count of activity tracker files is more 1')
+    return ati_index
 
 
 def __separate_ati_and_other_files(files: list, folder: str, full_path: str):
-    count_ati = sh.count_containing_substring(files, consts.ACTIVITY_TRACKER_FILE_NAME)
+    ati_file_index = __get_real_ati_file_index(full_path, files, consts.ACTIVITY_TRACKER_FILE_NAME)
     ati_file = None
     ati_id = None
-    if count_ati > 1:
-        ati_file_index = __get_real_ati_file_index(full_path, files, consts.ACTIVITY_TRACKER_FILE_NAME)
-    else:
-        ati_file_index = sh.index_containing_substring(files, consts.ACTIVITY_TRACKER_FILE_NAME)
     if ati_file_index != -1:
         ati_file = files[ati_file_index]
         del files[ati_file_index]
@@ -70,21 +71,26 @@ def main():
     # Get child folders for the root folder from generator
     folders = next(os.walk(path))[1]
     for folder in folders:
+        # Todo: fix encoding files names in code tracker data and activity tracker data
         log.info('Start to handle the folder ' + folder)
         files = next(os.walk(path + folder))[2]
+        # Todo: maybe add 'try except'
         files, ati_file, ati_id = __separate_ati_and_other_files(files, folder, path + folder)
         ati_df = None
         if ati_file:
             ati_df = pd.read_csv(path + folder + '/' + ati_file, encoding=consts.ENCODING,
-                                 names=consts.ACTIVITY_TRACKER_COLUMNS)
+                                 names=consts.ACTIVITY_TRACKER_COLUMN.activity_tracker_columns())
         for file in files:
             log.info('Start to handle the file ' + file)
             ct_df = pd.read_csv(path + folder + '/' + file, encoding=consts.ENCODING)
+            # Todo: get a value for file name column
             if ati_file is None:
                 ati_new_data = pd.DataFrame(ath.get_full_default_columns_for_ati(ct_df.shape[0]))
             else:
-                ati_new_data = pd.DataFrame(ath.merge_code_tracker_and_activity_tracker_data(ct_df, ati_df))
+                ct_df, ati_new_data = ath.merge_code_tracker_and_activity_tracker_data(ct_df, ati_df)
+                ati_new_data = pd.DataFrame(ati_new_data)
             ct_df = ct_df.join(ati_new_data)
+
             # Todo: add a handler for each file - profile, language, id activity tracker
             pass
         log.info('Finish to handle the folder ' + folder)
