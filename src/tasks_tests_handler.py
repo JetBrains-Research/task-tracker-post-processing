@@ -21,7 +21,8 @@ def __create_source_code_file(source_code: str, task: str, extension='py', sourc
 
 
 def __drop_file(file: str, task: str):
-    os.remove(TASKS_TESTS_PATH + task + '/' + file)
+    if os.path.isfile(TASKS_TESTS_PATH + task + '/' + file):
+        os.remove(TASKS_TESTS_PATH + task + '/' + file)
 
 
 # Get the rows from file for comparing it with a program result
@@ -49,16 +50,6 @@ def __separate_in_and_out_files(list_of_files: list):
     return in_files_list, out_files_list
 
 
-def __run_python_test(in_file: str, out: str, task: str, extension='py', source_file_name=SOURCE_FILE_NAME):
-    p1 = Popen(['python', TASKS_TESTS_PATH + task + '/' + in_file], stdout=PIPE)
-    p2 = Popen(['python', TASKS_TESTS_PATH + task + '/' + source_file_name + '.' + extension], stdin=p1.stdout, stdout=PIPE)
-    p1.stdout.close()
-    output = p2.communicate()[0]
-    if output.decode("utf-8") == out:
-        return True
-    return False
-
-
 def __get_java_class(source_code: str):
     class_key_word = 'class'
     rows = source_code.split('\n')
@@ -67,38 +58,6 @@ def __get_java_class(source_code: str):
             class_index = row.index(class_key_word)
             return row[class_index + len(class_key_word) + 1:].replace(' ', '').replace('{', '')
     raise ValueError('Source code does not contain class name!')
-
-
-def __run_java_test(in_file: str, out: str, task: str, source_file_name=SOURCE_FILE_NAME, extension='java'):
-    source_path = TASKS_TESTS_PATH + task + '/' + source_file_name + '.' + extension
-    if call(['javac', source_path]) != 0:
-        # Error
-        return False
-
-    p = Popen(['java', '-cp', TASKS_TESTS_PATH + task, source_file_name],
-              stdin=PIPE, stdout=PIPE, stderr=PIPE,
-              universal_newlines=True)
-    cur_out, err = p.communicate(input=__get_input(in_file, task))
-    if p.returncode == 0:
-        if cur_out == out:
-            return True
-    return False
-
-
-def __check_test_for_task(source_code: str, in_file: str, out_file: str, task: str, extension='py', source_file_name=SOURCE_FILE_NAME):
-    if extension == 'java':
-        source_file_name = __get_java_class(source_code)
-    __create_source_code_file(source_code, task, extension, source_file_name)
-    res = False
-    # Todo: add other languages
-    if extension == 'py':
-        res = __run_python_test(in_file, __get_rows_from_file(out_file, task)[0], task)
-    elif extension == 'java':
-        res = __run_java_test(in_file, __get_rows_from_file(out_file, task)[0], task, source_file_name)
-    __drop_file(source_file_name + '.' + extension, task)
-    if extension == 'java':
-        __drop_file(source_file_name + '.' + 'class', task)
-    return res
 
 
 # Wrap all values from input in the print command
@@ -111,7 +70,7 @@ def __create_py_input_file(txt_in_file: str, task: str, extension='py', file_nam
 
 
 # For python scripts it is an in file with extension py and for other cases, it is an in file with extension txt
-def __get_test_in_file(out_index: int, cur_in_file: str, extension='py'):
+def __get_test_in_file(cur_in_file: str, extension='py'):
     if extension == 'py':
         return INPUT_FILE_NAME + '.' + extension
     return cur_in_file
@@ -125,7 +84,78 @@ def __clear_old_files(task: str):
         __drop_file(file, task)
 
 
-def check_task(task: str, source_code: str, extension='py'):
+def __run_python_test(in_file: str, out: str, task: str, extension='py', source_file_name=SOURCE_FILE_NAME):
+    p1 = Popen(['python', TASKS_TESTS_PATH + task + '/' + in_file], stdout=PIPE)
+    p2 = Popen(['python', TASKS_TESTS_PATH + task + '/' + source_file_name + '.' + extension], stdin=p1.stdout,
+               stdout=PIPE)
+    p1.stdout.close()
+    output = p2.communicate()[0]
+    if output.decode("utf-8") == out:
+        return True
+    return False
+
+
+# Run test for compiled languages
+def __run_test(in_file: str, out: str, task: str, call_args: list, popen_args: list):
+    if call(call_args) != 0:
+        # Error
+        return False
+
+    p = Popen(popen_args, stdin=PIPE, stdout=PIPE, stderr=PIPE, universal_newlines=True)
+    cur_out, err = p.communicate(input=__get_input(in_file, task))
+    if p.returncode == 0:
+        if cur_out == out:
+            return True
+    return False
+
+
+# Drop files: with source code and compiled files
+def __drop_program_files(source_file_name: str, extension: str, task: str, compiled_file_extension=None):
+    if compiled_file_extension is not None:
+        __drop_file(source_file_name + compiled_file_extension, task)
+    __drop_file(source_file_name + '.' + extension, task)
+
+
+def __get_args_for_run_programs(extension: str, task: str, source_file_name: str):
+    base_path = TASKS_TESTS_PATH + task + '/'
+    compiled_file_extension = None
+    call_args = []
+    popen_args = []
+
+    if extension == 'java':
+        compiled_file_extension = '.class'
+        call_args = ['javac', base_path + source_file_name + '.' + extension]
+        popen_args = ['java', '-cp', TASKS_TESTS_PATH + task, source_file_name]
+    elif extension == 'cpp':
+        compiled_file_extension = '.out'
+        call_args = ['gcc', '-lstdc++', '-o', base_path + source_file_name + '.out',
+                     base_path + source_file_name + '.' + extension]
+        popen_args = [base_path + source_file_name + compiled_file_extension]
+    elif extension == 'kt':
+        compiled_file_extension = '.jar'
+        call_args = ['kotlinc', base_path + source_file_name + '.' + extension, '-include-runtime', '-d',
+                     base_path + source_file_name + '.jar']
+        popen_args = ['java', '-jar', base_path + source_file_name + compiled_file_extension]
+    return compiled_file_extension, call_args, popen_args
+
+
+def __check_test_for_task(source_code: str, in_file: str, out_file: str, task: str, extension='py',
+                          source_file_name=SOURCE_FILE_NAME):
+    compiled_file_extension = None
+    if extension == 'java':
+        source_file_name = __get_java_class(source_code)
+    __create_source_code_file(source_code, task, extension, source_file_name)
+
+    if extension == 'py':
+        res = __run_python_test(in_file, __get_rows_from_file(out_file, task)[0], task)
+    else:
+        compiled_file_extension, call_args, popen_args = __get_args_for_run_programs(extension, task, source_file_name)
+        res = __run_test(in_file, __get_rows_from_file(out_file, task)[0], task, call_args, popen_args)
+    __drop_program_files(source_file_name,  extension, task, compiled_file_extension)
+    return res
+
+
+def __check_task(task: str, source_code: str, extension='py'):
     __clear_old_files(task)
     files = next(os.walk(TASKS_TESTS_PATH + task))[2]
     in_files, out_files = __separate_in_and_out_files(files)
@@ -138,7 +168,7 @@ def check_task(task: str, source_code: str, extension='py'):
         out_index = __get_index_out_file_for_in_file(cur_in, out_files)
         if out_index == -1:
             continue
-        test_in = __get_test_in_file(out_index, cur_in, extension)
+        test_in = __get_test_in_file(cur_in, extension)
         count_tests += 1
         res = __check_test_for_task(source_code, test_in,
                                     out_files[__get_index_out_file_for_in_file(cur_in, out_files)], task, extension)
@@ -149,10 +179,8 @@ def check_task(task: str, source_code: str, extension='py'):
     return count_tests, passed_tests
 
 
-code_1 = 'a = int(input())\nb = int(input())\nn = int(input())\nprint(str(a * n) + " " + str((b * n)))'
-code_2 = 'a = int(input())\nb = int(input())\nn = int(input())\nprint(str(a * n) + " " + str((b * n)))'
-code_3 = 'a = int(input())\nb = int(input())\nn = int(input())\nprint(str(a * n) + " " + str((b * n)))'
+python_code_1 = 'a = int(input())\nb = int(input())\nn = int(input())\nprint(str(a * n) + " " + str((b * n)))'
 java_code_1 = 'import java.io.*;\nclass test { \n\n    public static void main(String args[])throws IOException\n    {\n        InputStreamReader in=new InputStreamReader(System.in);\n        BufferedReader br=new BufferedReader(in);\n       int a=Integer.parseInt(br.readLine());\n        int b=Integer.parseInt(br.readLine());\n       int n=Integer.parseInt(br.readLine());\n        System.out.println(a * n + " " + b * n);\n    }\n}'
-print(check_task('pies', java_code_1, extension='java'))
-
-
+cpp_code_1 = '#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int a;\n    std::cin >> a;\n    int b;\n    std::cin >> b;\n    int n;\n    std::cin >> n;\n    cout << a * n << " " << b * n << endl;\n    return 0;\n}'
+kotlin_code_1 = 'fun main(args: Array<String>) {\n    val a:Int = readLine()!!.toInt()\n    val b:Int = readLine()!!.toInt()\n    val n:Int = readLine()!!.toInt()\n    println((a * n).toString() + " " + (b * n).toString())\n}'
+print(__check_task('pies', kotlin_code_1, extension='kt'))
