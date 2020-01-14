@@ -3,16 +3,10 @@ from subprocess import Popen, PIPE, call
 from src import consts
 import os
 
-TASKS_TESTS_PATH = './resources/tasks_tests/'
-SOURCE_FILE_NAME = 'source'
-TASKS = ['pies', 'max_3', 'zero', 'election', 'brackets', 'max_digit']
-INPUT_FILE_NAME = 'in'
-
-
-def __get_extension_by_language(items_dict: dict, language: str):
-    extensions = [k for k, v in items_dict.items() if v == language]
-    print(extensions)
-    pass
+TASKS_TESTS_PATH = consts.TASKS_TESTS.TASKS_TESTS_PATH.value
+SOURCE_FILE_NAME = consts.TASKS_TESTS.SOURCE_FILE_NAME.value
+TASKS = consts.TASKS_TESTS.TASKS.value
+INPUT_FILE_NAME = consts.TASKS_TESTS.INPUT_FILE_NAME.value
 
 
 def __create_source_code_file(source_code: str, task: str, extension='py', source_file_name=SOURCE_FILE_NAME):
@@ -96,11 +90,7 @@ def __run_python_test(in_file: str, out: str, task: str, extension='py', source_
 
 
 # Run test for compiled languages
-def __run_test(in_file: str, out: str, task: str, call_args: list, popen_args: list):
-    if call(call_args) != 0:
-        # Error
-        return False
-
+def __run_test(in_file: str, out: str, task: str, popen_args: list):
     p = Popen(popen_args, stdin=PIPE, stdout=PIPE, stderr=PIPE, universal_newlines=True)
     cur_out, err = p.communicate(input=__get_input(in_file, task))
     if p.returncode == 0:
@@ -109,39 +99,37 @@ def __run_test(in_file: str, out: str, task: str, call_args: list, popen_args: l
     return False
 
 
-# Drop files: with source code and compiled files
-def __drop_program_files(source_file_name: str, extension: str, task: str, compiled_file_extension=None):
-    if compiled_file_extension is not None:
-        __drop_file(source_file_name + compiled_file_extension, task)
-    __drop_file(source_file_name + '.' + extension, task)
+def __compile_program(call_args: list):
+    if call(call_args) != 0:
+        # Error
+        return False
+    return True
 
 
 def __get_args_for_run_programs(extension: str, task: str, source_file_name: str):
     base_path = TASKS_TESTS_PATH + task + '/'
-    compiled_file_extension = None
     call_args = []
     popen_args = []
 
     if extension == 'java':
-        compiled_file_extension = '.class'
         call_args = ['javac', base_path + source_file_name + '.' + extension]
         popen_args = ['java', '-cp', TASKS_TESTS_PATH + task, source_file_name]
     elif extension == 'cpp':
-        compiled_file_extension = '.out'
         call_args = ['gcc', '-lstdc++', '-o', base_path + source_file_name + '.out',
                      base_path + source_file_name + '.' + extension]
-        popen_args = [base_path + source_file_name + compiled_file_extension]
+        popen_args = [base_path + source_file_name + '.out']
     elif extension == 'kt':
-        compiled_file_extension = '.jar'
         call_args = ['kotlinc', base_path + source_file_name + '.' + extension, '-include-runtime', '-d',
                      base_path + source_file_name + '.jar']
-        popen_args = ['java', '-jar', base_path + source_file_name + compiled_file_extension]
-    return compiled_file_extension, call_args, popen_args
+        popen_args = ['java', '-jar', base_path + source_file_name + '.jar']
+    return call_args, popen_args
 
 
-def __check_test_for_task(source_code: str, in_file: str, out_file: str, task: str, extension='py',
-                          source_file_name=SOURCE_FILE_NAME):
-    compiled_file_extension = None
+# The function returns code run result, was the compilation successful and does the compiled file exist
+def __check_test_for_task(source_code: str, in_file: str, out_file: str, task: str, compiled_success: bool,
+                          has_compiled_file: bool, extension='py', source_file_name=SOURCE_FILE_NAME):
+    if not compiled_success:
+        return False, False, True
     if extension == 'java':
         source_file_name = __get_java_class(source_code)
     __create_source_code_file(source_code, task, extension, source_file_name)
@@ -149,14 +137,15 @@ def __check_test_for_task(source_code: str, in_file: str, out_file: str, task: s
     if extension == 'py':
         res = __run_python_test(in_file, __get_rows_from_file(out_file, task)[0], task)
     else:
-        compiled_file_extension, call_args, popen_args = __get_args_for_run_programs(extension, task, source_file_name)
-        res = __run_test(in_file, __get_rows_from_file(out_file, task)[0], task, call_args, popen_args)
-    __drop_program_files(source_file_name,  extension, task, compiled_file_extension)
-    return res
+        call_args, popen_args = __get_args_for_run_programs(extension, task, source_file_name)
+        if not has_compiled_file:
+            if not __compile_program(call_args):
+                return False, False, True
+        res = __run_test(in_file, __get_rows_from_file(out_file, task)[0], task, popen_args)
+    return res, True, True
 
 
-def __check_task(task: str, source_code: str, extension='py'):
-    __clear_old_files(task)
+def __check_task(task: str, source_code: str, extension='py', compiled_success=True, has_compiled_file=False):
     files = next(os.walk(TASKS_TESTS_PATH + task))[2]
     in_files, out_files = __separate_in_and_out_files(files)
     count_tests = 0
@@ -170,17 +159,11 @@ def __check_task(task: str, source_code: str, extension='py'):
             continue
         test_in = __get_test_in_file(cur_in, extension)
         count_tests += 1
-        res = __check_test_for_task(source_code, test_in,
-                                    out_files[__get_index_out_file_for_in_file(cur_in, out_files)], task, extension)
-        if res:
-            passed_tests += 1
-    if extension == 'py':
-        __drop_file(INPUT_FILE_NAME + '.' + extension, task)
+        if compiled_success:
+            res, compiled_success, has_compiled_file = __check_test_for_task(source_code, test_in, out_files[
+                __get_index_out_file_for_in_file(cur_in, out_files)], task, compiled_success, has_compiled_file,
+                                                                             extension)
+            if res:
+                passed_tests += 1
+    __clear_old_files(task)
     return count_tests, passed_tests
-
-
-python_code_1 = 'a = int(input())\nb = int(input())\nn = int(input())\nprint(str(a * n) + " " + str((b * n)))'
-java_code_1 = 'import java.io.*;\nclass test { \n\n    public static void main(String args[])throws IOException\n    {\n        InputStreamReader in=new InputStreamReader(System.in);\n        BufferedReader br=new BufferedReader(in);\n       int a=Integer.parseInt(br.readLine());\n        int b=Integer.parseInt(br.readLine());\n       int n=Integer.parseInt(br.readLine());\n        System.out.println(a * n + " " + b * n);\n    }\n}'
-cpp_code_1 = '#include <iostream>\nusing namespace std;\n\nint main()\n{\n    int a;\n    std::cin >> a;\n    int b;\n    std::cin >> b;\n    int n;\n    std::cin >> n;\n    cout << a * n << " " << b * n << endl;\n    return 0;\n}'
-kotlin_code_1 = 'fun main(args: Array<String>) {\n    val a:Int = readLine()!!.toInt()\n    val b:Int = readLine()!!.toInt()\n    val n:Int = readLine()!!.toInt()\n    println((a * n).toString() + " " + (b * n).toString())\n}'
-print(__check_task('pies', kotlin_code_1, extension='kt'))
