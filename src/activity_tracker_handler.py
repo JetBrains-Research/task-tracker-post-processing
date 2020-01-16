@@ -162,13 +162,14 @@ def __handle_current_ct(activity_tracker_data: pd.DataFrame, code_tracker_data: 
     ct_row = list(code_tracker_data.iloc[ct_i])
 
     was_added = False
+    first_ct_index = 0
     while ati_i < activity_tracker_data.shape[0]:
         ati_time = __get_datetime_by_format(
             activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.TIMESTAMP_ATI.value].iloc[ati_i])
         cur_time_dif = (ati_time - ct_current_time).total_seconds()
         next_time_dif = (ati_time - ct_next_time).total_seconds()
 
-        if not next_time_dif < 0 <= cur_time_dif:
+        if not (next_time_dif < 0 <= cur_time_dif or cur_time_dif < 0 and ct_i == first_ct_index):
             break
 
         activity_tracker_file_path = activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.CURRENT_FILE.value].iloc[
@@ -176,6 +177,7 @@ def __handle_current_ct(activity_tracker_data: pd.DataFrame, code_tracker_data: 
         if __is_same_files(ct_file_name, activity_tracker_file_path):
             code_tracker_data, ct_i, was_added = __append_row_or_add_info(activity_tracker_data, code_tracker_data,
                                                                           ati_i, ct_i, ct_row, res, was_added)
+            first_ct_index = ct_i
         ati_i += 1
 
     return code_tracker_data, ati_i, ct_i, was_added
