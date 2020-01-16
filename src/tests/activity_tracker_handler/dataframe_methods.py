@@ -88,7 +88,8 @@ def get_data_for_merging_test_1():
     ct_df_right = __replace_nan_in_ati_columns(
         pd.read_csv(consts.TEST_DATA_PATH + '/' + ati_folder + '/' + 'union_task_1.csv', encoding=consts.ENCODING))
 
-    ct_df = ath.merge_code_tracker_and_activity_tracker_data(ct_df, ati_df)
+    ct_df = ath.merge_code_tracker_and_activity_tracker_data2(ct_df, ati_df)
+    # ct_df.to_csv(file_name, sep='\t')
 
     return ct_df, ct_df_right
 
@@ -103,7 +104,7 @@ def get_data_for_merging_test_2():
     ct_df_right = __replace_nan_in_ati_columns(
         pd.read_csv(consts.TEST_DATA_PATH + '/' + ati_folder + '/' + 'union_task_2.csv', encoding=consts.ENCODING))
 
-    ct_df = ath.merge_code_tracker_and_activity_tracker_data(ct_df, ati_df)
+    ct_df = ath.merge_code_tracker_and_activity_tracker_data2(ct_df, ati_df)
 
     return ct_df, ct_df_right
 
