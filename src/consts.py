@@ -64,6 +64,6 @@ ACTIVITY_TRACKER_FOLDER_NAME = 'ati'
 ACTIVITY_TRACKER_FILE_NAME = 'ide-events'
 
 DATE_TIME_FORMAT = '%Y-%m-%dT%H:%M:%S.%f%z'
-MAX_DIF_SEC = 30
+MAX_DIF_SEC = 0.5
 
 TEST_DATA_PATH = '../../resources/data_tests'
