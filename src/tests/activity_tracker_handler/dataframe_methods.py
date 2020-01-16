@@ -108,6 +108,21 @@ def get_data_for_merging_test_2():
     return ct_df, ct_df_right
 
 
+def get_data_for_merging_test_3():
+    ati_folder = 'ati_1'
+    ati_df = pd.read_csv(consts.TEST_DATA_PATH + '/' + ati_folder + '/' + 'ide-events_1.csv', encoding=consts.ENCODING,
+                         names=consts.ACTIVITY_TRACKER_COLUMN.activity_tracker_columns())
+    ati_df = ath.preprocessing_activity_tracker_data(ati_df)
+
+    ct_df = pd.read_csv(consts.TEST_DATA_PATH + '/' + ati_folder + '/' + 'task_1_test_2.csv', encoding=consts.ENCODING)
+    ct_df_right = __replace_nan_in_ati_columns(
+        pd.read_csv(consts.TEST_DATA_PATH + '/' + ati_folder + '/' + 'union_task_1_test_2.csv', encoding=consts.ENCODING))
+
+    ct_df = ath.merge_code_tracker_and_activity_tracker_data(ct_df, ati_df)
+
+    return ct_df, ct_df_right
+
+
 def is_equals(df_1: pd.DataFrame, df_2: pd.DataFrame):
     return df_1.equals(df_2)
 
@@ -144,4 +159,8 @@ class TestDataFrameMethods(unittest.TestCase):
 
     def test_data_for_merging_2(self):
         res_test_df, res_right_df = get_data_for_merging_test_2()
+        self.assertTrue(is_equals(res_test_df, res_right_df))
+
+    def test_data_for_merging_3(self):
+        res_test_df, res_right_df = get_data_for_merging_test_3()
         self.assertTrue(is_equals(res_test_df, res_right_df))
