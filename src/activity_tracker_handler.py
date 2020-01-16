@@ -53,14 +53,6 @@ def __get_default_dict_for_ati():
     }
 
 
-# Todo: maybe rename it?
-def __get_full_default_columns_for_ati(count_rows: int):
-    res = __get_default_dict_for_ati()
-    for i in range(count_rows):
-        __add_values_in_ati_dict(res)
-    return res
-
-
 def __add_values_in_ati_dict(ati_dict: dict, timestamp="", event_type="", event_data=""):
     ati_dict[consts.ACTIVITY_TRACKER_COLUMN.TIMESTAMP_ATI.value].append(timestamp)
     ati_dict[consts.ACTIVITY_TRACKER_COLUMN.EVENT_TYPE.value].append(event_type)
@@ -107,124 +99,56 @@ def preprocessing_activity_tracker_data(activity_tracker_data: pd.DataFrame):
     return activity_tracker_data
 
 
-# Find the first indexes from code tracker data and activity tracker data We can have a situation, when we should
-# begin to add activity tracker data to code tracker data on not zero position, then we should find the first index
-# in code tracker data when time is more than time from the first element in activity tracker data, it means the
-# previous element from code tracker data is the best candidate for the first element from activity tracker data. Or
-# we can have a situation when all elements from code tracker data are not valid for activity tracker data and then
-# we should append all empty values in code tracker data
-def __get_first_indexes(code_tracker_data: pd.DataFrame, activity_tracker_data: pd.DataFrame, res: dict, ct_i=1, ati_i=0):
-    while ati_i < activity_tracker_data.shape[0]:
-        if ct_i == code_tracker_data.shape[0] - 1:
-            return ct_i, ati_i
-
-        code_tracker_file_name = code_tracker_data[consts.CODE_TRACKER_COLUMN.FILE_NAME.value].iloc[ct_i]
-        activity_tracker_file_path = activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.CURRENT_FILE.value].iloc[
-            ati_i]
-
-        if not __is_same_files(code_tracker_file_name, activity_tracker_file_path):
-            ati_i += 1
-            continue
-
-        ct_current_time = __get_datetime_by_format(code_tracker_data[consts.CODE_TRACKER_COLUMN.DATE.value].iloc[ct_i])
-        ati_time = __get_datetime_by_format(
-            activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.TIMESTAMP_ATI.value].iloc[ati_i])
-        time_dif = (ati_time - ct_current_time).total_seconds()
-
-        if time_dif < 0:
-            return ct_i - 1, ati_i
-
-        __add_values_in_ati_dict(res)
-        ct_i += 1
-
-    return ct_i - 1, ati_i
-
-
-def __append_row_or_add_info(activity_tracker_data: pd.DataFrame, code_tracker_data: pd.DataFrame, ati_i: int,
-                             ct_i: int, ct_row: list, res: dict, was_added=False):
-    # If we try to add activity tracker data in the first time then we append information to the existing row
-    if not was_added:
-        __add_values_in_ati_dict_by_at_index(res, activity_tracker_data, ati_i)
-        was_added = True
-    # If we try to add activity tracker data is not the first time then we append a new row
-    else:
-        code_tracker_data = __insert_row(code_tracker_data, ct_i + 1, ct_row)
-        __add_values_in_ati_dict_by_at_index(res, activity_tracker_data, ati_i)
-        ct_i += 1
-    return code_tracker_data, ct_i, was_added
-
-
-def __handle_current_ct(activity_tracker_data: pd.DataFrame, code_tracker_data: pd.DataFrame, ati_i: int, ct_i: int,
-                        res: dict):
-    ct_current_time = __get_datetime_by_format(code_tracker_data[consts.CODE_TRACKER_COLUMN.DATE.value].iloc[ct_i])
-    ct_next_time = __get_datetime_by_format(code_tracker_data[consts.CODE_TRACKER_COLUMN.DATE.value].iloc[ct_i + 1])
-    ct_file_name = code_tracker_data[consts.CODE_TRACKER_COLUMN.FILE_NAME.value].iloc[ct_i]
-    ct_row = list(code_tracker_data.iloc[ct_i])
-
-    was_added = False
-    first_ct_index = 0
-    while ati_i < activity_tracker_data.shape[0]:
-        ati_time = __get_datetime_by_format(
-            activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.TIMESTAMP_ATI.value].iloc[ati_i])
-        cur_time_dif = (ati_time - ct_current_time).total_seconds()
-        next_time_dif = (ati_time - ct_next_time).total_seconds()
-
-        if not (next_time_dif < 0 <= cur_time_dif or cur_time_dif < 0 and ct_i == first_ct_index):
-            break
-
-        activity_tracker_file_path = activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.CURRENT_FILE.value].iloc[
-            ati_i]
-        if __is_same_files(ct_file_name, activity_tracker_file_path):
-            code_tracker_data, ct_i, was_added = __append_row_or_add_info(activity_tracker_data, code_tracker_data,
-                                                                          ati_i, ct_i, ct_row, res, was_added)
-            first_ct_index = ct_i
-        ati_i += 1
-
-    return code_tracker_data, ati_i, ct_i, was_added
-
-
-def __handle_last_ct(activity_tracker_data: pd.DataFrame, code_tracker_data: pd.DataFrame, ati_i: int, res: dict):
-    ct_i = code_tracker_data.shape[0] - 1
-    ct_last_row = list(code_tracker_data.iloc[ct_i])
-    ct_file_name = code_tracker_data[consts.CODE_TRACKER_COLUMN.FILE_NAME.value].iloc[ct_i]
-    was_added = False
-    while ati_i < activity_tracker_data.shape[0] - 1:
-        activity_tracker_file_path = activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.CURRENT_FILE.value].iloc[
-            ati_i]
-        if __is_same_files(ct_file_name, activity_tracker_file_path):
-            code_tracker_data, ct_i, was_added = __append_row_or_add_info(activity_tracker_data, code_tracker_data,
-                                                                          ati_i, ct_i, ct_last_row, res, was_added)
-        ati_i += 1
-    if not was_added:
-        __add_values_in_ati_dict(res)
-    return code_tracker_data
-
-
 def __create_join_code_tracker_data_frame(code_tracker_data: pd.DataFrame, res: dict):
     at_df = pd.DataFrame(res)
     return code_tracker_data.join(at_df)
 
 
-def merge_code_tracker_and_activity_tracker_data(code_tracker_data: pd.DataFrame, activity_tracker_data: pd.DataFrame):
+# Get size of result for activity tracker data
+def __get_dict_lists_size(res: dict):
+    size = 0
+    for key in res.keys():
+        if size != 0 and len(res[key]) != size:
+            raise ValueError('Lists in the res dict have different sizes')
+        size = len(res[key])
+    return size
+
+
+def next_time(code_tracker_data, ct_i):
+    return __get_datetime_by_format(
+                code_tracker_data[consts.CODE_TRACKER_COLUMN.DATE.value].iloc[ct_i + 1])
+
+
+def merge_code_tracker_and_activity_tracker_data2(code_tracker_data: pd.DataFrame, activity_tracker_data: pd.DataFrame):
     res = __get_default_dict_for_ati()
-    # Get res dict with ct_i empty rows
-    ct_i, ati_i = __get_first_indexes(code_tracker_data, activity_tracker_data, res)
+    ct_file_name = code_tracker_data[consts.CODE_TRACKER_COLUMN.FILE_NAME.value].iloc[0]
+    ct_i = 0
+    was_added = False
 
-    while ct_i < code_tracker_data.shape[0] - 1:
-        # If activity tracker data is over we should add empty values in code tracker data
-        if ati_i == activity_tracker_data.shape[0] - 1:
-            __add_values_in_ati_dict(res)
-            ct_i += 1
+    for ati_i in range(activity_tracker_data.shape[0]):
+        activity_tracker_file_path = activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.CURRENT_FILE.value].iloc[
+            ati_i]
+        if not __is_same_files(ct_file_name, activity_tracker_file_path):
             continue
+        ati_time = __get_datetime_by_format(
+            activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.TIMESTAMP_ATI.value].iloc[ati_i])
 
-        code_tracker_data, ati_i, ct_i, was_added = \
-            __handle_current_ct(activity_tracker_data, code_tracker_data, ati_i, ct_i, res)
+        while ct_i < code_tracker_data.shape[0] - 1 and (ati_time - next_time(code_tracker_data, ct_i)).total_seconds() >= 0:
+            ct_i += 1
+            if not was_added:
+                __add_values_in_ati_dict(res)
 
-        # If value from activity tracker data was not added
-        if not was_added:
-            __add_values_in_ati_dict(res)
-        ct_i += 1
+        was_added = False
 
-    # If activity tracker data is not over add all last elements to the last element from code tracker data
-    code_tracker_data = __handle_last_ct(activity_tracker_data, code_tracker_data, ati_i, res)
+        if __get_dict_lists_size(res) > ct_i:
+            ct_row = list(code_tracker_data.iloc[ct_i])
+            code_tracker_data = __insert_row(code_tracker_data, ct_i + 1, ct_row)
+            ct_i += 1
+            was_added = True
+
+        __add_values_in_ati_dict_by_at_index(res, activity_tracker_data, ati_i)
+
+    while __get_dict_lists_size(res) < code_tracker_data.shape[0]:
+        __add_values_in_ati_dict(res)
+
     return __create_join_code_tracker_data_frame(code_tracker_data, res)
