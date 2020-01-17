@@ -9,9 +9,9 @@ TASKS = consts.TASKS_TESTS.TASKS.value
 INPUT_FILE_NAME = consts.TASKS_TESTS.INPUT_FILE_NAME.value
 
 
-def __create_source_code_file(source_code: str, task: str, extension='py', source_file_name=SOURCE_FILE_NAME):
+def __create_file(content: str, task: str, extension='py', source_file_name=SOURCE_FILE_NAME):
     with open(TASKS_TESTS_PATH + task + '/' + source_file_name + '.' + extension, 'w') as f:
-        f.write(source_code)
+        f.write(content)
 
 
 def __drop_file(file: str, task: str):
@@ -19,12 +19,12 @@ def __drop_file(file: str, task: str):
         os.remove(TASKS_TESTS_PATH + task + '/' + file)
 
 
-# Get the rows from file for comparing it with a program result
-def __get_rows_from_file(out_file: str, task: str):
-    with open(TASKS_TESTS_PATH + task + '/' + out_file, 'r') as f:
+def __get_rows_from_file(file: str, task: str):
+    with open(TASKS_TESTS_PATH + task + '/' + file, 'r') as f:
         return f.readlines()
 
 
+# Get input for sending to other process: union list of rows as string
 def __get_input(in_file: str, task: str):
     content = __get_rows_from_file(in_file, task)
     return ''.join(content)
@@ -35,9 +35,9 @@ def __get_index_out_file_for_in_file(in_file: str, out_files: list):
     return sh.index_containing_substring(out_files, in_file.split('.')[0].split('_')[-1])
 
 
-def __separate_in_and_out_files(list_of_files: list):
-    in_files_list = list(filter(lambda file_name: 'in' in file_name, list_of_files))
-    out_files_list = list(filter(lambda file_name: 'out' in file_name, list_of_files))
+def __get_in_and_out_files(list_of_files: list):
+    in_files_list = list(filter(lambda file_name: 'in' in file_name and '.txt' in file_name, list_of_files))
+    out_files_list = list(filter(lambda file_name: 'out' in file_name and '.txt' in file_name, list_of_files))
     if len(out_files_list) != len(in_files_list):
         raise ValueError('Length of out files list does not equal in files list')
 
@@ -60,11 +60,11 @@ def __create_py_input_file(txt_in_file: str, task: str, extension='py', file_nam
     with open(TASKS_TESTS_PATH + task + '/' + txt_in_file, 'r') as f:
         for line in f:
             code += 'print(' + line.strip('\n') + ')' + '\n'
-    __create_source_code_file(code, task, extension, file_name)
+    __create_file(code, task, extension, file_name)
 
 
 # For python scripts it is an in file with extension py and for other cases, it is an in file with extension txt
-def __get_test_in_file(cur_in_file: str, extension='py'):
+def __get_in_file_for_current_test(cur_in_file: str, extension='py'):
     if extension == 'py':
         return INPUT_FILE_NAME + '.' + extension
     return cur_in_file
@@ -125,45 +125,72 @@ def __get_args_for_run_programs(extension: str, task: str, source_file_name: str
     return call_args, popen_args
 
 
-# The function returns code run result, was the compilation successful and does the compiled file exist
-def __check_test_for_task(source_code: str, in_file: str, out_file: str, task: str, compiled_success: bool,
-                          has_compiled_file: bool, extension='py', source_file_name=SOURCE_FILE_NAME):
-    if not compiled_success:
-        return False, False, True
+def __create_source_code_file(source_code: str, task: str, extension='py', source_file_name=SOURCE_FILE_NAME):
     if extension == 'java':
         source_file_name = __get_java_class(source_code)
-    __create_source_code_file(source_code, task, extension, source_file_name)
+    __create_file(source_code, task, extension, source_file_name)
+    return source_file_name
+
+
+# The function returns code run result, was the compilation successful and does the compiled file exist
+def __check_test_for_task(source_code: str, in_file: str, out_file: str, task: str, has_compiled_file: bool,
+                          is_compiled_successful: bool, extension='py', source_file_name=SOURCE_FILE_NAME):
+    is_passed = False
+    source_file_name = __create_source_code_file(source_code, task, extension, source_file_name)
 
     if extension == 'py':
-        res = __run_python_test(in_file, __get_rows_from_file(out_file, task)[0], task)
+        is_passed = __run_python_test(in_file, __get_rows_from_file(out_file, task)[0], task)
     else:
+        if not is_compiled_successful:
+            return is_passed, has_compiled_file, is_compiled_successful
+
         call_args, popen_args = __get_args_for_run_programs(extension, task, source_file_name)
         if not has_compiled_file:
-            if not __compile_program(call_args):
-                return False, False, True
-        res = __run_test(in_file, __get_rows_from_file(out_file, task)[0], task, popen_args)
-    return res, True, True
+            has_compiled_file = True
+            is_compiled_successful = __compile_program(call_args)
+
+            if not is_compiled_successful:
+                return is_passed, has_compiled_file, is_compiled_successful
+
+        is_passed = __run_test(in_file, __get_rows_from_file(out_file, task)[0], task, popen_args)
+    return is_passed, has_compiled_file, is_compiled_successful
 
 
-def __check_task(task: str, source_code: str, extension='py', compiled_success=True, has_compiled_file=False):
+def __is_valid_index(index: int):
+    return index != -1
+
+
+def __get_default_compiled_program_info():
+    has_compiled_file = False
+    is_compiled_successful = True
+    return has_compiled_file, is_compiled_successful
+
+
+def check_task(task: str, source_code: str, extension='py', is_clear=True):
+    if is_clear:
+        __clear_old_files(task)
+
     files = next(os.walk(TASKS_TESTS_PATH + task))[2]
-    in_files, out_files = __separate_in_and_out_files(files)
-    count_tests = 0
-    passed_tests = 0
+    in_files, out_files = __get_in_and_out_files(files)
+
+    count_tests, passed_tests = 0, 0
+    has_compiled_file, is_compiled_successful = __get_default_compiled_program_info()
 
     for cur_in in in_files:
         if extension == 'py':
             __create_py_input_file(cur_in, task)
         out_index = __get_index_out_file_for_in_file(cur_in, out_files)
-        if out_index == -1:
+        if not __is_valid_index(out_index):
             continue
-        test_in = __get_test_in_file(cur_in, extension)
+
+        in_file = __get_in_file_for_current_test(cur_in, extension)
+        out_file = out_files[__get_index_out_file_for_in_file(cur_in, out_files)]
         count_tests += 1
-        if compiled_success:
-            res, compiled_success, has_compiled_file = __check_test_for_task(source_code, test_in, out_files[
-                __get_index_out_file_for_in_file(cur_in, out_files)], task, compiled_success, has_compiled_file,
-                                                                             extension)
-            if res:
-                passed_tests += 1
-    __clear_old_files(task)
+
+        is_passed, has_compiled_file, is_compiled_successful = __check_test_for_task(source_code, in_file, out_file,
+                                                                                     task, has_compiled_file,
+                                                                                     is_compiled_successful, extension)
+        if is_passed:
+            passed_tests += 1
+
     return count_tests, passed_tests
