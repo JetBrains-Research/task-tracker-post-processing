@@ -85,10 +85,10 @@ def main():
             # Todo: get a value for file name column
             if ati_file is None:
                 ati_new_data = pd.DataFrame(ath.get_full_default_columns_for_ati(ct_df.shape[0]))
+                ct_df = ct_df.join(ati_new_data)
             else:
-                ct_df, ati_new_data = ath.merge_code_tracker_and_activity_tracker_data(ct_df, ati_df)
-                ati_new_data = pd.DataFrame(ati_new_data)
-            ct_df = ct_df.join(ati_new_data)
+                ati_df = ath.preprocessing_activity_tracker_data(ati_df)
+                ct_df = ath.merge_code_tracker_and_activity_tracker_data(ct_df, ati_df)
 
             # Todo: add a handler for each file - profile, language, id activity tracker
             pass
