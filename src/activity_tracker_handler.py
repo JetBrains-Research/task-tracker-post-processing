@@ -104,6 +104,13 @@ def __create_join_code_tracker_data_frame(code_tracker_data: pd.DataFrame, res: 
     return code_tracker_data.join(at_df)
 
 
+def get_full_default_columns_for_ati(count_rows: int):
+    res = __get_default_dict_for_ati()
+    for i in range(count_rows):
+        __add_values_in_ati_dict(res)
+    return res
+
+
 # Get size of result for activity tracker data
 def __get_dict_lists_size(res: dict):
     size = 0
@@ -112,6 +119,7 @@ def __get_dict_lists_size(res: dict):
             raise ValueError('Lists in the res dict have different sizes')
         size = len(res[key])
     return size
+
 
 def is_last(index, data):
     return index == data.shape[0] - 1
@@ -126,7 +134,7 @@ def is_ct_i_filled(ct_i, at_dict):
     return __get_dict_lists_size(at_dict) > ct_i
 
 
-def merge_code_tracker_and_activity_tracker_data2(code_tracker_data: pd.DataFrame, activity_tracker_data: pd.DataFrame):
+def merge_code_tracker_and_activity_tracker_data(code_tracker_data: pd.DataFrame, activity_tracker_data: pd.DataFrame):
     res = __get_default_dict_for_ati()
     ct_file_name = code_tracker_data[consts.CODE_TRACKER_COLUMN.FILE_NAME.value].iloc[0]
     ct_i = 0
