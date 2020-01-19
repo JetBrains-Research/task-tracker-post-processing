@@ -64,8 +64,9 @@ def __create_py_input_file(txt_in_file: str, task: str, extension='py', file_nam
 
 
 # For python scripts it is an in file with extension py and for other cases, it is an in file with extension txt
-def __get_in_file_for_current_test(cur_in_file: str, extension='py'):
+def __get_in_file_for_current_test(cur_in_file: str, task: str, extension='py'):
     if extension == 'py':
+        __create_py_input_file(cur_in_file, task)
         return INPUT_FILE_NAME + '.' + extension
     return cur_in_file
 
@@ -106,7 +107,7 @@ def __compile_program(call_args: list):
     return True
 
 
-def __get_args_for_run_programs(extension: str, task: str, source_file_name: str):
+def __get_args_for_running_program(extension: str, task: str, source_file_name: str):
     base_path = TASKS_TESTS_PATH + task + '/'
     call_args = []
     popen_args = []
@@ -144,7 +145,7 @@ def __check_test_for_task(source_code: str, in_file: str, out_file: str, task: s
         if not is_compiled_successful:
             return is_passed, has_compiled_file, is_compiled_successful
 
-        call_args, popen_args = __get_args_for_run_programs(extension, task, source_file_name)
+        call_args, popen_args = __get_args_for_running_program(extension, task, source_file_name)
         if not has_compiled_file:
             has_compiled_file = True
             is_compiled_successful = __compile_program(call_args)
@@ -177,14 +178,12 @@ def check_task(task: str, source_code: str, extension='py', is_clear=True):
     has_compiled_file, is_compiled_successful = __get_default_compiled_program_info()
 
     for cur_in in in_files:
-        if extension == 'py':
-            __create_py_input_file(cur_in, task)
         out_index = __get_index_out_file_for_in_file(cur_in, out_files)
         if not __is_valid_index(out_index):
             continue
 
-        in_file = __get_in_file_for_current_test(cur_in, extension)
-        out_file = out_files[__get_index_out_file_for_in_file(cur_in, out_files)]
+        in_file = __get_in_file_for_current_test(cur_in, task, extension)
+        out_file = out_files[out_index]
         count_tests += 1
 
         is_passed, has_compiled_file, is_compiled_successful = __check_test_for_task(source_code, in_file, out_file,
