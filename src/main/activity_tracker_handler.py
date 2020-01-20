@@ -15,7 +15,6 @@ def __unification_of_activity_tracker_columns(ati_data: pd.DataFrame):
     for index in range(ati_data.shape[0]):
         current_focused_component = ati_data[consts.ACTIVITY_TRACKER_COLUMN.FOCUSED_COMPONENT.value].iloc[index]
         if current_focused_component in action_events:
-            # Todo: rewrite with __setitem__ ??
             ati_data[consts.ACTIVITY_TRACKER_COLUMN.EVENT_DATA.value].iloc[index] \
                 = ati_data[consts.ACTIVITY_TRACKER_COLUMN.FOCUSED_COMPONENT.value].iloc[index]
             ati_data[consts.ACTIVITY_TRACKER_COLUMN.EVENT_TYPE.value].iloc[index] \
@@ -49,21 +48,24 @@ def __get_default_dict_for_ati():
     return {
         consts.ACTIVITY_TRACKER_COLUMN.TIMESTAMP_ATI.value: [],
         consts.ACTIVITY_TRACKER_COLUMN.EVENT_TYPE.value: [],
-        consts.ACTIVITY_TRACKER_COLUMN.EVENT_DATA.value: []
+        consts.ACTIVITY_TRACKER_COLUMN.EVENT_DATA.value: [],
+        consts.ACTIVITY_TRACKER_COLUMN.ATI_ID.value: []
     }
 
 
-def __add_values_in_ati_dict(ati_dict: dict, timestamp="", event_type="", event_data=""):
+def __add_values_in_ati_dict(ati_dict: dict, timestamp="", event_type="", event_data="", ati_id=""):
     ati_dict[consts.ACTIVITY_TRACKER_COLUMN.TIMESTAMP_ATI.value].append(timestamp)
     ati_dict[consts.ACTIVITY_TRACKER_COLUMN.EVENT_TYPE.value].append(event_type)
     ati_dict[consts.ACTIVITY_TRACKER_COLUMN.EVENT_DATA.value].append(event_data)
+    ati_dict[consts.ACTIVITY_TRACKER_COLUMN.ATI_ID.value].append(ati_id)
 
 
-def __add_values_in_ati_dict_by_at_index(res_dict: dict, activity_tracker_data: pd.DataFrame, index: int):
+def __add_values_in_ati_dict_by_at_index(res_dict: dict, activity_tracker_data: pd.DataFrame, index: int, ati_id: str):
     __add_values_in_ati_dict(res_dict,
                              activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.TIMESTAMP_ATI.value].iloc[index],
                              activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.EVENT_TYPE.value].iloc[index],
-                             activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.EVENT_DATA.value].iloc[index])
+                             activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.EVENT_DATA.value].iloc[index],
+                             ati_id)
 
 
 def __are_same_files(code_tracker_file_name: str, activity_tracker_file_path: str):
@@ -81,7 +83,6 @@ def __insert_row(df: pd.DataFrame, row_number: int, row_value: list):
         raise ValueError('Invalid row_number in the method __insert_row')
     df1 = df[0:row_number]
     df2 = df[row_number:]
-    # Todo: maybe create a new data frame and join?
     df1.loc[row_number] = row_value
     df_result = pd.concat([df1, df2])
     df_result.index = [*range(df_result.shape[0])]
@@ -134,7 +135,8 @@ def is_ct_i_filled(ct_i, at_dict):
     return __get_dict_lists_size(at_dict) > ct_i
 
 
-def merge_code_tracker_and_activity_tracker_data(code_tracker_data: pd.DataFrame, activity_tracker_data: pd.DataFrame):
+def merge_code_tracker_and_activity_tracker_data(code_tracker_data: pd.DataFrame, activity_tracker_data: pd.DataFrame,
+                                                 ati_id: str):
     res = __get_default_dict_for_ati()
     ct_file_name = code_tracker_data[consts.CODE_TRACKER_COLUMN.FILE_NAME.value].iloc[0]
     ct_i = 0
@@ -159,7 +161,7 @@ def merge_code_tracker_and_activity_tracker_data(code_tracker_data: pd.DataFrame
             code_tracker_data = __insert_row(code_tracker_data, ct_i + 1, ct_row)
             ct_i += 1
 
-        __add_values_in_ati_dict_by_at_index(res, activity_tracker_data, ati_i)
+        __add_values_in_ati_dict_by_at_index(res, activity_tracker_data, ati_i, ati_id)
 
     times = code_tracker_data.shape[0] - __get_dict_lists_size(res)
     while times > 0:

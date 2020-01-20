@@ -10,10 +10,11 @@ class CODE_TRACKER_COLUMN(Enum):
     FILE_NAME = 'fileName'
     DATE = 'date'
     TIMESTAMP = 'timestamp'
+    LANGUAGE = 'language'
 
 
 class ACTIVITY_TRACKER_COLUMN(Enum):
-    TIMESTAMP_ATI = 'timestamp_ati'
+    TIMESTAMP_ATI = 'timestampAti'
     USERNAME = 'username'
     EVENT_TYPE = 'eventType'
     EVENT_DATA = 'eventData'
@@ -23,7 +24,8 @@ class ACTIVITY_TRACKER_COLUMN(Enum):
     PSI_PATH = 'PSIPath'
     EDITOR_LINE = 'editorLine'
     EDITOR_COLUMN = 'editorColumn'
-    TASK = 'task'
+    TASK = 'task',
+    ATI_ID = 'atiId'
 
     @classmethod
     def activity_tracker_columns(cls):
