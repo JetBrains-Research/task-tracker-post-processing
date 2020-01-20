@@ -1,4 +1,4 @@
-from src.main import consts, activity_tracker_handler as ath
+from src.main import consts, activity_tracker_handler as ath, data_handler as dh
 import pandas as pd
 import logging
 import csv
@@ -68,7 +68,6 @@ def main():
     # Get child folders for the root folder from generator
     folders = next(os.walk(path))[1]
     for folder in folders:
-        # Todo: fix encoding files names in code tracker data and activity tracker data
         log.info('Start to handle the folder ' + folder)
         files = next(os.walk(path + folder))[2]
         # Todo: maybe add 'try except'
@@ -80,15 +79,20 @@ def main():
         for file in files:
             log.info('Start to handle the file ' + file)
             ct_df = pd.read_csv(path + folder + '/' + file, encoding=consts.ENCODING)
-            # Todo: get a value for file name column
+            language = dh.get_language(ct_df)
+            ct_df[consts.CODE_TRACKER_COLUMN.LANGUAGE.value] = language
+            ct_df[consts.CODE_TRACKER_COLUMN.FILE_NAME.value] = dh.get_project_file_name(file, language, ati_df)
+
+            ct_df[consts.CODE_TRACKER_COLUMN.AGE.value] = dh.get_age(ct_df)
+            ct_df[consts.CODE_TRACKER_COLUMN.EXPERIENCE.value] = dh.get_experience(ct_df)
+
             if ati_file is None:
                 ati_new_data = pd.DataFrame(ath.get_full_default_columns_for_ati(ct_df.shape[0]))
                 ct_df = ct_df.join(ati_new_data)
             else:
                 ati_df = ath.preprocessing_activity_tracker_data(ati_df)
-                ct_df = ath.merge_code_tracker_and_activity_tracker_data(ct_df, ati_df)
+                ct_df = ath.merge_code_tracker_and_activity_tracker_data(ct_df, ati_df, ati_id)
 
-            # Todo: add a handler for each file - profile, language, id activity tracker
             pass
         log.info('Finish to handle the folder ' + folder)
 
