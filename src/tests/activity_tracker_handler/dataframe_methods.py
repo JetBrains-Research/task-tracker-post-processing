@@ -1,5 +1,4 @@
-from src import activity_tracker_handler as ath
-from src import consts
+from src.main import consts, activity_tracker_handler as ath
 import pandas as pd
 import unittest
 
