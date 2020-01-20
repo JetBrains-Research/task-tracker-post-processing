@@ -1,4 +1,4 @@
-from src import tasks_tests_handler as tth
+from src.main import tasks_tests_handler as tth
 import unittest
 
 
@@ -109,7 +109,7 @@ def get_cpp_code_test_data_error_solution():
     return current_pair, (3, 0)
 
 
-class TestTimeMethods(unittest.TestCase):
+class TestRunTestMethods(unittest.TestCase):
 
     # Python tests
     def test_python_code_test_data_full_solution(self):
