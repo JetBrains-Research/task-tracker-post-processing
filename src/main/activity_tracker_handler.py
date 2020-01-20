@@ -1,5 +1,5 @@
 from datetime import datetime
-from src import consts
+from src.main import consts
 import pandas as pd
 import logging
 import re
