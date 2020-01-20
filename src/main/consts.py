@@ -1,6 +1,8 @@
 from enum import Enum
 import numpy as np
+import os
 
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 class CODE_TRACKER_COLUMN(Enum):
     AGE = 'age'
@@ -46,6 +48,13 @@ class DEFAULT_VALUES(Enum):
     EXPERIENCE = np.nan
 
 
+class TASKS_TESTS(Enum):
+    TASKS_TESTS_PATH = ROOT_DIR + '/../resources/tasks_tests/'
+    SOURCE_FILE_NAME = 'source'
+    TASKS = ['pies', 'max_3', 'zero', 'election', 'brackets', 'max_digit']
+    INPUT_FILE_NAME = 'in'
+
+
 LANGUAGES_DICT = {
     'py': 'PYTHON',
     'java': 'JAVA',
@@ -54,7 +63,7 @@ LANGUAGES_DICT = {
 
 NOT_DEFINED_LANGUAGE = 'NOT_DEFINED'
 
-LOGGER_FILE = '../logs.log'
+LOGGER_FILE = '../../logs.log'
 LOGGER_NAME = 'main_logger'
 
 PATH_CMD_ARG = '-path'

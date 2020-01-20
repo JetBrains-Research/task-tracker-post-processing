@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from src import consts
+from src.main import consts
 
 
 # Todo: add logger
