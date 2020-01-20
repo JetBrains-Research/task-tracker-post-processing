@@ -27,11 +27,6 @@ def __get_content_from_file(file: str, task: str):
         return f.read().rstrip("\n")
 
 
-def __get_out_file_index_for_in_file(in_file: str, out_files: list):
-    # In and out files have the same indices, for example the in_1 file matches with the out_1 file
-    return sh.index_containing_substring(out_files, in_file.split('.')[0].split('_')[-1])
-
-
 def __get_in_and_out_files(list_of_files: list):
     in_files_list = list(filter(lambda file_name: 'in' in file_name and '.txt' in file_name, list_of_files))
     out_files_list = list(filter(lambda file_name: 'out' in file_name and '.txt' in file_name, list_of_files))
