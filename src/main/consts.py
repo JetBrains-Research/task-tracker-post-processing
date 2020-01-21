@@ -78,3 +78,5 @@ DATE_TIME_FORMAT = '%Y-%m-%dT%H:%M:%S.%f%z'
 MAX_DIF_SEC = 0.5
 
 TEST_DATA_PATH = '../../resources/data_tests'
+
+RESULT_FOLDER = 'result'

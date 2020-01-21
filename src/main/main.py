@@ -48,6 +48,16 @@ def __separate_ati_and_other_files(files: list, folder: str, full_path: str):
     return files, ati_file, ati_id
 
 
+def __get_folders_for_handling(path: str):
+    # Get child folders for the root folder from generator and remove result folder
+    return list(filter(lambda x: consts.RESULT_FOLDER not in x, next(os.walk(path))[1]))
+
+
+def __write_result(path: str, file: str, result_df: pd.DataFrame):
+    path += '/' + consts.RESULT_FOLDER + '/' + file
+    result_df.to_csv(path, encoding=consts.ENCODING, index=False)
+
+
 def main():
     logging.basicConfig(filename=consts.LOGGER_FILE, level=logging.INFO)
     log = logging.getLogger(consts.LOGGER_NAME)
@@ -65,8 +75,7 @@ def main():
     if path[-1] != '/':
         path += '/'
 
-    # Get child folders for the root folder from generator
-    folders = next(os.walk(path))[1]
+    folders = __get_folders_for_handling(path)
     for folder in folders:
         log.info('Start to handle the folder ' + folder)
         files = next(os.walk(path + folder))[2]
@@ -92,6 +101,7 @@ def main():
             else:
                 ati_df = ath.preprocessing_activity_tracker_data(ati_df)
                 ct_df = ath.merge_code_tracker_and_activity_tracker_data(ct_df, ati_df, ati_id)
+            __write_result(path, file, ct_df)
 
             pass
         log.info('Finish to handle the folder ' + folder)
