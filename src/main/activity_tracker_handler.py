@@ -80,6 +80,7 @@ def __are_same_files(code_tracker_file_name: str, activity_tracker_file_path: st
 # If we have row_number = 1 and row_value = B, the function returns the dataset with rows: A B C D
 def __insert_row(df: pd.DataFrame, row_number: int, row_value: list):
     if row_number > df.index.max() + 1:
+        log.error('Invalid row_number in the method __insert_row')
         raise ValueError('Invalid row_number in the method __insert_row')
     df1 = df[0:row_number]
     df2 = df[row_number:]
@@ -117,6 +118,7 @@ def __get_dict_lists_size(res: dict):
     size = 0
     for key in res.keys():
         if size != 0 and len(res[key]) != size:
+            log.error('Lists in the res dict have different sizes')
             raise ValueError('Lists in the res dict have different sizes')
         size = len(res[key])
     return size
@@ -137,6 +139,7 @@ def is_ct_i_filled(ct_i, at_dict):
 
 def merge_code_tracker_and_activity_tracker_data(code_tracker_data: pd.DataFrame, activity_tracker_data: pd.DataFrame,
                                                  ati_id: str):
+    log.info('Start to merge code tracker and activity tracker data')
     res = __get_default_dict_for_ati()
     ct_file_name = code_tracker_data[consts.CODE_TRACKER_COLUMN.FILE_NAME.value].iloc[0]
     ct_i = 0
@@ -163,9 +166,15 @@ def merge_code_tracker_and_activity_tracker_data(code_tracker_data: pd.DataFrame
 
         __add_values_in_ati_dict_by_at_index(res, activity_tracker_data, ati_i, ati_id)
 
+    log.info('Finish handle the activity tracker file')
+
     times = code_tracker_data.shape[0] - __get_dict_lists_size(res)
     while times > 0:
         __add_values_in_ati_dict(res)
         times -= 1
 
-    return __create_join_code_tracker_data_frame(code_tracker_data, res)
+    log.info('Finish to set empty values for the last code tracker items')
+
+    code_tracker_data = __create_join_code_tracker_data_frame(code_tracker_data, res)
+    log.info('Finish to merge code tracker and activity tracker data')
+    return code_tracker_data

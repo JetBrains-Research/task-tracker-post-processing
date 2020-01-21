@@ -1,9 +1,10 @@
+from src.main import consts
 import pandas as pd
 import numpy as np
-from src.main import consts
+import logging
 
 
-# Todo: add logger
+log = logging.getLogger(consts.LOGGER_NAME)
 
 
 def __profile_column_handler(data: pd.DataFrame, column: consts.CODE_TRACKER_COLUMN,
@@ -20,12 +21,24 @@ def __profile_column_handler(data: pd.DataFrame, column: consts.CODE_TRACKER_COL
 
 
 def get_age(data: pd.DataFrame):
-    return __profile_column_handler(data, consts.CODE_TRACKER_COLUMN.AGE.value, consts.DEFAULT_VALUES.AGE.value)
+    log.info('Start getting age')
+    age = __profile_column_handler(data, consts.CODE_TRACKER_COLUMN.AGE.value, consts.DEFAULT_VALUES.AGE.value)
+    if age == -1:
+        log.error('Invalid age!')
+        raise ValueError('Invalid age!')
+    log.info('Finish getting age')
+    return age
 
 
 def get_experience(data: pd.DataFrame):
-    return __profile_column_handler(data, consts.CODE_TRACKER_COLUMN.EXPERIENCE.value,
-                                    consts.DEFAULT_VALUES.EXPERIENCE.value)
+    log.info('Start getting experience')
+    experience = __profile_column_handler(data, consts.CODE_TRACKER_COLUMN.EXPERIENCE.value,
+                                          consts.DEFAULT_VALUES.EXPERIENCE.value)
+    if experience == -1:
+        log.error('Invalid experience!')
+        raise ValueError('Invalid experience!')
+    log.info('Finish getting experience')
+    return experience
 
 
 def __get_extension_by_file_name(file_name: str):
@@ -34,8 +47,8 @@ def __get_extension_by_file_name(file_name: str):
 
 
 def __get_extension_by_language(language: str):
-    for extension, language in consts.LANGUAGES_DICT.items():
-        if language == language:
+    for extension, cur_language in consts.LANGUAGES_DICT.items():
+        if cur_language == language:
             return extension
     return None
 
@@ -71,12 +84,17 @@ def __remove_nan(items: list):
 
 
 def get_project_file_name(file_name: str, language: str, activity_tracker_data: pd.DataFrame):
+    log.info('Start getting project file name')
     extension = __get_extension_by_language(language)
     file_name = __get_original_file_name(file_name, extension)
     if activity_tracker_data is not None:
+        log.info('Start searching the file_name ' + file_name + ' in activity tracker data')
         paths = __remove_nan(activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.CURRENT_FILE.value].unique())
         file_names = list(map(__get_file_name_from_path, paths))
         if file_name not in file_names:
+            log.error('Activity tracker data does not contain the original file ' + file_name)
             raise ValueError('Activity tracker data does not contain the original file ' + file_name)
+        log.info('Finish searching the file_name ' + file_name + ' in activity tracker data')
 
+    log.info('Finish getting project file name')
     return file_name
