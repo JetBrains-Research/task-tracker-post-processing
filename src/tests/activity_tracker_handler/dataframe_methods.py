@@ -48,7 +48,7 @@ def get_data_for_unification_test():
     folder = 'preparing'
     ati_df = pd.read_csv(consts.TEST_DATA_PATH + '/' + folder + '/' + 'ide-events_1.csv', encoding=consts.ENCODING,
                          names=consts.ACTIVITY_TRACKER_COLUMN.activity_tracker_columns())
-    ati_df = ath.__unification_of_activity_tracker_columns(ati_df)
+    ati_df = ath.__unify_activity_tracker_columns(ati_df)
 
     ati_df_right = pd.read_csv(consts.TEST_DATA_PATH + '/' + folder + '/' + 'ide-events_1_uni_res.csv',
                                encoding=consts.ENCODING,
@@ -72,7 +72,8 @@ def get_data_for_filter_test():
 def __replace_nan_in_ati_columns(merged_data: pd.DataFrame):
     activity_tracker_columns = [consts.ACTIVITY_TRACKER_COLUMN.TIMESTAMP_ATI.value,
                                 consts.ACTIVITY_TRACKER_COLUMN.EVENT_TYPE.value,
-                                consts.ACTIVITY_TRACKER_COLUMN.EVENT_DATA.value]
+                                consts.ACTIVITY_TRACKER_COLUMN.EVENT_DATA.value,
+                                consts.ACTIVITY_TRACKER_COLUMN.ATI_ID.value]
     for column in activity_tracker_columns:
         merged_data[column].fillna('', inplace=True)
     return merged_data
@@ -87,7 +88,7 @@ def get_data_for_merging_test_1():
     ct_df_right = __replace_nan_in_ati_columns(
         pd.read_csv(consts.TEST_DATA_PATH + '/' + ati_folder + '/' + 'union_task_1.csv', encoding=consts.ENCODING))
 
-    ct_df = ath.merge_code_tracker_and_activity_tracker_data(ct_df, ati_df)
+    ct_df = ath.merge_code_tracker_and_activity_tracker_data(ct_df, ati_df, 'id')
     # ct_df.to_csv(file_name, sep='\t')
 
     return ct_df, ct_df_right
@@ -103,7 +104,7 @@ def get_data_for_merging_test_2():
     ct_df_right = __replace_nan_in_ati_columns(
         pd.read_csv(consts.TEST_DATA_PATH + '/' + ati_folder + '/' + 'union_task_2.csv', encoding=consts.ENCODING))
 
-    ct_df = ath.merge_code_tracker_and_activity_tracker_data(ct_df, ati_df)
+    ct_df = ath.merge_code_tracker_and_activity_tracker_data(ct_df, ati_df, 'id')
 
     return ct_df, ct_df_right
 
@@ -118,7 +119,7 @@ def get_data_for_merging_test_3():
     ct_df_right = __replace_nan_in_ati_columns(
         pd.read_csv(consts.TEST_DATA_PATH + '/' + ati_folder + '/' + 'union_task_1_test_2.csv', encoding=consts.ENCODING))
 
-    ct_df = ath.merge_code_tracker_and_activity_tracker_data(ct_df, ati_df)
+    ct_df = ath.merge_code_tracker_and_activity_tracker_data(ct_df, ati_df, 'id')
 
     return ct_df, ct_df_right
 

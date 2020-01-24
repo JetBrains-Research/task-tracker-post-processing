@@ -81,7 +81,7 @@ def __get_in_file_for_current_test(cur_in_file: str, task: str, extension='py'):
     return cur_in_file
 
 
-# Clear not .txt files: we need to clear the generated files (it has not .txt extension)
+# Remove not .txt files: we need to remove the generated files (they don't have .txt extension)
 def __clear_old_files(task: str):
     files = next(os.walk(TASKS_TESTS_PATH + task))[2]
     old_files = list(filter(lambda file_name: '.txt' not in file_name, files))
@@ -116,18 +116,6 @@ def __compile_program(call_args: list):
     return True
 
 
-def __get_compiled_file_path(extension: str, task: str, source_file_name: str):
-    base_path = TASKS_TESTS_PATH + task + '/'
-    compiled_file_path = None
-    if extension == 'java':
-        compiled_file_path = base_path + source_file_name + '.' + extension
-    elif extension == 'cpp':
-        compiled_file_path = base_path + source_file_name + '.out'
-    elif extension == 'kt':
-        compiled_file_path = base_path + source_file_name + '.jar'
-    return compiled_file_path
-
-
 def __get_args_for_running_program(extension: str, task: str, source_file_name: str):
     base_path = TASKS_TESTS_PATH + task + '/'
     running_args = []
@@ -142,15 +130,17 @@ def __get_args_for_running_program(extension: str, task: str, source_file_name: 
 
 
 def __get_args_for_compiling_program(extension: str, task: str, source_file_name: str):
-    compiled_file_path = __get_compiled_file_path(extension, task, source_file_name)
     base_path = TASKS_TESTS_PATH + task + '/'
     call_args = []
 
     if extension == 'java':
+        compiled_file_path = base_path + source_file_name + '.' + extension
         call_args = ['javac', compiled_file_path]
     elif extension == 'cpp':
+        compiled_file_path = base_path + source_file_name + '.out'
         call_args = ['gcc', '-lstdc++', '-o', compiled_file_path, base_path + source_file_name + '.' + extension]
     elif extension == 'kt':
+        compiled_file_path = base_path + source_file_name + '.jar'
         call_args = ['kotlinc', base_path + source_file_name + '.' + extension, '-include-runtime', '-d',
                      compiled_file_path]
     return call_args
@@ -196,8 +186,8 @@ def check_task(task: str, source_code: str, extension='py', to_clear=True):
     if not __is_python(extension):
         has_compiled_file, is_compiled_successful = __get_default_compiled_program_info(source_file_name, task)
 
-        compiling_args = __get_args_for_compiling_program(extension, task, source_file_name)
         if not has_compiled_file:
+            compiling_args = __get_args_for_compiling_program(extension, task, source_file_name)
             is_compiled_successful = __compile_program(compiling_args)
 
         if not is_compiled_successful:

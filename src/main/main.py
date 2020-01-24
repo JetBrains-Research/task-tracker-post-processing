@@ -1,4 +1,4 @@
-from src.main import consts, activity_tracker_handler as ath, data_handler as dh
+from src.main import consts, activity_tracker_handler as ath, code_tracker_handler as dh
 import pandas as pd
 import logging
 import csv
@@ -65,10 +65,13 @@ def main():
         path = __get_data_path()
     except NameError as e:
         log.error(e)
+        print(e)
         sys.exit(1)
 
     if not os.path.isdir(path):
-        log.error('There is not a folder! Path is ' + path)
+        error_message = 'There is not a folder! Path is ' + path
+        log.error(error_message)
+        print(error_message)
         sys.exit(1)
 
     # Add / to the end of the path
@@ -77,34 +80,43 @@ def main():
 
     folders = __get_folders_for_handling(path)
     for folder in folders:
-        log.info('Start to handle the folder ' + folder)
+        log.info('Start handling the folder ' + folder)
         files = next(os.walk(path + folder))[2]
         # Todo: maybe add 'try except'
         files, ati_file, ati_id = __separate_ati_and_other_files(files, folder, path + folder)
         ati_df = None
+        files_from_ati = None
         if ati_file:
             ati_df = pd.read_csv(path + folder + '/' + ati_file, encoding=consts.ENCODING,
                                  names=consts.ACTIVITY_TRACKER_COLUMN.activity_tracker_columns())
+            files_from_ati = ath.get_file_names_from_ati(ati_df)
+            ati_df = ath.preprocessing_activity_tracker_data(ati_df)
+
         for file in files:
-            log.info('Start to handle the file ' + file)
+            log.info('Start handling the file ' + file)
             ct_df = pd.read_csv(path + folder + '/' + file, encoding=consts.ENCODING)
             language = dh.get_language(ct_df)
             ct_df[consts.CODE_TRACKER_COLUMN.LANGUAGE.value] = language
-            ct_df[consts.CODE_TRACKER_COLUMN.FILE_NAME.value] = dh.get_project_file_name(file, language, ati_df)
+            ct_df[consts.CODE_TRACKER_COLUMN.FILE_NAME.value], ati_is_valid = ath.get_file_name_from_ati_data(file,
+                                                                                                             language,
+                                                                                                             files_from_ati)
 
-            ct_df[consts.CODE_TRACKER_COLUMN.AGE.value] = dh.get_age(ct_df)
-            ct_df[consts.CODE_TRACKER_COLUMN.EXPERIENCE.value] = dh.get_experience(ct_df)
+            ct_df[consts.CODE_TRACKER_COLUMN.AGE.value] = dh.profile_column_handler(ct_df,
+                                                                                    consts.CODE_TRACKER_COLUMN.AGE.value,
+                                                                                    consts.DEFAULT_VALUES.AGE.value)
+            ct_df[consts.CODE_TRACKER_COLUMN.EXPERIENCE.value] = dh.profile_column_handler(ct_df,
+                                                                                           consts.CODE_TRACKER_COLUMN.EXPERIENCE.value,
+                                                                                           consts.DEFAULT_VALUES.EXPERIENCE.value)
 
-            if ati_file is None:
+            if ati_file is None or not ati_is_valid:
                 ati_new_data = pd.DataFrame(ath.get_full_default_columns_for_ati(ct_df.shape[0]))
                 ct_df = ct_df.join(ati_new_data)
             else:
-                ati_df = ath.preprocessing_activity_tracker_data(ati_df)
                 ct_df = ath.merge_code_tracker_and_activity_tracker_data(ct_df, ati_df, ati_id)
             __write_result(path, file, ct_df)
 
             pass
-        log.info('Finish to handle the folder ' + folder)
+        log.info('Finish handling the folder ' + folder)
 
 
 if __name__ == "__main__":

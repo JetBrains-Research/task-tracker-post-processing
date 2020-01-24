@@ -10,7 +10,7 @@ log = logging.getLogger(consts.LOGGER_NAME)
 # Unification of similar activity tracker events. For example, an action Run by pressed the button Run and by
 # pressing a combination of buttons is not similar in the source data. After the unification, the function returns a
 # new activity tracker data with the union this kind of events
-def __unification_of_activity_tracker_columns(ati_data: pd.DataFrame):
+def __unify_activity_tracker_columns(ati_data: pd.DataFrame):
     action_events = consts.ACTIVITY_TRACKER_EVENTS.action_events()
     for index in range(ati_data.shape[0]):
         current_focused_component = ati_data[consts.ACTIVITY_TRACKER_COLUMN.FOCUSED_COMPONENT.value].iloc[index]
@@ -92,7 +92,7 @@ def __insert_row(df: pd.DataFrame, row_number: int, row_value: list):
 
 def preprocessing_activity_tracker_data(activity_tracker_data: pd.DataFrame):
     log.info('...starting to unify activity tracker data')
-    activity_tracker_data = __unification_of_activity_tracker_columns(activity_tracker_data)
+    activity_tracker_data = __unify_activity_tracker_columns(activity_tracker_data)
     log.info('finish to unify activity tracker data')
 
     log.info('...starting to filter activity tracker data')
@@ -139,7 +139,7 @@ def is_ct_i_filled(ct_i, at_dict):
 
 def merge_code_tracker_and_activity_tracker_data(code_tracker_data: pd.DataFrame, activity_tracker_data: pd.DataFrame,
                                                  ati_id: str):
-    log.info('Start to merge code tracker and activity tracker data')
+    log.info('Start merging code tracker and activity tracker data')
     res = __get_default_dict_for_ati()
     ct_file_name = code_tracker_data[consts.CODE_TRACKER_COLUMN.FILE_NAME.value].iloc[0]
     ct_i = 0
@@ -166,15 +166,55 @@ def merge_code_tracker_and_activity_tracker_data(code_tracker_data: pd.DataFrame
 
         __add_values_in_ati_dict_by_at_index(res, activity_tracker_data, ati_i, ati_id)
 
-    log.info('Finish handle the activity tracker file')
+    log.info('Finish handling the activity tracker file')
 
     times = code_tracker_data.shape[0] - __get_dict_lists_size(res)
     while times > 0:
         __add_values_in_ati_dict(res)
         times -= 1
 
-    log.info('Finish to set empty values for the last code tracker items')
+    log.info('Finish setting empty values for the last code tracker items')
 
     code_tracker_data = __create_join_code_tracker_data_frame(code_tracker_data, res)
-    log.info('Finish to merge code tracker and activity tracker data')
+    log.info('Finish merging code tracker and activity tracker data')
     return code_tracker_data
+
+
+def __get_file_name_from_path(file_path: str):
+    return file_path.split('/')[-1]
+
+
+def __get_original_file_name(hashed_file_name: str, extension: str):
+    return "_".join(hashed_file_name.split('_')[:-4]) + '.' + extension
+
+
+def __remove_nan(items: list):
+    return list(filter(lambda x: not pd.isnull(x), items))
+
+
+def get_file_names_from_ati(activity_tracker_data: pd.DataFrame):
+    paths = __remove_nan(activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.CURRENT_FILE.value].unique())
+    return list(map(__get_file_name_from_path, paths))
+
+
+def __get_extension_by_language(language: str):
+    for extension, cur_language in consts.LANGUAGES_DICT.items():
+        if cur_language == language:
+            return extension
+    return None
+
+
+def get_file_name_from_ati_data(file_name: str, language: str, files_from_ati: list):
+    log.info('Start getting project file name')
+    extension = __get_extension_by_language(language)
+    file_name = __get_original_file_name(file_name, extension)
+    is_contains = True
+    if files_from_ati is not None:
+        log.info('Start searching the file_name ' + file_name + ' in activity tracker data')
+        if file_name not in files_from_ati:
+            log.info('Activity tracker data does not contain the original file ' + file_name)
+            is_contains = False
+        log.info('Finish searching the file_name ' + file_name + ' in activity tracker data')
+
+    log.info('Finish getting project file name')
+    return file_name, is_contains
