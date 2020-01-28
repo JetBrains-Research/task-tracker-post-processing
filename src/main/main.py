@@ -53,8 +53,15 @@ def __get_folders_for_handling(path: str):
     return list(filter(lambda x: consts.RESULT_FOLDER not in x, next(os.walk(path))[1]))
 
 
-def __write_result(path: str, file: str, result_df: pd.DataFrame):
-    path += '/' + consts.RESULT_FOLDER + '/' + file
+def __create_directory(directory: str):
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+
+def __write_result(path: str, current_folder: str, file: str, result_df: pd.DataFrame):
+    path += consts.RESULT_FOLDER + '/' + current_folder
+    __create_directory(path)
+    path += '/' + file
     result_df.to_csv(path, encoding=consts.ENCODING, index=False)
 
 
@@ -98,8 +105,8 @@ def main():
             language = dh.get_language(ct_df)
             ct_df[consts.CODE_TRACKER_COLUMN.LANGUAGE.value] = language
             ct_df[consts.CODE_TRACKER_COLUMN.FILE_NAME.value], ati_is_valid = ath.get_file_name_from_ati_data(file,
-                                                                                                             language,
-                                                                                                             files_from_ati)
+                                                                                                              language,
+                                                                                                              files_from_ati)
 
             ct_df[consts.CODE_TRACKER_COLUMN.AGE.value] = dh.profile_column_handler(ct_df,
                                                                                     consts.CODE_TRACKER_COLUMN.AGE.value,
@@ -113,7 +120,7 @@ def main():
                 ct_df = ct_df.join(ati_new_data)
             else:
                 ct_df = ath.merge_code_tracker_and_activity_tracker_data(ct_df, ati_df, ati_id)
-            __write_result(path, file, ct_df)
+            __write_result(path, folder, file, ct_df)
 
             pass
         log.info('Finish handling the folder ' + folder)
