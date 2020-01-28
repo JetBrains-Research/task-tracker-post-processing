@@ -71,7 +71,7 @@ def __add_values_in_ati_dict_by_at_index(res_dict: dict, activity_tracker_data: 
 def __are_same_files(code_tracker_file_name: str, activity_tracker_file_path: str):
     if pd.isnull(activity_tracker_file_path):
         return False
-    activity_tracker_file_name = activity_tracker_file_path.split('/')[-1]
+    activity_tracker_file_name = __get_file_name_from_path(activity_tracker_file_path)
     return code_tracker_file_name == activity_tracker_file_name
 
 
@@ -90,7 +90,7 @@ def __insert_row(df: pd.DataFrame, row_number: int, row_value: list):
     return df_result
 
 
-def preprocessing_activity_tracker_data(activity_tracker_data: pd.DataFrame):
+def preprocess_activity_tracker_data(activity_tracker_data: pd.DataFrame):
     log.info('...starting to unify activity tracker data')
     activity_tracker_data = __unify_activity_tracker_columns(activity_tracker_data)
     log.info('finish to unify activity tracker data')
@@ -208,13 +208,13 @@ def get_file_name_from_ati_data(file_name: str, language: str, files_from_ati: l
     log.info('Start getting project file name')
     extension = __get_extension_by_language(language)
     file_name = __get_original_file_name(file_name, extension)
-    is_contains = True
+    does_contain_name = True
     if files_from_ati is not None:
         log.info('Start searching the file_name ' + file_name + ' in activity tracker data')
         if file_name not in files_from_ati:
             log.info('Activity tracker data does not contain the original file ' + file_name)
-            is_contains = False
+            does_contain_name = False
         log.info('Finish searching the file_name ' + file_name + ' in activity tracker data')
 
     log.info('Finish getting project file name')
-    return file_name, is_contains
+    return file_name, does_contain_name

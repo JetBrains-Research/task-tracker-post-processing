@@ -97,14 +97,14 @@ def main():
             ati_df = pd.read_csv(path + folder + '/' + ati_file, encoding=consts.ENCODING,
                                  names=consts.ACTIVITY_TRACKER_COLUMN.activity_tracker_columns())
             files_from_ati = ath.get_file_names_from_ati(ati_df)
-            ati_df = ath.preprocessing_activity_tracker_data(ati_df)
+            ati_df = ath.preprocess_activity_tracker_data(ati_df)
 
         for file in files:
             log.info('Start handling the file ' + file)
             ct_df = pd.read_csv(path + folder + '/' + file, encoding=consts.ENCODING)
             language = dh.get_language(ct_df)
             ct_df[consts.CODE_TRACKER_COLUMN.LANGUAGE.value] = language
-            ct_df[consts.CODE_TRACKER_COLUMN.FILE_NAME.value], ati_is_valid = ath.get_file_name_from_ati_data(file,
+            ct_df[consts.CODE_TRACKER_COLUMN.FILE_NAME.value], is_ati_vlalid = ath.get_file_name_from_ati_data(file,
                                                                                                               language,
                                                                                                               files_from_ati)
 
@@ -115,7 +115,7 @@ def main():
                                                                                            consts.CODE_TRACKER_COLUMN.EXPERIENCE.value,
                                                                                            consts.DEFAULT_VALUES.EXPERIENCE.value)
 
-            if ati_file is None or not ati_is_valid:
+            if ati_file is None or not is_ati_vlalid:
                 ati_new_data = pd.DataFrame(ath.get_full_default_columns_for_ati(ct_df.shape[0]))
                 ct_df = ct_df.join(ati_new_data)
             else:
