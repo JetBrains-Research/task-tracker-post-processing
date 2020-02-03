@@ -1,0 +1,7 @@
+date,fileName,fragment,timestampAti,eventType,eventData,atiId
+2019-12-09T17:30:52.404+03:00,task_2.py,n=int(input()),2019-12-09T17:15:21.749+03:00,Action,Run,id
+2019-12-09T17:30:52.404+03:00,task_2.py,n=int(input()),2019-12-09T17:15:22.749+03:00,Action,Run,id
+2019-12-09T17:30:52.404+03:00,task_2.py,n=int(input()),2019-12-09T17:31:21.749+03:00,Action,Run,id
+2019-12-09T17:30:52.404+03:00,task_2.py,n=int(input()),2019-12-09T17:32:21.749+03:00,Action,Run,id
+2019-12-09T17:49:52.404+03:00,task_2.py,n=int(input()),,,,
+2019-12-09T17:50:52.404+03:00,task_2.py,n=int(input()),,,,
