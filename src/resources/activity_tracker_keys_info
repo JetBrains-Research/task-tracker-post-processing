@@ -1,0 +1,56 @@
+1. IdeState: ❌
+    - Active - IDE has focus
+    - Inactive - IDE doesn't have focus
+    - NoProject - all projects are closed
+
+2. Action:
+    - NewProject - create new project ❌
+    - SaveAs - save as a file ❌
+    - NewPythonFile - create python file ❌
+
+    - ChooseRunConfiguration - choose run configuration ❌
+    - Run - run program ✅
+    - Rerun - run program again ✅
+
+    - RunClass - run class ✅
+    - DebugClass - debug class ✅
+
+    - ToggleLineBreakpoint - toggle line breakpoint ✅
+    - Debugger.AddToWatch - add a value to watch ❌
+    - Debug - debug program ✅
+    - Stop - stop debug program ✅
+    - Resume - resume debug program ✅
+    - StepInto - get info during debugging ✅
+    - CompileDirty - ???? ✅
+
+    - EditorBackSpace - press button BackSpace ❌
+    - EditorLeft - press button Left ❌
+    - EditorRight - press button Right ❌
+    - EditorEnter - press button Enter ❌
+    - EditorTab - press button Tab ❌
+    - EditorDown - press button Down ❌
+    - EditorUp - press button Up ❌
+    - EditorDelete - press button Delete ❌
+    - EditorChooseLookupItem - choose lookup item ❌
+    - EditorSplitLine - split a long string ❌
+    - EditorRightWithSelection - press button Right and select something ❌
+    - EditorLeftWithSelection - press button Left and select something ❌
+    - EditorDuplicate - ???? ❌
+
+    - EditorCopy - copy a part of something ✅
+    - EditorPaste - paste a part of something ✅
+    - EditorCut - cut a part of something ✅
+
+    - CopyPaths - cope path of file ❌
+
+    - ReformatCode - press reformat code button ✅
+
+    - NewElement - ???? ❌
+    - ShowPopupMenu ❌
+
+    - $Undo - delete last change (CTRL + Z) ✅
+    - $Paste - paste a part of something (CTRL + V) ✅
+    - $Copy - paste a part of something (CTRL + C) ✅
+
+3. CompilationFinished: ✅
+    - int number - amount of errors during compilation
