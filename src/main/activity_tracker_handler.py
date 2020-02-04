@@ -101,7 +101,7 @@ def preprocess_activity_tracker_data(activity_tracker_data: pd.DataFrame):
     return activity_tracker_data
 
 
-def __create_join_code_tracker_data_frame(code_tracker_data: pd.DataFrame, res: dict):
+def __create_joined_code_tracker_data_frame(code_tracker_data: pd.DataFrame, res: dict):
     at_df = pd.DataFrame(res)
     return code_tracker_data.join(at_df)
 
@@ -175,7 +175,7 @@ def merge_code_tracker_and_activity_tracker_data(code_tracker_data: pd.DataFrame
 
     log.info('Finish setting empty values for the last code tracker items')
 
-    code_tracker_data = __create_join_code_tracker_data_frame(code_tracker_data, res)
+    code_tracker_data = __create_joined_code_tracker_data_frame(code_tracker_data, res)
     log.info('Finish merging code tracker and activity tracker data')
     return code_tracker_data
 
@@ -197,8 +197,8 @@ def get_file_names_from_ati(activity_tracker_data: pd.DataFrame):
     return list(map(__get_file_name_from_path, paths))
 
 
-def __get_extension_by_language(language: str):
-    for extension, cur_language in consts.LANGUAGES_DICT.items():
+def get_extension_by_language(language: str):
+    for extension, cur_language in consts.EXTENSION_TO_LANGUAGE_DICT.items():
         if cur_language == language:
             return extension
     return None
@@ -206,7 +206,7 @@ def __get_extension_by_language(language: str):
 
 def get_file_name_from_ati_data(file_name: str, language: str, files_from_ati: list):
     log.info('Start getting project file name')
-    extension = __get_extension_by_language(language)
+    extension = get_extension_by_language(language)
     file_name = __get_original_file_name(file_name, extension)
     does_contain_name = True
     if files_from_ati is not None:

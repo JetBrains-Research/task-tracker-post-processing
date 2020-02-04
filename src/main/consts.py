@@ -11,6 +11,9 @@ class CODE_TRACKER_COLUMN(Enum):
     DATE = 'date'
     TIMESTAMP = 'timestamp'
     LANGUAGE = 'language'
+    FRAGMENT = 'fragment'
+    CHOSEN_TASK = 'chosenTask'
+    TASK_STATUS = 'taskStatus'
 
 
 class ACTIVITY_TRACKER_COLUMN(Enum):
@@ -57,13 +60,20 @@ class TASKS_TESTS(Enum):
     INPUT_FILE_NAME = 'in'
 
 
-LANGUAGES_DICT = {
-    'py': 'PYTHON',
-    'java': 'JAVA',
-    'kt': 'KOTLIN',
-}
+class LANGUAGE(Enum):
+    JAVA = 'JAVA'
+    PYTHON = 'PYTHON'
+    KOTLIN = 'KOTLIN'
+    CPP = 'CPP'
+    NOT_DEFINED = 'NOT_DEFINED'
 
-NOT_DEFINED_LANGUAGE = 'NOT_DEFINED'
+
+EXTENSION_TO_LANGUAGE_DICT = {
+    'py': LANGUAGE.PYTHON.value,
+    'java': LANGUAGE.JAVA.value,
+    'kt': LANGUAGE.KOTLIN.value,
+    'cpp': LANGUAGE.CPP.value
+}
 
 LOGGER_FILE = '../../logs.log'
 LOGGER_NAME = 'main_logger'
@@ -80,3 +90,7 @@ MAX_DIF_SEC = 0.5
 TEST_DATA_PATH = '../../resources/data_tests'
 
 RESULT_FOLDER = 'result'
+
+MAX_DIFF_SYMBOLS = 30
+
+
