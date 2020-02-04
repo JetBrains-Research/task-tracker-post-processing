@@ -78,6 +78,8 @@ EXTENSION_TO_LANGUAGE_DICT = {
 LOGGER_FILE = '../../logs.log'
 LOGGER_NAME = 'main_logger'
 
+LOGGER_TEST_FILE = '../../../test_logs.log'
+
 PATH_CMD_ARG = '-path'
 ENCODING = 'ISO-8859-1'
 

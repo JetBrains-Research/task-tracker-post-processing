@@ -222,8 +222,10 @@ def check_task(task: str, source_code: str, language=LANGUAGE.PYTHON.value, to_c
 def get_most_likely_tasks(source_code: str, language: str):
     most_likely_tasks = []
     max_rate = 0
+    is_first_run = True
     for task in TASKS_TESTS.TASKS.value:
-        count_tests, passed_tests = check_task(task, source_code, language, to_clear=False)
+        count_tests, passed_tests = check_task(task, source_code, language, to_clear=is_first_run)
+        is_first_run = False
         passed_rate = passed_tests / count_tests
         if passed_rate > max_rate:
             max_rate = passed_rate
