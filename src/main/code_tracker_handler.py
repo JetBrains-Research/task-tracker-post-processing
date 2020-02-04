@@ -27,7 +27,7 @@ def __get_extension_by_file_name(file_name: str):
 
 
 def __get_language_name(extension: str):
-    return consts.LANGUAGES_DICT.get(extension, consts.NOT_DEFINED_LANGUAGE)
+    return consts.EXTENSION_TO_LANGUAGE_DICT.get(extension, consts.LANGUAGE.NOT_DEFINED.value)
 
 
 # If we have a few languages, we return NOT_DEFINED, else we return the language.
@@ -41,4 +41,4 @@ def get_language(data: pd.DataFrame):
     extensions = set(map(__get_extension_by_file_name, values))
     if len(extensions) == 1:
         return __get_language_name(extensions.pop())
-    return consts.NOT_DEFINED_LANGUAGE
+    return consts.LANGUAGE.NOT_DEFINED.value
