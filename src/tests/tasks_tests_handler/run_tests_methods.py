@@ -1,7 +1,11 @@
-from src.main import tasks_tests_handler as tth
+import logging
+
+from src.main import tasks_tests_handler as tth, consts
 import unittest
 
 from src.main.consts import LANGUAGE
+
+
 
 
 def is_equals(pair_1, pair_2):
@@ -112,9 +116,12 @@ def get_cpp_code_test_data_error_solution():
 
 
 class TestRunTestMethods(unittest.TestCase):
+    def setUp(self) -> None:
+        logging.basicConfig(filename=consts.LOGGER_FILE, level=logging.INFO)
 
     # Python tests
     def test_python_code_test_data_full_solution(self):
+        logging.basicConfig(filename=consts.LOGGER_FILE, level=logging.INFO)
         res, right_res = get_python_code_test_data_full_solution()
         self.assertTrue(is_equals(res, right_res))
 

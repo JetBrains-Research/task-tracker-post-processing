@@ -1,3 +1,4 @@
+import logging
 from subprocess import Popen, PIPE, call
 from src.main import consts, string_helper as sh
 import os
@@ -10,8 +11,11 @@ SOURCE_FILE_NAME = consts.TASKS_TESTS.SOURCE_FILE_NAME.value
 TASKS = consts.TASKS_TESTS.TASKS.value
 INPUT_FILE_NAME = consts.TASKS_TESTS.INPUT_FILE_NAME.value
 
+log = logging.getLogger(consts.LOGGER_NAME)
+
 
 def __create_file(content: str, task: str, language=LANGUAGE.PYTHON.value, source_file_name=SOURCE_FILE_NAME):
+    log.info("Creating file for task " + task + ", language: " + language)
     with open(TASKS_TESTS_PATH + task + '/' + source_file_name + '.' + get_extension_by_language(language), 'w') as f:
         f.write(content)
 
@@ -68,11 +72,10 @@ def __create_py_input_file(txt_in_file: str, task: str, file_name=INPUT_FILE_NAM
     code = ''
     with open(TASKS_TESTS_PATH + task + '/' + txt_in_file, 'r') as f:
         for line in f:
-            code += 'print(' + line.strip('\n') + ')' + '\n'
+            code += 'print("' + line.strip('\n') + '")' + '\n'
     __create_file(code, task, LANGUAGE.PYTHON.value, file_name)
 
 
-# Is it okay that we don't add any extension in case of not python?
 # For python scripts it is an in file with extension py and for other cases, it is an in file with extension txt
 def __get_in_file_for_current_test(cur_in_file: str, task: str, language=LANGUAGE.PYTHON.value):
     if language == LANGUAGE.PYTHON.value:
@@ -89,15 +92,16 @@ def __clear_old_files(task: str):
         __remove_file(file, task)
 
 
-def __run_python_test(in_file: str, out: str, task: str, source_file_name=SOURCE_FILE_NAME):
+def __run_python_test(in_file: str, expected_out: str, task: str, source_file_name=SOURCE_FILE_NAME):
     p1 = Popen(['python', TASKS_TESTS_PATH + task + '/' + in_file], stdout=PIPE)
     p2 = Popen(['python',
                TASKS_TESTS_PATH + task + '/' + source_file_name + '.' + get_extension_by_language(LANGUAGE.PYTHON.value)],
                stdin=p1.stdout,
                stdout=PIPE)
     p1.stdout.close()
-    output = p2.communicate()[0]
-    if output.decode("utf-8").rstrip("\n") == out:
+    actual_out = p2.communicate()[0].decode("utf-8").rstrip("\n")
+    log.info("Expected out: " + expected_out + ", actual out: " + actual_out)
+    if actual_out == expected_out:
         return True
     return False
 
@@ -128,6 +132,8 @@ def __get_args_for_running_program(language: str, task: str, source_file_name: s
         running_args = [base_path + source_file_name + '.out']
     elif language == LANGUAGE.KOTLIN.value:
         running_args = ['java', '-jar', base_path + source_file_name + '.jar']
+    else:
+        raise ValueError('Language is not defined')
     return running_args
 
 
@@ -145,9 +151,6 @@ def __get_args_for_compiling_program(language: str, task: str, source_file_name:
         compiled_file_path = base_path + source_file_name + '.jar'
         call_args = ['kotlinc', base_path + source_file_name + '.' + extension, '-include-runtime', '-d',
                      compiled_file_path]
-
-    # not sure, should we raise an error in case of not defined language? From my point of view, we should,
-    # because otherwise the current test would be counted as not passed, but for the wrong reason
     else:
         raise ValueError('Language is not defined')
 
@@ -182,6 +185,7 @@ def __get_default_compiled_program_info(source_file_name: str, task: str):
 
 
 def check_task(task: str, source_code: str, language=LANGUAGE.PYTHON.value, to_clear=True):
+    log.info("Start checking task " + task + " for source code on " + language + ":\n" + source_code)
     if to_clear:
         __clear_old_files(task)
 
@@ -195,18 +199,23 @@ def check_task(task: str, source_code: str, language=LANGUAGE.PYTHON.value, to_c
         has_compiled_file, is_compiled_successful = __get_default_compiled_program_info(source_file_name, task)
 
         if not has_compiled_file:
+            log.info("Source code for task " + task + " doesn't have compiled file")
             compiling_args = __get_args_for_compiling_program(language, task, source_file_name)
             is_compiled_successful = __compile_program(compiling_args)
 
         if not is_compiled_successful:
+            log.info("Source code for task " + task + " wasn't compiled successful")
+            log.info("Finish checking task " + task + ", " + str(passed_tests) + "/" + str(count_tests) + " are passed")
             return count_tests, passed_tests
 
     for cur_in, cur_out in in_and_out_files:
         in_file = __get_in_file_for_current_test(cur_in, task, language)
         is_passed = __check_test_for_task(in_file, cur_out, task, language, source_file_name)
+        log.info("Test " + cur_in + " for task " + task + " is passed: " + str(is_passed))
         if is_passed:
             passed_tests += 1
 
+    log.info("Finish checking task " + task + ", " + str(passed_tests) + "/" + str(count_tests) + " are passed")
     return count_tests, passed_tests
 
 
@@ -214,7 +223,7 @@ def get_most_likely_tasks(source_code: str, language: str):
     most_likely_tasks = []
     max_rate = 0
     for task in TASKS_TESTS.TASKS.value:
-        count_tests, passed_tests = check_task(task, source_code, language)
+        count_tests, passed_tests = check_task(task, source_code, language, to_clear=False)
         passed_rate = passed_tests / count_tests
         if passed_rate > max_rate:
             max_rate = passed_rate
