@@ -1,4 +1,4 @@
-from src.main import activity_tracker_handler as ath
+from src.main.handlers import activity_tracker_handler as ath
 import unittest
 
 

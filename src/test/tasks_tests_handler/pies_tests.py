@@ -1,8 +1,8 @@
 import logging
 import unittest
 
-from src.main import consts
-from src.main.consts import LANGUAGE
+from src.main.util import consts
+from src.main.util.consts import LANGUAGE
 from src.test.tasks_tests_handler.util import test_task, SOLUTION
 
 python_test_data = {

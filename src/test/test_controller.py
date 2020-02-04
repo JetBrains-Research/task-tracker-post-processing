@@ -1,4 +1,4 @@
-from src.main import consts
+from src.main.util import consts
 import unittest
 import logging
 

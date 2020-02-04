@@ -1,8 +1,12 @@
 from datetime import datetime
-from src.main import consts
+from src.main.util import consts
 import pandas as pd
 import logging
 import re
+
+from src.main.util.date_util import __get_datetime_by_format
+from src.main.util.file_util import get_file_name_from_path, get_original_file_name
+from src.main.util.language_util import get_extension_by_language
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -34,16 +38,6 @@ def __filter_ati_data(ati_data: pd.DataFrame):
     return ati_data
 
 
-# Delete : symbol from hours in timestamp for the correct conversion to datetime
-# For example 2019-12-09T18:41:28.548+03:00 -> 2019-12-09T18:41:28.548+0300
-def __corrected_time(timestamp: str):
-    return re.sub(r'([-+]\d{2}):(\d{2})$', r'\1\2', timestamp)
-
-
-def __get_datetime_by_format(date, datetime_format=consts.DATE_TIME_FORMAT):
-    return datetime.strptime(__corrected_time(date), datetime_format)
-
-
 def __get_default_dict_for_ati():
     return {
         consts.ACTIVITY_TRACKER_COLUMN.TIMESTAMP_ATI.value: [],
@@ -71,7 +65,7 @@ def __add_values_in_ati_dict_by_at_index(res_dict: dict, activity_tracker_data: 
 def __are_same_files(code_tracker_file_name: str, activity_tracker_file_path: str):
     if pd.isnull(activity_tracker_file_path):
         return False
-    activity_tracker_file_name = __get_file_name_from_path(activity_tracker_file_path)
+    activity_tracker_file_name = get_file_name_from_path(activity_tracker_file_path)
     return code_tracker_file_name == activity_tracker_file_name
 
 
@@ -180,34 +174,19 @@ def merge_code_tracker_and_activity_tracker_data(code_tracker_data: pd.DataFrame
     return code_tracker_data
 
 
-def __get_file_name_from_path(file_path: str):
-    return file_path.split('/')[-1]
-
-
-def __get_original_file_name(hashed_file_name: str, extension: str):
-    return "_".join(hashed_file_name.split('_')[:-4]) + '.' + extension
-
-
 def __remove_nan(items: list):
     return list(filter(lambda x: not pd.isnull(x), items))
 
 
 def get_file_names_from_ati(activity_tracker_data: pd.DataFrame):
     paths = __remove_nan(activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.CURRENT_FILE.value].unique())
-    return list(map(__get_file_name_from_path, paths))
-
-
-def get_extension_by_language(language: str):
-    for extension, cur_language in consts.EXTENSION_TO_LANGUAGE_DICT.items():
-        if cur_language == language:
-            return extension
-    return None
+    return list(map(get_file_name_from_path, paths))
 
 
 def get_file_name_from_ati_data(file_name: str, language: str, files_from_ati: list):
     log.info('Start getting project file name')
     extension = get_extension_by_language(language)
-    file_name = __get_original_file_name(file_name, extension)
+    file_name = get_original_file_name(file_name, extension)
     does_contain_name = True
     if files_from_ati is not None:
         log.info('Start searching the file_name ' + file_name + ' in activity tracker data')

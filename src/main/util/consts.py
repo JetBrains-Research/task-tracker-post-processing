@@ -54,7 +54,7 @@ class DEFAULT_VALUES(Enum):
 
 
 class TASKS_TESTS(Enum):
-    TASKS_TESTS_PATH = ROOT_DIR + '/../resources/tasks_tests/'
+    TASKS_TESTS_PATH = ROOT_DIR + '/../../resources/tasks_tests/'
     SOURCE_FILE_NAME = 'source'
     TASKS = ['pies', 'max_3', 'zero', 'election', 'brackets', 'max_digit']
     INPUT_FILE_NAME = 'in'
@@ -75,7 +75,7 @@ EXTENSION_TO_LANGUAGE_DICT = {
     'cpp': LANGUAGE.CPP.value
 }
 
-LOGGER_FILE = '../../logs.log'
+LOGGER_FILE = '../../../../logs.log'
 LOGGER_NAME = 'main_logger'
 
 LOGGER_TEST_FILE = '../../../test_logs.log'
@@ -89,7 +89,7 @@ ACTIVITY_TRACKER_FILE_NAME = 'ide-events'
 DATE_TIME_FORMAT = '%Y-%m-%dT%H:%M:%S.%f%z'
 MAX_DIF_SEC = 0.5
 
-TEST_DATA_PATH = '../../resources/data_tests'
+TEST_DATA_PATH = ROOT_DIR + '/../../resources/test_data'
 
 RESULT_FOLDER = 'result'
 
