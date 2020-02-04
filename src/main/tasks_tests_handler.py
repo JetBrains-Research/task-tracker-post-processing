@@ -93,8 +93,8 @@ def __clear_old_files(task: str):
 
 
 def __run_python_test(in_file: str, expected_out: str, task: str, source_file_name=SOURCE_FILE_NAME):
-    p1 = Popen(['python', TASKS_TESTS_PATH + task + '/' + in_file], stdout=PIPE)
-    p2 = Popen(['python',
+    p1 = Popen(['python3', TASKS_TESTS_PATH + task + '/' + in_file], stdout=PIPE)
+    p2 = Popen(['python3',
                TASKS_TESTS_PATH + task + '/' + source_file_name + '.' + get_extension_by_language(LANGUAGE.PYTHON.value)],
                stdin=p1.stdout,
                stdout=PIPE)
