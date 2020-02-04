@@ -1,9 +1,12 @@
-from src.main import consts, activity_tracker_handler as ath, code_tracker_handler as dh
+from src.main.util import consts
+from src.main.handlers import activity_tracker_handler as ath, code_tracker_handler as dh
 import pandas as pd
 import logging
 import csv
 import sys
 import os
+
+from src.main.util.file_util import create_directory
 
 pd.set_option('display.max_rows', 250)
 pd.set_option('display.max_columns', 100)
@@ -53,14 +56,9 @@ def __get_folders_for_handling(path: str):
     return list(filter(lambda x: consts.RESULT_FOLDER not in x, next(os.walk(path))[1]))
 
 
-def __create_directory(directory: str):
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-
-
 def __write_result(path: str, current_folder: str, file: str, result_df: pd.DataFrame):
     path += consts.RESULT_FOLDER + '/' + current_folder
-    __create_directory(path)
+    create_directory(path)
     path += '/' + file
     result_df.to_csv(path, encoding=consts.ENCODING, index=False)
 
@@ -76,7 +74,7 @@ def main():
         sys.exit(1)
 
     if not os.path.isdir(path):
-        error_message = 'There is not a folder! Path is ' + path
+        error_message = "It's not a folder! Path is " + path
         log.error(error_message)
         print(error_message)
         sys.exit(1)
@@ -102,11 +100,11 @@ def main():
         for file in files:
             log.info('Start handling the file ' + file)
             ct_df = pd.read_csv(path + folder + '/' + file, encoding=consts.ENCODING)
-            language = dh.get_language(ct_df)
+            language = dh.get_ct_language(ct_df)
             ct_df[consts.CODE_TRACKER_COLUMN.LANGUAGE.value] = language
             ct_df[consts.CODE_TRACKER_COLUMN.FILE_NAME.value], is_ati_vlalid = ath.get_file_name_from_ati_data(file,
-                                                                                                              language,
-                                                                                                              files_from_ati)
+                                                                                                               language,
+                                                                                                               files_from_ati)
 
             ct_df[consts.CODE_TRACKER_COLUMN.AGE.value] = dh.profile_column_handler(ct_df,
                                                                                     consts.CODE_TRACKER_COLUMN.AGE.value,

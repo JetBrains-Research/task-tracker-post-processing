@@ -1,10 +1,11 @@
 import logging
 from subprocess import Popen, PIPE, call
-from src.main import consts, string_helper as sh
+from src.main.util import consts
 import os
 
-from src.main.activity_tracker_handler import get_extension_by_language
-from src.main.consts import TASKS_TESTS, LANGUAGE
+from src.main.handlers.activity_tracker_handler import get_extension_by_language
+from src.main.util.consts import TASKS_TESTS, LANGUAGE
+from src.main.util.file_util import remove_file, get_content_from_file, create_file
 
 TASKS_TESTS_PATH = consts.TASKS_TESTS.TASKS_TESTS_PATH.value
 SOURCE_FILE_NAME = consts.TASKS_TESTS.SOURCE_FILE_NAME.value
@@ -14,24 +15,8 @@ INPUT_FILE_NAME = consts.TASKS_TESTS.INPUT_FILE_NAME.value
 log = logging.getLogger(consts.LOGGER_NAME)
 
 
-def __create_file(content: str, task: str, language=LANGUAGE.PYTHON.value, source_file_name=SOURCE_FILE_NAME):
-    log.info("Creating file for task " + task + ", language: " + language)
-    with open(TASKS_TESTS_PATH + task + '/' + source_file_name + '.' + get_extension_by_language(language), 'w') as f:
-        f.write(content)
-
-
-def __is_file(file: str, task: str):
-    return os.path.isfile(TASKS_TESTS_PATH + task + '/' + file)
-
-
-def __remove_file(file: str, task: str):
-    if __is_file(file, task):
-        os.remove(TASKS_TESTS_PATH + task + '/' + file)
-
-
-def __get_content_from_file(file: str, task: str):
-    with open(TASKS_TESTS_PATH + task + '/' + file, 'r') as f:
-        return f.read().rstrip("\n")
+def get_task_file(file: str, task: str):
+    return TASKS_TESTS_PATH + task + '/' + file
 
 
 def __get_in_and_out_files(list_of_files: list):
@@ -70,10 +55,10 @@ def __get_java_class(source_code: str):
 # Wrap all values from input in the print command
 def __create_py_input_file(txt_in_file: str, task: str, file_name=INPUT_FILE_NAME):
     code = ''
-    with open(TASKS_TESTS_PATH + task + '/' + txt_in_file, 'r') as f:
+    with open(get_task_file(txt_in_file, task), 'r') as f:
         for line in f:
             code += 'print("' + line.strip('\n') + '")' + '\n'
-    __create_file(code, task, LANGUAGE.PYTHON.value, file_name)
+    create_file(code, get_extension_by_language(LANGUAGE.PYTHON.value), get_task_file(file_name, task))
 
 
 # For python scripts it is an in file with extension py and for other cases, it is an in file with extension txt
@@ -89,67 +74,57 @@ def __clear_old_files(task: str):
     files = next(os.walk(TASKS_TESTS_PATH + task))[2]
     old_files = list(filter(lambda file_name: '.txt' not in file_name, files))
     for file in old_files:
-        __remove_file(file, task)
+        remove_file(get_task_file(file, task))
 
 
 def __run_python_test(in_file: str, expected_out: str, task: str, source_file_name=SOURCE_FILE_NAME):
-    p1 = Popen(['python3', TASKS_TESTS_PATH + task + '/' + in_file], stdout=PIPE)
-    p2 = Popen(['python3',
-               TASKS_TESTS_PATH + task + '/' + source_file_name + '.' + get_extension_by_language(LANGUAGE.PYTHON.value)],
+    p1 = Popen(['python3', get_task_file(in_file, task)], stdout=PIPE)
+    p2 = Popen(['python3', get_task_file(source_file_name, task) + '.'
+                + get_extension_by_language(LANGUAGE.PYTHON.value)],
                stdin=p1.stdout,
                stdout=PIPE)
     p1.stdout.close()
     actual_out = p2.communicate()[0].decode("utf-8").rstrip("\n")
     log.info("Expected out: " + expected_out + ", actual out: " + actual_out)
-    if actual_out == expected_out:
-        return True
-    return False
+    return actual_out == expected_out
 
 
 # Run test for compiled languages
 def __run_test(in_file: str, out: str, task: str, popen_args: list):
     p = Popen(popen_args, stdin=PIPE, stdout=PIPE, stderr=PIPE, universal_newlines=True)
-    cur_out, err = p.communicate(input=__get_content_from_file(in_file, task))
-    if p.returncode == 0 and cur_out.rstrip("\n") == out:
-        return True
-    return False
+    cur_out, err = p.communicate(input=get_content_from_file(get_task_file(in_file, task)))
+    return p.returncode == 0 and cur_out.rstrip("\n") == out
 
 
 def __compile_program(call_args: list):
-    if call(call_args) != 0:
-        # Error
-        return False
-    return True
+    return call(call_args) == 0
 
 
 def __get_args_for_running_program(language: str, task: str, source_file_name: str):
-    base_path = TASKS_TESTS_PATH + task + '/'
-    running_args = []
-
     if language == LANGUAGE.JAVA.value:
         running_args = ['java', '-cp', TASKS_TESTS_PATH + task, source_file_name]
     elif language == LANGUAGE.CPP.value:
-        running_args = [base_path + source_file_name + '.out']
+        running_args = [get_task_file(source_file_name, task) + '.out']
     elif language == LANGUAGE.KOTLIN.value:
-        running_args = ['java', '-jar', base_path + source_file_name + '.jar']
+        running_args = ['java', '-jar', get_task_file(source_file_name, task) + '.jar']
     else:
         raise ValueError('Language is not defined')
     return running_args
 
 
 def __get_args_for_compiling_program(language: str, task: str, source_file_name: str):
-    base_path = TASKS_TESTS_PATH + task + '/'
+    task_file = get_task_file(source_file_name, task)
     extension = get_extension_by_language(language)
 
     if language == LANGUAGE.JAVA.value:
-        compiled_file_path = base_path + source_file_name + '.' + extension
+        compiled_file_path = task_file + '.' + extension
         call_args = ['javac', compiled_file_path]
     elif language == LANGUAGE.CPP.value:
-        compiled_file_path = base_path + source_file_name + '.out'
-        call_args = ['gcc', '-lstdc++', '-o', compiled_file_path, base_path + source_file_name + '.' + extension]
+        compiled_file_path = task_file + '.out'
+        call_args = ['gcc', '-lstdc++', '-o', compiled_file_path, task_file + '.' + extension]
     elif language == LANGUAGE.KOTLIN.value:
-        compiled_file_path = base_path + source_file_name + '.jar'
-        call_args = ['kotlinc', base_path + source_file_name + '.' + extension, '-include-runtime', '-d',
+        compiled_file_path = task_file + '.jar'
+        call_args = ['kotlinc', task_file + '.' + extension, '-include-runtime', '-d',
                      compiled_file_path]
     else:
         raise ValueError('Language is not defined')
@@ -160,17 +135,18 @@ def __get_args_for_compiling_program(language: str, task: str, source_file_name:
 def __create_source_code_file(source_code: str, task: str, language=LANGUAGE.PYTHON.value, source_file_name=SOURCE_FILE_NAME):
     if language == LANGUAGE.JAVA.value:
         source_file_name = __get_java_class(source_code)
-    __create_file(source_code, task, language, source_file_name)
+    create_file(source_code, get_extension_by_language(language), get_task_file(source_file_name, task))
     return source_file_name
 
 
 # The function returns code run result, was the compilation successful and does the compiled file exist
 def __check_test_for_task(in_file: str, out_file: str, task: str, language=LANGUAGE.PYTHON.value, source_file_name=SOURCE_FILE_NAME):
+    task_file = get_task_file(out_file, task)
     if language == LANGUAGE.PYTHON.value:
-        is_passed = __run_python_test(in_file, __get_content_from_file(out_file, task), task)
+        is_passed = __run_python_test(in_file, get_content_from_file(task_file), task)
     else:
         running_args = __get_args_for_running_program(language, task, source_file_name)
-        is_passed = __run_test(in_file, __get_content_from_file(out_file, task), task, running_args)
+        is_passed = __run_test(in_file, get_content_from_file(task_file), task, running_args)
     return is_passed
 
 
@@ -179,7 +155,7 @@ def __is_valid_index(index: int):
 
 
 def __get_default_compiled_program_info(source_file_name: str, task: str):
-    has_compiled_file = __is_file(source_file_name, task)
+    has_compiled_file = os.path.isfile(get_task_file(source_file_name, task))
     is_compiled_successful = True
     return has_compiled_file, is_compiled_successful
 
@@ -234,4 +210,3 @@ def get_most_likely_tasks(source_code: str, language: str):
             most_likely_tasks.append(task)
 
     return most_likely_tasks, max_rate
-

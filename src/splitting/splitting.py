@@ -7,10 +7,10 @@ import pandas as pd
 # todo: move to consts (create shared const file)
 from scipy.signal import find_peaks
 
-from src.main import consts
-from src.main.code_tracker_handler import get_language
-from src.main.consts import ENCODING, ACTIVITY_TRACKER_FILE_NAME, MAX_DIFF_SYMBOLS, CODE_TRACKER_COLUMN, LANGUAGE
-from src.main.tasks_tests_handler import get_most_likely_tasks
+from src.main.util import consts
+from src.main.handlers.code_tracker_handler import get_ct_language
+from src.main.util.consts import ENCODING, ACTIVITY_TRACKER_FILE_NAME, MAX_DIFF_SYMBOLS, CODE_TRACKER_COLUMN, LANGUAGE
+from src.main.handlers.tasks_tests_handler import get_most_likely_tasks
 
 
 def get_all_files(root: str):
@@ -63,7 +63,7 @@ def obvious_split(data: pd.DataFrame):
 def split_with_test(data: pd.DataFrame):
     fragment_df = data[CODE_TRACKER_COLUMN.FRAGMENT.value].fillna("").astype(str)
     next_fragment = fragment_df.iat[0]
-    language = get_language(data)
+    language = get_ct_language(data)
     splits = []
     prev_split_i = 0
     if language is not LANGUAGE.NOT_DEFINED.value:
@@ -81,7 +81,7 @@ def split_with_test(data: pd.DataFrame):
 
 def split_with_test_local_max(data: pd.DataFrame):
     fragment_df = data[CODE_TRACKER_COLUMN.FRAGMENT.value].fillna("").astype(str)
-    language = get_language(data)
+    language = get_ct_language(data)
     splits = []
     prev_split_i = 0
     if language is not LANGUAGE.NOT_DEFINED.value:

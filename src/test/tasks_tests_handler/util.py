@@ -1,5 +1,5 @@
 from enum import Enum
-from src.main import tasks_tests_handler as tth
+from src.main.handlers import tasks_tests_handler as tth
 
 
 def are_equal(pair_1, pair_2):
