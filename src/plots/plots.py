@@ -6,12 +6,14 @@ import pandas as pd
 from src.plots.const import STATUS_COLOR_SIZE_DICT, TASK_COLOR_DICT, STATUS_COLOR_SIZE_DEFAULT, TASK_COLOR_DEFAULT, \
     AT_NAME, ENCODING
 
+def get_extension(file_name):
+    return file_name.split('.')[-1]
 
 def get_all_files(root):
     cd_files = []
     for path, subdirs, files in os.walk(root):
         for name in files:
-            if AT_NAME not in name:
+            if AT_NAME not in name and get_extension(name) == "csv":
                 cd_files.append(os.path.join(path, name))
     return cd_files
 
@@ -35,7 +37,7 @@ def get_short_name(path):
 
 
 # show plot with changes of code fragments size, colored according to 'chosenTask' field
-def show_colored_fragment_size_plot(path):
+def show_colored_fragment_size_plot(path, to_save: bool):
     data = pd.read_csv(path, encoding=ENCODING)
 
     fig, ax = plt.subplots()
@@ -56,14 +58,19 @@ def show_colored_fragment_size_plot(path):
 
     print("showing " + path)
     fig.show()
+    if to_save:
+        fig.savefig("".join(path.split('.')[:-1]) + ".png")
+
+
 
 
 # show first 5 plots
 def main():
-    root = "../data/data_16_12_19"
+    root = "/home/elena/workspaces/python/codetracker-data/data/data_16_12_19"
     files = get_all_files(root)
-    for file in files[:5]:
-        show_colored_fragment_size_plot(file)
+    for file in files:
+        print(file)
+        show_colored_fragment_size_plot(file, True)
 
 
 if __name__ == "__main__":
