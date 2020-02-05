@@ -123,7 +123,9 @@ def __get_args_for_compiling_program(language: str, task: str, source_file_name:
         call_args = ['javac', compiled_file_path]
     elif language == LANGUAGE.CPP.value:
         compiled_file_path = task_file + '.out'
-        call_args = ['gcc', '-lstdc++', '-o', compiled_file_path, task_file + '.' + extension]
+        # call_args = ['gcc', '-lstdc++', '-o', compiled_file_path, task_file + '.' + extension]
+        call_args = ['g++', '-o', compiled_file_path, task_file + '.' + extension]
+
     elif language == LANGUAGE.KOTLIN.value:
         compiled_file_path = task_file + '.jar'
         call_args = ['kotlinc', task_file + '.' + extension, '-include-runtime', '-d',
