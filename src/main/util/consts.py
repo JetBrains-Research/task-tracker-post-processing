@@ -55,7 +55,7 @@ class DEFAULT_VALUES(Enum):
 
 class TASKS_TESTS(Enum):
     TASKS_TESTS_PATH = ROOT_DIR + '/../../resources/tasks_tests/'
-    SOURCE_FILE_NAME = 'source'
+    SOURCE_OBJECT_NAME = 'source'
     TASKS = ['pies', 'max_3', 'zero', 'election', 'brackets', 'max_digit']
     INPUT_FILE_NAME = 'in'
 
