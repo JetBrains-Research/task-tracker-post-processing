@@ -149,8 +149,8 @@ def __get_args_for_compiling_program(language: str, task: str, source_file_name:
     return call_args
 
 
-def __create_source_code_file(source_code: str, task: str, language=LANGUAGE.PYTHON.value,
-                              source_file_name=SOURCE_OBJECT_NAME):
+def create_source_code_file(source_code: str, language=LANGUAGE.PYTHON.value,
+                            source_file_name=SOURCE_OBJECT_NAME):
     if language == LANGUAGE.JAVA.value:
         source_file_name = __get_java_class(source_code)
     create_file(source_code, get_extension_by_language(language), __get_compiled_file(source_file_name))
@@ -175,14 +175,13 @@ def __get_default_compiled_program_info(source_file_name: str, task: str):
     return has_compiled_file, is_compiled_successful
 
 
-def check_task(task: str, source_code: str, language=LANGUAGE.PYTHON.value):
-    log.info("Start checking task " + task + " for source code on " + language + ":\n" + source_code)
+def check_task(task: str, source_file_name=SOURCE_OBJECT_NAME, language=LANGUAGE.PYTHON.value):
+    log.info("Start checking task " + task + " for source code on " + language)
 
     files = next(os.walk(TASKS_TESTS_PATH + task))[2]
     in_and_out_files = __get_in_and_out_files(files)
 
     counted_tests, passed_tests = len(in_and_out_files), 0
-    source_file_name = __create_source_code_file(source_code, task, language)
 
     if language != LANGUAGE.PYTHON.value:
         has_compiled_file, is_compiled_successful = __get_default_compiled_program_info(source_file_name, task)
@@ -212,8 +211,10 @@ def get_most_likely_tasks(source_code: str, language=LANGUAGE.PYTHON.value):
     most_likely_tasks = []
     max_rate = 0
     __remove_compiled_files()
+    source_file_name = create_source_code_file(source_code, language)
+
     for task in TASKS_TESTS.TASKS.value:
-        counted_tests, passed_tests = check_task(task, source_code, language)
+        counted_tests, passed_tests = check_task(task, source_file_name, language)
 
         if counted_tests == 0:
             log.error("No counted tests for task " + task + " were found")
