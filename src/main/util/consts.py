@@ -53,19 +53,27 @@ class DEFAULT_VALUES(Enum):
     EXPERIENCE = np.nan
 
 
+class TASK(Enum):
+    PIES = 'pies'
+    MAX_3 = 'max_3'
+    ZERO = 'zero'
+    ELECTION = 'election'
+    BRACKETS = 'brackets'
+    MAX_DIGIT = 'max_digit'
+
+
 class TASKS_TESTS(Enum):
     TASKS_TESTS_PATH = ROOT_DIR + '/../../resources/tasks_tests/'
     SOURCE_OBJECT_NAME = 'source'
-    TASKS = ['pies', 'max_3', 'zero', 'election', 'brackets', 'max_digit']
     INPUT_FILE_NAME = 'in'
 
 
 class LANGUAGE(Enum):
-    JAVA = 'JAVA'
-    PYTHON = 'PYTHON'
-    KOTLIN = 'KOTLIN'
-    CPP = 'CPP'
-    NOT_DEFINED = 'NOT_DEFINED'
+    JAVA = 'java'
+    PYTHON = 'python'
+    KOTLIN = 'kotlin'
+    CPP = 'cpp'
+    NOT_DEFINED = 'not_defined'
 
 
 EXTENSION_TO_LANGUAGE_DICT = {

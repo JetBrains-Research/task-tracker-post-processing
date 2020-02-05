@@ -1,0 +1,6 @@
+fun main(args: Array<String>) {
+    val a:Int = readLine()!!.toInt()
+    val b:Int = readLine()!!.toInt()
+    val n:Int = readLine()!!.toInt()
+    println("${a * n + b * n / 100} ${b * n % 100}")
+}

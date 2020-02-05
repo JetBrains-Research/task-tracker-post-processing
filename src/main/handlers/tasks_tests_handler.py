@@ -3,12 +3,10 @@ import logging
 from subprocess import Popen, PIPE, call
 
 from src.main.util import consts
-from src.main.util.consts import TASKS_TESTS, LANGUAGE
+from src.main.util.consts import LANGUAGE, TASK
 from src.main.handlers.activity_tracker_handler import get_extension_by_language
 from src.main.util.file_util import remove_file, get_content_from_file, create_file, create_directory, remove_directory
 
-
-TASKS = consts.TASKS_TESTS.TASKS.value
 INPUT_FILE_NAME = consts.TASKS_TESTS.INPUT_FILE_NAME.value
 TASKS_TESTS_PATH = consts.TASKS_TESTS.TASKS_TESTS_PATH.value
 SOURCE_OBJECT_NAME = consts.TASKS_TESTS.SOURCE_OBJECT_NAME.value
@@ -169,13 +167,13 @@ def __check_test_for_task(in_file: str, out_file: str, task: str, language=LANGU
     return is_passed
 
 
-def __get_default_compiled_program_info(source_file_name: str, task: str):
-    has_compiled_file = os.path.isfile(__get_compiled_file(source_file_name))
+def __get_default_compiled_program_info(source_file: str):
+    has_compiled_file = os.path.isfile(__get_compiled_file(source_file))
     is_compiled_successful = True
     return has_compiled_file, is_compiled_successful
 
 
-def check_task(task: str, source_file_name=SOURCE_OBJECT_NAME, language=LANGUAGE.PYTHON.value):
+def check_task(task: str, source_file=SOURCE_OBJECT_NAME, language=LANGUAGE.PYTHON.value):
     log.info("Start checking task " + task + " for source code on " + language)
 
     files = next(os.walk(TASKS_TESTS_PATH + task))[2]
@@ -184,11 +182,11 @@ def check_task(task: str, source_file_name=SOURCE_OBJECT_NAME, language=LANGUAGE
     counted_tests, passed_tests = len(in_and_out_files), 0
 
     if language != LANGUAGE.PYTHON.value:
-        has_compiled_file, is_compiled_successful = __get_default_compiled_program_info(source_file_name, task)
+        has_compiled_file, is_compiled_successful = __get_default_compiled_program_info(source_file)
 
         if not has_compiled_file:
             log.info("Source code for task " + task + " doesn't have compiled file")
-            compiling_args = __get_args_for_compiling_program(language, task, source_file_name)
+            compiling_args = __get_args_for_compiling_program(language, task, source_file)
             is_compiled_successful = __compile_program(compiling_args)
 
         if not is_compiled_successful:
@@ -198,7 +196,7 @@ def check_task(task: str, source_file_name=SOURCE_OBJECT_NAME, language=LANGUAGE
 
     for cur_in, cur_out in in_and_out_files:
         in_file = __get_in_file_for_current_test(cur_in, task, language)
-        is_passed = __check_test_for_task(in_file, cur_out, task, language, source_file_name)
+        is_passed = __check_test_for_task(in_file, cur_out, task, language, source_file)
         log.info("Test " + cur_in + " for task " + task + " is passed: " + str(is_passed))
         if is_passed:
             passed_tests += 1
@@ -211,10 +209,11 @@ def get_most_likely_tasks(source_code: str, language=LANGUAGE.PYTHON.value):
     most_likely_tasks = []
     max_rate = 0
     __remove_compiled_files()
-    source_file_name = create_source_code_file(source_code, language)
+    source_file = create_source_code_file(source_code, language)
 
-    for task in TASKS_TESTS.TASKS.value:
-        counted_tests, passed_tests = check_task(task, source_file_name, language)
+    for task in TASK:
+        task = task.value
+        counted_tests, passed_tests = check_task(task, source_file, language)
 
         if counted_tests == 0:
             log.error("No counted tests for task " + task + " were found")

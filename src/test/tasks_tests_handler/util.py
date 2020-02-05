@@ -1,7 +1,13 @@
+import logging
 from enum import Enum
 
+from src.main.util import consts
+from src.main.util.consts import TEST_DATA_PATH
 from src.main.handlers import tasks_tests_handler as tth
+from src.main.util.file_util import get_content_from_file
 from src.main.handlers.tasks_tests_handler import create_source_code_file
+
+log = logging.getLogger(consts.LOGGER_NAME)
 
 
 def are_equal(pair_1, pair_2):
@@ -9,21 +15,27 @@ def are_equal(pair_1, pair_2):
 
 
 class SOLUTION(Enum):
-    FULL = "FULL",
-    PARTIAL = "PARTIAL",
-    WRONG = "WRONG",
-    ERROR = "ERROR"
+    FULL = "full"
+    PARTIAL = "partial"
+    WRONG = "wrong"
+    ERROR = "error"
 
 
-def get_actual_pair(task, language: str, code: str):
+def get_actual_pair(task: str, language: str, code: str):
     source_file_name = create_source_code_file(code, language)
+    log.info("Source code:\n" + code)
     return tth.check_task(task, source_file_name, language)
 
 
-def test_task(self, test_data, language):
+def get_source_code(task: str, language: str, solution: str):
+    return get_content_from_file(TEST_DATA_PATH + "/tasks_tests_handler/" + task + "/"
+                                 + language + "/" + solution + ".txt")
+
+
+def test_task(self, actual_pairs, language):
     tth.__remove_compiled_files()
     for s in SOLUTION:
-        code = test_data[s.value][0]
-        actual_pair = test_data[s.value][1]
+        code = get_source_code(self.task, language, s.value)
+        actual_pair = actual_pairs[s.value]
         expected_pair = get_actual_pair(self.task, language, code)
         self.assertTrue(are_equal(actual_pair, expected_pair))
