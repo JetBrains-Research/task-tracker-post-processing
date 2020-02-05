@@ -1,6 +1,6 @@
-from enum import Enum
-import numpy as np
 import os
+import numpy as np
+from enum import Enum
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 

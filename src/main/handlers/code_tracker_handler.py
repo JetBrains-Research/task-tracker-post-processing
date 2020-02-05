@@ -1,8 +1,8 @@
-from src.main.util import consts
-import pandas as pd
-import numpy as np
 import logging
+import numpy as np
+import pandas as pd
 
+from src.main.util import consts
 from src.main.util.file_util import get_extension_from_file
 from src.main.util.language_util import get_language_by_extension
 

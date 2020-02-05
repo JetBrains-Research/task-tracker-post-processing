@@ -1,12 +1,13 @@
-from src.main.util import consts
-from src.main.handlers import activity_tracker_handler as ath, code_tracker_handler as dh
-import pandas as pd
-import logging
+import os
 import csv
 import sys
-import os
+import logging
+import pandas as pd
 
+from src.main.util import consts
 from src.main.util.file_util import create_directory
+from src.main.handlers import activity_tracker_handler as ath, code_tracker_handler as dh
+
 
 pd.set_option('display.max_rows', 250)
 pd.set_option('display.max_columns', 100)
