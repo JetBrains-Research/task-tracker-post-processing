@@ -1,21 +1,15 @@
-import os
-
-import matplotlib.pyplot as plt
+import sys
 import pandas as pd
+import matplotlib.pyplot as plt
 
-from src.plots.const import STATUS_COLOR_SIZE_DICT, TASK_COLOR_DICT, STATUS_COLOR_SIZE_DEFAULT, TASK_COLOR_DEFAULT, \
-    AT_NAME, ENCODING
+from src.main.util.consts import ACTIVITY_TRACKER_FILE_NAME, ENCODING
+from src.main.util.file_util import get_extension_from_file, get_all_files
+from src.plots.consts import STATUS_COLOR_SIZE_DICT, TASK_COLOR_DICT, STATUS_COLOR_SIZE_DEFAULT, TASK_COLOR_DEFAULT, \
+    DATA_ROOT_ARG
 
-def get_extension(file_name):
-    return file_name.split('.')[-1]
 
-def get_all_files(root):
-    cd_files = []
-    for path, subdirs, files in os.walk(root):
-        for name in files:
-            if AT_NAME not in name and get_extension(name) == "csv":
-                cd_files.append(os.path.join(path, name))
-    return cd_files
+def condition(name):
+    return ACTIVITY_TRACKER_FILE_NAME not in name and get_extension_from_file(name) == "csv"
 
 
 def show_fragment_size_plot(data):
@@ -36,8 +30,13 @@ def get_short_name(path):
     return folder_with_name
 
 
+def add_splits_on_plot(splits):
+    for s in splits:
+        plt.axvline(x=s, color='k', linestyle='-')
+
+
 # show plot with changes of code fragments size, colored according to 'chosenTask' field
-def show_colored_fragment_size_plot(path, to_save: bool):
+def show_colored_fragment_size_plot(path, to_save=False, splits=[]):
     data = pd.read_csv(path, encoding=ENCODING)
 
     fig, ax = plt.subplots()
@@ -56,21 +55,22 @@ def show_colored_fragment_size_plot(path, to_save: bool):
     plt.ylabel("fragment size")
     plt.title(get_short_name(path))
 
-    print("showing " + path)
-    fig.show()
+    add_splits_on_plot(splits)
     if to_save:
+        print("saving" + path)
         fig.savefig("".join(path.split('.')[:-1]) + ".png")
 
+    print("showing " + path)
+    fig.show()
 
 
-
-# show first 5 plots
 def main():
-    root = "/home/elena/workspaces/python/codetracker-data/data/data_16_12_19"
-    files = get_all_files(root)
+    args = sys.argv
+    root = args[args.index(DATA_ROOT_ARG) + 1]
+    files = get_all_files(root, condition)
     for file in files:
         print(file)
-        show_colored_fragment_size_plot(file, True)
+        show_colored_fragment_size_plot(file, False, [20, 30])
 
 
 if __name__ == "__main__":
