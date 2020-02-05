@@ -1,6 +1,7 @@
 from enum import Enum
 
 from src.main.handlers import tasks_tests_handler as tth
+from src.main.handlers.tasks_tests_handler import create_source_code_file
 
 
 def are_equal(pair_1, pair_2):
@@ -15,7 +16,8 @@ class SOLUTION(Enum):
 
 
 def get_actual_pair(task, language: str, code: str):
-    return tth.check_task(task, code, language)
+    source_file_name = create_source_code_file(code, language)
+    return tth.check_task(task, source_file_name, language)
 
 
 def test_task(self, test_data, language):
