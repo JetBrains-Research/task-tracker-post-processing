@@ -7,35 +7,35 @@ from src.test.tasks_tests_handler.util import test_task, SOLUTION
 
 python_actual_pairs = {
     SOLUTION.FULL.value: (8, 8),
-    SOLUTION.PARTIAL.value: (8, 3),
+    SOLUTION.PARTIAL.value: (8, 4),
     SOLUTION.WRONG.value: (8, 0),
     SOLUTION.ERROR.value: (8, 0)
 }
 
 java_actual_pairs = {
     SOLUTION.FULL.value: (8, 8),
-    SOLUTION.PARTIAL.value: (8, 3),
+    SOLUTION.PARTIAL.value: (8, 4),
     SOLUTION.WRONG.value: (8, 0),
     SOLUTION.ERROR.value: (8, 0)
 }
 
 kotlin_actual_pairs = {
     SOLUTION.FULL.value: (8, 8),
-    SOLUTION.PARTIAL.value: (8, 3),
+    SOLUTION.PARTIAL.value: (8, 4),
     SOLUTION.WRONG.value: (8, 0),
     SOLUTION.ERROR.value: (8, 0)
 }
 
 cpp_actual_pairs = {
     SOLUTION.FULL.value: (8, 8),
-    SOLUTION.PARTIAL.value: (8, 3),
+    SOLUTION.PARTIAL.value: (8, 4),
     SOLUTION.WRONG.value: (8, 0),
     SOLUTION.ERROR.value: (8, 0)
 }
 
 
-class TestPiesTests(unittest.TestCase):
-    task = TASK.PIES.value
+class TestZeroTests(unittest.TestCase):
+    task = TASK.ZERO.value
 
     def setUp(self) -> None:
         logging.basicConfig(filename=consts.LOGGER_TEST_FILE, level=logging.INFO)

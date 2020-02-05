@@ -26,7 +26,7 @@ def profile_column_handler(data: pd.DataFrame, column: consts.CODE_TRACKER_COLUM
 # If we have a few languages, we return NOT_DEFINED, else we return the language.
 # If all files have the same extension, then we return a language, which matches to this extension (it works for all
 # languages for LANGUAGES_DICT from const file)
-# For example, we have a set of files: a.py, b.py. The function returns PYTHON because we have one extension for all
+# For example, we have a set of files: a.py, b.py. The function returns python because we have one extension for all
 # files.
 # For a case: a.py, b.p and c.java the function returns NOT_DEFINED because the files have different extensions
 def get_ct_language(data: pd.DataFrame):

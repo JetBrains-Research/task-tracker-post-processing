@@ -1,0 +1,17 @@
+package kotlin_tasks
+import java.util.*
+fun main() {
+    with(Scanner(System.`in`)) {
+        val n = nextInt()
+        var zeroCheck = false
+        repeat(n) {
+            if (nextInt() == 0) {
+                zeroCheck = true
+                return@repeat
+            }
+        }
+        if (zeroCheck) {
+            println("YES")
+        }
+    }
+}

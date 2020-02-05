@@ -1,0 +1,10 @@
+def main():
+    n = int(input())
+    l = []
+    for i in range(n):
+        l.append(int(input()))
+    if 0 in l:
+        print("YES")
+
+if __name__ == "__main__":
+    main()
