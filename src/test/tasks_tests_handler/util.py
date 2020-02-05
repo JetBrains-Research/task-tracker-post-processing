@@ -1,9 +1,10 @@
 from enum import Enum
+
 from src.main.handlers import tasks_tests_handler as tth
 
 
 def are_equal(pair_1, pair_2):
-    return  pair_1[0] == pair_2[0] and pair_1[1] == pair_2[1]
+    return pair_1[0] == pair_2[0] and pair_1[1] == pair_2[1]
 
 
 class SOLUTION(Enum):
