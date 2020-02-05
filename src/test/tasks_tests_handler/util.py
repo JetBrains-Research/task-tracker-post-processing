@@ -19,6 +19,7 @@ def get_actual_pair(task, language: str, code: str):
 
 
 def test_task(self, test_data, language):
+    tth.__remove_compiled_files()
     for s in SOLUTION:
         code = test_data[s.value][0]
         actual_pair = test_data[s.value][1]

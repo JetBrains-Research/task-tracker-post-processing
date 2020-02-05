@@ -1,4 +1,5 @@
 import os
+import shutil
 
 
 def get_file_name_from_path(file_path: str):
@@ -32,3 +33,8 @@ def create_file(content: str, extension: str, file_name: str):
 def create_directory(directory: str):
     if not os.path.exists(directory):
         os.makedirs(directory)
+        
+        
+def remove_directory(directory: str):
+    if os.path.exists(directory):
+        shutil.rmtree(directory, ignore_errors=True)
