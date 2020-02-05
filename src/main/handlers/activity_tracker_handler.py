@@ -1,12 +1,10 @@
-from datetime import datetime
-from src.main.util import consts
-import pandas as pd
 import logging
-import re
+import pandas as pd
 
-from src.main.util.date_util import __get_datetime_by_format
-from src.main.util.file_util import get_file_name_from_path, get_original_file_name
+from src.main.util import consts
+from src.main.util.date_util import get_datetime_by_format
 from src.main.util.language_util import get_extension_by_language
+from src.main.util.file_util import get_file_name_from_path, get_original_file_name
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -123,7 +121,7 @@ def is_last(index, data):
 
 
 def is_next_ct_valid(ati_time, cur_ct_i, code_tracker_data):
-    next_ct_time = __get_datetime_by_format(code_tracker_data[consts.CODE_TRACKER_COLUMN.DATE.value].iloc[cur_ct_i + 1])
+    next_ct_time = get_datetime_by_format(code_tracker_data[consts.CODE_TRACKER_COLUMN.DATE.value].iloc[cur_ct_i + 1])
     return (ati_time - next_ct_time).total_seconds() >= 0
 
 
@@ -144,7 +142,7 @@ def merge_code_tracker_and_activity_tracker_data(code_tracker_data: pd.DataFrame
         if not __are_same_files(ct_file_name, activity_tracker_file_path):
             continue
 
-        ati_time = __get_datetime_by_format(
+        ati_time = get_datetime_by_format(
             activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.TIMESTAMP_ATI.value].iloc[ati_i])
 
         while not is_last(ct_i, code_tracker_data) and is_next_ct_valid(ati_time, ct_i, code_tracker_data):
