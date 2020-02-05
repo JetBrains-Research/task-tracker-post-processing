@@ -7,11 +7,12 @@ from src.main.util.consts import TASKS_TESTS, LANGUAGE
 from src.main.handlers.activity_tracker_handler import get_extension_by_language
 from src.main.util.file_util import remove_file, get_content_from_file, create_file, create_directory, remove_directory
 
-TASKS_TESTS_PATH = consts.TASKS_TESTS.TASKS_TESTS_PATH.value
-SOURCE_OBJECT_NAME = consts.TASKS_TESTS.SOURCE_OBJECT_NAME.value
+
 TASKS = consts.TASKS_TESTS.TASKS.value
 INPUT_FILE_NAME = consts.TASKS_TESTS.INPUT_FILE_NAME.value
 TASKS_TESTS_PATH = consts.TASKS_TESTS.TASKS_TESTS_PATH.value
+SOURCE_OBJECT_NAME = consts.TASKS_TESTS.SOURCE_OBJECT_NAME.value
+
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -106,7 +107,7 @@ def __run_python_test(in_file: str, expected_out: str, task: str, source_file_na
 # Run test for compiled languages
 def __run_test(in_file: str, expected_out: str, task: str, popen_args: list):
     p = Popen(popen_args, stdin=PIPE, stdout=PIPE, stderr=PIPE, universal_newlines=True)
-    out, err = p.communicate(input=get_content_from_file(get_task_file(in_file, task)))
+    out, err = p.communicate(input=get_content_from_file(__get_task_file(in_file, task)))
     actual_out = out.rstrip("\n")
     log.info("Expected out: " + expected_out + ", actual out: " + actual_out)
     return p.returncode == 0 and actual_out == expected_out
@@ -116,7 +117,7 @@ def __compile_program(call_args: list):
     return call(call_args) == 0
 
 
-def __get_args_for_running_program(language: str, task: str, source_file_name: str):
+def __get_args_for_running_program(language: str, source_file_name: str):
     if language == LANGUAGE.JAVA.value:
         running_args = ['java', '-cp', __get_source_folder(), source_file_name]
     elif language == LANGUAGE.CPP.value:
@@ -163,7 +164,7 @@ def __check_test_for_task(in_file: str, out_file: str, task: str, language=LANGU
     if language == LANGUAGE.PYTHON.value:
         is_passed = __run_python_test(in_file, get_content_from_file(task_file), task)
     else:
-        running_args = __get_args_for_running_program(language, task, source_file_name)
+        running_args = __get_args_for_running_program(language, source_file_name)
         is_passed = __run_test(in_file, get_content_from_file(task_file), task, running_args)
     return is_passed
 
@@ -212,7 +213,7 @@ def get_most_likely_tasks(source_code: str, language=LANGUAGE.PYTHON.value):
     max_rate = 0
     __remove_compiled_files()
     for task in TASKS_TESTS.TASKS.value:
-        counted_tests, passed_tests = check_task(task, source_code, language, to_clear=is_first_run)
+        counted_tests, passed_tests = check_task(task, source_code, language)
 
         if counted_tests == 0:
             log.error("No counted tests for task " + task + " were found")
