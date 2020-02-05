@@ -1,7 +1,6 @@
-import logging
-import unittest
-
 from src.main.util import consts
+import unittest
+import logging
 
 log = logging.getLogger(consts.LOGGER_NAME)
 

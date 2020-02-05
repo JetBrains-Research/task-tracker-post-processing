@@ -1,8 +1,7 @@
-import unittest
-import pandas as pd
-
 from src.main.util import consts
 from src.main.handlers import activity_tracker_handler as ath
+import pandas as pd
+import unittest
 
 right_df = pd.DataFrame({'Number': [10, 11, 12, 13, 14], 'Key': ['A', 'B', 'C', 'D', 'E']})
 
