@@ -126,18 +126,18 @@ def __get_args_for_running_program(language: str, task: str, source_file_name: s
 
 
 def __get_args_for_compiling_program(language: str, task: str, source_file_name: str):
-    task_file = __get_compiled_file(source_file_name)
+    compiled_file = __get_compiled_file(source_file_name)
     extension = get_extension_by_language(language)
 
     if language == LANGUAGE.JAVA.value:
-        compiled_file_path = task_file + '.' + extension
+        compiled_file_path = compiled_file + '.' + extension
         call_args = ['javac', compiled_file_path]
     elif language == LANGUAGE.CPP.value:
-        compiled_file_path = task_file + '.out'
-        call_args = ['g++', '-o', compiled_file_path, task_file + '.' + extension]
+        compiled_file_path = compiled_file + '.out'
+        call_args = ['g++', '-o', compiled_file_path, compiled_file + '.' + extension]
     elif language == LANGUAGE.KOTLIN.value:
-        compiled_file_path = task_file + '.jar'
-        call_args = ['kotlinc', task_file + '.' + extension, '-include-runtime', '-d',
+        compiled_file_path = compiled_file + '.jar'
+        call_args = ['kotlinc', compiled_file + '.' + extension, '-include-runtime', '-d',
                      compiled_file_path]
     else:
         raise ValueError('Language is not defined')
