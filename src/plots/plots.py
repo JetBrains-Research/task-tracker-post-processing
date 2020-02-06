@@ -1,15 +1,17 @@
+import logging
 import sys
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from src.main.util.consts import ACTIVITY_TRACKER_FILE_NAME, ENCODING
-from src.main.util.file_util import get_extension_from_file, get_all_files
+from src.main.util.consts import ENCODING, LOGGER_NAME, LOGGER_FILE
+from src.main.util.file_util import get_all_files, condition
+from src.plots import consts
 from src.plots.consts import STATUS_COLOR_SIZE_DICT, TASK_COLOR_DICT, STATUS_COLOR_SIZE_DEFAULT, TASK_COLOR_DEFAULT, \
     DATA_ROOT_ARG
+from src.splitting.consts import SPLIT_DICT
+from src.splitting.splitting import find_real_splits, find_supposed_splits_by_tests
 
-
-def condition(name):
-    return ACTIVITY_TRACKER_FILE_NAME not in name and get_extension_from_file(name) == "csv"
+log = logging.getLogger(LOGGER_NAME)
 
 
 def show_fragment_size_plot(data):
@@ -57,20 +59,25 @@ def show_colored_fragment_size_plot(path, to_save=False, splits=[]):
 
     add_splits_on_plot(splits)
     if to_save:
-        print("saving" + path)
-        fig.savefig("".join(path.split('.')[:-1]) + ".png")
+        log.info("Saving" + path)
+        fig.savefig("split_" + "".join(path.split('.')[:-1]) + ".png")
 
-    print("showing " + path)
+    log.info("Showing " + path)
     fig.show()
 
 
 def main():
+    logging.basicConfig(filename=LOGGER_FILE, level=logging.INFO)
+
     args = sys.argv
     root = args[args.index(DATA_ROOT_ARG) + 1]
     files = get_all_files(root, condition)
     for file in files:
         print(file)
-        show_colored_fragment_size_plot(file, False, [20, 30])
+        data = pd.read_csv(file)
+        splits = find_real_splits(find_supposed_splits_by_tests(data))
+        splits_indices = list(map(lambda s: s[SPLIT_DICT.INDEX.value], splits))
+        show_colored_fragment_size_plot(file, True, splits_indices)
 
 
 if __name__ == "__main__":

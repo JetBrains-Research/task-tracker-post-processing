@@ -1,6 +1,8 @@
 import os
 import shutil
 
+from src.main.util.consts import ACTIVITY_TRACKER_FILE_NAME
+
 
 def get_file_name_from_path(file_path: str):
     return file_path.split('/')[-1]
@@ -51,3 +53,9 @@ def get_all_files(root: str, condition):
             if condition(name):
                 cd_files.append(os.path.join(path, name))
     return cd_files
+
+
+# to get all codetracker files
+def condition(name):
+    return ACTIVITY_TRACKER_FILE_NAME not in name and get_extension_from_file(name) == "csv"
+

@@ -83,10 +83,10 @@ EXTENSION_TO_LANGUAGE_DICT = {
     'cpp': LANGUAGE.CPP.value
 }
 
-LOGGER_FILE = '../../../../logs.log'
+LOGGER_FILE = ROOT_DIR + '../../../../logs.log'
 LOGGER_NAME = 'main_logger'
 
-LOGGER_TEST_FILE = '../../../test_logs.log'
+LOGGER_TEST_FILE = ROOT_DIR + '../../../../test_logs.log'
 
 PATH_CMD_ARG = '-path'
 ENCODING = 'ISO-8859-1'
