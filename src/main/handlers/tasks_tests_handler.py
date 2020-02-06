@@ -101,7 +101,7 @@ def __run_test(in_file: str, expected_out: str, task: str, popen_args: list):
     out, err = p.communicate(input=get_content_from_file(__get_task_file(in_file, task)))
     actual_out = out.rstrip("\n")
     log.info("Expected out: " + expected_out + ", actual out: " + actual_out)
-    return p.returncode == 0 and actual_out == expected_out
+    return p.returncode != 0, actual_out == expected_out
 
 
 def __compile_program(call_args: list):
@@ -170,12 +170,13 @@ def check_tasks(tasks: list, source_code: str, language=LANGUAGE.PYTHON.value):
             task_file = __get_task_file(cur_out, task)
             if language == LANGUAGE.PYTHON.value:
                 has_error, is_passed = __run_python_test(in_file, get_content_from_file(task_file), task)
-                if has_error:
-                    log.info("Source code has errors")
-                    return [0] * len(tasks)
             else:
                 running_args = __get_args_for_running_program(language, source_file)
-                is_passed = __run_test(in_file, get_content_from_file(task_file), task, running_args)
+                has_error, is_passed = __run_test(in_file, get_content_from_file(task_file), task, running_args)
+
+            if has_error:
+                log.info("Source code has errors")
+                return [0] * len(tasks)
 
             log.info("Test " + cur_in + " for task " + task + " is passed: " + str(is_passed))
             if is_passed:
