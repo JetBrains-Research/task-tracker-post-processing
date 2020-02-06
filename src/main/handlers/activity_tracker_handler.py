@@ -181,7 +181,7 @@ def get_file_names_from_ati(activity_tracker_data: pd.DataFrame):
     return list(map(get_file_name_from_path, paths))
 
 
-def get_file_name_from_ati_data(file_name: str, language: str, files_from_ati: list):
+def get_file_name_from_ati_data(file_name: str, language: consts.LANGUAGE, files_from_ati: list):
     log.info('Start getting project file name')
     extension = get_extension_by_language(language)
     file_name = get_original_file_name(file_name, extension)
