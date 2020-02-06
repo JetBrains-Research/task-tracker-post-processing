@@ -1,25 +1,19 @@
 import logging
-import os
+import sys
 from collections import defaultdict
 
 import pandas as pd
-
-# todo: move to consts (create shared const file)
+import numpy as np
 from scipy.signal import find_peaks
 
-from src.main.util import consts
 from src.main.handlers.code_tracker_handler import get_ct_language
-from src.main.util.consts import ENCODING, ACTIVITY_TRACKER_FILE_NAME, MAX_DIFF_SYMBOLS, CODE_TRACKER_COLUMN, LANGUAGE
 from src.main.handlers.tasks_tests_handler import get_most_likely_tasks
+from src.main.util import consts
+from src.main.util.file_util import condition, get_all_files
+from src.main.util.consts import ENCODING, MAX_DIFF_SYMBOLS, CODE_TRACKER_COLUMN, LANGUAGE, PATH_CMD_ARG
+from src.splitting.consts import SPLIT_DICT
 
-
-def get_all_files(root: str):
-    cd_files = []
-    for path, subdirs, files in os.walk(root):
-        for name in files:
-            if '.csv' in name and ACTIVITY_TRACKER_FILE_NAME not in name:
-                cd_files.append(os.path.join(path, name))
-    return cd_files
+log = logging.getLogger(consts.LOGGER_NAME)
 
 
 def get_diffs(data: pd.DataFrame):
@@ -46,6 +40,7 @@ def get_task_status_changes(data: pd.DataFrame):
     return task_status_changes
 
 
+# doesn't work :(
 def obvious_split(data: pd.DataFrame):
     diffs = get_diffs(data)
     bool_diffs = [d >= MAX_DIFF_SYMBOLS for d in diffs]
@@ -60,64 +55,78 @@ def obvious_split(data: pd.DataFrame):
     return splits
 
 
-def split_with_test(data: pd.DataFrame):
+def find_supposed_splits_by_tests(data: pd.DataFrame):
     fragment_df = data[CODE_TRACKER_COLUMN.FRAGMENT.value].fillna("").astype(str)
-    next_fragment = fragment_df.iat[0]
+    print(type(fragment_df))
     language = get_ct_language(data)
-    splits = []
-    prev_split_i = 0
+    supposed_splits = []
+
     if language is not LANGUAGE.NOT_DEFINED.value:
-        for ct_i in range(data.shape[0] - 1):
-            curr_fragment = next_fragment
-            next_fragment = fragment_df.iat[ct_i + 1]
-            diff = len(curr_fragment) - len(next_fragment)
+        peaks = find_peaks(fragment_df.str.len(), distance=1)[0]
+        # add begin and end
+        np.insert(peaks, 0, 0)
+        np.insert(peaks, peaks.size, len(fragment_df)-1)
 
-            if diff >= MAX_DIFF_SYMBOLS:
-                tasks_by_tests, rate = get_most_likely_tasks(curr_fragment, language)
-                if rate > 0:
-                    splits.append(ct_i)
-
-    return splits
-
-def split_with_test_local_max(data: pd.DataFrame):
-    fragment_df = data[CODE_TRACKER_COLUMN.FRAGMENT.value].fillna("").astype(str)
-    language = get_ct_language(data)
-    splits = []
-    prev_split_i = 0
-    if language is not LANGUAGE.NOT_DEFINED.value:
-        peaks = find_peaks(fragment_df.str.len(), distance=1)
-        for p in peaks[0]:
-            print(type(p))
-            print(p)
-            print(type(peaks))
-            print(peaks[0])
+        log.info("Found " + str(peaks.size) + " peaks")
+        for p in peaks:
             fragment = fragment_df.iat[p]
             tasks_by_tests, rate = get_most_likely_tasks(fragment, language)
             if rate > 0:
-                splits.append(p)
-    print(len(splits))
-    return splits
+                log.info("\nAdded split with rate " + str(rate) + ", tasks: " + str(tasks_by_tests) + "\n")
+                supposed_splits.append({SPLIT_DICT.INDEX.value: p,
+                                        SPLIT_DICT.RATE.value: rate,
+                                        SPLIT_DICT.TASKS.value: tasks_by_tests})
+    # check the next correct fragment?
+    log.info("\nAll supposed splits: " + str(supposed_splits) + "\n\n\n")
+    return supposed_splits
+
+
+# since lists of tasks have small size, it should work faster than creating a set
+def intersect(list_1: list, list_2: list):
+    return [e for e in list_1 if e in list_2]
+
+
+def find_real_splits(supposed_splits: list):
+    real_splits = []
+    if len(supposed_splits) == 0:
+        return real_splits
+
+    prev_split = supposed_splits[0]
+    prev_intersected_tasks = prev_split[SPLIT_DICT.TASKS.value]
+
+    for curr_split in supposed_splits:
+        curr_intersected_tasks = intersect(prev_intersected_tasks, curr_split[SPLIT_DICT.TASKS.value])
+        if len(curr_intersected_tasks) == 0:
+            # it means that the supposed task has changed, so we should split on prev_split
+            real_splits.append({SPLIT_DICT.INDEX.value: prev_split[SPLIT_DICT.INDEX.value],
+                                SPLIT_DICT.RATE.value: prev_split[SPLIT_DICT.RATE.value],
+                                SPLIT_DICT.TASKS.value: prev_intersected_tasks})
+            prev_intersected_tasks = curr_split[SPLIT_DICT.TASKS.value]
+        else:
+            prev_intersected_tasks = curr_intersected_tasks
+
+        prev_split = curr_split
+
+    # add the last split
+    real_splits.append({SPLIT_DICT.INDEX.value: prev_split[SPLIT_DICT.INDEX.value],
+                        SPLIT_DICT.RATE.value: prev_split[SPLIT_DICT.RATE.value],
+                        SPLIT_DICT.TASKS.value: prev_intersected_tasks})
+    return real_splits
 
 
 def main():
     logging.basicConfig(filename=consts.LOGGER_FILE, level=logging.INFO)
+    args = sys.argv
+    path = args[args.index(PATH_CMD_ARG) + 1]
 
-    path = "/home/elena/workspaces/python/codetracker-data/data/data_16_12_19"
-    files = get_all_files(path)
+    files = get_all_files(path, condition)
     splits = defaultdict(list)
 
     for i, file in enumerate(files):
-        print(file, str(i) + "/" + str(len(files)))
-        data = pd.read_csv(file, encoding=ENCODING)
-        s = split_with_test(data)
-        # s = obvious_split(data)
-        splits[len(s)].append([file, s])
-    print(splits)
-
-    # file = "/home/elena/workspaces/python/codetracker-data/data/data_16_12_19/ati_259/lol_61089_2007819470_617822553163.2119_b9e17c7947e3e679a4a5b9a1a270b8bab21426dc.csv"
-    # data = pd.read_csv(file)
-    # s = split_with_test(data)
-
+       log.info("Start to splitting file" + file + ", " + str(i+1) + "/" + str(len(files)))
+       data = pd.read_csv(file, encoding=ENCODING)
+       find_supposed_splits_by_tests(data)
+       # s = obvious_split(data)
 
 
 if __name__ == "__main__":
