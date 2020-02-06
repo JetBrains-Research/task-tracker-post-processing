@@ -158,7 +158,7 @@ def check_tasks(tasks: list, source_code: str, language=LANGUAGE.PYTHON.value):
         compiling_args = __get_args_for_compiling_program(language, source_file)
         if not __compile_program(compiling_args):
             log.info("Source code is not compiled")
-            return [0 for _ in range(len(tasks))]
+            return [0] * len(tasks)
 
     for task in tasks:
         files = next(os.walk(TASKS_TESTS_PATH + task))[2]
@@ -172,7 +172,7 @@ def check_tasks(tasks: list, source_code: str, language=LANGUAGE.PYTHON.value):
                 has_error, is_passed = __run_python_test(in_file, get_content_from_file(task_file), task)
                 if has_error:
                     log.info("Source code has errors")
-                    return [0 for _ in range(len(tasks))]
+                    return [0] * len(tasks)
             else:
                 running_args = __get_args_for_running_program(language, source_file)
                 is_passed = __run_test(in_file, get_content_from_file(task_file), task, running_args)
