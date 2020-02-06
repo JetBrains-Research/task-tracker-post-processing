@@ -3,7 +3,8 @@ import sys
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from src.main.util.consts import ENCODING, LOGGER_NAME, LOGGER_FILE
+from src.main.handlers.tasks_tests_handler import create_in_and_out_dict
+from src.main.util.consts import ENCODING, LOGGER_NAME, LOGGER_FILE, TASK
 from src.main.util.file_util import get_all_files, condition
 from src.plots import consts
 from src.plots.consts import STATUS_COLOR_SIZE_DICT, TASK_COLOR_DICT, STATUS_COLOR_SIZE_DEFAULT, TASK_COLOR_DEFAULT, \
@@ -60,7 +61,8 @@ def show_colored_fragment_size_plot(path, to_save=False, splits=[]):
     add_splits_on_plot(splits)
     if to_save:
         log.info("Saving" + path)
-        fig.savefig("split_" + "".join(path.split('.')[:-1]) + ".png")
+        path_parts = path.split('/')
+        fig.savefig("/".join(path_parts[:-1]) + "/split_" + path_parts[-1].split('.')[0] + ".png")
 
     log.info("Showing " + path)
     fig.show()
@@ -72,10 +74,14 @@ def main():
     args = sys.argv
     root = args[args.index(DATA_ROOT_ARG) + 1]
     files = get_all_files(root, condition)
-    for file in files:
-        print(file)
+
+    tasks = [t.value for t in TASK]
+    in_and_out_files_dict = create_in_and_out_dict(tasks)
+
+    for i, file in enumerate(files):
+        log.info("Start to splitting file" + file + ", " + str(i+1) + "/" + str(len(files)))
         data = pd.read_csv(file)
-        splits = find_real_splits(find_supposed_splits_by_tests(data))
+        splits = find_real_splits(find_supposed_splits_by_tests(data, tasks, in_and_out_files_dict))
         splits_indices = list(map(lambda s: s[SPLIT_DICT.INDEX.value], splits))
         show_colored_fragment_size_plot(file, True, splits_indices)
 

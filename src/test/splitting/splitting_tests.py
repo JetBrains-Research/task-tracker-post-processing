@@ -4,7 +4,7 @@ import unittest
 from src.main.util import consts
 from src.main.util.consts import TASK, LOGGER_TEST_FILE
 from src.splitting.consts import SPLIT_DICT
-from src.splitting.splitting import find_real_splits
+from src.splitting.splitting import find_real_splits, get_tasks_with_max_rate
 
 INDEX = SPLIT_DICT.INDEX.value
 RATE = SPLIT_DICT.RATE.value
@@ -92,8 +92,12 @@ expected_real_splits_medium = [
 supposed_splits_empty = []
 expected_real_splits_empty = []
 
+tasks = [PIES, ELECTION, BRACKETS, ZERO]
+test_results = [0.7, 0, 0.7, 0.5]
+expected_max_rate_tasks = [PIES, BRACKETS], 0.7
 
-class TestPiesTests(unittest.TestCase):
+
+class TestSplitting(unittest.TestCase):
 
     def setUp(self) -> None:
         logging.basicConfig(filename=LOGGER_TEST_FILE, level=logging.INFO)
@@ -113,3 +117,7 @@ class TestPiesTests(unittest.TestCase):
     def test_find_real_splits_empty(self):
         actual_real_splits = find_real_splits(supposed_splits_empty)
         self.assertTrue(actual_real_splits == expected_real_splits_empty)
+
+    def test_get_tasks_with_max_rate(self):
+        actual_max_rate_tasks = get_tasks_with_max_rate(tasks, test_results)
+        self.assertTrue(actual_max_rate_tasks == expected_max_rate_tasks)
