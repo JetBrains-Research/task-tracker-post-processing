@@ -19,7 +19,7 @@ class SOLUTION(Enum):
 
 
 def get_expected_rate(task: str, language: str, code: str, in_and_out_files_dict: dict):
-    return tth.check_tasks([task], code, in_and_out_files_dict, language)[1][0]
+    return tth.check_tasks([task], code, in_and_out_files_dict, language)[0]
 
 
 def get_source_code(task: str, language: str, solution: str):
