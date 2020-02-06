@@ -162,14 +162,13 @@ def check_tasks(tasks: list, source_code: str, in_and_out_files_dict: dict, lang
     __remove_compiled_files()
     source_file = __create_source_code_file(source_code, language)
     log.info("Source code:\n" + source_code)
-    was_error = False
+    rate = -1
 
     if language != LANGUAGE.PYTHON.value:
         compiling_args = __get_args_for_compiling_program(language, source_file)
         if not __compile_program(compiling_args):
             log.info("Source code is not compiled")
-            was_error = True
-            return was_error, [0] * len(tasks)
+            return [rate] * len(tasks)
 
     for task in tasks:
         in_and_out_files = in_and_out_files_dict.get(task)
@@ -186,15 +185,12 @@ def check_tasks(tasks: list, source_code: str, in_and_out_files_dict: dict, lang
                 running_args = __get_args_for_running_program(language, source_file)
                 has_error, is_passed = __run_test(in_file, get_content_from_file(task_file), task, running_args)
 
-            if has_error:
-                log.info("Source code has errors")
-                was_error = True
-                return was_error, [0] * len(tasks)
-
             log.info("Test " + cur_in + " for task " + task + " is passed: " + str(is_passed))
             if is_passed:
                 passed_tests += 1
 
-        test_results.append(passed_tests / counted_tests)
+        rate = passed_tests / counted_tests
+        test_results.append(rate)
 
-    return was_error, test_results
+    return test_results
+
