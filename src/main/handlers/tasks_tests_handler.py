@@ -140,18 +140,27 @@ def __get_args_for_compiling_program(language: LANGUAGE, source_file_name: str):
     return call_args
 
 
-def create_source_code_file(source_code: str, language=LANGUAGE.PYTHON.value,
-                            source_file_name=SOURCE_OBJECT_NAME):
+def __create_source_code_file(source_code: str, language=LANGUAGE.PYTHON.value,
+                              source_file_name=SOURCE_OBJECT_NAME):
     if language == LANGUAGE.JAVA.value:
         source_file_name = __get_java_class(source_code)
     create_file(source_code, get_extension_by_language(language), __get_compiled_file(source_file_name))
     return source_file_name
 
 
+def __create_in_and_out_dict(tasks: list):
+    in_and_out_files_dict = {}
+    for task in tasks:
+        files = next(os.walk(TASKS_TESTS_PATH + task))[2]
+        in_and_out_files_dict[task] = __get_in_and_out_files(files)
+
+    return in_and_out_files_dict
+
+
 def check_tasks(tasks: list, source_code: str, language=LANGUAGE.PYTHON.value):
     test_results = []
     __remove_compiled_files()
-    source_file = create_source_code_file(source_code, language)
+    source_file = __create_source_code_file(source_code, language)
     log.info("Source code:\n" + source_code)
 
     if language != LANGUAGE.PYTHON.value:
@@ -160,9 +169,11 @@ def check_tasks(tasks: list, source_code: str, language=LANGUAGE.PYTHON.value):
             log.info("Source code is not compiled")
             return [0] * len(tasks)
 
+    in_and_out_files_dict = __create_in_and_out_dict(tasks)
     for task in tasks:
-        files = next(os.walk(TASKS_TESTS_PATH + task))[2]
-        in_and_out_files = __get_in_and_out_files(files)
+        in_and_out_files = in_and_out_files_dict.get(task)
+        if in_and_out_files is None:
+            raise ValueError('Task data for the ' + task + ' is not exist')
 
         counted_tests, passed_tests = len(in_and_out_files), 0
         for cur_in, cur_out in in_and_out_files:
