@@ -57,7 +57,7 @@ def __get_java_class(source_code: str):
         if class_key_word in row:
             class_index = row.index(class_key_word)
             return row[class_index + len(class_key_word) + 1:].replace(' ', '').replace('{', '')
-    raise ValueError('Source code does not contain class name!')
+    return SOURCE_OBJECT_NAME
 
 
 # Wrap all values from input in the print command
@@ -77,14 +77,6 @@ def __get_in_file_for_current_test(cur_in_file: str, task: str, language=LANGUAG
     return cur_in_file
 
 
-# Remove not .txt files: we need to remove the generated files (they don't have .txt extension)
-def __clear_old_files(task: str):
-    files = next(os.walk(TASKS_TESTS_PATH + task))[2]
-    old_files = list(filter(lambda file_name: '.txt' not in file_name, files))
-    for file in old_files:
-        remove_file(__get_task_file(file, task))
-
-
 def __remove_compiled_files():
     remove_directory(__get_source_folder())
     create_directory(__get_source_folder())
@@ -97,9 +89,10 @@ def __run_python_test(in_file: str, expected_out: str, task: str, source_file_na
                stdin=p1.stdout,
                stdout=PIPE)
     p1.stdout.close()
-    actual_out = p2.communicate()[0].decode("utf-8").rstrip("\n")
+    out, err = p2.communicate()
+    actual_out = out.decode("utf-8").rstrip("\n")
     log.info("Expected out: " + expected_out + ", actual out: " + actual_out)
-    return actual_out == expected_out
+    return p2.returncode != 0, actual_out == expected_out
 
 
 # Run test for compiled languages
@@ -127,7 +120,7 @@ def __get_args_for_running_program(language: str, source_file_name: str):
     return running_args
 
 
-def __get_args_for_compiling_program(language: str, task: str, source_file_name: str):
+def __get_args_for_compiling_program(language: LANGUAGE, source_file_name: str):
     compiled_file = __get_compiled_file(source_file_name)
     extension = get_extension_by_language(language)
 
@@ -155,75 +148,38 @@ def create_source_code_file(source_code: str, language=LANGUAGE.PYTHON.value,
     return source_file_name
 
 
-# The function returns code run result, was the compilation successful and does the compiled file exist
-def __check_test_for_task(in_file: str, out_file: str, task: str, language=LANGUAGE.PYTHON.value,
-                          source_file_name=SOURCE_OBJECT_NAME):
-    task_file = __get_task_file(out_file, task)
-    if language == LANGUAGE.PYTHON.value:
-        is_passed = __run_python_test(in_file, get_content_from_file(task_file), task)
-    else:
-        running_args = __get_args_for_running_program(language, source_file_name)
-        is_passed = __run_test(in_file, get_content_from_file(task_file), task, running_args)
-    return is_passed
-
-
-def __get_default_compiled_program_info(source_file: str):
-    has_compiled_file = os.path.isfile(__get_compiled_file(source_file))
-    is_compiled_successful = True
-    return has_compiled_file, is_compiled_successful
-
-
-def check_task(task: str, source_file=SOURCE_OBJECT_NAME, language=LANGUAGE.PYTHON.value):
-    log.info("Start checking task " + task + " for source code on " + language)
-
-    files = next(os.walk(TASKS_TESTS_PATH + task))[2]
-    in_and_out_files = __get_in_and_out_files(files)
-
-    counted_tests, passed_tests = len(in_and_out_files), 0
-
-    if language != LANGUAGE.PYTHON.value:
-        has_compiled_file, is_compiled_successful = __get_default_compiled_program_info(source_file)
-
-        if not has_compiled_file:
-            log.info("Source code for task " + task + " doesn't have compiled file")
-            compiling_args = __get_args_for_compiling_program(language, task, source_file)
-            is_compiled_successful = __compile_program(compiling_args)
-
-        if not is_compiled_successful:
-            log.info("Source code for task " + task + " wasn't compiled successful")
-            log.info("Finish checking task " + task + ", " + str(passed_tests) + "/" + str(counted_tests) + " are passed")
-            return counted_tests, passed_tests
-
-    for cur_in, cur_out in in_and_out_files:
-        in_file = __get_in_file_for_current_test(cur_in, task, language)
-        is_passed = __check_test_for_task(in_file, cur_out, task, language, source_file)
-        log.info("Test " + cur_in + " for task " + task + " is passed: " + str(is_passed))
-        if is_passed:
-            passed_tests += 1
-
-    log.info("Finish checking task " + task + ", " + str(passed_tests) + "/" + str(counted_tests) + " are passed")
-    return counted_tests, passed_tests
-
-
-def get_most_likely_tasks(source_code: str, language=LANGUAGE.PYTHON.value):
-    most_likely_tasks = []
-    max_rate = 0
+def check_tasks(tasks: list, source_code: str, language=LANGUAGE.PYTHON.value):
+    test_results = []
     __remove_compiled_files()
     source_file = create_source_code_file(source_code, language)
+    log.info("Source code:\n" + source_code)
 
-    for task in TASK:
-        task = task.value
-        counted_tests, passed_tests = check_task(task, source_file, language)
+    if language != LANGUAGE.PYTHON.value:
+        compiling_args = __get_args_for_compiling_program(language, source_file)
+        if not __compile_program(compiling_args):
+            log.info("Source code is not compiled")
+            return [0 for _ in range(len(tasks))]
 
-        if counted_tests == 0:
-            log.error("No counted tests for task " + task + " were found")
-            raise ValueError("No counted tests for task " + task + " were found")
+    for task in tasks:
+        files = next(os.walk(TASKS_TESTS_PATH + task))[2]
+        in_and_out_files = __get_in_and_out_files(files)
 
-        passed_rate = passed_tests / counted_tests
-        if passed_rate > max_rate:
-            max_rate = passed_rate
-            most_likely_tasks = [task]
-        elif passed_rate == max_rate:
-            most_likely_tasks.append(task)
+        counted_tests, passed_tests = len(in_and_out_files), 0
+        for cur_in, cur_out in in_and_out_files:
+            in_file = __get_in_file_for_current_test(cur_in, task, language)
+            task_file = __get_task_file(cur_out, task)
+            if language == LANGUAGE.PYTHON.value:
+                has_error, is_passed = __run_python_test(in_file, get_content_from_file(task_file), task)
+                if has_error:
+                    log.info("Source code has errors")
+                    return [0 for _ in range(len(tasks))]
+            else:
+                running_args = __get_args_for_running_program(language, source_file)
+                is_passed = __run_test(in_file, get_content_from_file(task_file), task, running_args)
 
-    return most_likely_tasks, max_rate
+            log.info("Test " + cur_in + " for task " + task + " is passed: " + str(is_passed))
+            if is_passed:
+                passed_tests += 1
+
+        test_results.append(passed_tests / counted_tests)
+    return test_results
