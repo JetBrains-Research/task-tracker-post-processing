@@ -5,7 +5,7 @@ from src.main.util import consts
 from src.main.util.consts import TEST_DATA_PATH
 from src.main.handlers import tasks_tests_handler as tth
 from src.main.util.file_util import get_content_from_file
-from src.main.handlers.tasks_tests_handler import create_source_code_file
+from src.main.handlers.tasks_tests_handler import __create_source_code_file
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
