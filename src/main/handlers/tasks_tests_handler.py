@@ -148,7 +148,7 @@ def __create_source_code_file(source_code: str, language=LANGUAGE.PYTHON.value,
     return source_file_name
 
 
-def __create_in_and_out_dict(tasks: list):
+def create_in_and_out_dict(tasks: list):
     in_and_out_files_dict = {}
     for task in tasks:
         files = next(os.walk(TASKS_TESTS_PATH + task))[2]
@@ -157,19 +157,20 @@ def __create_in_and_out_dict(tasks: list):
     return in_and_out_files_dict
 
 
-def check_tasks(tasks: list, source_code: str, language=LANGUAGE.PYTHON.value):
+def check_tasks(tasks: list, source_code: str, in_and_out_files_dict: dict, language=LANGUAGE.PYTHON.value):
     test_results = []
     __remove_compiled_files()
     source_file = __create_source_code_file(source_code, language)
     log.info("Source code:\n" + source_code)
+    was_error = False
 
     if language != LANGUAGE.PYTHON.value:
         compiling_args = __get_args_for_compiling_program(language, source_file)
         if not __compile_program(compiling_args):
             log.info("Source code is not compiled")
-            return [0] * len(tasks)
+            was_error = True
+            return was_error, [0] * len(tasks)
 
-    in_and_out_files_dict = __create_in_and_out_dict(tasks)
     for task in tasks:
         in_and_out_files = in_and_out_files_dict.get(task)
         if in_and_out_files is None:
@@ -187,11 +188,13 @@ def check_tasks(tasks: list, source_code: str, language=LANGUAGE.PYTHON.value):
 
             if has_error:
                 log.info("Source code has errors")
-                return [0] * len(tasks)
+                was_error = True
+                return was_error, [0] * len(tasks)
 
             log.info("Test " + cur_in + " for task " + task + " is passed: " + str(is_passed))
             if is_passed:
                 passed_tests += 1
 
         test_results.append(passed_tests / counted_tests)
-    return test_results
+
+    return was_error, test_results
