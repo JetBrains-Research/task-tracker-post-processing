@@ -7,10 +7,10 @@ import numpy as np
 from scipy.signal import find_peaks
 
 from src.main.handlers.code_tracker_handler import get_ct_language
-from src.main.handlers.tasks_tests_handler import get_most_likely_tasks
+from src.main.handlers.tasks_tests_handler import check_tasks, create_in_and_out_dict
 from src.main.util import consts
 from src.main.util.file_util import condition, get_all_files
-from src.main.util.consts import ENCODING, MAX_DIFF_SYMBOLS, CODE_TRACKER_COLUMN, LANGUAGE, PATH_CMD_ARG
+from src.main.util.consts import ENCODING, MAX_DIFF_SYMBOLS, CODE_TRACKER_COLUMN, LANGUAGE, PATH_CMD_ARG, TASK
 from src.splitting.consts import SPLIT_DICT
 
 log = logging.getLogger(consts.LOGGER_NAME)
@@ -55,9 +55,14 @@ def obvious_split(data: pd.DataFrame):
     return splits
 
 
-def find_supposed_splits_by_tests(data: pd.DataFrame):
+def get_tasks_with_max_rate(tasks: list, test_results: list):
+    max_rate = max(test_results)
+    indices = [i for i, tr in enumerate(test_results) if tr == max_rate]
+    return [tasks[i] for i in indices], max_rate
+
+
+def find_supposed_splits_by_tests(data: pd.DataFrame, tasks: list, in_and_out_files_dict: dict):
     fragment_df = data[CODE_TRACKER_COLUMN.FRAGMENT.value].fillna("").astype(str)
-    print(type(fragment_df))
     language = get_ct_language(data)
     supposed_splits = []
 
@@ -68,14 +73,17 @@ def find_supposed_splits_by_tests(data: pd.DataFrame):
         np.insert(peaks, peaks.size, len(fragment_df)-1)
 
         log.info("Found " + str(peaks.size) + " peaks")
-        for p in peaks:
+        for i, p in enumerate(peaks):
+            log.info("Checking peak " + str(i) + "/" + str(peaks.size))
             fragment = fragment_df.iat[p]
-            tasks_by_tests, rate = get_most_likely_tasks(fragment, language)
-            if rate > 0:
-                log.info("\nAdded split with rate " + str(rate) + ", tasks: " + str(tasks_by_tests) + "\n")
+            was_error, test_results = check_tasks(tasks, fragment, in_and_out_files_dict, language)
+            max_rate_tasks, max_rate = get_tasks_with_max_rate(tasks, test_results)
+
+            if max_rate > 0:
+                log.info("\nAdded split with rate " + str(max_rate) + ", tasks: " + str(max_rate_tasks) + "\n")
                 supposed_splits.append({SPLIT_DICT.INDEX.value: p,
-                                        SPLIT_DICT.RATE.value: rate,
-                                        SPLIT_DICT.TASKS.value: tasks_by_tests})
+                                        SPLIT_DICT.RATE.value: max_rate,
+                                        SPLIT_DICT.TASKS.value: max_rate_tasks})
     # check the next correct fragment?
     log.info("\nAll supposed splits: " + str(supposed_splits) + "\n\n\n")
     return supposed_splits
@@ -120,13 +128,15 @@ def main():
     path = args[args.index(PATH_CMD_ARG) + 1]
 
     files = get_all_files(path, condition)
+    tasks = [t.value for t in TASK]
+    in_and_out_files_dict = create_in_and_out_dict(tasks)
     splits = defaultdict(list)
 
-    for i, file in enumerate(files):
-       log.info("Start to splitting file" + file + ", " + str(i+1) + "/" + str(len(files)))
-       data = pd.read_csv(file, encoding=ENCODING)
-       find_supposed_splits_by_tests(data)
-       # s = obvious_split(data)
+    # for i, file in enumerate(files):
+    #     log.info("Start to splitting file" + file + ", " + str(i+1) + "/" + str(len(files)))
+    #     data = pd.read_csv(file, encoding=ENCODING)
+    #     find_supposed_splits_by_tests(data, tasks, in_and_out_files_dict)
+
 
 
 if __name__ == "__main__":
