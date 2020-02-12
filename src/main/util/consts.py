@@ -14,6 +14,7 @@ class CODE_TRACKER_COLUMN(Enum):
     FRAGMENT = 'fragment'
     CHOSEN_TASK = 'chosenTask'
     TASK_STATUS = 'taskStatus'
+    TESTS_RESULTS = 'testsResults'
 
 
 class ACTIVITY_TRACKER_COLUMN(Enum):
@@ -76,6 +77,19 @@ class LANGUAGE(Enum):
     NOT_DEFINED = 'not_defined'
 
 
+class TEST_RESULT(Enum):
+    INCORRECT_CODE = -1
+    LANGUAGE_NOT_DEFINED = -2
+    # It can be incorrect although, but our checking tools cannot find any errors
+    CORRECT_CODE = 0
+
+
+class FILE_SYSTEM_ITEM(Enum):
+    PATH = 0
+    SUBDIR = 1
+    FILE = 2
+
+
 EXTENSION_TO_LANGUAGE_DICT = {
     'py': LANGUAGE.PYTHON.value,
     'java': LANGUAGE.JAVA.value,
@@ -84,11 +98,43 @@ EXTENSION_TO_LANGUAGE_DICT = {
     '': LANGUAGE.NOT_DEFINED.value
 }
 
+LANGUAGE_TO_MIN_SYMBOLS = {
+    # a = int(input())
+    # print(a)
+    LANGUAGE.PYTHON.value: 25,
 
-class FILE_SYSTEM_ITEM(Enum):
-    PATH = 0
-    SUBDIR = 1
-    FILE = 2
+    # class A{
+    # public static void main(String args[]){
+    # Scanner in = new Scanner(System.in );
+    # Int a = in.nextInt();
+    # System.out.print(a);}}
+    LANGUAGE.JAVA.value: 140,
+
+    # fun main(args: Array<String>){
+    # val a:Int = readLine()!!.toInt()
+    # print(a)}
+    LANGUAGE.KOTLIN.value: 80,
+
+    # #include <iostream>
+    # int main(){
+    # int a;
+    # cin>>a;
+    # cout<<a;}
+    LANGUAGE.CPP.value: 60
+}
+
+LANGUAGE_TO_OUTPUT = {
+    LANGUAGE.PYTHON.value: "print",
+    LANGUAGE.JAVA.value: "System.out.print",
+    LANGUAGE.KOTLIN.value: "print",
+    LANGUAGE.CPP.value: "cout",
+}
+
+class SPLIT_DICT(Enum):
+    INDEX = 'index'
+    RATE = 'rate'
+    TASKS = 'tasks'
+
 
 LOGGER_FILE = ROOT_DIR + '../../../../logs.log'
 LOGGER_NAME = 'main_logger'
@@ -109,8 +155,11 @@ MAX_DIF_SEC = 0.5
 TEST_DATA_PATH = ROOT_DIR + '/../../resources/test_data'
 
 PREPROCESSING_RESULT_FOLDER = 'preprocessing_result'
+RUNNING_TESTS_RESULT_FOLDER = 'running_tests_result'
 
 MAX_DIFF_SYMBOLS = 30
+
+MAX_SECONDS_TO_WAIT_TEST = 10
 
 
 
