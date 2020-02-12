@@ -4,6 +4,7 @@ import sys
 
 import pandas as pd
 
+from main.splitting.splitting import run_tests
 from src.main.util.file_util import add_slash
 from src.main.preprocessing.preprocessing import preprocess_data
 from src.main.util import consts
@@ -31,6 +32,12 @@ def main():
 
     # preprocess data before splitting
     preprocess_data(path)
+
+    # run tests for all tasks and write their results in ct data
+    # pass the path from previous action?
+    run_tests(path)
+
+    # there should be splitting then
 
 
 if __name__ == "__main__":

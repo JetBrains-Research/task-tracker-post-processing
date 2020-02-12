@@ -103,25 +103,41 @@ def __run_python_test(in_file: str, expected_out: str, task: str, source_file_na
                stdout=PIPE)
     p1.stdout.close()
     try:
+        signal.alarm(consts.MAX_SECONDS_TO_WAIT_TEST)
         out, err = p2.communicate()
         actual_out = out.decode("utf-8").rstrip("\n")
         log.info("In-file: " + in_file + ", task: " + task + ", expected out: " + expected_out + ", actual out: " + actual_out)
         return p2.returncode != 0, actual_out == expected_out
+    except TimeoutException:
+        log.info("In-file: " + in_file + ", task: " + task + ", Time is out")
+        return False
     except:
-        log.info("In-file: " + in_file + ", task: " + task + ", error!")
+        log.info("In-file: " + in_file + ", task: " + task + ", some error")
+        return False
 
 
 # Run test for compiled languages
 def __run_test(in_file: str, expected_out: str, task: str, popen_args: list):
     p = Popen(popen_args, stdin=PIPE, stdout=PIPE, stderr=PIPE, universal_newlines=True)
-    out, err = p.communicate(input=get_content_from_file(__get_task_file(in_file, task)))
-    actual_out = out.rstrip("\n")
-    log.info("In-file: " + in_file + ", task: " + task + ", expected out: " + expected_out + ", actual out: " + actual_out)
-    return p.returncode != 0, actual_out == expected_out
+    try:
+        signal.alarm(consts.MAX_SECONDS_TO_WAIT_TEST)
+        out, err = p.communicate(input=get_content_from_file(__get_task_file(in_file, task)))
+        actual_out = out.rstrip("\n")
+        log.info("In-file: " + in_file + ", task: " + task + ", expected out: " + expected_out + ", actual out: " + actual_out)
+        return p.returncode != 0, actual_out == expected_out
+    except TimeoutException:
+        log.info("In-file: " + in_file + ", task: " + task + ", Time is out")
+        return False
+    except:
+        log.info("In-file: " + in_file + ", task: " + task + ", some error")
+        return False
 
 
 def __compile_program(call_args: list):
-    return call(call_args) == 0
+    try:
+        return call(call_args) == 0
+    except:
+        return False
 
 
 def __get_args_for_running_program(language: str, source_file_name: str):
@@ -178,8 +194,7 @@ def is_python_file_correct(filename: str):
     source = open(filename, 'r').read() + '\n'
     try:
         code = compile(source, filename, 'exec')
-        # todo: remove consts
-        signal.alarm(5)
+        signal.alarm(consts.MAX_SECONDS_TO_WAIT_TEST)
         eval(code, {})
         return True
     except TimeoutException:
@@ -209,20 +224,29 @@ def check_tasks(tasks: list, source_code: str, in_and_out_files_dict: dict, lang
     test_results = []
     __remove_compiled_files()
     source_file = __create_source_code_file(source_code, language)
-    log.info("Starting checking tasks " + str(tasks) + "for source code on " + language + ":\n" + source_code)
+    log.info("Starting checking tasks " + str(tasks) + " for source code on " + language + ":\n" + source_code)
 
-    rate = -1
+    rate = consts.TEST_RESULT.INCORRECT_CODE.value
+
+    # not to check incorrect fragments
     if not is_source_file_correct(source_file, language):
         test_results = [rate] * len(tasks)
         log.info("Finish checking tasks, test results: " + str(test_results))
         return test_results
 
-    rate = 0
-    # not to check too small fragments, because they cannot return true anyway
-    # todo: remove const
-    if len(source_code) < 10:
+    rate = consts.TEST_RESULT.CORRECT_CODE.value
+
+    # not to check too small fragments because they cannot return true anyway
+    if len(source_code) < consts.LANGUAGE_TO_MIN_SYMBOLS[language]:
         test_results = [rate] * len(tasks)
         log.info("Code fragment is too small")
+        log.info("Finish checking tasks, test results: " + str(test_results))
+        return test_results
+
+    # not to check fragments without output because they cannot return anything
+    if consts.LANGUAGE_TO_OUTPUT[language] not in source_code:
+        test_results = [rate] * len(tasks)
+        log.info("Code fragment doesn't contain any output strings")
         log.info("Finish checking tasks, test results: " + str(test_results))
         return test_results
 
@@ -230,7 +254,7 @@ def check_tasks(tasks: list, source_code: str, in_and_out_files_dict: dict, lang
         log.info("Start checking task " + task)
         in_and_out_files = in_and_out_files_dict.get(task)
         if in_and_out_files is None:
-            raise ValueError('Task data for the ' + task + ' is not exist')
+            raise ValueError('Task data for the ' + task + ' does not exist')
 
         counted_tests, passed_tests = len(in_and_out_files), 0
         for cur_in, cur_out in in_and_out_files:
