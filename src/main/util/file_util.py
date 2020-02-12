@@ -22,6 +22,11 @@ def get_file_name_from_path(file_path: str):
     return file_path.split('/')[-1]
 
 
+def get_path_and_file_name_from_path(file_path: str):
+    file_path = remove_slash(file_path)
+    return '/'.join(file_path.split('/')[:-1]), file_path.split('/')[-1]
+
+
 def get_extension_from_file(file: str):
     return file.split(".")[-1]
 

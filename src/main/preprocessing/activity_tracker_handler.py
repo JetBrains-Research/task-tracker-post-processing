@@ -4,7 +4,7 @@ import pandas as pd
 
 from src.main.util import consts
 from src.main.util.date_util import get_datetime_by_format
-from src.main.util.file_util import get_file_name_from_path, get_original_file_name
+from src.main.util.file_util import get_file_name_from_path, get_original_file_name, get_path_and_file_name_from_path
 from src.main.util.language_util import get_extension_by_language
 
 log = logging.getLogger(consts.LOGGER_NAME)
@@ -173,19 +173,41 @@ def merge_code_tracker_and_activity_tracker_data(code_tracker_data: pd.DataFrame
     return code_tracker_data
 
 
-# A: use dropna instead?
 def __remove_nan(items: list):
     return list(filter(lambda x: not pd.isnull(x), items))
 
 
-def get_files_from_at(activity_tracker_data: pd.DataFrame):
+# separated_paths is a tuple: (the path without file name, the filename)
+def __get_file_name(separated_path: tuple):
+    return separated_path[1]
+
+
+# separated_paths is a tuple: (the path without file name, the filename)
+def __get_file_path(separated_path: tuple):
+    return separated_path[0]
+
+
+def __filter_ati_file_paths(separated_paths: list):
+    paths_dict = {}
+    for separated_path in separated_paths:
+        if paths_dict.get(__get_file_name(separated_path)) is None:
+            paths_dict[__get_file_name(separated_path)] = __get_file_path(separated_path)
+        else:
+            if paths_dict[__get_file_name(separated_path)] != __get_file_path(separated_path):
+                log.error('The folder has a few the same files!')
+                raise ValueError('The folder has a few the same files!')
+    return paths_dict.keys()
+
+
+def get_files_from_ati(activity_tracker_data: pd.DataFrame):
     paths = __remove_nan(activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.CURRENT_FILE.value].unique())
-    return list(map(get_file_name_from_path, paths))
+    # Separate a file path on two parts: the path without file name and the filename
+    separated_paths = list(map(get_path_and_file_name_from_path, paths))
+    return __filter_ati_file_paths(separated_paths)
 
 
 def get_ct_name_from_at_data(ct_file: str, language: consts.LANGUAGE, files_from_at: list):
     log.info('Start getting project file name')
-    # A: now if language is not defined, the extension will be empty (was NONE and raised an error)
     extension = get_extension_by_language(language)
     hashed_file_name = get_file_name_from_path(ct_file)
     file_name = get_original_file_name(hashed_file_name, extension)
