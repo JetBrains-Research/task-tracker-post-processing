@@ -1,16 +1,16 @@
 import logging
 import sys
-import pandas as pd
-import matplotlib.pyplot as plt
 
-from src.main.handlers.tasks_tests_handler import create_in_and_out_dict
+import matplotlib.pyplot as plt
+import pandas as pd
+
+from main.splitting.tasks_tests_handler import create_in_and_out_dict
 from src.main.util.consts import ENCODING, LOGGER_NAME, LOGGER_FILE, TASK
-from src.main.util.file_util import get_all_files, condition
-from src.plots import consts
-from src.plots.consts import STATUS_COLOR_SIZE_DICT, TASK_COLOR_DICT, STATUS_COLOR_SIZE_DEFAULT, TASK_COLOR_DEFAULT, \
+from src.main.util.file_util import get_all_file_system_items, ct_file_condition
+from main.plots.consts import STATUS_COLOR_SIZE_DICT, TASK_COLOR_DICT, STATUS_COLOR_SIZE_DEFAULT, TASK_COLOR_DEFAULT, \
     DATA_ROOT_ARG
-from src.splitting.consts import SPLIT_DICT
-from src.splitting.splitting import find_real_splits, find_supposed_splits_by_tests
+from main.splitting.consts import SPLIT_DICT
+from main.splitting import find_real_splits, find_supposed_splits_by_tests
 
 log = logging.getLogger(LOGGER_NAME)
 
@@ -73,7 +73,7 @@ def main():
 
     args = sys.argv
     root = args[args.index(DATA_ROOT_ARG) + 1]
-    files = get_all_files(root, condition)
+    files = get_all_file_system_items(root, ct_file_condition)
 
     tasks = [t.value for t in TASK]
     in_and_out_files_dict = create_in_and_out_dict(tasks)
@@ -81,7 +81,9 @@ def main():
     for i, file in enumerate(files):
         log.info("Start to splitting file" + file + ", " + str(i+1) + "/" + str(len(files)))
         data = pd.read_csv(file)
-        splits = find_real_splits(find_supposed_splits_by_tests(data, tasks, in_and_out_files_dict))
+        # prev_splits = handle_logs()
+        prev_splits = []
+        splits = find_real_splits(find_supposed_splits_by_tests(data, tasks, in_and_out_files_dict, prev_splits))
         splits_indices = list(map(lambda s: s[SPLIT_DICT.INDEX.value], splits))
         show_colored_fragment_size_plot(file, True, splits_indices)
 

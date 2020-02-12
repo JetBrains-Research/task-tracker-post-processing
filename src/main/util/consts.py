@@ -80,8 +80,15 @@ EXTENSION_TO_LANGUAGE_DICT = {
     'py': LANGUAGE.PYTHON.value,
     'java': LANGUAGE.JAVA.value,
     'kt': LANGUAGE.KOTLIN.value,
-    'cpp': LANGUAGE.CPP.value
+    'cpp': LANGUAGE.CPP.value,
+    '': LANGUAGE.NOT_DEFINED.value
 }
+
+
+class FILE_SYSTEM_ITEM(Enum):
+    PATH = 0
+    SUBDIR = 1
+    FILE = 2
 
 LOGGER_FILE = ROOT_DIR + '../../../../logs.log'
 LOGGER_NAME = 'main_logger'
@@ -90,8 +97,10 @@ LOGGER_TEST_FILE = ROOT_DIR + '../../../../test_logs.log'
 
 PATH_CMD_ARG = '-path'
 ENCODING = 'ISO-8859-1'
+# ENCODING = 'utf8'
 
-ACTIVITY_TRACKER_FOLDER_NAME = 'ati'
+DATA_FOLDER_WITH_AT = 'ati_'
+DATA_FOLDER_WITHOUT_AT = 'di_'
 ACTIVITY_TRACKER_FILE_NAME = 'ide-events'
 
 DATE_TIME_FORMAT = '%Y-%m-%dT%H:%M:%S.%f%z'
@@ -99,8 +108,10 @@ MAX_DIF_SEC = 0.5
 
 TEST_DATA_PATH = ROOT_DIR + '/../../resources/test_data'
 
-RESULT_FOLDER = 'result'
+PREPROCESSING_RESULT_FOLDER = 'preprocessing_result'
 
 MAX_DIFF_SYMBOLS = 30
+
+
 
 

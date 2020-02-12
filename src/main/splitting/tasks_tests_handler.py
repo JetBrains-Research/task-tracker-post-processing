@@ -1,18 +1,31 @@
 import os
+import ast
+import signal
 import logging
 from subprocess import Popen, PIPE, call
 
 from src.main.util import consts
 from src.main.util.consts import LANGUAGE, TASK
-from src.main.handlers.activity_tracker_handler import get_extension_by_language
+from src.main.preprocessing.activity_tracker_handler import get_extension_by_language
 from src.main.util.file_util import remove_file, get_content_from_file, create_file, create_directory, remove_directory
 
 INPUT_FILE_NAME = consts.TASKS_TESTS.INPUT_FILE_NAME.value
 TASKS_TESTS_PATH = consts.TASKS_TESTS.TASKS_TESTS_PATH.value
 SOURCE_OBJECT_NAME = consts.TASKS_TESTS.SOURCE_OBJECT_NAME.value
 
-
 log = logging.getLogger(consts.LOGGER_NAME)
+
+
+class TimeoutException(Exception):   # Custom exception class
+    pass
+
+
+def timeout_handler(signum, frame):   # Custom signal handler
+    raise TimeoutException
+
+
+# Change the behavior of SIGALRM
+signal.signal(signal.SIGALRM, timeout_handler)
 
 
 def __get_task_file(file: str, task: str):
@@ -89,10 +102,13 @@ def __run_python_test(in_file: str, expected_out: str, task: str, source_file_na
                stdin=p1.stdout,
                stdout=PIPE)
     p1.stdout.close()
-    out, err = p2.communicate()
-    actual_out = out.decode("utf-8").rstrip("\n")
-    log.info("Expected out: " + expected_out + ", actual out: " + actual_out)
-    return p2.returncode != 0, actual_out == expected_out
+    try:
+        out, err = p2.communicate()
+        actual_out = out.decode("utf-8").rstrip("\n")
+        log.info("In-file: " + in_file + ", task: " + task + ", expected out: " + expected_out + ", actual out: " + actual_out)
+        return p2.returncode != 0, actual_out == expected_out
+    except:
+        log.info("In-file: " + in_file + ", task: " + task + ", error!")
 
 
 # Run test for compiled languages
@@ -100,7 +116,7 @@ def __run_test(in_file: str, expected_out: str, task: str, popen_args: list):
     p = Popen(popen_args, stdin=PIPE, stdout=PIPE, stderr=PIPE, universal_newlines=True)
     out, err = p.communicate(input=get_content_from_file(__get_task_file(in_file, task)))
     actual_out = out.rstrip("\n")
-    log.info("Expected out: " + expected_out + ", actual out: " + actual_out)
+    log.info("In-file: " + in_file + ", task: " + task + ", expected out: " + expected_out + ", actual out: " + actual_out)
     return p.returncode != 0, actual_out == expected_out
 
 
@@ -111,6 +127,7 @@ def __compile_program(call_args: list):
 def __get_args_for_running_program(language: str, source_file_name: str):
     if language == LANGUAGE.JAVA.value:
         running_args = ['java', '-cp', __get_source_folder(), source_file_name]
+
     elif language == LANGUAGE.CPP.value:
         running_args = [__get_compiled_file(source_file_name) + '.out']
     elif language == LANGUAGE.KOTLIN.value:
@@ -157,20 +174,60 @@ def create_in_and_out_dict(tasks: list):
     return in_and_out_files_dict
 
 
+def is_python_file_correct(filename: str):
+    source = open(filename, 'r').read() + '\n'
+    try:
+        code = compile(source, filename, 'exec')
+        # todo: remove consts
+        signal.alarm(5)
+        eval(code, {})
+        return True
+    except TimeoutException:
+        log.info("Time is out")
+        return is_valid_python_file(filename)
+    except:
+        return False
+
+
+def is_valid_python_file(file_name):
+    call_args = ['mypy', file_name]
+    is_valid = __compile_program(call_args)
+    return is_valid
+
+
+def is_source_file_correct(source_file, language=LANGUAGE.PYTHON.value):
+    if language == LANGUAGE.PYTHON.value:
+        is_correct = is_python_file_correct(__get_compiled_file(source_file) + "." + get_extension_by_language(language))
+    else:
+        compiling_args = __get_args_for_compiling_program(language, source_file)
+        is_correct = __compile_program(compiling_args)
+    log.info("Source code is correct: " + str(is_correct))
+    return is_correct
+
+
 def check_tasks(tasks: list, source_code: str, in_and_out_files_dict: dict, language=LANGUAGE.PYTHON.value):
     test_results = []
     __remove_compiled_files()
     source_file = __create_source_code_file(source_code, language)
-    log.info("Source code:\n" + source_code)
-    rate = -1
+    log.info("Starting checking tasks " + str(tasks) + "for source code on " + language + ":\n" + source_code)
 
-    if language != LANGUAGE.PYTHON.value:
-        compiling_args = __get_args_for_compiling_program(language, source_file)
-        if not __compile_program(compiling_args):
-            log.info("Source code is not compiled")
-            return [rate] * len(tasks)
+    rate = -1
+    if not is_source_file_correct(source_file, language):
+        test_results = [rate] * len(tasks)
+        log.info("Finish checking tasks, test results: " + str(test_results))
+        return test_results
+
+    rate = 0
+    # not to check too small fragments, because they cannot return true anyway
+    # todo: remove const
+    if len(source_code) < 10:
+        test_results = [rate] * len(tasks)
+        log.info("Code fragment is too small")
+        log.info("Finish checking tasks, test results: " + str(test_results))
+        return test_results
 
     for task in tasks:
+        log.info("Start checking task " + task)
         in_and_out_files = in_and_out_files_dict.get(task)
         if in_and_out_files is None:
             raise ValueError('Task data for the ' + task + ' is not exist')
@@ -190,7 +247,8 @@ def check_tasks(tasks: list, source_code: str, in_and_out_files_dict: dict, lang
                 passed_tests += 1
 
         rate = passed_tests / counted_tests
+        log.info("Finish checking task " + task + ", rate: " + str(rate))
         test_results.append(rate)
 
+    log.info("Finish checking tasks, test results: " + str(test_results))
     return test_results
-
