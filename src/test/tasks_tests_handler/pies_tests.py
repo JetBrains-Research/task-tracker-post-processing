@@ -9,7 +9,7 @@ python_actual_pairs = {
     SOLUTION.FULL.value: (8, 8),
     SOLUTION.PARTIAL.value: (8, 3),
     SOLUTION.WRONG.value: (8, 0),
-    SOLUTION.ERROR.value: (8, 0)
+    SOLUTION.ERROR.value: (-1, 1)
 }
 
 java_actual_pairs = {

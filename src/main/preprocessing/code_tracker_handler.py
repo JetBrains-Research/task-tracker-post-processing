@@ -1,4 +1,5 @@
 import logging
+
 import numpy as np
 import pandas as pd
 
@@ -9,6 +10,7 @@ from src.main.util.language_util import get_language_by_extension
 log = logging.getLogger(consts.LOGGER_NAME)
 
 
+# Todo: rename? fill_column
 def profile_column_handler(data: pd.DataFrame, column: consts.CODE_TRACKER_COLUMN,
                            default_value: consts.DEFAULT_VALUES):
     values = data[column].unique()
@@ -35,3 +37,18 @@ def get_ct_language(data: pd.DataFrame):
     if len(extensions) == 1:
         return get_language_by_extension(extensions.pop())
     return consts.LANGUAGE.NOT_DEFINED.value
+
+
+def handle_ct_file(ct_file):
+    log.info('Start handling the file ' + ct_file)
+    ct_df = pd.read_csv(ct_file, encoding=consts.ENCODING)
+    language = get_ct_language(ct_df)
+    ct_df[consts.CODE_TRACKER_COLUMN.LANGUAGE.value] = language
+    ct_df[consts.CODE_TRACKER_COLUMN.AGE.value] = profile_column_handler(ct_df,
+                                                                         consts.CODE_TRACKER_COLUMN.AGE.value,
+                                                                         consts.DEFAULT_VALUES.AGE.value)
+    ct_df[consts.CODE_TRACKER_COLUMN.EXPERIENCE.value] = profile_column_handler(ct_df,
+                                                                                consts.CODE_TRACKER_COLUMN.EXPERIENCE.value,
+                                                                                consts.DEFAULT_VALUES.EXPERIENCE.value)
+    return ct_df, language
+
