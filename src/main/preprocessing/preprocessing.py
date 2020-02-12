@@ -101,7 +101,7 @@ def preprocess_data(path):
         files = get_all_file_system_items(folder, csv_file_condition, consts.FILE_SYSTEM_ITEM.FILE.value)
         try:
             ct_files, at_file = __separate_at_and_other_files(files)
-        # Miss
+        # Miss the current folder
         except ValueError:
             continue
 
