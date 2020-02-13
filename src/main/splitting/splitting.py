@@ -4,11 +4,11 @@ import sys
 import pandas as pd
 
 from src.main.preprocessing.code_tracker_handler import get_ct_language
-from main.splitting.tasks_tests_handler import check_tasks, create_in_and_out_dict
+from src.main.splitting.tasks_tests_handler import check_tasks, create_in_and_out_dict
 from src.main.util import consts
 from src.main.util.file_util import ct_file_condition, get_all_file_system_items
 from src.main.util.consts import ENCODING, MAX_DIFF_SYMBOLS, CODE_TRACKER_COLUMN, LANGUAGE, PATH_CMD_ARG, TASK
-from main.splitting.consts import SPLIT_DICT
+from src.main.splitting.consts import SPLIT_DICT
 
 FRAGMENT = CODE_TRACKER_COLUMN.FRAGMENT.value
 
