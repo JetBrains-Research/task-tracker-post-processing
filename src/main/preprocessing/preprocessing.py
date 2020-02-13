@@ -10,7 +10,7 @@ from src.main.preprocessing.activity_tracker_handler import handle_at_file, get_
 from src.main.preprocessing.code_tracker_handler import handle_ct_file
 from src.main.preprocessing import activity_tracker_handler as ath
 from src.main.util import consts
-from src.main.util.file_util import create_directory, get_all_file_system_items, data_subdirs_condition, \
+from src.main.util.file_util import get_original_file_name, get_all_file_system_items, data_subdirs_condition, \
     csv_file_condition, get_parent_folder, get_parent_folder_name, get_file_name_from_path
 
 log = logging.getLogger(consts.LOGGER_NAME)
@@ -56,11 +56,16 @@ def __get_real_at_file_index(files: list):
         if consts.ACTIVITY_TRACKER_FILE_NAME in f:
             count_at += 1
             if count_at >= 2:
-                log.error('Count of activity tracker files is more 1')
-                raise ValueError('Count of activity tracker files is more 1')
+                log.error('The number of activity tracker files is more than 1')
+                raise ValueError('The number of activity tracker files is more than 1')
             if not __is_ct_file(f):
                 at_index = i
     return at_index
+
+
+def __has_same_files(files: list):
+    original_files = list(map(get_original_file_name, files))
+    return len(original_files) != len(set(original_files))
 
 
 def __separate_at_and_other_files(files: list):
@@ -69,6 +74,9 @@ def __separate_at_and_other_files(files: list):
     if at_file_index != -1:
         at_file = files[at_file_index]
         del files[at_file_index]
+    if __has_same_files(files):
+        log.info('The number of the same code tracker files is more than 1')
+        at_file = None
     return files, at_file
 
 
@@ -95,7 +103,6 @@ def handle_ct_and_at(ct_file, ct_df, at_file, at_df, language):
 
 def preprocess_data(path):
     folders = get_all_file_system_items(path, data_subdirs_condition, consts.FILE_SYSTEM_ITEM.SUBDIR.value)
-
     for folder in folders:
         log.info('Start handling the folder ' + folder)
         files = get_all_file_system_items(folder, csv_file_condition, consts.FILE_SYSTEM_ITEM.FILE.value)

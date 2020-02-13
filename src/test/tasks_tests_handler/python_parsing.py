@@ -1,8 +1,8 @@
 import unittest
 
-from main.splitting.tasks_tests_handler import is_valid_python_file
-from main.util.consts import TEST_DATA_PATH
-from main.util.file_util import get_all_file_system_items
+from src.main.splitting.tasks_tests_handler import is_valid_python_file
+from src.main.util.consts import TEST_DATA_PATH
+from src.main.util.file_util import get_all_file_system_items
 
 PARSING_TEST_DATA_PATH = TEST_DATA_PATH + "/tasks_tests_handler/python_parsing/"
 
