@@ -31,10 +31,11 @@ def main():
     path = __get_data_path()
 
     # preprocess data before splitting
-    preprocess_data(path)
+    # preprocess_data(path)
 
     # run tests for all tasks and write their results in ct data
     # pass the path from previous action?
+    log.info("Current time: ")
     run_tests(path)
 
     # there should be splitting then
