@@ -1,6 +1,7 @@
 import logging
 import os
 import sys
+import datetime
 
 import pandas as pd
 
@@ -35,8 +36,10 @@ def main():
 
     # run tests for all tasks and write their results in ct data
     # pass the path from previous action?
-    log.info("Current time: ")
+    log.info("Current time:" + str(datetime.datetime.now()))
     run_tests(path)
+    log.info("Current time:" + str(datetime.datetime.now()))
+
 
     # there should be splitting then
 
