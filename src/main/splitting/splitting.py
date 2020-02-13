@@ -4,7 +4,7 @@ from os import makedirs
 
 import pandas as pd
 
-from main.splitting.tasks_tests_handler import check_tasks, create_in_and_out_dict
+from src.main.splitting.tasks_tests_handler import check_tasks, create_in_and_out_dict
 from src.main.preprocessing.code_tracker_handler import get_ct_language
 from src.main.util import consts
 from src.main.util.consts import ENCODING, CODE_TRACKER_COLUMN, LANGUAGE, TASK, \
