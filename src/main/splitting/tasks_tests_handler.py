@@ -107,7 +107,7 @@ def __run_python_test(in_file: str, expected_out: str, task: str, source_file_na
         out, err = p2.communicate()
         actual_out = out.decode("utf-8").rstrip("\n")
         log.info("In-file: " + in_file + ", task: " + task + ", expected out: " + expected_out + ", actual out: " + actual_out)
-        return p2.returncode != 0, actual_out == expected_out
+        return actual_out == expected_out
     except TimeoutException:
         log.info("In-file: " + in_file + ", task: " + task + ", Time is out")
         return False
@@ -124,7 +124,7 @@ def __run_test(in_file: str, expected_out: str, task: str, popen_args: list):
         out, err = p.communicate(input=get_content_from_file(__get_task_file(in_file, task)))
         actual_out = out.rstrip("\n")
         log.info("In-file: " + in_file + ", task: " + task + ", expected out: " + expected_out + ", actual out: " + actual_out)
-        return p.returncode != 0, actual_out == expected_out
+        return actual_out == expected_out
     except TimeoutException:
         log.info("In-file: " + in_file + ", task: " + task + ", Time is out")
         return False
@@ -261,10 +261,10 @@ def check_tasks(tasks: list, source_code: str, in_and_out_files_dict: dict, lang
             in_file = __get_in_file_for_current_test(cur_in, task, language)
             task_file = __get_task_file(cur_out, task)
             if language == LANGUAGE.PYTHON.value:
-                has_error, is_passed = __run_python_test(in_file, get_content_from_file(task_file), task)
+                is_passed = __run_python_test(in_file, get_content_from_file(task_file), task)
             else:
                 running_args = __get_args_for_running_program(language, source_file)
-                has_error, is_passed = __run_test(in_file, get_content_from_file(task_file), task, running_args)
+                is_passed = __run_test(in_file, get_content_from_file(task_file), task, running_args)
 
             log.info("Test " + cur_in + " for task " + task + " is passed: " + str(is_passed))
             if is_passed:
