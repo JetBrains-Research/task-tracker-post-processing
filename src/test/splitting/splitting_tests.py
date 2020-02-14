@@ -1,9 +1,8 @@
 import logging
 import unittest
 
-from src.main.util.consts import TASK, LOGGER_TEST_FILE
-from main.splitting.consts import SPLIT_DICT
-from main.splitting import find_real_splits, get_tasks_with_max_rate
+from src.main.splitting.splitting import find_real_splits, get_tasks_with_max_rate
+from src.main.util.consts import TASK, LOGGER_TEST_FILE, SPLIT_DICT
 
 INDEX = SPLIT_DICT.INDEX.value
 RATE = SPLIT_DICT.RATE.value

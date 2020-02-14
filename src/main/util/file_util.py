@@ -17,9 +17,12 @@ def add_slash(path):
     return path
 
 
-def get_file_name_from_path(file_path: str):
+def get_file_name_from_path(file_path: str, with_extension=True):
     file_path = remove_slash(file_path)
-    return file_path.split('/')[-1]
+    file_name = file_path.split('/')[-1]
+    if not with_extension:
+        file_name = file_name.split('.')[0]
+    return file_name
 
 
 def get_extension_from_file(file: str):
@@ -96,4 +99,3 @@ def ct_file_condition(name):
 # to get all subdirs that contain ct and at data
 def data_subdirs_condition(name):
     return DATA_FOLDER_WITH_AT in name or DATA_FOLDER_WITHOUT_AT in name
-
