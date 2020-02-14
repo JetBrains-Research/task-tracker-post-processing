@@ -1,13 +1,12 @@
 import os
-import ast
 import signal
 import logging
 from subprocess import Popen, PIPE, call
 
 from src.main.util import consts
-from src.main.util.consts import LANGUAGE, TASK
+from src.main.util.consts import LANGUAGE
 from src.main.preprocessing.activity_tracker_handler import get_extension_by_language
-from src.main.util.file_util import remove_file, get_content_from_file, create_file, create_directory, remove_directory
+from src.main.util.file_util import get_content_from_file, create_file, create_directory, remove_directory
 
 INPUT_FILE_NAME = consts.TASKS_TESTS.INPUT_FILE_NAME.value
 TASKS_TESTS_PATH = consts.TASKS_TESTS.TASKS_TESTS_PATH.value
@@ -16,11 +15,11 @@ SOURCE_OBJECT_NAME = consts.TASKS_TESTS.SOURCE_OBJECT_NAME.value
 log = logging.getLogger(consts.LOGGER_NAME)
 
 
-class TimeoutException(Exception):   # Custom exception class
+class TimeoutException(Exception):
     pass
 
 
-def timeout_handler(signum, frame):   # Custom signal handler
+def timeout_handler(signum, frame):
     raise TimeoutException
 
 
@@ -192,19 +191,22 @@ def create_in_and_out_dict(tasks: list):
 
 def is_python_file_correct(filename: str):
     source = open(filename, 'r').read() + '\n'
-    try:
-        code = compile(source, filename, 'exec')
-        signal.alarm(consts.MAX_SECONDS_TO_WAIT_TEST)
-        eval(code, {})
-        return True
-    except TimeoutException:
-        log.info("Time is out")
-        return is_valid_python_file(filename)
-    except:
-        return False
+    if check_python_file_by_mypy(filename):
+        try:
+            code = compile(source, filename, 'exec')
+            signal.alarm(consts.MAX_SECONDS_TO_WAIT_TEST)
+            eval(code, {})
+            return True
+        except TimeoutException:
+            # It means that eval didn't throw any exceptions, but time is out for example because of input waiting
+            log.info("Time is out")
+            return True
+        except:
+            return False
+    return False
 
 
-def is_valid_python_file(file_name):
+def check_python_file_by_mypy(file_name):
     call_args = ['mypy', file_name]
     is_valid = __compile_program(call_args)
     return is_valid
@@ -220,33 +222,40 @@ def is_source_file_correct(source_file, language=LANGUAGE.PYTHON.value):
     return is_correct
 
 
-def check_tasks(tasks: list, source_code: str, in_and_out_files_dict: dict, language=LANGUAGE.PYTHON.value):
+def check_before_tests(source_file, source_code, tasks, language):
     test_results = []
+    need_to_run_tests = True
+    rate = consts.TEST_RESULT.CORRECT_CODE.value
+
+    # not to check incorrect fragments
+    if not is_source_file_correct(source_file, language):
+        need_to_run_tests = False
+        rate = consts.TEST_RESULT.INCORRECT_CODE.value
+        test_results = [rate] * len(tasks)
+
+    # not to check too small fragments because they cannot return true anyway
+    elif len(source_code) < consts.LANGUAGE_TO_MIN_SYMBOLS[language]:
+        log.info("Code fragment is too small")
+        need_to_run_tests = False
+        test_results = [rate] * len(tasks)
+
+    # not to check fragments without output because they cannot return anything
+    elif consts.LANGUAGE_TO_OUTPUT[language] not in source_code:
+        log.info("Code fragment doesn't contain any output strings")
+        need_to_run_tests = False
+        test_results = [rate] * len(tasks)
+
+    return need_to_run_tests, test_results, rate
+
+
+def check_tasks(tasks: list, source_code: str, in_and_out_files_dict: dict, language=LANGUAGE.PYTHON.value, stop_after_first_false=True):
     __remove_compiled_files()
     source_file = __create_source_code_file(source_code, language)
     log.info("Starting checking tasks " + str(tasks) + " for source code on " + language + ":\n" + source_code)
 
-    rate = consts.TEST_RESULT.INCORRECT_CODE.value
+    need_to_run_tests, test_results, rate = check_before_tests(source_file, source_code, tasks, language)
 
-    # not to check incorrect fragments
-    if not is_source_file_correct(source_file, language):
-        test_results = [rate] * len(tasks)
-        log.info("Finish checking tasks, test results: " + str(test_results))
-        return test_results
-
-    rate = consts.TEST_RESULT.CORRECT_CODE.value
-
-    # not to check too small fragments because they cannot return true anyway
-    if len(source_code) < consts.LANGUAGE_TO_MIN_SYMBOLS[language]:
-        test_results = [rate] * len(tasks)
-        log.info("Code fragment is too small")
-        log.info("Finish checking tasks, test results: " + str(test_results))
-        return test_results
-
-    # not to check fragments without output because they cannot return anything
-    if consts.LANGUAGE_TO_OUTPUT[language] not in source_code:
-        test_results = [rate] * len(tasks)
-        log.info("Code fragment doesn't contain any output strings")
+    if not need_to_run_tests:
         log.info("Finish checking tasks, test results: " + str(test_results))
         return test_results
 
@@ -269,6 +278,9 @@ def check_tasks(tasks: list, source_code: str, in_and_out_files_dict: dict, lang
             log.info("Test " + cur_in + " for task " + task + " is passed: " + str(is_passed))
             if is_passed:
                 passed_tests += 1
+            elif stop_after_first_false:
+                log.info("Stop after first false")
+                break
 
         rate = passed_tests / counted_tests
         log.info("Finish checking task " + task + ", rate: " + str(rate))

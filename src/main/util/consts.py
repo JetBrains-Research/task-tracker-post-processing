@@ -4,6 +4,7 @@ from enum import Enum
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
+
 class CODE_TRACKER_COLUMN(Enum):
     AGE = 'age'
     EXPERIENCE = 'programExperience'
@@ -143,7 +144,6 @@ LOGGER_TEST_FILE = ROOT_DIR + '../../../../test_logs.log'
 
 PATH_CMD_ARG = '-path'
 ENCODING = 'ISO-8859-1'
-# ENCODING = 'utf8'
 
 DATA_FOLDER_WITH_AT = 'ati_'
 DATA_FOLDER_WITHOUT_AT = 'di_'
@@ -155,11 +155,13 @@ MAX_DIF_SEC = 0.5
 TEST_DATA_PATH = ROOT_DIR + '/../../resources/test_data'
 
 PREPROCESSING_RESULT_FOLDER = 'preprocessing_result'
-RUNNING_TESTS_RESULT_FOLDER = 'running_tests_result'
+
+# v 2.0 - with stopping after the first break
+RUNNING_TESTS_RESULT_FOLDER = 'running_tests_result2'
 
 MAX_DIFF_SYMBOLS = 30
 
-MAX_SECONDS_TO_WAIT_TEST = 10
+MAX_SECONDS_TO_WAIT_TEST = 5
 
 
 
