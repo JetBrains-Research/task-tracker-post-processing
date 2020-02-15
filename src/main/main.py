@@ -5,6 +5,7 @@ import sys
 
 import pandas as pd
 
+sys.path.append('.')
 from src.main.splitting.splitting import run_tests
 from src.main.util import consts
 from src.main.util.consts import PATH_CMD_ARG
