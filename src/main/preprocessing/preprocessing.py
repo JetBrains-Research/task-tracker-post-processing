@@ -63,7 +63,7 @@ def __get_real_at_file_index(files: list):
     return at_index
 
 
-def __has_same_files(files: list):
+def __has_files_with_same_names(files: list):
     original_files = list(map(get_original_file_name, files))
     return len(original_files) != len(set(original_files))
 
@@ -74,8 +74,8 @@ def __separate_at_and_other_files(files: list):
     if at_file_index != -1:
         at_file = files[at_file_index]
         del files[at_file_index]
-    if __has_same_files(files):
-        log.info('The number of the same code tracker files is more than 1')
+    if __has_files_with_same_names(files):
+        log.info('The number of the code tracker files with the same names is more than 1')
         at_file = None
     return files, at_file
 
