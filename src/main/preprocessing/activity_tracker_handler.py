@@ -4,7 +4,7 @@ import pandas as pd
 
 from src.main.util import consts
 from src.main.util.date_util import get_datetime_by_format
-from src.main.util.file_util import get_file_name_from_path, get_original_file_name
+from src.main.util.file_util import get_file_name_from_path, get_original_file_name_with_extension, get_parent_folder
 from src.main.util.language_util import get_extension_by_language
 
 log = logging.getLogger(consts.LOGGER_NAME)
@@ -173,22 +173,30 @@ def merge_code_tracker_and_activity_tracker_data(code_tracker_data: pd.DataFrame
     return code_tracker_data
 
 
-# A: use dropna instead?
 def __remove_nan(items: list):
     return list(filter(lambda x: not pd.isnull(x), items))
 
 
-def get_files_from_at(activity_tracker_data: pd.DataFrame):
+def get_files_from_ati(activity_tracker_data: pd.DataFrame):
     paths = __remove_nan(activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.CURRENT_FILE.value].unique())
-    return list(map(get_file_name_from_path, paths))
+    paths_dict = {}
+    for current_path in paths:
+        path = get_parent_folder(current_path)
+        file = get_file_name_from_path(current_path)
+        if paths_dict.get(file) is None:
+            paths_dict[file] = path
+        else:
+            if paths_dict[file] != path:
+                log.error('Activity tracker data contains several files with the same names')
+                raise ValueError('Activity tracker data contains several files with the same names')
+    return paths_dict.keys()
 
 
 def get_ct_name_from_at_data(ct_file: str, language: consts.LANGUAGE, files_from_at: list):
     log.info('Start getting project file name')
-    # A: now if language is not defined, the extension will be empty (was NONE and raised an error)
     extension = get_extension_by_language(language)
     hashed_file_name = get_file_name_from_path(ct_file)
-    file_name = get_original_file_name(hashed_file_name, extension)
+    file_name = get_original_file_name_with_extension(hashed_file_name, extension)
     does_contain_name = True
     if files_from_at is not None:
         log.info('Start searching the file_name ' + file_name + ' in activity tracker data')
