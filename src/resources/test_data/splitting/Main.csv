@@ -1,0 +1,24 @@
+,fileName,fragment
+0,Main.py,""
+1,Main.py,""
+2,Main.py,"i"
+3,Main.py,"i ="
+4,Main.py,"i = 5 "
+5,Main.py,"i = 5"
+6,Main.py,"i"
+7,Main.py,""
+8,Main.py,"i = 5"
+9,Main.py,"a = int(input())
+b = int(input())
+n = int(input())
+print(str((a * 100 * n + b * n) // 100) + "" "" + str((a * 100 * n + b * n) % 100))"
+10,Main.py,""
+11,Main.py,"a = int(input())
+b = int(input())
+n = int(input())
+print(str((a * 100 * n + b * n) // 100) + "" "" + str((a * 100 * n + b * n) % 100))"
+12,Main.py,"i ="
+13,Main.py,"a = int(input())
+b = int(input())
+n = int(input())
+print(str((a * 100 * n + b * n) // 100) + "" "" + str((a * 100 * n + b * n) % 100))"
