@@ -48,7 +48,7 @@ def get_original_file_name(hashed_file_name: str):
 
 
 def get_original_file_name_with_extension(hashed_file_name: str, extension: str):
-    return "_".join(hashed_file_name.split('_')[:-4]) + '.' + extension
+    return get_original_file_name(hashed_file_name) + '.' + extension
 
 
 def remove_file(file: str):
