@@ -46,8 +46,12 @@ def change_extension_to(file: str, new_extension: str):
     os.rename(file, "".join(file.split(".")[:-1]) + "." + new_extension)
 
 
-def get_original_file_name(hashed_file_name: str, extension: str):
-    return "_".join(hashed_file_name.split('_')[:-4]) + '.' + extension
+def get_original_file_name(hashed_file_name: str):
+    return "_".join(hashed_file_name.split('_')[:-4])
+
+
+def get_original_file_name_with_extension(hashed_file_name: str, extension: str):
+    return get_original_file_name(hashed_file_name) + '.' + extension
 
 
 def remove_file(file: str):
