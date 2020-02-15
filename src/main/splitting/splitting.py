@@ -9,7 +9,7 @@ from src.main.util import consts
 from src.main.preprocessing.code_tracker_handler import get_ct_language
 from src.main.splitting.tasks_tests_handler import check_tasks, create_in_and_out_dict
 from src.main.util.file_util import ct_file_condition, get_all_file_system_items, get_file_name_from_path, \
-    get_parent_folder, get_parent_folder_name
+    get_parent_folder, get_parent_folder_name, get_result_folder
 
 FRAGMENT = consts.CODE_TRACKER_COLUMN.FRAGMENT.value
 
@@ -81,9 +81,8 @@ def find_real_splits(supposed_splits: list):
     return real_splits
 
 
-def write_based_on_language(path, file, data, language):
-    result_folder_name = get_file_name_from_path(path) + "_" + consts.RUNNING_TESTS_RESULT_FOLDER
-    folder_to_write = os.path.join(get_parent_folder(path), result_folder_name, language, get_parent_folder_name(file))
+def write_based_on_language(result_folder, file, data, language):
+    folder_to_write = os.path.join(result_folder, language, get_parent_folder_name(file))
     file_to_write = os.path.join(folder_to_write, get_file_name_from_path(file))
 
     if not os.path.exists(folder_to_write):
@@ -96,11 +95,25 @@ def write_based_on_language(path, file, data, language):
         data.to_csv(file_to_write, encoding='utf8', index=False)
 
 
+def filter_already_tested_files(files, result_folder_path):
+    tested_files = get_all_file_system_items(result_folder_path, ct_file_condition, consts.FILE_SYSTEM_ITEM.FILE.value)
+    # to get something like 'ati_239/Main_2323434_343434.csv'
+    tested_folder_and_file_names = list(map(lambda f: get_parent_folder_name(f) + "/" + get_file_name_from_path(f), tested_files))
+    return list(filter(lambda f: get_parent_folder_name(f) + "/" + get_file_name_from_path(f) not in tested_folder_and_file_names, files))
+
+
 def run_tests(path: str):
     log.info("Start running tests on path " + path)
+    result_folder = get_result_folder(path, consts.RUNNING_TESTS_RESULT_FOLDER)
+
     files = get_all_file_system_items(path, ct_file_condition, consts.FILE_SYSTEM_ITEM.FILE.value)
     str_len_files = str(len(files))
     log.info("Found " + str_len_files + " files to run tests on them")
+
+    files = filter_already_tested_files(files, result_folder)
+    str_len_files = str(len(files))
+    log.info("Found " + str_len_files + " files to run tests on them after filtering already tested")
+
     tasks = [t.value for t in consts.TASK]
     in_and_out_files_dict = create_in_and_out_dict(tasks)
 
@@ -110,4 +123,4 @@ def run_tests(path: str):
         data = pd.read_csv(file, encoding=consts.ENCODING)
         language, data = check_tasks_on_correct_fragments(data, tasks, in_and_out_files_dict, file_log_info)
         log.info("Finish running tests on " + file_log_info + ", " + file)
-        write_based_on_language(path, file, data, language)
+        write_based_on_language(result_folder, file, data, language)

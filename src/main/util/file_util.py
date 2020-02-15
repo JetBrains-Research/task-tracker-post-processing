@@ -99,3 +99,11 @@ def ct_file_condition(name):
 # to get all subdirs that contain ct and at data
 def data_subdirs_condition(name):
     return DATA_FOLDER_WITH_AT in name or DATA_FOLDER_WITHOUT_AT in name
+
+
+# to get path to the result folder that is near to the original folder
+# and has the same name but with a suffix added at the end
+def get_result_folder(folder, result_name_suffix):
+    result_folder_name = get_file_name_from_path(folder) + "_" + result_name_suffix
+    return os.path.join(get_parent_folder(folder), result_folder_name)
+
