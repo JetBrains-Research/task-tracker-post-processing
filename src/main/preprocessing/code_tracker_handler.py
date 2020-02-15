@@ -10,9 +10,7 @@ from src.main.util.language_util import get_language_by_extension
 log = logging.getLogger(consts.LOGGER_NAME)
 
 
-# Todo: rename? fill_column
-def profile_column_handler(data: pd.DataFrame, column: consts.CODE_TRACKER_COLUMN,
-                           default_value: consts.DEFAULT_VALUES):
+def fill_column(data: pd.DataFrame, column: consts.CODE_TRACKER_COLUMN, default_value: consts.DEFAULT_VALUES):
     values = data[column].unique()
     index = np.argwhere((values == default_value) | pd.isnull(values))
     if (index.shape[0] == 0 and len(values) > 1) or len(values) > 2:
@@ -44,11 +42,11 @@ def handle_ct_file(ct_file):
     ct_df = pd.read_csv(ct_file, encoding=consts.ENCODING)
     language = get_ct_language(ct_df)
     ct_df[consts.CODE_TRACKER_COLUMN.LANGUAGE.value] = language
-    ct_df[consts.CODE_TRACKER_COLUMN.AGE.value] = profile_column_handler(ct_df,
-                                                                         consts.CODE_TRACKER_COLUMN.AGE.value,
-                                                                         consts.DEFAULT_VALUES.AGE.value)
-    ct_df[consts.CODE_TRACKER_COLUMN.EXPERIENCE.value] = profile_column_handler(ct_df,
-                                                                                consts.CODE_TRACKER_COLUMN.EXPERIENCE.value,
-                                                                                consts.DEFAULT_VALUES.EXPERIENCE.value)
+    ct_df[consts.CODE_TRACKER_COLUMN.AGE.value] = fill_column(ct_df,
+                                                              consts.CODE_TRACKER_COLUMN.AGE.value,
+                                                              consts.DEFAULT_VALUES.AGE.value)
+    ct_df[consts.CODE_TRACKER_COLUMN.EXPERIENCE.value] = fill_column(ct_df,
+                                                                     consts.CODE_TRACKER_COLUMN.EXPERIENCE.value,
+                                                                     consts.DEFAULT_VALUES.EXPERIENCE.value)
     return ct_df, language
 
