@@ -4,7 +4,7 @@ from enum import Enum
 from src.main.util import consts
 from src.main.util.consts import TASK
 from src.main.util.consts import TEST_DATA_PATH
-from main.splitting import tasks_tests_handler as tth
+from src.main.splitting import tasks_tests_handler as tth
 from src.main.util.file_util import get_content_from_file
 
 log = logging.getLogger(consts.LOGGER_NAME)
