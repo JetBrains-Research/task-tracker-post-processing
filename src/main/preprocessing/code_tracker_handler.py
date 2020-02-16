@@ -37,7 +37,7 @@ def get_ct_language(data: pd.DataFrame):
     return consts.LANGUAGE.NOT_DEFINED.value
 
 
-def handle_ct_file(ct_file):
+def handle_ct_file(ct_file: str):
     log.info('Start handling the file ' + ct_file)
     ct_df = pd.read_csv(ct_file, encoding=consts.ENCODING)
     language = get_ct_language(ct_df)

@@ -206,13 +206,13 @@ def is_python_file_correct(filename: str):
     return False
 
 
-def check_python_file_by_mypy(file_name):
+def check_python_file_by_mypy(file_name: str):
     call_args = ['mypy', file_name]
     is_valid = __compile_program(call_args)
     return is_valid
 
 
-def is_source_file_correct(source_file, language=LANGUAGE.PYTHON.value):
+def is_source_file_correct(source_file: str, language=LANGUAGE.PYTHON.value):
     if language == LANGUAGE.PYTHON.value:
         is_correct = is_python_file_correct(__get_compiled_file(source_file) + "." + get_extension_by_language(language))
     else:
@@ -222,7 +222,7 @@ def is_source_file_correct(source_file, language=LANGUAGE.PYTHON.value):
     return is_correct
 
 
-def check_before_tests(source_file, source_code, tasks, language):
+def check_before_tests(source_file: str, source_code: str, tasks: list, language=LANGUAGE.PYTHON.value):
     test_results = []
     need_to_run_tests = True
     rate = consts.TEST_RESULT.CORRECT_CODE.value

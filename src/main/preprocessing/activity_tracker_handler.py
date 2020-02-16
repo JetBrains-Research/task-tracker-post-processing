@@ -209,7 +209,7 @@ def get_ct_name_from_at_data(ct_file: str, language: consts.LANGUAGE, files_from
     return file_name, does_contain_name
 
 
-def handle_at_file(at_file):
+def handle_at_file(at_file: str):
     at_df = None
     if at_file:
         at_df = pd.read_csv(at_file, encoding=consts.ENCODING,

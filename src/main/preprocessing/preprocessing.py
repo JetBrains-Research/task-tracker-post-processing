@@ -1,18 +1,14 @@
 import csv
 import logging
-import os
-from os import makedirs
 
 import pandas as pd
 
-from src.main.preprocessing.activity_tracker_handler import handle_at_file, get_ct_name_from_at_data, \
-    get_files_from_ati
-from src.main.preprocessing.code_tracker_handler import handle_ct_file
-from src.main.preprocessing import activity_tracker_handler as ath
 from src.main.util import consts
+from src.main.preprocessing import activity_tracker_handler as ath
+from src.main.preprocessing.code_tracker_handler import handle_ct_file
+from src.main.preprocessing.activity_tracker_handler import handle_at_file, get_ct_name_from_at_data, get_files_from_ati
 from src.main.util.file_util import get_original_file_name, get_all_file_system_items, data_subdirs_condition, \
-    csv_file_condition, get_parent_folder, get_parent_folder_name, get_file_name_from_path, get_result_folder, \
-    write_result
+    csv_file_condition, get_parent_folder_name, get_result_folder, write_result
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -59,7 +55,7 @@ def __separate_at_and_other_files(files: list):
     return files, at_file
 
 
-def handle_ct_and_at(ct_file, ct_df, at_file, at_df, language):
+def handle_ct_and_at(ct_file: str, ct_df: pd.DataFrame, at_file: str, at_df: pd.DataFrame, language=consts.LANGUAGE.PYTHON.value):
     files_from_at = None
     if at_df is not None:
         try:
@@ -80,7 +76,7 @@ def handle_ct_and_at(ct_file, ct_df, at_file, at_df, language):
     return ct_df
 
 
-def preprocess_data(path):
+def preprocess_data(path: str):
     result_folder = get_result_folder(path, consts.PREPROCESSING_RESULT_FOLDER)
     folders = get_all_file_system_items(path, data_subdirs_condition, consts.FILE_SYSTEM_ITEM.SUBDIR.value)
     for folder in folders:

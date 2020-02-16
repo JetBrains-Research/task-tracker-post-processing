@@ -1,15 +1,12 @@
-import os
 import logging
-from os import makedirs
 
-import numpy as np
 import pandas as pd
 
 from src.main.util import consts
 from src.main.preprocessing.code_tracker_handler import get_ct_language
 from src.main.splitting.tasks_tests_handler import check_tasks, create_in_and_out_dict
-from src.main.util.file_util import ct_file_condition, get_all_file_system_items, get_file_name_from_path, \
-    get_parent_folder, get_parent_folder_name, get_result_folder, write_based_on_language
+from src.main.util.file_util import ct_file_condition, get_all_file_system_items, get_file_name_from_path,\
+    get_parent_folder_name, get_result_folder, write_based_on_language
 
 FRAGMENT = consts.CODE_TRACKER_COLUMN.FRAGMENT.value
 
@@ -20,11 +17,6 @@ def get_tasks_with_max_rate(tasks: list, test_results: list):
     max_rate = max(test_results)
     indices = [i for i, tr in enumerate(test_results) if tr == max_rate]
     return [tasks[i] for i in indices], max_rate
-
-
-def check_tasks_on_fragment_and_add_to_dict(fragment, dict, tasks, in_and_out_files_dict, language):
-    print("hey")
-    # dict[fragment] = check_tasks(tasks, fragment, in_and_out_files_dict, language)
 
 
 def check_tasks_on_correct_fragments(data: pd.DataFrame, tasks: list, in_and_out_files_dict: dict, file_log_info=""):
@@ -81,7 +73,7 @@ def find_real_splits(supposed_splits: list):
     return real_splits
 
 
-def filter_already_tested_files(files, result_folder_path):
+def filter_already_tested_files(files: list, result_folder_path: str):
     tested_files = get_all_file_system_items(result_folder_path, ct_file_condition, consts.FILE_SYSTEM_ITEM.FILE.value)
     # to get something like 'ati_239/Main_2323434_343434.csv'
     tested_folder_and_file_names = list(map(lambda f: get_parent_folder_name(f) + "/" + get_file_name_from_path(f), tested_files))

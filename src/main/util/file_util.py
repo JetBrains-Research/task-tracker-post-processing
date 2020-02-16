@@ -4,16 +4,16 @@ import shutil
 import pandas as pd
 
 from src.main.util.consts import ACTIVITY_TRACKER_FILE_NAME, FILE_SYSTEM_ITEM, DATA_FOLDER_WITH_AT, \
-    DATA_FOLDER_WITHOUT_AT, ENCODING
+    DATA_FOLDER_WITHOUT_AT, ENCODING, LANGUAGE
 
 
-def remove_slash(path):
+def remove_slash(path: str):
     if path[-1] == '/':
         path = path[:-1]
     return path
 
 
-def add_slash(path):
+def add_slash(path: str):
     if path[-1] != '/':
         path += '/'
     return path
@@ -93,23 +93,23 @@ def get_all_file_system_items(root: str, item_condition, item_type=FILE_SYSTEM_I
     return items
 
 
-def csv_file_condition(name):
+def csv_file_condition(name: str):
     return get_extension_from_file(name) == "csv"
 
 
 # to get all codetracker files
-def ct_file_condition(name):
+def ct_file_condition(name: str):
     return ACTIVITY_TRACKER_FILE_NAME not in name and csv_file_condition(name)
 
 
 # to get all subdirs that contain ct and at data
-def data_subdirs_condition(name):
+def data_subdirs_condition(name: str):
     return DATA_FOLDER_WITH_AT in name or DATA_FOLDER_WITHOUT_AT in name
 
 
 # to get path to the result folder that is near to the original folder
 # and has the same name but with a suffix added at the end
-def get_result_folder(folder, result_name_suffix):
+def get_result_folder(folder: str, result_name_suffix: str):
     result_folder_name = get_file_name_from_path(folder) + "_" + result_name_suffix
     return os.path.join(get_parent_folder(folder), result_folder_name)
 
@@ -140,7 +140,7 @@ def write_result(result_folder: str, path: str, file: str, df: pd.DataFrame):
 # to write a dataframe to the result_folder based on the language and remaining only the parent folder structure
 # for example, for file path/folder1/folder2/ati_566/file.csv and python language the dataframe will be
 # written to result_folder/python/ati_566/file.csv
-def write_based_on_language(result_folder, file, df, language):
+def write_based_on_language(result_folder: str, file: str, df: pd.DataFrame, language=LANGUAGE.PYTHON.value):
     folder_to_write = os.path.join(result_folder, language, get_parent_folder_name(file))
     file_to_write = os.path.join(folder_to_write, get_file_name_from_path(file))
     check_folder_and_write_df_to_file(folder_to_write, file_to_write, df)
