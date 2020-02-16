@@ -1,8 +1,10 @@
 import os
 import shutil
 
+import pandas as pd
+
 from src.main.util.consts import ACTIVITY_TRACKER_FILE_NAME, FILE_SYSTEM_ITEM, DATA_FOLDER_WITH_AT, \
-    DATA_FOLDER_WITHOUT_AT
+    DATA_FOLDER_WITHOUT_AT, ENCODING
 
 
 def remove_slash(path):
@@ -110,4 +112,36 @@ def data_subdirs_condition(name):
 def get_result_folder(folder, result_name_suffix):
     result_folder_name = get_file_name_from_path(folder) + "_" + result_name_suffix
     return os.path.join(get_parent_folder(folder), result_folder_name)
+
+
+def check_folder_and_write_df_to_file(folder_to_write: str, file_to_write: str, df: pd.DataFrame):
+    if not os.path.exists(folder_to_write):
+        os.makedirs(folder_to_write)
+
+    # get error with this encoding=ENCODING on ati_225/153e12:
+    # "UnicodeEncodeError: 'latin-1' codec can't encode character '\u0435' in position 36: ordinal not in range(256)"
+    # So change it then to 'utf-8'
+    try:
+        df.to_csv(file_to_write, encoding=ENCODING, index=False)
+    except UnicodeEncodeError:
+        df.to_csv(file_to_write, encoding='utf8', index=False)
+
+
+# to write a dataframe to the result_folder remaining the same file structure as it was before
+# for example, for file path/folder1/folder2/ati_566/file.csv the dataframe will be 
+# written to result_folder/folder1/folder2/ati_566/file.csv
+def write_result(result_folder: str, path: str, file: str, df: pd.DataFrame):
+    path_from_result_folder_to_file = file[len(path):]
+    file_to_write = os.path.join(result_folder, path_from_result_folder_to_file)
+    folder_to_write = get_parent_folder(file_to_write)
+    check_folder_and_write_df_to_file(folder_to_write, file_to_write, df)
+
+
+# to write a dataframe to the result_folder based on the language and remaining only the parent folder structure
+# for example, for file path/folder1/folder2/ati_566/file.csv and python language the dataframe will be
+# written to result_folder/python/ati_566/file.csv
+def write_based_on_language(result_folder, file, df, language):
+    folder_to_write = os.path.join(result_folder, language, get_parent_folder_name(file))
+    file_to_write = os.path.join(folder_to_write, get_file_name_from_path(file))
+    check_folder_and_write_df_to_file(folder_to_write, file_to_write, df)
 

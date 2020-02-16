@@ -11,31 +11,10 @@ from src.main.preprocessing.code_tracker_handler import handle_ct_file
 from src.main.preprocessing import activity_tracker_handler as ath
 from src.main.util import consts
 from src.main.util.file_util import get_original_file_name, get_all_file_system_items, data_subdirs_condition, \
-    csv_file_condition, get_parent_folder, get_parent_folder_name, get_file_name_from_path
+    csv_file_condition, get_parent_folder, get_parent_folder_name, get_file_name_from_path, get_result_folder, \
+    write_result
 
 log = logging.getLogger(consts.LOGGER_NAME)
-
-
-# Write result next to the passed path to not disorder the passed data folder
-# The name of result folder contains the passed data folder name
-def __write_result(path: str, file: str, result_df: pd.DataFrame):
-    path_folder_name = get_file_name_from_path(path)
-    result_folder_name = path_folder_name + "_" + consts.PREPROCESSING_RESULT_FOLDER
-    path_from_result_folder_to_file = file[len(path):]
-
-    file_to_write = os.path.join(get_parent_folder(path), result_folder_name, path_from_result_folder_to_file)
-    folder_to_write = get_parent_folder(file_to_write)
-
-    if not os.path.exists(folder_to_write):
-        makedirs(folder_to_write)
-
-    # get error with this encoding=ENCODING on ati_225/153e12:
-    # "UnicodeEncodeError: 'latin-1' codec can't encode character '\u0435' in position 36: ordinal not in range(256)"
-    # So change it then to 'utf-8'
-    try:
-        result_df.to_csv(file_to_write, encoding=consts.ENCODING, index=False)
-    except UnicodeEncodeError:
-        result_df.to_csv(file_to_write, encoding='utf8', index=False)
 
 
 def __is_ct_file(csv_file: str):
@@ -102,6 +81,7 @@ def handle_ct_and_at(ct_file, ct_df, at_file, at_df, language):
 
 
 def preprocess_data(path):
+    result_folder = get_result_folder(path, consts.PREPROCESSING_RESULT_FOLDER)
     folders = get_all_file_system_items(path, data_subdirs_condition, consts.FILE_SYSTEM_ITEM.SUBDIR.value)
     for folder in folders:
         log.info('Start handling the folder ' + folder)
@@ -118,7 +98,7 @@ def preprocess_data(path):
             ct_df, language = handle_ct_file(ct_file)
             ct_df = handle_ct_and_at(ct_file, ct_df, at_file, at_df, language)
 
-            # look into
-            __write_result(path, ct_file, ct_df)
+            write_result(result_folder, path, ct_file, ct_df)
 
         log.info('Finish handling the folder ' + folder)
+    return result_folder
