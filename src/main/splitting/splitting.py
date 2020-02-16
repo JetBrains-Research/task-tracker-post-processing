@@ -9,7 +9,7 @@ from src.main.util import consts
 from src.main.preprocessing.code_tracker_handler import get_ct_language
 from src.main.splitting.tasks_tests_handler import check_tasks, create_in_and_out_dict
 from src.main.util.file_util import ct_file_condition, get_all_file_system_items, get_file_name_from_path, \
-    get_parent_folder, get_parent_folder_name, get_result_folder
+    get_parent_folder, get_parent_folder_name, get_result_folder, write_based_on_language
 
 FRAGMENT = consts.CODE_TRACKER_COLUMN.FRAGMENT.value
 
@@ -81,20 +81,6 @@ def find_real_splits(supposed_splits: list):
     return real_splits
 
 
-def write_based_on_language(result_folder, file, data, language):
-    folder_to_write = os.path.join(result_folder, language, get_parent_folder_name(file))
-    file_to_write = os.path.join(folder_to_write, get_file_name_from_path(file))
-
-    if not os.path.exists(folder_to_write):
-        makedirs(folder_to_write)
-
-    log.info("Write file: " + file + " to: " + file_to_write)
-    try:
-        data.to_csv(file_to_write, encoding=consts.ENCODING, index=False)
-    except UnicodeEncodeError:
-        data.to_csv(file_to_write, encoding='utf8', index=False)
-
-
 def filter_already_tested_files(files, result_folder_path):
     tested_files = get_all_file_system_items(result_folder_path, ct_file_condition, consts.FILE_SYSTEM_ITEM.FILE.value)
     # to get something like 'ati_239/Main_2323434_343434.csv'
@@ -124,3 +110,5 @@ def run_tests(path: str):
         language, data = check_tasks_on_correct_fragments(data, tasks, in_and_out_files_dict, file_log_info)
         log.info("Finish running tests on " + file_log_info + ", " + file)
         write_based_on_language(result_folder, file, data, language)
+
+    return result_folder
