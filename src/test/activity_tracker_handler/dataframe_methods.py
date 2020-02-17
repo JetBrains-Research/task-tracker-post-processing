@@ -63,7 +63,7 @@ def get_data_for_filter_test():
     ati_df = pd.read_csv(consts.TEST_DATA_PATH + '/' + folder + '/' + 'ide-events_1_uni_res.csv',
                          encoding=consts.ENCODING,
                          names=consts.ACTIVITY_TRACKER_COLUMN.activity_tracker_columns())
-    ati_df = ath.__filter_at_data(ati_df)
+    ati_df = ath.__filter_ati_data(ati_df)
 
     ati_df_right = pd.read_csv(consts.TEST_DATA_PATH + '/' + folder + '/' + 'ide-events_1_filter_res.csv',
                                encoding=consts.ENCODING,
