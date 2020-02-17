@@ -18,11 +18,11 @@ class SOLUTION(Enum):
 
 
 def get_actual_rate(task: str, language: str, code: str, in_and_out_files_dict: dict):
-    return tth.check_tasks([task], code, in_and_out_files_dict, language)[0]
+    return tth.check_tasks([task], code, in_and_out_files_dict, language, False)[0]
 
 
 def get_source_code(task: str, language: str, solution: str):
-    return get_content_from_file(TEST_DATA_PATH + "/tasks_tests_handler/" + task + "/"
+    return get_content_from_file(TEST_DATA_PATH + "/splitting/tasks_tests_handler/" + task + "/"
                                  + language + "/" + solution + ".txt")
 
 

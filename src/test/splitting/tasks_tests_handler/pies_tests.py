@@ -3,7 +3,7 @@ import unittest
 
 from src.main.util import consts
 from src.main.util.consts import LANGUAGE, TASK
-from src.test.tasks_tests_handler.util import test_task, SOLUTION
+from src.test.splitting.tasks_tests_handler.util import test_task, SOLUTION
 
 python_actual_pairs = {
     SOLUTION.FULL.value: (8, 8),
