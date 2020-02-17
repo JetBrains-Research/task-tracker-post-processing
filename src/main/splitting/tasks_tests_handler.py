@@ -104,15 +104,28 @@ def __run_python_test(in_file: str, expected_out: str, task: str, source_file_na
     try:
         signal.alarm(consts.MAX_SECONDS_TO_WAIT_TEST)
         out, err = p2.communicate()
+        p2.stdout.close()
         actual_out = out.decode("utf-8").rstrip("\n")
         log.info("In-file: " + in_file + ", task: " + task + ", expected out: " + expected_out + ", actual out: " + actual_out)
         return actual_out == expected_out
     except TimeoutException:
-        log.info("In-file: " + in_file + ", task: " + task + ", Time is out")
+        try:
+            log.info("In-file: " + in_file + ", task: " + task + ", Time is out")
+            return False
+        except BrokenPipeError:
+            log.info("In-file: " + in_file + ", task: " + task + ", Pipe is broken")
+            return False
+    except BrokenPipeError:
+        log.info("In-file: " + in_file + ", task: " + task + ", Pipe is broken")
         return False
     except:
-        log.info("In-file: " + in_file + ", task: " + task + ", some error")
-        return False
+        try:
+            log.info("In-file: " + in_file + ", task: " + task + ", some error")
+            return False
+        except BrokenPipeError:
+            log.info("In-file: " + in_file + ", task: " + task + ", Pipe is broken")
+            return False
+
 
 
 # Run test for compiled languages
