@@ -3,8 +3,8 @@ import shutil
 
 import pandas as pd
 
-from src.main.util.consts import ACTIVITY_TRACKER_FILE_NAME, FILE_SYSTEM_ITEM, DATA_FOLDER_WITH_AT, \
-    DATA_FOLDER_WITHOUT_AT, ENCODING, LANGUAGE
+from src.main.util.consts import ACTIVITY_TRACKER_FILE_NAME, FILE_SYSTEM_ITEM, DATA_FOLDER_WITH_ATI, \
+    DATA_FOLDER_WITHOUT_ATI, ENCODING, LANGUAGE
 
 
 def remove_slash(path: str):
@@ -102,9 +102,9 @@ def ct_file_condition(name: str):
     return ACTIVITY_TRACKER_FILE_NAME not in name and csv_file_condition(name)
 
 
-# to get all subdirs that contain ct and at data
+# to get all subdirs that contain ct and ati data
 def data_subdirs_condition(name: str):
-    return DATA_FOLDER_WITH_AT in name or DATA_FOLDER_WITHOUT_AT in name
+    return DATA_FOLDER_WITH_ATI in name or DATA_FOLDER_WITHOUT_ATI in name
 
 
 # to get path to the result folder that is near to the original folder

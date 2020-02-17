@@ -145,8 +145,8 @@ LOGGER_TEST_FILE = ROOT_DIR + '../../../../test_logs.log'
 PATH_CMD_ARG = '-path'
 ENCODING = 'ISO-8859-1'
 
-DATA_FOLDER_WITH_AT = 'ati_'
-DATA_FOLDER_WITHOUT_AT = 'di_'
+DATA_FOLDER_WITH_ATI = 'ati_'
+DATA_FOLDER_WITHOUT_ATI = 'di_'
 ACTIVITY_TRACKER_FILE_NAME = 'ide-events'
 
 DATE_TIME_FORMAT = '%Y-%m-%dT%H:%M:%S.%f%z'
