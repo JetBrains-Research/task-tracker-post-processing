@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 from main.plots import consts
 from src.main.plots.consts import SHORT_NAME_LENGTH
-from src.main.util.consts import ENCODING, LOGGER_NAME, CODE_TRACKER_COLUMN
+from src.main.util.consts import ISO_ENCODING, LOGGER_NAME, CODE_TRACKER_COLUMN
 from src.main.util.file_util import get_parent_folder, get_file_name_from_path, get_parent_folder_name
 
 log = logging.getLogger(LOGGER_NAME)
@@ -35,7 +35,7 @@ def get_task_color(t):
 def show_colored_fragment_size_plot_with_splits(path, to_save=False, splits=None):
     if splits is None:
         splits = []
-    data = pd.read_csv(path, encoding=ENCODING)
+    data = pd.read_csv(path, encoding=ISO_ENCODING)
 
     fig, ax = plt.subplots()
 

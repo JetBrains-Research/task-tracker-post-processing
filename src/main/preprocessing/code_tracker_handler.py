@@ -39,7 +39,7 @@ def get_ct_language(data: pd.DataFrame):
 
 def handle_ct_file(ct_file: str):
     log.info('Start handling the file ' + ct_file)
-    ct_df = pd.read_csv(ct_file, encoding=consts.ENCODING)
+    ct_df = pd.read_csv(ct_file, encoding=consts.ISO_ENCODING)
     language = get_ct_language(ct_df)
     ct_df[consts.CODE_TRACKER_COLUMN.LANGUAGE.value] = language
     ct_df[consts.CODE_TRACKER_COLUMN.AGE.value] = fill_column(ct_df,

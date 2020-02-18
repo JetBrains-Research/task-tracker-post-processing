@@ -23,8 +23,7 @@ def __get_data_path():
     if not os.path.isdir(path):
         log.error("It's not a folder, passed path is " + path)
         sys.exit(1)
-    path = add_slash(path)
-    return path
+    return add_slash(path)
 
 
 def main():

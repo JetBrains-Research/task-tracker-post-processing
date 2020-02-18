@@ -14,7 +14,7 @@ log = logging.getLogger(consts.LOGGER_NAME)
 
 
 def __is_ct_file(csv_file: str):
-    with open(csv_file, encoding=consts.ENCODING) as f:
+    with open(csv_file, encoding=consts.ISO_ENCODING) as f:
         reader = csv.reader(f)
         try:
             if consts.CODE_TRACKER_COLUMN.CHOSEN_TASK.value in next(reader):
