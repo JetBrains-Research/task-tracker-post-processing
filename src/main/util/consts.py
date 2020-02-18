@@ -91,11 +91,12 @@ class FILE_SYSTEM_ITEM(Enum):
     FILE = 2
 
 
+# add the dot to extensions to be consistent with extensions getting in 'os.path' module
 EXTENSION_TO_LANGUAGE_DICT = {
-    'py': LANGUAGE.PYTHON.value,
-    'java': LANGUAGE.JAVA.value,
-    'kt': LANGUAGE.KOTLIN.value,
-    'cpp': LANGUAGE.CPP.value,
+    '.py': LANGUAGE.PYTHON.value,
+    '.java': LANGUAGE.JAVA.value,
+    '.kt': LANGUAGE.KOTLIN.value,
+    '.cpp': LANGUAGE.CPP.value,
     '': LANGUAGE.NOT_DEFINED.value
 }
 
@@ -125,10 +126,10 @@ LANGUAGE_TO_MIN_SYMBOLS = {
 }
 
 LANGUAGE_TO_OUTPUT = {
-    LANGUAGE.PYTHON.value: "print",
-    LANGUAGE.JAVA.value: "System.out.print",
-    LANGUAGE.KOTLIN.value: "print",
-    LANGUAGE.CPP.value: "cout",
+    LANGUAGE.PYTHON.value: ['print'],
+    LANGUAGE.JAVA.value: ['System.out.print'],
+    LANGUAGE.KOTLIN.value: ['print'],
+    LANGUAGE.CPP.value: ['cout', 'printf']
 }
 
 class SPLIT_DICT(Enum):
@@ -143,10 +144,11 @@ LOGGER_NAME = 'main_logger'
 LOGGER_TEST_FILE = ROOT_DIR + '../../../../test_logs.log'
 
 PATH_CMD_ARG = '-path'
-ENCODING = 'ISO-8859-1'
+ISO_ENCODING = 'ISO-8859-1'
+UTF_ENCODING = 'utf8'
 
-DATA_FOLDER_WITH_ATI = 'ati_'
-DATA_FOLDER_WITHOUT_ATI = 'di_'
+ATI_DATA_FOLDER = 'ati_'
+DI_DATA_FOLDER = 'di_'
 ACTIVITY_TRACKER_FILE_NAME = 'ide-events'
 
 DATE_TIME_FORMAT = '%Y-%m-%dT%H:%M:%S.%f%z'
@@ -157,12 +159,11 @@ TEST_DATA_PATH = ROOT_DIR + '/../../resources/test_data'
 PREPROCESSING_RESULT_FOLDER = 'preprocessing_result'
 
 # v 2.0 - with stopping after the first break
-RUNNING_TESTS_RESULT_FOLDER = 'running_tests_result2'
+RUNNING_TESTS_RESULT_FOLDER = 'running_tests_result_2'
 
 MAX_DIFF_SYMBOLS = 30
 
 MAX_SECONDS_TO_WAIT_TEST = 5
-
 
 
 

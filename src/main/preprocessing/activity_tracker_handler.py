@@ -3,7 +3,7 @@ import logging
 import pandas as pd
 
 from src.main.util import consts
-from src.main.util.date_util import get_datetime_by_format
+from src.main.util.time_util import get_datetime_by_format
 from src.main.util.file_util import get_file_name_from_path, get_original_file_name_with_extension, get_parent_folder
 from src.main.util.language_util import get_extension_by_language
 
@@ -212,7 +212,7 @@ def get_ct_name_from_ati_data(ct_file: str, language: consts.LANGUAGE, files_fro
 def handle_ati_file(ati_file: str):
     ati_df = None
     if ati_file:
-        ati_df = pd.read_csv(ati_file, encoding=consts.ENCODING,
-                            names=consts.ACTIVITY_TRACKER_COLUMN.activity_tracker_columns())
+        ati_df = pd.read_csv(ati_file, encoding=consts.ISO_ENCODING,
+                             names=consts.ACTIVITY_TRACKER_COLUMN.activity_tracker_columns())
         ati_df = preprocess_activity_tracker_data(ati_df)
     return ati_df
