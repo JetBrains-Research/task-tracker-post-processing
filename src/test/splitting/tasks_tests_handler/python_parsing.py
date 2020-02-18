@@ -1,12 +1,13 @@
+import os
 import unittest
 
-from src.main.splitting.tasks_tests_handler import is_valid_python_file
 from src.main.util.consts import TEST_DATA_PATH
 from src.main.util.file_util import get_all_file_system_items
+from main.splitting.tasks_tests_handler import check_python_file_by_mypy
 
-PARSING_TEST_DATA_PATH = TEST_DATA_PATH + "/tasks_tests_handler/python_parsing/"
+PARSING_TEST_DATA_PATH = os.path.join(TEST_DATA_PATH, "splitting/tasks_tests_handler/python_parsing/")
 
-
+# to check which errors mypy can catch
 class TestPythonParsing(unittest.TestCase):
 
     def test_all_python_errors(self):
