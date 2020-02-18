@@ -21,7 +21,7 @@ def __get_data_path():
     args = sys.argv
     path = args[args.index(PATH_CMD_ARG) + 1]
     if not os.path.isdir(path):
-        log.error("It's not a folder, passed path is " + path)
+        log.error(f'It is not a folder, passed path is {path}')
         sys.exit(1)
     return add_slash(path)
 
@@ -35,13 +35,13 @@ def main():
 
     # run tests for all tasks and write their results in ct data
     # pass the path from previous action?
-    log.info("Current time:" + str(datetime.datetime.now()))
+    log.info(f'Current time: {str(datetime.datetime.now())}')
     run_tests(path)
-    log.info("Current time:" + str(datetime.datetime.now()))
+    log.info(f'Current time: {str(datetime.datetime.now())}')
 
 
     # there should be splitting then
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

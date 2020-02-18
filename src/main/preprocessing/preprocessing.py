@@ -80,7 +80,7 @@ def preprocess_data(path: str):
     result_folder = get_result_folder(path, consts.PREPROCESSING_RESULT_FOLDER)
     folders = get_all_file_system_items(path, data_subdirs_condition, consts.FILE_SYSTEM_ITEM.SUBDIR.value)
     for folder in folders:
-        log.info('Start handling the folder ' + folder)
+        log.info(f'Start handling the folder {folder}')
         files = get_all_file_system_items(folder, csv_file_condition, consts.FILE_SYSTEM_ITEM.FILE.value)
         try:
             ct_files, ati_file = __separate_ati_and_other_files(files)
@@ -96,5 +96,5 @@ def preprocess_data(path: str):
 
             write_result(result_folder, path, ct_file, ct_df)
 
-        log.info('Finish handling the folder ' + folder)
+        log.info(f'Finish handling the folder {folder}')
     return result_folder

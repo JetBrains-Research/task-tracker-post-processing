@@ -5,7 +5,7 @@ import pandas as pd
 from src.main.util import consts
 from src.main.preprocessing.code_tracker_handler import get_ct_language
 from src.main.splitting.tasks_tests_handler import check_tasks, create_in_and_out_dict
-from src.main.util.file_util import ct_file_condition, get_all_file_system_items, get_file_name_from_path, \
+from src.main.util.file_util import ct_file_condition, get_all_file_system_items, get_name_from_path, \
     get_parent_folder_name, get_result_folder, write_based_on_language
 
 FRAGMENT = consts.CODE_TRACKER_COLUMN.FRAGMENT.value
@@ -25,18 +25,17 @@ def check_tasks_on_correct_fragments(data: pd.DataFrame, tasks: list, in_and_out
     # if run after preprocessing, this value can be taken from 'language' column
     language = get_ct_language(data)
     # add unique to logs
-    log.info(file_log_info + ', language is ' + language + ', found ' + str(data.shape[0]) + ' fragments')
+    log.info(f'{file_log_info}, language is {language}, found {str(data.shape[0])} fragments')
 
     if language is consts.LANGUAGE.NOT_DEFINED.value:
         data[TESTS_RESULTS] = str([consts.TEST_RESULT.LANGUAGE_NOT_DEFINED.value] * len(tasks))
     else:
         unique_fragments = list(data[FRAGMENT].unique())
-        log.info('Found ' + str(len(unique_fragments)) + ' unique fragments')
+        log.info(f'Found {str(len(unique_fragments))} unique fragments')
 
         fragment_to_test_results_dict = dict(
             map(lambda f: (f, check_tasks(tasks, f, in_and_out_files_dict, language)), unique_fragments))
         data[TESTS_RESULTS] = data.apply(lambda row: fragment_to_test_results_dict[row[FRAGMENT]], axis=1)
-
 
     return language, data
 
@@ -80,7 +79,7 @@ def find_real_splits(supposed_splits: list):
 
 
 def get_file_and_parent_folder_names(file: str):
-    return get_parent_folder_name(file) + '/' + get_file_name_from_path(file)
+    return os.path.join(get_parent_folder_name(file), get_name_from_path(file))
 
 
 def filter_already_tested_files(files: list, result_folder_path: str):
@@ -92,26 +91,26 @@ def filter_already_tested_files(files: list, result_folder_path: str):
 
 
 def run_tests(path: str):
-    log.info('Start running tests on path ' + path)
+    log.info(f'Start running tests on path {path}')
     result_folder = get_result_folder(path, consts.RUNNING_TESTS_RESULT_FOLDER)
 
     files = get_all_file_system_items(path, ct_file_condition, consts.FILE_SYSTEM_ITEM.FILE.value)
     str_len_files = str(len(files))
-    log.info('Found ' + str_len_files + ' files to run tests on them')
+    log.info(f'Found {str_len_files} files to run tests on them')
 
     files = filter_already_tested_files(files, result_folder)
     str_len_files = str(len(files))
-    log.info('Found ' + str_len_files + ' files to run tests on them after filtering already tested')
+    log.info(f'Found {str_len_files} files to run tests on them after filtering already tested')
 
     tasks = [t.value for t in consts.TASK]
     in_and_out_files_dict = create_in_and_out_dict(tasks)
 
     for i, file in enumerate(files):
-        file_log_info = 'file: ' + str(i + 1) + '/' + str_len_files
-        log.info('Start running tests on ' + file_log_info + ', ' + file)
+        file_log_info = f'file: {str(i + 1)}/{str_len_files}'
+        log.info(f'Start running tests on {file_log_info}, {file}')
         data = pd.read_csv(file, encoding=consts.ISO_ENCODING)
         language, data = check_tasks_on_correct_fragments(data, tasks, in_and_out_files_dict, file_log_info)
-        log.info('Finish running tests on ' + file_log_info + ', ' + file)
+        log.info(f'Finish running tests on {file_log_info}, {file}')
         write_based_on_language(result_folder, file, data, language)
 
     return result_folder

@@ -1,10 +1,11 @@
+import os
 import unittest
 import pandas as pd
 
 from src.main.util import consts
 from src.main.preprocessing import activity_tracker_handler as ath
 
-ath_test_folder = consts.TEST_DATA_PATH + '/preprocessing/activity_tracker_handler'
+ath_test_folder = os.path.join(consts.TEST_DATA_PATH, 'preprocessing/activity_tracker_handler')
 
 right_df = pd.DataFrame({'Number': [10, 11, 12, 13, 14], 'Key': ['A', 'B', 'C', 'D', 'E']})
 
@@ -50,11 +51,11 @@ def get_data_for_insert_at_the_end_test():
 
 def get_data_for_unification_test():
     folder = 'preparing'
-    ati_df = pd.read_csv(ath_test_folder + '/' + folder + '/' + 'ide-events_1.csv', encoding=consts.ISO_ENCODING,
+    ati_df = pd.read_csv(os.path.join(ath_test_folder, folder, 'ide-events_1.csv'), encoding=consts.ISO_ENCODING,
                          names=consts.ACTIVITY_TRACKER_COLUMN.activity_tracker_columns())
     ati_df = ath.__unify_activity_tracker_columns(ati_df)
 
-    ati_df_right = pd.read_csv(ath_test_folder + '/' + folder + '/' + 'ide-events_1_uni_res.csv',
+    ati_df_right = pd.read_csv(os.path.join(ath_test_folder, folder, 'ide-events_1_uni_res.csv'),
                                encoding=consts.ISO_ENCODING,
                                names=consts.ACTIVITY_TRACKER_COLUMN.activity_tracker_columns())
     return ati_df, ati_df_right
@@ -62,12 +63,12 @@ def get_data_for_unification_test():
 
 def get_data_for_filter_test():
     folder = 'preparing'
-    ati_df = pd.read_csv(ath_test_folder + '/' + folder + '/' + 'ide-events_1_uni_res.csv',
+    ati_df = pd.read_csv(os.path.join(ath_test_folder, folder, 'ide-events_1_uni_res.csv'),
                          encoding=consts.ISO_ENCODING,
                          names=consts.ACTIVITY_TRACKER_COLUMN.activity_tracker_columns())
     ati_df = ath.__filter_ati_data(ati_df)
 
-    ati_df_right = pd.read_csv(ath_test_folder + '/' + folder + '/' + 'ide-events_1_filter_res.csv',
+    ati_df_right = pd.read_csv(os.path.join(ath_test_folder, folder, 'ide-events_1_filter_res.csv'),
                                encoding=consts.ISO_ENCODING,
                                names=consts.ACTIVITY_TRACKER_COLUMN.activity_tracker_columns())
     return ati_df, ati_df_right
@@ -85,12 +86,12 @@ def __replace_nan_in_ati_columns(merged_data: pd.DataFrame):
 
 def get_data_for_merging_test_1():
     ati_folder = 'ati_1'
-    ati_df = pd.read_csv(ath_test_folder + '/' + ati_folder + '/' + 'ide-events_1.csv', encoding=consts.ISO_ENCODING,
+    ati_df = pd.read_csv(os.path.join(ath_test_folder, ati_folder, 'ide-events_1.csv'), encoding=consts.ISO_ENCODING,
                          names=consts.ACTIVITY_TRACKER_COLUMN.activity_tracker_columns())
     ati_df = ath.preprocess_activity_tracker_data(ati_df)
-    ct_df = pd.read_csv(ath_test_folder + '/' + ati_folder + '/' + 'task_1.csv', encoding=consts.ISO_ENCODING)
+    ct_df = pd.read_csv(os.path.join(ath_test_folder, ati_folder, 'task_1.csv'), encoding=consts.ISO_ENCODING)
     ct_df_right = __replace_nan_in_ati_columns(
-        pd.read_csv(ath_test_folder + '/' + ati_folder + '/' + 'union_task_1.csv', encoding=consts.ISO_ENCODING))
+        pd.read_csv(os.path.join(ath_test_folder, ati_folder, 'union_task_1.csv'), encoding=consts.ISO_ENCODING))
 
     ct_df = ath.merge_code_tracker_and_activity_tracker_data(ct_df, ati_df, 'id')
     # ct_df.to_csv(file_name, sep='\t')
@@ -100,13 +101,13 @@ def get_data_for_merging_test_1():
 
 def get_data_for_merging_test_2():
     ati_folder = 'ati_1'
-    ati_df = pd.read_csv(ath_test_folder + '/' + ati_folder + '/' + 'ide-events_1.csv', encoding=consts.ISO_ENCODING,
+    ati_df = pd.read_csv(os.path.join(ath_test_folder, ati_folder, 'ide-events_1.csv'), encoding=consts.ISO_ENCODING,
                          names=consts.ACTIVITY_TRACKER_COLUMN.activity_tracker_columns())
     ati_df = ath.preprocess_activity_tracker_data(ati_df)
 
-    ct_df = pd.read_csv(ath_test_folder + '/' + ati_folder + '/' + 'task_2.csv', encoding=consts.ISO_ENCODING)
+    ct_df = pd.read_csv(os.path.join(ath_test_folder, ati_folder, 'task_2.csv'), encoding=consts.ISO_ENCODING)
     ct_df_right = __replace_nan_in_ati_columns(
-        pd.read_csv(ath_test_folder + '/' + ati_folder + '/' + 'union_task_2.csv', encoding=consts.ISO_ENCODING))
+        pd.read_csv(os.path.join(ath_test_folder, ati_folder, 'union_task_2.csv'), encoding=consts.ISO_ENCODING))
 
     ct_df = ath.merge_code_tracker_and_activity_tracker_data(ct_df, ati_df, 'id')
 
@@ -115,13 +116,13 @@ def get_data_for_merging_test_2():
 
 def get_data_for_merging_test_3():
     ati_folder = 'ati_1'
-    ati_df = pd.read_csv(ath_test_folder + '/' + ati_folder + '/' + 'ide-events_1.csv', encoding=consts.ISO_ENCODING,
+    ati_df = pd.read_csv(os.path.join(ath_test_folder, ati_folder, 'ide-events_1.csv'), encoding=consts.ISO_ENCODING,
                          names=consts.ACTIVITY_TRACKER_COLUMN.activity_tracker_columns())
     ati_df = ath.preprocess_activity_tracker_data(ati_df)
 
-    ct_df = pd.read_csv(ath_test_folder + '/' + ati_folder + '/' + 'task_1_test_2.csv', encoding=consts.ISO_ENCODING)
+    ct_df = pd.read_csv(os.path.join(ath_test_folder, ati_folder, 'task_1_test_2.csv'), encoding=consts.ISO_ENCODING)
     ct_df_right = __replace_nan_in_ati_columns(
-        pd.read_csv(ath_test_folder + '/' + ati_folder + '/' + 'union_task_1_test_2.csv', encoding=consts.ISO_ENCODING))
+        pd.read_csv(os.path.join(ath_test_folder, ati_folder, 'union_task_1_test_2.csv'), encoding=consts.ISO_ENCODING))
 
     ct_df = ath.merge_code_tracker_and_activity_tracker_data(ct_df, ati_df, 'id')
 

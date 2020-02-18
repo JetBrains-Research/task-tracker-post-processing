@@ -6,14 +6,14 @@ import matplotlib.pyplot as plt
 from main.plots import consts
 from src.main.plots.consts import SHORT_NAME_LENGTH
 from src.main.util.consts import ISO_ENCODING, LOGGER_NAME, CODE_TRACKER_COLUMN
-from src.main.util.file_util import get_parent_folder, get_file_name_from_path, get_parent_folder_name
+from src.main.util.file_util import get_parent_folder, get_name_from_path, get_parent_folder_name
 
 log = logging.getLogger(LOGGER_NAME)
 
 
 def get_short_name(path):
     folder = get_parent_folder_name(path)
-    file_name = get_file_name_from_path(path)
+    file_name = get_name_from_path(path)
     folder_with_name = folder + '/' + file_name[:SHORT_NAME_LENGTH] + '...' + file_name[-SHORT_NAME_LENGTH:]
     return folder_with_name
 
@@ -59,7 +59,7 @@ def show_colored_fragment_size_plot_with_splits(path, to_save=False, splits=None
 
     if to_save:
         log.info("Saving" + path)
-        fig.savefig(get_parent_folder(path, True) + "split_" + get_file_name_from_path(path, False) + ".png")
+        fig.savefig(get_parent_folder(path, True) + "split_" + get_name_from_path(path, False) + ".png")
 
     log.info("Showing " + path)
     fig.show()

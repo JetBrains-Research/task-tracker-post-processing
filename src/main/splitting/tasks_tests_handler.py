@@ -22,15 +22,15 @@ signal.signal(signal.SIGALRM, timeout_handler)
 
 
 def __get_task_file(file: str, task: str):
-    return TASKS_TESTS_PATH + task + '/' + file
+    return os.path.join(TASKS_TESTS_PATH, task, file)
 
 
 def __get_compiled_file(file: str):
-    return __get_source_folder() + '/' + file
+    return os.path.join(__get_source_folder(), file)
 
 
 def __get_source_folder():
-    return TASKS_TESTS_PATH + SOURCE_OBJECT_NAME
+    return os.path.join(TASKS_TESTS_PATH, SOURCE_OBJECT_NAME)
 
 
 def __get_in_and_out_files(list_of_files: list):
@@ -51,11 +51,12 @@ def __separate_in_and_out_files_on_pairs(in_files: list, out_files: list):
     for in_file in in_files:
         out_file = __get_out_file_by_in_file(in_file)
         if out_file not in out_files:
-            raise ValueError('List of out files does not contain a file for ' + in_file)
+            raise ValueError(f'List of out files does not contain a file for {in_file}')
         pairs.append((in_file, out_file))
     return pairs
 
 
+# todo: find more reliable way to find the class name from java
 def __get_java_class(source_code: str):
     class_key_word = 'class'
     rows = source_code.split('\n')
@@ -79,7 +80,7 @@ def __create_py_input_file(txt_in_file: str, task: str, file_name=INPUT_FILE_NAM
 def __get_in_file_for_current_test(cur_in_file: str, task: str, language=LANGUAGE.PYTHON.value):
     if language == LANGUAGE.PYTHON.value:
         __create_py_input_file(cur_in_file, task)
-        return INPUT_FILE_NAME + '.' + get_extension_by_language(language)
+        return INPUT_FILE_NAME + get_extension_by_language(language)
     return cur_in_file
 
 
@@ -88,10 +89,10 @@ def __remove_compiled_files():
     create_directory(__get_source_folder())
 
 
+# todo: find out what to do with BrokenPipeException and subprocesses closing
 def __run_python_test(in_file: str, expected_out: str, task: str, source_file_name=SOURCE_OBJECT_NAME):
     p1 = Popen(['python3', __get_task_file(in_file, task)], stdout=PIPE)
-    p2 = Popen(['python3', __get_compiled_file(source_file_name) + '.'
-                + get_extension_by_language(LANGUAGE.PYTHON.value)],
+    p2 = Popen(['python3', __get_compiled_file(source_file_name) + get_extension_by_language(LANGUAGE.PYTHON.value)],
                stdin=p1.stdout,
                stdout=PIPE)
     p1.stdout.close()
@@ -99,27 +100,26 @@ def __run_python_test(in_file: str, expected_out: str, task: str, source_file_na
         signal.alarm(consts.MAX_SECONDS_TO_WAIT_TEST)
         out, err = p2.communicate()
         p2.stdout.close()
-        actual_out = out.decode('utf-8').rstrip('\n')
+        actual_out = out.decode(consts.UTF_ENCODING).rstrip('\n')
         log.info('In-file: ' + in_file + ', task: ' + task + ', expected out: ' + expected_out + ', actual out: ' + actual_out)
         return actual_out == expected_out
     except TimeoutException:
         try:
-            log.info('In-file: ' + in_file + ', task: ' + task + ', Time is out')
+            log.info(f'In-file: {in_file}, task: {task}, Time is out')
             return False
         except BrokenPipeError:
-            log.info('In-file: ' + in_file + ', task: ' + task + ', Pipe is broken')
+            log.info(f'In-file: {in_file}, task: {task}, Pipe is broken')
             return False
     except BrokenPipeError:
-        log.info('In-file: ' + in_file + ', task: ' + task + ', Pipe is broken')
+        log.info(f'In-file: {in_file}, task: {task}, Pipe is broken')
         return False
     except Exception:
         try:
-            log.info('In-file: ' + in_file + ', task: ' + task + ', ' + str(Exception) + ' is raised')
+            log.info(f'In-file: {in_file}, task: {task}, {str(Exception)} is raised')
             return False
         except BrokenPipeError:
-            log.info('In-file: ' + in_file + ', task: ' + task + ', Pipe is broken')
+            log.info(f'In-file: {in_file}, task: {task}, Pipe is broken')
             return False
-
 
 
 # Run test for compiled languages
@@ -128,14 +128,15 @@ def __run_test(in_file: str, expected_out: str, task: str, popen_args: list):
     try:
         signal.alarm(consts.MAX_SECONDS_TO_WAIT_TEST)
         out, err = p.communicate(input=get_content_from_file(__get_task_file(in_file, task)))
+        print(out, err)
         actual_out = out.rstrip('\n')
-        log.info('In-file: ' + in_file + ', task: ' + task + ', expected out: ' + expected_out + ', actual out: ' + actual_out)
+        log.info(f'In-file: {in_file}, task: {task}, expected out: {expected_out}, actual out: {actual_out}')
         return actual_out == expected_out
     except TimeoutException:
-        log.info('In-file: ' + in_file + ', task: ' + task + ', Time is out')
+        log.info(f'In-file: {in_file}, task: {task}, Time is out')
         return False
     except Exception:
-        log.info('In-file: ' + in_file + ', task: ' + task + ', ' + str(Exception) + ' is raised')
+        log.info(f'In-file: {in_file}, task: {task}, {str(Exception)} is raised')
         return False
 
 
@@ -164,14 +165,14 @@ def __get_args_for_compiling_program(language: LANGUAGE, source_file_name: str):
     extension = get_extension_by_language(language)
 
     if language == LANGUAGE.JAVA.value:
-        compiled_file_path = compiled_file + '.' + extension
+        compiled_file_path = compiled_file + extension
         call_args = ['javac', compiled_file_path]
     elif language == LANGUAGE.CPP.value:
         compiled_file_path = compiled_file + '.out'
-        call_args = ['g++', '-o', compiled_file_path, compiled_file + '.' + extension]
+        call_args = ['g++', '-o', compiled_file_path, compiled_file + extension]
     elif language == LANGUAGE.KOTLIN.value:
         compiled_file_path = compiled_file + '.jar'
-        call_args = ['kotlinc', compiled_file + '.' + extension, '-include-runtime', '-d',
+        call_args = ['kotlinc', compiled_file + extension, '-include-runtime', '-d',
                      compiled_file_path]
     else:
         raise ValueError('Language is not defined')
@@ -220,11 +221,11 @@ def check_python_file_by_mypy(file_name: str):
 
 def is_source_file_correct(source_file: str, language=LANGUAGE.PYTHON.value):
     if language == LANGUAGE.PYTHON.value:
-        is_correct = is_python_file_correct(__get_compiled_file(source_file) + '.' + get_extension_by_language(language))
+        is_correct = is_python_file_correct(__get_compiled_file(source_file) + get_extension_by_language(language))
     else:
         compiling_args = __get_args_for_compiling_program(language, source_file)
         is_correct = __compile_program(compiling_args)
-    log.info('Source code is correct: ' + str(is_correct))
+    log.info(f'Source code is correct: {str(is_correct)}')
     return is_correct
 
 
@@ -250,7 +251,7 @@ def check_before_tests(source_file: str, source_code: str, tasks: list, language
         need_to_run_tests, test_results = get_no_need_to_run_tests_values(rate, len(tasks))
 
     # not to check fragments without output because they cannot return anything
-    elif does_string_contain_any_of_substring(source_code, consts.LANGUAGE_TO_OUTPUT[language]):
+    elif not does_string_contain_any_of_substring(source_code, consts.LANGUAGE_TO_OUTPUT[language]):
         log.info('Code fragment does not contain any output strings')
         need_to_run_tests, test_results = get_no_need_to_run_tests_values(rate, len(tasks))
 
@@ -260,19 +261,19 @@ def check_before_tests(source_file: str, source_code: str, tasks: list, language
 def check_tasks(tasks: list, source_code: str, in_and_out_files_dict: dict, language=LANGUAGE.PYTHON.value, stop_after_first_false=True):
     __remove_compiled_files()
     source_file = __create_source_code_file(source_code, language)
-    log.info('Starting checking tasks ' + str(tasks) + ' for source code on ' + language + ':\n' + source_code)
+    log.info(f'Starting checking tasks {str(tasks)} for source code on {language}:\n{source_code}')
 
     need_to_run_tests, test_results, rate = check_before_tests(source_file, source_code, tasks, language)
 
     if not need_to_run_tests:
-        log.info('Finish checking tasks, test results: ' + str(test_results))
+        log.info(f'Finish checking tasks, test results: {str(test_results)}')
         return test_results
 
     for task in tasks:
-        log.info('Start checking task ' + task)
+        log.info(f'Start checking task {task}')
         in_and_out_files = in_and_out_files_dict.get(task)
         if in_and_out_files is None:
-            raise ValueError('Task data for the ' + task + ' does not exist')
+            raise ValueError(f'Task data for the {task} does not exist')
 
         counted_tests, passed_tests = len(in_and_out_files), 0
         for cur_in, cur_out in in_and_out_files:
@@ -284,7 +285,7 @@ def check_tasks(tasks: list, source_code: str, in_and_out_files_dict: dict, lang
                 running_args = __get_args_for_running_program(language, source_file)
                 is_passed = __run_test(in_file, get_content_from_file(task_file), task, running_args)
 
-            log.info('Test ' + cur_in + ' for task ' + task + ' is passed: ' + str(is_passed))
+            log.info(f'Test {cur_in} for task {task} is passed: {str(is_passed)}')
             if is_passed:
                 passed_tests += 1
             elif stop_after_first_false:
@@ -292,8 +293,8 @@ def check_tasks(tasks: list, source_code: str, in_and_out_files_dict: dict, lang
                 break
 
         rate = passed_tests / counted_tests
-        log.info('Finish checking task ' + task + ', rate: ' + str(rate))
+        log.info(f'Finish checking task {task}, rate: {str(rate)}')
         test_results.append(rate)
 
-    log.info('Finish checking tasks, test results: ' + str(test_results))
+    log.info(f'Finish checking tasks, test results: {str(test_results)}')
     return test_results

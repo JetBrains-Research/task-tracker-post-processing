@@ -11,28 +11,31 @@ from src.main.util.consts import ACTIVITY_TRACKER_FILE_NAME, FILE_SYSTEM_ITEM, A
 To understand correctly these functions' behavior you can see examples in a corresponding test folder.
 Also, the naming convention can be helpful:
     folder_name -- just name without any slashes; 
-for example, folder_name for the last folder in 'path/data/folder/' is 'folder'
+>>> EXAMPLE: folder_name for the last folder in 'path/data/folder/' is 'folder'
     file_name -- similarly to the folder_name, but may contain its extension;
-for example, file_name for the file 'path/data/file.csv' can be 'file.csv' or just 'file' (see get_file_name_from_path)
+>>> EXAMPLE: file_name for the file 'path/data/file.csv' can be 'file.csv' or just 'file' (see get_file_name_from_path)
     file, folder, directory -- contain the full path
     extension -- we consider, that if extension is not empty, it is with a dot, because of os.path implementation; 
-If extension is passed without any dots, it will be added (for example, see change_extension_to)
+If extension is passed without any dots, a dot will be added (for example, see change_extension_to)
+    parent_folder -- the second folder from the end of the path, no matter is there a trailing slash or not
+>>> EXAMPLE: parent_folder for both 'path/data/file' and 'path/data/file/' is 'path/data'
 '''
 
 
 def remove_slash(path: str):
-    if path and path[-1] == '/':
-        path = path[:-1]
-    return path
+    return path.rstrip('/')
 
 
 def add_slash(path: str):
-    if not path or path[-1] != '/':
+    if not path.endswith('/'):
         path += '/'
     return path
 
 
-def get_file_name_from_path(path: str, with_extension=True):
+# For getting name of the last folder or file
+# For example, returns 'folder' for both 'path/data/folder' and 'path/data/folder/'
+# You can find more examples in the tests
+def get_name_from_path(path: str, with_extension=True):
     head, tail = os.path.split(path)
     # tail can be empty if '/' is at the end of the path
     file_name = tail or os.path.basename(head)
@@ -50,14 +53,14 @@ def get_extension_from_file(file: str):
 
 
 def add_dot_to_not_empty_extension(extension: str):
-    if extension and extension[0] != '.':
+    if extension and not extension.startswith('.'):
         extension = '.' + extension
     return extension
 
 
 # works only for real files, because os.rename is called, raises FileNotFoundError in case of not real file
 def change_extension_to(file: str, new_extension: str):
-    add_dot_to_not_empty_extension(new_extension)
+    new_extension = add_dot_to_not_empty_extension(new_extension)
     base, _ = os.path.splitext(file)
     os.rename(file, base + new_extension)
 
@@ -71,8 +74,7 @@ def get_parent_folder(path: str, to_add_slash=False):
 
 
 def get_parent_folder_name(path: str):
-    path = remove_slash(path)
-    return path.split('/')[-2]
+    return get_name_from_path(get_parent_folder(path), False)
 
 
 def get_original_file_name(hashed_file_name: str):
@@ -80,7 +82,7 @@ def get_original_file_name(hashed_file_name: str):
 
 
 def get_original_file_name_with_extension(hashed_file_name: str, extension: str):
-    add_dot_to_not_empty_extension(extension)
+    extension = add_dot_to_not_empty_extension(extension)
     return get_original_file_name(hashed_file_name) + extension
 
 
@@ -90,7 +92,7 @@ def get_content_from_file(file: str):
 
 
 def create_file(content: str, extension: str, file_without_extension: str):
-    add_dot_to_not_empty_extension(extension)
+    extension = add_dot_to_not_empty_extension(extension)
     with open(file_without_extension + extension, 'w') as f:
         f.write(content)
 
@@ -123,7 +125,7 @@ def get_all_file_system_items(root: str, item_condition: Callable, item_type=FIL
 
 
 def csv_file_condition(name: str):
-    return get_extension_from_file(name) == 'csv'
+    return get_extension_from_file(name) == '.csv'
 
 
 # to get all codetracker files
@@ -139,7 +141,7 @@ def data_subdirs_condition(name: str):
 # to get path to the result folder that is near to the original folder
 # and has the same name but with a suffix added at the end
 def get_result_folder(folder: str, result_name_suffix: str):
-    result_folder_name = get_file_name_from_path(folder) + '_' + result_name_suffix
+    result_folder_name = get_name_from_path(folder) + '_' + result_name_suffix
     return os.path.join(get_parent_folder(folder), result_folder_name)
 
 
@@ -173,5 +175,6 @@ def write_result(result_folder: str, path: str, file: str, df: pd.DataFrame):
 # written to result_folder/python/ati_566/file.csv
 def write_based_on_language(result_folder: str, file: str, df: pd.DataFrame, language=LANGUAGE.PYTHON.value):
     folder_to_write = os.path.join(result_folder, language, get_parent_folder_name(file))
-    file_to_write = os.path.join(folder_to_write, get_file_name_from_path(file))
+    file_to_write = os.path.join(folder_to_write, get_name_from_path(file))
     create_folder_and_write_df_to_file(folder_to_write, file_to_write, df)
+

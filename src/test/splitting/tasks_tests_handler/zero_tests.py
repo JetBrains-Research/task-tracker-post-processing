@@ -3,34 +3,34 @@ import unittest
 
 from src.main.util import consts
 from src.main.util.consts import LANGUAGE, TASK
-from test.splitting.tasks_tests_handler.util import test_task, SOLUTION
+from src.test.splitting.tasks_tests_handler.util import test_task, SOLUTION
 
 python_actual_pairs = {
     SOLUTION.FULL.value: (8, 8),
     SOLUTION.PARTIAL.value: (8, 4),
     SOLUTION.WRONG.value: (8, 0),
-    SOLUTION.ERROR.value: (8, 0)
+    SOLUTION.ERROR.value: (-1, 1)
 }
 
 java_actual_pairs = {
     SOLUTION.FULL.value: (8, 8),
     SOLUTION.PARTIAL.value: (8, 4),
     SOLUTION.WRONG.value: (8, 0),
-    SOLUTION.ERROR.value: (8, 0)
+    SOLUTION.ERROR.value: (-1, 1)
 }
 
 kotlin_actual_pairs = {
     SOLUTION.FULL.value: (8, 8),
     SOLUTION.PARTIAL.value: (8, 4),
     SOLUTION.WRONG.value: (8, 0),
-    SOLUTION.ERROR.value: (8, 0)
+    SOLUTION.ERROR.value: (-1, 1)
 }
 
 cpp_actual_pairs = {
     SOLUTION.FULL.value: (8, 8),
     SOLUTION.PARTIAL.value: (8, 4),
     SOLUTION.WRONG.value: (8, 0),
-    SOLUTION.ERROR.value: (8, 0)
+    SOLUTION.ERROR.value: (-1, 1)
 }
 
 

@@ -4,7 +4,7 @@ import pandas as pd
 
 from src.main.util import consts
 from src.main.util.time_util import get_datetime_by_format
-from src.main.util.file_util import get_file_name_from_path, get_original_file_name_with_extension, get_parent_folder
+from src.main.util.file_util import get_name_from_path, get_original_file_name_with_extension, get_parent_folder
 from src.main.util.language_util import get_extension_by_language
 
 log = logging.getLogger(consts.LOGGER_NAME)
@@ -64,7 +64,7 @@ def __add_values_in_ati_dict_by_ati_index(res_dict: dict, activity_tracker_data:
 def __are_same_files(code_tracker_file_name: str, activity_tracker_file_path: str):
     if pd.isnull(activity_tracker_file_path):
         return False
-    activity_tracker_file_name = get_file_name_from_path(activity_tracker_file_path)
+    activity_tracker_file_name = get_name_from_path(activity_tracker_file_path)
     return code_tracker_file_name == activity_tracker_file_name
 
 
@@ -86,11 +86,11 @@ def __insert_row(df: pd.DataFrame, row_number: int, row_value: list):
 def preprocess_activity_tracker_data(activity_tracker_data: pd.DataFrame):
     log.info('...starting to unify activity tracker data')
     activity_tracker_data = __unify_activity_tracker_columns(activity_tracker_data)
-    log.info('finish to unify activity tracker data')
+    log.info('finish unifying activity tracker data')
 
     log.info('...starting to filter activity tracker data')
     activity_tracker_data = __filter_ati_data(activity_tracker_data)
-    log.info('finish to filter activity tracker data')
+    log.info('finish filtering activity tracker data')
     return activity_tracker_data
 
 
@@ -182,7 +182,7 @@ def get_files_from_ati(activity_tracker_data: pd.DataFrame):
     paths_dict = {}
     for current_path in paths:
         path = get_parent_folder(current_path)
-        file = get_file_name_from_path(current_path)
+        file = get_name_from_path(current_path)
         if paths_dict.get(file) is None:
             paths_dict[file] = path
         else:
@@ -195,15 +195,15 @@ def get_files_from_ati(activity_tracker_data: pd.DataFrame):
 def get_ct_name_from_ati_data(ct_file: str, language: consts.LANGUAGE, files_from_at: list):
     log.info('Start getting project file name')
     extension = get_extension_by_language(language)
-    hashed_file_name = get_file_name_from_path(ct_file)
+    hashed_file_name = get_name_from_path(ct_file)
     file_name = get_original_file_name_with_extension(hashed_file_name, extension)
     does_contain_name = True
     if files_from_at is not None:
-        log.info('Start searching the file_name ' + file_name + ' in activity tracker data')
+        log.info(f'Start searching the file_name {file_name} in activity tracker data')
         if file_name not in files_from_at:
-            log.info('Activity tracker data does not contain the original file ' + file_name)
+            log.info(f'Activity tracker data does not contain the original file {file_name}')
             does_contain_name = False
-        log.info('Finish searching the file_name ' + file_name + ' in activity tracker data')
+        log.info(f'Finish searching the file_name {file_name} in activity tracker data')
 
     log.info('Finish getting project file name')
     return file_name, does_contain_name
