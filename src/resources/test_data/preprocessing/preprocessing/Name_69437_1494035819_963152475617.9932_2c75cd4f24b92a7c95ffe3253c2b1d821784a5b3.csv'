@@ -1,0 +1,5 @@
+date,timestamp,fileName,fileHashCode,documentHashCode,fragment,chosenTask,writtenTask,age,programExperience,taskStatus,activePane
+2019-12-09T18:21:56.426+03:00,0,Name.py,4611,12390667,,pies,,16.0,LESS_THAN_HALF_YEAR,NULL,taskStatusPane
+2019-12-09T18:21:56.613+03:00,28,Name.py,4611,12390667,c,pies,,16.0,LESS_THAN_HALF_YEAR,NULL,taskStatusPane
+2019-12-09T18:21:57.191+03:00,42,Name.py,4611,12390667,co,pies,,16.0,LESS_THAN_HALF_YEAR,NULL,taskStatusPane
+2019-12-09T18:21:59.082+03:00,58,Name.py,4611,12390667,cos,pies,,16.0,LESS_THAN_HALF_YEAR,NULL,taskStatusPane
