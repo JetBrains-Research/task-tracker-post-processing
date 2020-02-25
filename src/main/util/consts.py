@@ -100,37 +100,6 @@ EXTENSION_TO_LANGUAGE_DICT = {
     '': LANGUAGE.NOT_DEFINED.value
 }
 
-LANGUAGE_TO_MIN_SYMBOLS = {
-    # a = int(input())
-    # print(a)
-    LANGUAGE.PYTHON.value: 25,
-
-    # class A{
-    # public static void main(String args[]){
-    # Scanner in = new Scanner(System.in );
-    # Int a = in.nextInt();
-    # System.out.print(a);}}
-    LANGUAGE.JAVA.value: 140,
-
-    # fun main(args: Array<String>){
-    # val a:Int = readLine()!!.toInt()
-    # print(a)}
-    LANGUAGE.KOTLIN.value: 80,
-
-    # #include <iostream>
-    # int main(){
-    # int a;
-    # cin>>a;
-    # cout<<a;}
-    LANGUAGE.CPP.value: 60
-}
-
-LANGUAGE_TO_OUTPUT = {
-    LANGUAGE.PYTHON.value: ['print'],
-    LANGUAGE.JAVA.value: ['System.out.print'],
-    LANGUAGE.KOTLIN.value: ['print'],
-    LANGUAGE.CPP.value: ['cout', 'printf']
-}
 
 class SPLIT_DICT(Enum):
     INDEX = 'index'
@@ -142,6 +111,8 @@ LOGGER_FILE = ROOT_DIR + '../../../../logs.log'
 LOGGER_NAME = 'main_logger'
 
 LOGGER_TEST_FILE = ROOT_DIR + '../../../../test_logs.log'
+
+LOGGER_FORMAT = '%(asctime)s:%(levelname)s ==> %(message)s'
 
 PATH_CMD_ARG = '-path'
 ISO_ENCODING = 'ISO-8859-1'
@@ -155,15 +126,14 @@ DATE_TIME_FORMAT = '%Y-%m-%dT%H:%M:%S.%f%z'
 MAX_DIF_SEC = 0.5
 
 TEST_DATA_PATH = ROOT_DIR + '/../../resources/test_data'
+TEST_PATH = ROOT_DIR + '/../../test'
 
 PREPROCESSING_RESULT_FOLDER = 'preprocessing_result'
 
 # v 2.0 - with stopping after the first break
-RUNNING_TESTS_RESULT_FOLDER = 'running_tests_result_2'
+# v 3.0 - with java package detecting
+RUNNING_TESTS_RESULT_FOLDER = 'running_tests_result_3'
 
 MAX_DIFF_SYMBOLS = 30
 
-MAX_SECONDS_TO_WAIT_TEST = 5
-
-
-
+SUBPROCESS_TIMEOUT = 5

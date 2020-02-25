@@ -2,6 +2,7 @@ import logging
 import unittest
 from enum import Enum
 
+from main.util.consts import LOGGER_FORMAT
 from src.main.util import consts
 from src.main.preprocessing.preprocessing import __separate_ati_and_other_files
 
@@ -63,7 +64,7 @@ def run_test(case: dict):
 class TestFilterFiles(unittest.TestCase):
 
     def setUp(self) -> None:
-        logging.basicConfig(filename=consts.LOGGER_TEST_FILE, level=logging.INFO)
+        logging.basicConfig(filename=consts.LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
 
     def test_two_ati_case(self):
         self.assertTrue(run_test(two_ati_case))

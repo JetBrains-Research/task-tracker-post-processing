@@ -1,0 +1,15 @@
+def main():
+    s = input()
+    l = len(s)
+    m = l / 2
+    res = s[0]
+    for i in range(1, l):
+        if i < m:
+            res += "("
+        elif i > m:
+            res += ")"
+        res += s[i]
+    print(res)
+
+if __name__ == "__main__":
+    main()

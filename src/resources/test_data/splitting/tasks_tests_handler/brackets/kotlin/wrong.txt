@@ -1,0 +1,13 @@
+package kotlin
+import kotlin.math.roundToInt
+fun main() {
+    val chars = readLine()!!.toCharArray().toMutableList()
+    fun p(i: Int, c: Char) : String {
+        return when {
+            i < (chars.size/2.0).roundToInt() - 1 -> "$c("
+            i > chars.size/2.0 -> ")$c"
+            else -> "$c"
+        }
+    }
+    println('aaaaa')
+}

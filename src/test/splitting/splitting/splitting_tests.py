@@ -2,7 +2,7 @@ import logging
 import unittest
 
 from src.main.splitting.splitting import find_real_splits, get_tasks_with_max_rate
-from src.main.util.consts import TASK, LOGGER_TEST_FILE, SPLIT_DICT
+from src.main.util.consts import TASK, LOGGER_TEST_FILE, SPLIT_DICT, LOGGER_FORMAT
 
 INDEX = SPLIT_DICT.INDEX.value
 RATE = SPLIT_DICT.RATE.value
@@ -98,7 +98,7 @@ expected_max_rate_tasks = [PIES, BRACKETS], 0.7
 class TestSplitting(unittest.TestCase):
 
     def setUp(self) -> None:
-        logging.basicConfig(filename=LOGGER_TEST_FILE, level=logging.INFO)
+        logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
 
     def test_find_real_splits_large(self):
         actual_real_splits = find_real_splits(supposed_splits_large)

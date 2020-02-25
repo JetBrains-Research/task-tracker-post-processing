@@ -1,0 +1,29 @@
+package kotlin
+import java.util.*
+
+fun election(x: Boolean, y: Boolean, z: Boolean) =    x.toInt() + y.toInt() + z.toInt() > 1
+
+fun Boolean?.toInt() : Int {
+    return when(this) {
+        true -> 1
+        false -> 0
+        else -> -1
+    }
+}
+
+fun Int.toBoolean() : Boolean? {
+    return when(this) {
+        1 -> true
+        0 -> false
+        else -> null
+    }
+}
+
+fun main() {
+    with(Scanner(System.`in`)) {
+        val x = nextInt()
+        val y = nextInt()
+        val z = nextInt()
+        println(election(x.toBoolean()!!, y.toBoolean()!!, z.toBoolean()!!).toInt())
+    }
+}

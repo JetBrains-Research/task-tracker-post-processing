@@ -1,14 +1,21 @@
 import logging
+import os
 import unittest
 
 from src.main.util import consts
+from src.main.util.file_util import get_all_file_system_items, change_extension_to
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
-test_modules = [
-    'src.test.activity_tracker_handler.time_methods',
-    'src.test.activity_tracker_handler.dataframe_methods'
-]
+
+def get_module_from_file(file: str):
+    file = os.path.abspath(file)
+    return change_extension_to(file[file.index('src/test'):], '').replace('/', '.')
+
+
+test_files = get_all_file_system_items(consts.TEST_PATH, (lambda f: f.endswith('_tests.py')),
+                                       consts.FILE_SYSTEM_ITEM.FILE.value)
+test_modules = list(map(get_module_from_file, test_files))
 
 suite = unittest.TestSuite()
 

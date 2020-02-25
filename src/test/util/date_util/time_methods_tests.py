@@ -1,8 +1,8 @@
 import logging
 import unittest
 
-from main.util.consts import LOGGER_TEST_FILE
 from src.main.util.time_util import corrected_time
+from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT
 
 
 def get_res_for_corrected_positive_time_test():
@@ -16,7 +16,7 @@ def get_res_for_corrected_negative_time_test():
 class TestTimeMethods(unittest.TestCase):
 
     def setUp(self) -> None:
-        logging.basicConfig(filename=LOGGER_TEST_FILE, level=logging.INFO)
+        logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
 
     def test_corrected_positive_time(self):
         self.assertTrue(get_res_for_corrected_positive_time_test())
