@@ -15,7 +15,7 @@ from src.main.splitting.not_defined_task_checker import NotDefinedTaskChecker
 log = logging.getLogger(consts.LOGGER_NAME)
 
 
-def __pair_up_in_and_out_files(in_files: list, out_files: list):
+def __pair_in_and_out_files(in_files: list, out_files: list):
     pairs = []
     for in_file in in_files:
         out_file = re.sub(r'in(?=[^in]*$)', 'out', in_file)
@@ -33,7 +33,7 @@ def create_in_and_out_dict(tasks: list):
         out_files = get_all_file_system_items(root, (lambda filename: re.fullmatch(r'out_\d+.txt', filename)))
         if len(out_files) != len(in_files):
             raise ValueError('Length of out files list does not equal in files list')
-        in_and_out_files_dict[task] = __pair_up_in_and_out_files(in_files, out_files)
+        in_and_out_files_dict[task] = __pair_in_and_out_files(in_files, out_files)
     return in_and_out_files_dict
 
 
