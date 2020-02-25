@@ -26,6 +26,7 @@ class TestPreviousErrors(unittest.TestCase):
             language = get_language_by_extension(get_extension_from_file(file))
             check_tasks(tasks, get_content_from_file(file), in_and_out_files_dict, language, False)
 
+    # need to test ati_327/Main_67885, put it in PREVIOUS_ERRORS_TEST_DATA before running
     def test_codetracker_data(self):
         run_tests(PREVIOUS_ERRORS_TEST_DATA)
 
