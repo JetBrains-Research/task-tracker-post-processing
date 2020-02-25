@@ -1,4 +1,3 @@
-import os
 import logging
 
 import javalang
@@ -7,10 +6,9 @@ from javalang.parser import JavaSyntaxError, JavaParserError
 
 from src.main.util import consts
 from src.main.util.consts import LANGUAGE
-from src.main.util.language_util import get_extension_by_language
-from src.main.util.file_util import create_file, get_name_from_path
+from src.main.util.file_util import get_name_from_path
 from src.main.splitting.task_checker import ITaskChecker, check_call_safely, check_output_safely, SOURCE_OBJECT_NAME, \
-    TASKS_TESTS_PATH, SOURCE_FOLDER
+    SOURCE_FOLDER
 
 
 log = logging.getLogger(consts.LOGGER_NAME)
@@ -59,10 +57,7 @@ class JavaTaskChecker(ITaskChecker):
 
     def create_source_file(self, source_code: str):
         source_file_name = self.get_java_class_name(source_code)
-        source_code_file = os.path.join(TASKS_TESTS_PATH, SOURCE_OBJECT_NAME,
-                                        source_file_name + get_extension_by_language(self.language))
-        create_file(source_code, source_code_file)
-        return source_code_file
+        return self.create_source_file_with_name(source_code, source_file_name)
 
     def is_source_file_correct(self, source_file: str):
         args = ['javac', source_file, '-d', SOURCE_FOLDER]

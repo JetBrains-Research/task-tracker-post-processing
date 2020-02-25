@@ -1,12 +1,9 @@
-import os
 import logging
 
 from src.main.util import consts
 from src.main.util.consts import LANGUAGE
-from src.main.util.language_util import get_extension_by_language
-from src.main.util.file_util import create_file, change_extension_to
-from src.main.splitting.task_checker import ITaskChecker, check_call_safely, check_output_safely, TASKS_TESTS_PATH, \
-    SOURCE_OBJECT_NAME
+from src.main.util.file_util import change_extension_to
+from src.main.splitting.task_checker import ITaskChecker, check_call_safely, check_output_safely, SOURCE_OBJECT_NAME
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -29,10 +26,7 @@ class KotlinTaskChecker(ITaskChecker):
         return ['print']
 
     def create_source_file(self, source_code: str):
-        source_code_file = os.path.join(TASKS_TESTS_PATH, SOURCE_OBJECT_NAME,
-                                        SOURCE_OBJECT_NAME + get_extension_by_language(self.language))
-        create_file(source_code, source_code_file)
-        return source_code_file
+        return self.create_source_file_with_name(source_code, SOURCE_OBJECT_NAME)
 
     def is_source_file_correct(self, source_file: str):
         args = ['kotlinc', source_file, '-include-runtime', '-d', change_extension_to(source_file, '.jar')]
