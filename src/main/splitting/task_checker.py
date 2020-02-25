@@ -1,11 +1,13 @@
 import os
 import logging
+
 from abc import ABCMeta, abstractmethod
 from subprocess import check_output, CalledProcessError, check_call, TimeoutExpired
 
 from src.main.util import consts
+from src.main.util.language_util import get_extension_by_language
 from src.main.util.strings_util import does_string_contain_any_of_substrings
-from src.main.util.file_util import get_content_from_file, remove_directory, create_directory
+from src.main.util.file_util import get_content_from_file, remove_directory, create_directory, create_file
 
 TASKS_TESTS_PATH = consts.TASKS_TESTS.TASKS_TESTS_PATH.value
 SOURCE_OBJECT_NAME = consts.TASKS_TESTS.SOURCE_OBJECT_NAME.value
@@ -83,6 +85,12 @@ class ITaskChecker(object, metaclass=ABCMeta):
         test_results = [rate] * tasks_len
         return need_to_run_tests, test_results
 
+    def create_source_file_with_name(self, source_code, name):
+        source_code_file = os.path.join(TASKS_TESTS_PATH, SOURCE_OBJECT_NAME,
+                                        name + get_extension_by_language(self.language))
+        create_file(source_code, source_code_file)
+        return source_code_file
+
     def check_before_tests(self, source_file: str, source_code: str, tasks: list):
         test_results = []
         need_to_run_tests = True
@@ -108,7 +116,7 @@ class ITaskChecker(object, metaclass=ABCMeta):
     def check_task(self, task: str, in_and_out_files_dict: dict, source_file: str, stop_after_first_false=True):
         log.info(f'Start checking task {task}')
         in_and_out_files = in_and_out_files_dict.get(task)
-        if in_and_out_files is None:
+        if not in_and_out_files:
             log.error(f'Task data for the {task} does not exist')
             raise ValueError(f'Task data for the {task} does not exist')
 
@@ -119,6 +127,7 @@ class ITaskChecker(object, metaclass=ABCMeta):
             if is_passed:
                 passed_tests += 1
             elif stop_after_first_false:
+                # keep existing rate, even if it's not 0, to save the information about partly passed tests
                 log.info('Stop after first false')
                 break
 
