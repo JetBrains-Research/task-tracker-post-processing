@@ -1,0 +1,11 @@
+package kotlin
+import java.util.*
+
+fun main() {
+    with(Scanner(System.`in`)) {
+        val x = nextInt()
+        val y = nextInt()
+        val z = nextInt()
+        println(-1)
+    }
+}

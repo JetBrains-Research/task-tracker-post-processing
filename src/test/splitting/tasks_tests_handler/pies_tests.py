@@ -2,7 +2,7 @@ import logging
 import unittest
 
 from src.main.util import consts
-from src.main.util.consts import LANGUAGE, TASK
+from src.main.util.consts import LANGUAGE, TASK, LOGGER_FORMAT
 from src.test.splitting.tasks_tests_handler.util import test_task, SOLUTION
 
 python_actual_pairs = {
@@ -38,7 +38,7 @@ class TestPiesTests(unittest.TestCase):
     task = TASK.PIES.value
 
     def setUp(self) -> None:
-        logging.basicConfig(filename=consts.LOGGER_TEST_FILE, level=logging.INFO)
+        logging.basicConfig(filename=consts.LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
 
     def test_python(self):
         test_task(self, python_actual_pairs, LANGUAGE.PYTHON.value)

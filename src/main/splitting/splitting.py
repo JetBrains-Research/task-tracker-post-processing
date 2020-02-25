@@ -1,3 +1,4 @@
+import os
 import logging
 
 import pandas as pd
@@ -114,8 +115,3 @@ def run_tests(path: str):
         write_based_on_language(result_folder, file, data, language)
 
     return result_folder
-
-
-def append_to_list(list: list, to_append: int):
-    list.append(to_append)
-

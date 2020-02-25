@@ -7,13 +7,13 @@ import pandas as pd
 from src.main.util import consts
 from src.main.splitting.splitting import check_tasks_on_correct_fragments
 from src.main.splitting.tasks_tests_handler import create_in_and_out_dict
-from src.main.util.consts import LOGGER_TEST_FILE, TEST_DATA_PATH, TASK
+from src.main.util.consts import LOGGER_TEST_FILE, TEST_DATA_PATH, TASK, LOGGER_FORMAT
 
 
 class TestRunTests(unittest.TestCase):
 
     def setUp(self) -> None:
-        logging.basicConfig(filename=LOGGER_TEST_FILE, level=logging.INFO)
+        logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
 
     def test_find_real_splits_large(self):
         data = pd.read_csv(os.path.join(TEST_DATA_PATH, "splitting/splitting/Main.csv"))

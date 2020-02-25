@@ -1,9 +1,10 @@
 import logging
 import unittest
+
 from enum import Enum
 
-from main.util.consts import LOGGER_TEST_FILE
-from main.util.file_util import get_parent_folder_name, get_parent_folder
+from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT
+from src.main.util.file_util import get_parent_folder_name, get_parent_folder
 
 
 class PARENT_FOLDER_TEST_DATA(Enum):
@@ -53,7 +54,7 @@ def test_parent_folder(self, dict_data: dict):
 class TestParentFolder(unittest.TestCase):
 
     def setUp(self) -> None:
-        logging.basicConfig(filename=LOGGER_TEST_FILE, level=logging.INFO)
+        logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
 
     def test_empty_path(self):
         test_parent_folder(self, empty_path_data)

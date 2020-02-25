@@ -1,9 +1,10 @@
 import logging
 import unittest
+
 from enum import Enum
 
-from main.util.consts import LOGGER_TEST_FILE
-from main.util.file_util import get_name_from_path
+from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT
+from src.main.util.file_util import get_name_from_path
 
 
 class PATHS_TEST_DATA(Enum):
@@ -68,7 +69,7 @@ def test_paths_data(self, paths_data_dict: dict):
 class TestGettingFileNameFromPath(unittest.TestCase):
 
     def setUp(self) -> None:
-        logging.basicConfig(filename=LOGGER_TEST_FILE, level=logging.INFO)
+        logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
 
     def test_path(self):
         test_paths_data(self, get_file_name_from_path_data)

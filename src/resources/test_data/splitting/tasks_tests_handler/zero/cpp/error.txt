@@ -1,0 +1,24 @@
+
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+    int n;
+    cin>>n;
+    int *arr = new int[n];
+    bool has_zero = false;
+    for (int i = 0; i < n; i++) {
+        cin>arr[i];
+        if (arr[i] == 0) {
+            has_zero = true;
+        }
+    }
+    if (has_zero) {
+        cout<<"YES";
+    } else {
+        cout<<"NO";
+    }
+    return 0;
+}

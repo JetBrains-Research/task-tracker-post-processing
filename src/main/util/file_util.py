@@ -58,11 +58,13 @@ def add_dot_to_not_empty_extension(extension: str):
     return extension
 
 
-# works only for real files, because os.rename is called, raises FileNotFoundError in case of not real file
-def change_extension_to(file: str, new_extension: str):
+# if need_to_rуname, it works only for real files because os.rename is called
+def change_extension_to(file: str, new_extension: str, need_to_rename=False):
     new_extension = add_dot_to_not_empty_extension(new_extension)
     base, _ = os.path.splitext(file)
-    os.rename(file, base + new_extension)
+    if need_to_rename:
+        os.rename(file, base + new_extension)
+    return base + new_extension
 
 
 def get_parent_folder(path: str, to_add_slash=False):
@@ -91,9 +93,10 @@ def get_content_from_file(file: str):
         return f.read().rstrip('\n')
 
 
-def create_file(content: str, extension: str, file_without_extension: str):
-    extension = add_dot_to_not_empty_extension(extension)
-    with open(file_without_extension + extension, 'w') as f:
+# file should contain the full path and its extension
+def create_file(content: str, file: str):
+    create_directory(os.path.dirname(file))
+    with open(file, 'w') as f:
         f.write(content)
 
 
@@ -103,8 +106,7 @@ def remove_file(file: str):
 
 
 def create_directory(directory: str):
-    if not os.path.exists(directory):
-        os.makedirs(directory)
+    os.makedirs(directory, exist_ok=True)
         
         
 def remove_directory(directory: str):
@@ -141,7 +143,7 @@ def data_subdirs_condition(name: str):
 # to get path to the result folder that is near to the original folder
 # and has the same name but with a suffix added at the end
 def get_result_folder(folder: str, result_name_suffix: str):
-    result_folder_name = get_name_from_path(folder) + '_' + result_name_suffix
+    result_folder_name = get_name_from_path(folder, False) + '_' + result_name_suffix
     return os.path.join(get_parent_folder(folder), result_folder_name)
 
 

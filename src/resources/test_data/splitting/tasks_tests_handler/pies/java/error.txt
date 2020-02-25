@@ -1,13 +1,6 @@
+package lalala.pies;
 import java.io.*;
 class test {
 
-    public static void main(String args[])throws IOException
-        {
-            InputStreamReader in=new InputStreamReader();
-            BufferedReader br=new BufferedReader(in);
-            int a=Integer.parseInt(br.readLine());
-            int b=Integer.parseInt(br.readLine());
-            int n=Integer.parseInt(br.readLine());
-            System.out.println(a * n + " " + b * n);
-    }
-}
+    public static
+

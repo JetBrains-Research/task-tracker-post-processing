@@ -1,9 +1,9 @@
-import logging
 import os
+import logging
 import unittest
 
-from main.util.consts import LOGGER_TEST_FILE, TEST_DATA_PATH
-from main.util.file_util import get_extension_from_file, change_extension_to, create_file, remove_file, \
+from src.main.util.consts import LOGGER_TEST_FILE, TEST_DATA_PATH, LOGGER_FORMAT
+from src.main.util.file_util import get_extension_from_file, change_extension_to, create_file, remove_file, \
     remove_directory, create_directory, add_dot_to_not_empty_extension
 
 # Assuming there cannot be any slashes at the end of the file, because path 'home/data/file.txt/ is incorrect
@@ -25,7 +25,7 @@ def clear_folder(folder):
 class TestExtensionMethods(unittest.TestCase):
 
     def setUp(self) -> None:
-        logging.basicConfig(filename=LOGGER_TEST_FILE, level=logging.INFO)
+        logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
 
     def test_getting_txt_extension(self):
         self.assertTrue('.txt' == get_extension_from_file(file_with_txt_extension))
@@ -39,22 +39,22 @@ class TestExtensionMethods(unittest.TestCase):
     # for testing extension change we should use real files
     def test_changing_extension(self):
         clear_folder(folder_with_slash)
-        create_file("", '.csv', file_without_extension,)
-        change_extension_to(file_with_csv_extension, '.txt')
+        create_file("", file_with_csv_extension,)
+        change_extension_to(file_with_csv_extension, '.txt', True)
         self.assertTrue(os.path.isfile(file_with_txt_extension))
         remove_file(file_with_txt_extension)
 
     def test_changing_to_empty_extension(self):
         clear_folder(folder_with_slash)
-        create_file("", '.csv', file_without_extension,)
-        change_extension_to(file_with_csv_extension, '')
+        create_file("", file_with_csv_extension)
+        change_extension_to(file_with_csv_extension, '', True)
         self.assertTrue(os.path.isfile(file_without_extension))
         remove_file(file_without_extension)
 
     def test_changing_empty_extension(self):
         clear_folder(folder_with_slash)
-        create_file("", '', file_without_extension, )
-        change_extension_to(file_without_extension, '.txt')
+        create_file("", file_without_extension)
+        change_extension_to(file_without_extension, '.txt', True)
         self.assertTrue(os.path.isfile(file_with_txt_extension))
         remove_file(file_with_txt_extension)
 

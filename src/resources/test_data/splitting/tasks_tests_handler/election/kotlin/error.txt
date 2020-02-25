@@ -1,0 +1,8 @@
+fun main() {
+    with(Scanner(System.`in`)) {
+        val x = nextInt()
+        val y = nextInt()
+        val  = nextInt()
+        println(election(x.toBoolean()!!, y.toBoolean()!!, z.toBoolean()!!).toInt())
+    }
+}

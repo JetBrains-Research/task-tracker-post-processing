@@ -1,0 +1,12 @@
+package kotlin_tasks
+
+import java.util.*
+
+fun main() {
+    with(Scanner(System.`in`)) {
+        repeat(3) {
+            l.add(nextInt())
+        }
+        println(l.max())
+    }
+}
