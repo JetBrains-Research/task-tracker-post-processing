@@ -11,6 +11,8 @@ from src.main.util import consts
 from src.main.util.consts import PATH_CMD_ARG, LOGGER_FORMAT
 from src.main.util.file_util import add_slash
 
+from src.main.statistics_gathering.get_statistics import get_statistics
+
 pd.set_option('display.max_rows', 250)
 pd.set_option('display.max_columns', 100)
 
@@ -35,8 +37,12 @@ def main():
 
     # run tests for all tasks and write their results in ct data
     # pass the path from previous action?
+    # log.info(f'Current time: {str(datetime.datetime.now())}')
+    # run_tests(path)
+    # log.info(f'Current time: {str(datetime.datetime.now())}')
+
     log.info(f'Current time: {str(datetime.datetime.now())}')
-    run_tests(path)
+    get_statistics(path)
     log.info(f'Current time: {str(datetime.datetime.now())}')
 
 
