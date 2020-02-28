@@ -58,7 +58,7 @@ def add_dot_to_not_empty_extension(extension: str):
     return extension
 
 
-# if need_to_rуname, it works only for real files because os.rename is called
+# if need_to_rename, it works only for real files because os.rename is called
 def change_extension_to(file: str, new_extension: str, need_to_rename=False):
     new_extension = add_dot_to_not_empty_extension(new_extension)
     base, _ = os.path.splitext(file)
@@ -133,6 +133,10 @@ def csv_file_condition(name: str):
 # to get all codetracker files
 def ct_file_condition(name: str):
     return ACTIVITY_TRACKER_FILE_NAME not in name and csv_file_condition(name)
+
+
+def png_file_condition(name: str):
+    return get_extension_from_file(name) == '.png'
 
 
 # to get all subdirs that contain ct and ati data

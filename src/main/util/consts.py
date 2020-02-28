@@ -54,14 +54,18 @@ class DEFAULT_VALUES(Enum):
     AGE = 0
     EXPERIENCE = np.nan
 
-
+# there alse can be 'WRITE_TASK' value, that converts to 'write_task' after conversion in code_tracker_handler
 class TASK(Enum):
     PIES = 'pies'
     MAX_3 = 'max_3'
-    ZERO = 'zero'
+    ZERO = 'is_zero'
     ELECTION = 'election'
     BRACKETS = 'brackets'
     MAX_DIGIT = 'max_digit'
+
+class TASK_STATUS(Enum):
+    SOLVED = 'SOLVED'
+    NOT_SOLVED = 'NOT_SOLVED'
 
 
 class TASKS_TESTS(Enum):

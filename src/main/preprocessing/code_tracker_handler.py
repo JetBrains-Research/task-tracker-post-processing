@@ -3,6 +3,7 @@ import logging
 import numpy as np
 import pandas as pd
 
+from src.main.util.strings_util import convert_camel_case_to_snake_case
 from src.main.util import consts
 from src.main.util.file_util import get_extension_from_file
 from src.main.util.language_util import get_language_by_extension
@@ -40,6 +41,9 @@ def get_ct_language(data: pd.DataFrame):
 def handle_ct_file(ct_file: str):
     log.info(f'Start handling the file {ct_file}')
     ct_df = pd.read_csv(ct_file, encoding=consts.ISO_ENCODING)
+    # it's easier to have all tasks written in snake case because further they will be used as folders names and so on
+    ct_df[consts.CODE_TRACKER_COLUMN.CHOSEN_TASK.value] = ct_df[consts.CODE_TRACKER_COLUMN.CHOSEN_TASK.value].fillna(''). \
+        apply(lambda t: convert_camel_case_to_snake_case(t))
     language = get_ct_language(ct_df)
     ct_df[consts.CODE_TRACKER_COLUMN.LANGUAGE.value] = language
     ct_df[consts.CODE_TRACKER_COLUMN.AGE.value] = fill_column(ct_df,
@@ -49,4 +53,3 @@ def handle_ct_file(ct_file: str):
                                                                      consts.CODE_TRACKER_COLUMN.EXPERIENCE.value,
                                                                      consts.DEFAULT_VALUES.EXPERIENCE.value)
     return ct_df, language
-
