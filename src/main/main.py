@@ -11,7 +11,7 @@ from src.main.util import consts
 from src.main.util.consts import PATH_CMD_ARG, LOGGER_FORMAT
 from src.main.util.file_util import add_slash
 
-from src.main.statistics_gathering.get_statistics import get_statistics
+from src.main.statistics_gathering.statistics_gathering import get_statistics
 
 pd.set_option('display.max_rows', 250)
 pd.set_option('display.max_columns', 100)

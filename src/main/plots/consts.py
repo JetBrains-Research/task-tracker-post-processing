@@ -26,10 +26,16 @@ SHORT_NAME_LENGTH = 10
 DIFF_MAX = 30
 
 
-class STATISTICS_COLUMN(Enum):
+class STATISTIC_KEY(Enum):
     AGE = 'age'
     EXPERIENCE = 'experience'
-    FREQ = 'freq'
+
+    @classmethod
+    def statistics_keys(cls):
+        return [cls.AGE.value, cls.EXPERIENCE.value]
+
+
+STATISTIC_FREQ = 'freq'
 
 
 class STATISTICS_SHOWING_KEY(Enum):
@@ -39,7 +45,7 @@ class STATISTICS_SHOWING_KEY(Enum):
     FREQ = 'Frequency'
 
 
-STATISTICS_RARE_VALUE_BORDER = 2
+STATISTICS_RARE_VALUE_THRESHOLD = 2
 
 
 class STATISTICS_COLORS(Enum):
@@ -59,7 +65,7 @@ class STATISTICS_INFO_FOR_PLOTS(Enum):
 
 
 class OUTPUT_FORMAT(Enum):
-    HTML = 'html'
+    HTML = '.html'
 
 
 # 'total ascending' means: in order of increasing values in Y
