@@ -46,6 +46,8 @@ def __handle_profile_data_of_one_student(profile_data: set, default_value=None):
         profile_data.remove(default_value)
     if len(profile_data) == 1:
         return profile_data.pop()
+    if consts.INVALID_FILE_FOR_PREPROCESSING in profile_data:
+        return consts.INVALID_FILE_FOR_PREPROCESSING
     return default_value
 
 

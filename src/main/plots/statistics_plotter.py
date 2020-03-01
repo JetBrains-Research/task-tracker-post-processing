@@ -16,7 +16,7 @@ log = logging.getLogger(consts.LOGGER_NAME)
 # Get key, which will be shown on a plot
 def __get_readable_key(key: str, default_value=None):
     # It was an incorrect file
-    if key == '-1':
+    if key == str(consts.INVALID_FILE_FOR_PREPROCESSING):
         return stat_const.STATISTICS_SHOWING_KEY.INCORRECT.value
     # It was not indicated
     if key == str(default_value):

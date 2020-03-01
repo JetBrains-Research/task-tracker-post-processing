@@ -91,6 +91,9 @@ class FILE_SYSTEM_ITEM(Enum):
     FILE = 2
 
 
+INVALID_FILE_FOR_PREPROCESSING = -1
+
+
 # add the dot to extensions to be consistent with extensions getting in 'os.path' module
 EXTENSION_TO_LANGUAGE_DICT = {
     '.py': LANGUAGE.PYTHON.value,
