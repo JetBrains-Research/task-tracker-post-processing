@@ -5,8 +5,7 @@ import pandas as pd
 from src.main.util import consts
 from src.main.plots import consts as stat_const
 from src.main.preprocessing.code_tracker_handler import handle_ct_file
-from src.main.preprocessing.preprocessing import __separate_ati_and_other_files
-from src.main.util.file_util import get_all_file_system_items, ct_file_condition, csv_file_condition, \
+from src.main.util.file_util import get_all_file_system_items, ct_file_condition, \
     get_result_folder, change_extension_to, serialize_data_and_write_to_file, data_subdirs_condition
 
 
@@ -43,6 +42,8 @@ def __get_age_and_experience(ct_file: str, needs_preprocessing=True):
 # for profile data (age or experience for example)
 # Note: you should run it for each profile column
 def __handle_profile_data_of_one_student(profile_data: set, default_value=None):
+    if default_value in profile_data:
+        profile_data.remove(default_value)
     if len(profile_data) == 1:
         return profile_data.pop()
     return default_value
