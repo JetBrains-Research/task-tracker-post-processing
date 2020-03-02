@@ -1,5 +1,5 @@
-import logging
 import os
+import logging
 import unittest
 
 from src.main.util import consts
