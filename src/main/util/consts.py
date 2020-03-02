@@ -113,6 +113,13 @@ EXTENSION_TO_LANGUAGE_DICT = {
 }
 
 
+class EXTENSION(Enum):
+    CSV = '.cvs'
+    PNG = '.png'
+    HTML = '.html'
+    TXT = '.txt'
+
+
 class SPLIT_DICT(Enum):
     INDEX = 'index'
     RATE = 'rate'

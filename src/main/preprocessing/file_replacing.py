@@ -1,7 +1,7 @@
 import logging
 
-from main.preprocessing.preprocessing import is_ct_file
 from src.main.util import consts
+from src.main.preprocessing.preprocessing import is_ct_file
 from src.main.util.consts import FILE_SYSTEM_ITEM, LOGGER_NAME
 from src.main.util.file_util import get_all_file_system_items, get_file_and_parent_folder_names, create_file, \
     get_content_from_file, ct_file_condition, csv_file_condition
@@ -12,7 +12,7 @@ log = logging.getLogger(LOGGER_NAME)
 # to find all '.csv' files in root with the same names as in result folder and replace them
 def replace_ct_files(path: str, tested_path: str):
     files = get_all_file_system_items(path, csv_file_condition, FILE_SYSTEM_ITEM.FILE.value)
-    tested_files = get_all_file_system_items(tested_path, csv_file_condition(), FILE_SYSTEM_ITEM.FILE.value)
+    tested_files = get_all_file_system_items(tested_path, csv_file_condition, FILE_SYSTEM_ITEM.FILE.value)
 
     # just for checking
     folder_and_file_names = set(map(lambda f: get_file_and_parent_folder_names(f), files))

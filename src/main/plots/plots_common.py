@@ -4,6 +4,7 @@ import logging
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from main.util.consts import EXTENSION
 from src.main.util import consts
 from src.main.plots import consts as plot_consts
 from src.main.util.file_util import get_name_from_path, get_parent_folder_name, png_file_condition, remove_file, \
@@ -27,7 +28,7 @@ def get_short_name(path: str):
 
 def save_plot(folder_to_save: str, data_path: str, fig: plt.figure, name_prefix: str):
     log.info('Saving' + data_path)
-    name = name_prefix + '_' + (get_file_and_parent_folder_names(change_extension_to(data_path, '.png')).replace('/', '_'))
+    name = name_prefix + '_' + (get_file_and_parent_folder_names(change_extension_to(data_path, EXTENSION.PNG.value)).replace('/', '_'))
     fig.savefig(os.path.join(folder_to_save, name), bbox_inches='tight')
 
 

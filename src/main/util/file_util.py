@@ -1,13 +1,12 @@
 import os
-import shutil
-
 import pickle
-from typing import Callable
-
+import shutil
 import pandas as pd
 
+from typing import Callable
+
 from src.main.util.consts import ACTIVITY_TRACKER_FILE_NAME, FILE_SYSTEM_ITEM, ATI_DATA_FOLDER, \
-    DI_DATA_FOLDER, ISO_ENCODING, LANGUAGE, UTF_ENCODING
+    DI_DATA_FOLDER, ISO_ENCODING, LANGUAGE, UTF_ENCODING, EXTENSION
 
 '''
 To understand correctly these functions' behavior you can see examples in a corresponding test folder.
@@ -144,7 +143,7 @@ def get_all_file_system_items(root: str, item_condition: Callable, item_type=FIL
 
 
 def csv_file_condition(name: str):
-    return get_extension_from_file(name) == '.csv'
+    return get_extension_from_file(name) == EXTENSION.CSV.value
 
 
 # to get all codetracker files
@@ -153,7 +152,7 @@ def ct_file_condition(name: str):
 
 
 def png_file_condition(name: str):
-    return get_extension_from_file(name) == '.png'
+    return get_extension_from_file(name) == EXTENSION.PNG.value
 
 
 # to get all subdirs that contain ct and ati data
