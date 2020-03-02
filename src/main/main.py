@@ -11,6 +11,7 @@ from src.main.util.file_util import add_slash
 # from src.main.splitting.splitting import run_tests
 from src.main.util.consts import PATH_CMD_ARG, LOGGER_FORMAT
 from src.main.preprocessing.preprocessing import preprocess_data
+from main.splitting.splitting import split_tasks_into_separate_files
 
 
 pd.set_option('display.max_rows', 250)
@@ -33,16 +34,10 @@ def main():
     path = __get_data_path()
 
     # preprocess data before splitting
-    preprocess_data(path)
+    # preprocess_data(path)
 
-    # run tests for all tasks and write their results in ct data
-    # pass the path from previous action?
-    # log.info(f'Current time: {str(datetime.datetime.now())}')
-    # run_tests(path)
-    # log.info(f'Current time: {str(datetime.datetime.now())}')
-
-
-    # there should be splitting then
+    # path should contain files after preprocessing with tests results
+    split_tasks_into_separate_files(path)
 
 
 if __name__ == '__main__':

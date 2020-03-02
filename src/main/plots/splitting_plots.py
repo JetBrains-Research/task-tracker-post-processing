@@ -3,7 +3,6 @@ import logging
 import pandas as pd
 import matplotlib.pyplot as plt
 
-
 from src.main.util import consts
 from src.main.plots import consts as plot_consts
 from src.main.splitting.splitting import find_splits
@@ -71,7 +70,7 @@ def __create_splitting_plot(ax: plt.axes, data: pd.DataFrame, title: str,
 # to_snake_case is needed for correct tasks splits showing
 def create_comparative_splitting_plot(path: str, to_snake_case=True, folder_to_save=None, to_show=False):
     data = pd.read_csv(path, encoding=consts.ISO_ENCODING)
-    real_splits_data = find_splits(path)
+    real_splits_data = find_splits(data)
     fig, (ax, real_splits_ax) = plt.subplots(2, 1, figsize=(20, 10))
 
     title = get_short_name(path)
@@ -81,7 +80,7 @@ def create_comparative_splitting_plot(path: str, to_snake_case=True, folder_to_s
     __create_splitting_plot(real_splits_ax, real_splits_data, real_splits_title, to_snake_case=to_snake_case)
 
     if folder_to_save:
-        save_plot(folder_to_save, path, fig, 'split_')
+        save_plot(folder_to_save, path, fig, 'split_2_')
     if to_show:
         log.info('Showing ' + path)
         fig.show()
