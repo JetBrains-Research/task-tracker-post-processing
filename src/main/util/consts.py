@@ -1,5 +1,5 @@
 import os
-import numpy as np
+from numpy import nan
 from enum import Enum
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -52,7 +52,7 @@ class ACTIVITY_TRACKER_EVENTS(Enum):
 
 class DEFAULT_VALUES(Enum):
     AGE = 0
-    EXPERIENCE = np.nan
+    EXPERIENCE = nan
 
 
 class TASK(Enum):
@@ -89,6 +89,9 @@ class FILE_SYSTEM_ITEM(Enum):
     PATH = 0
     SUBDIR = 1
     FILE = 2
+
+
+INVALID_FILE_FOR_PREPROCESSING = -1
 
 
 # add the dot to extensions to be consistent with extensions getting in 'os.path' module
@@ -129,6 +132,7 @@ TEST_DATA_PATH = ROOT_DIR + '/../../resources/test_data'
 TEST_PATH = ROOT_DIR + '/../../test'
 
 PREPROCESSING_RESULT_FOLDER = 'preprocessing_result'
+STATISTICS_RESULT_FOLDER = 'statistics_result'
 
 # v 2.0 - with stopping after the first break
 # v 3.0 - with java package detecting

@@ -1,5 +1,6 @@
 import os
 import shutil
+import pickle
 from typing import Callable
 
 import pandas as pd
@@ -24,6 +25,16 @@ If extension is passed without any dots, a dot will be added (for example, see c
 
 def remove_slash(path: str):
     return path.rstrip('/')
+
+
+def serialize_data_and_write_to_file(path: str, data: any):
+    with open(path, 'wb') as f:
+        pickle.dump(data, f)
+
+
+def deserialize_data_from_file(path: str):
+    with open(path, 'rb') as f:
+        return pickle.load(f)
 
 
 def add_slash(path: str):

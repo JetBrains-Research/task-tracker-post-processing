@@ -16,7 +16,7 @@ def fill_column(data: pd.DataFrame, column: consts.CODE_TRACKER_COLUMN, default_
     if (index.shape[0] == 0 and len(values) > 1) or len(values) > 2:
         log.error('Invalid value for column!')
         # it is an invalid file
-        return -1
+        return consts.INVALID_FILE_FOR_PREPROCESSING
     values = np.delete(values, index)
     if len(values) == 1:
         return values[0]
