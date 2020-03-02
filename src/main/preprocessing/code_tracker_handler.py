@@ -3,10 +3,10 @@ import logging
 import numpy as np
 import pandas as pd
 
-from src.main.util.strings_util import convert_camel_case_to_snake_case
 from src.main.util import consts
 from src.main.util.file_util import get_extension_from_file
 from src.main.util.language_util import get_language_by_extension
+from src.main.util.strings_util import convert_camel_case_to_snake_case
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -17,7 +17,7 @@ def fill_column(data: pd.DataFrame, column: consts.CODE_TRACKER_COLUMN, default_
     if (index.shape[0] == 0 and len(values) > 1) or len(values) > 2:
         log.error('Invalid value for column!')
         # it is an invalid file
-        return -1
+        return consts.INVALID_FILE_FOR_PREPROCESSING
     values = np.delete(values, index)
     if len(values) == 1:
         return values[0]
