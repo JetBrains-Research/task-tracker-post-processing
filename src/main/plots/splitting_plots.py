@@ -73,10 +73,10 @@ def create_comparative_splitting_plot(path: str, to_snake_case=True, folder_to_s
     real_splits_data = find_splits(data)
     fig, (ax, real_splits_ax) = plt.subplots(2, 1, figsize=(20, 10))
 
-    title = get_short_name(path)
+    title = f'{get_short_name(path)} with original splits'
     __create_splitting_plot(ax, data, title, to_snake_case=to_snake_case)
 
-    real_splits_title = f'__get_short_name(path) with real splits'
+    real_splits_title = f'{get_short_name(path)} with real splits'
     __create_splitting_plot(real_splits_ax, real_splits_data, real_splits_title, to_snake_case=to_snake_case)
 
     if folder_to_save:
