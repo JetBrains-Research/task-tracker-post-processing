@@ -59,7 +59,7 @@ class DEFAULT_VALUES(Enum):
 class TASK(Enum):
     PIES = 'pies'
     MAX_3 = 'max_3'
-    ZERO = 'zero'
+    ZERO = 'is_zero'
     ELECTION = 'election'
     BRACKETS = 'brackets'
     MAX_DIGIT = 'max_digit'
