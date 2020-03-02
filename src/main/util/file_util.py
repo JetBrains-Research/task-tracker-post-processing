@@ -89,7 +89,7 @@ def get_original_file_name_with_extension(hashed_file_name: str, extension: str)
 
 
 def get_content_from_file(file: str):
-    with open(file, 'r') as f:
+    with open(file, 'r', encoding=ISO_ENCODING) as f:
         return f.read().rstrip('\n')
 
 
@@ -112,6 +112,11 @@ def create_directory(directory: str):
 def remove_directory(directory: str):
     if os.path.exists(directory):
         shutil.rmtree(directory, ignore_errors=True)
+
+
+# to get something like 'ati_239/Main_2323434_343434.csv'
+def get_file_and_parent_folder_names(file: str):
+    return os.path.join(get_parent_folder_name(file), get_name_from_path(file))
 
 
 # To get all files or subdirs (depends on the last parameter) from root that match item_condition
@@ -183,4 +188,3 @@ def write_based_on_language(result_folder: str, file: str, df: pd.DataFrame, lan
     folder_to_write = os.path.join(result_folder, language, get_parent_folder_name(file))
     file_to_write = os.path.join(folder_to_write, get_name_from_path(file))
     create_folder_and_write_df_to_file(folder_to_write, file_to_write, df)
-

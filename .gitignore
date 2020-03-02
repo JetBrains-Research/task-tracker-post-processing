@@ -135,3 +135,6 @@ src/resources/tasks_tests/**/*.java
 src/resources/tasks_tests/**/*.kt
 src/resources/tasks_tests/**/*.jar
 src/resources/tasks_tests/**/*.py
+
+# data
+data/

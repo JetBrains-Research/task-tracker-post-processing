@@ -13,11 +13,11 @@ from src.main.util.file_util import get_original_file_name, get_all_file_system_
 log = logging.getLogger(consts.LOGGER_NAME)
 
 
-def __is_ct_file(csv_file: str):
+def is_ct_file(csv_file: str, column=consts.CODE_TRACKER_COLUMN.CHOSEN_TASK.value):
     with open(csv_file, encoding=consts.ISO_ENCODING) as f:
         reader = csv.reader(f)
         try:
-            if consts.CODE_TRACKER_COLUMN.CHOSEN_TASK.value in next(reader):
+            if column in next(reader):
                 return True
         except StopIteration:
             return False
@@ -25,16 +25,15 @@ def __is_ct_file(csv_file: str):
 
 
 def __get_real_ati_file_index(files: list):
-    count_at = 0
+    count_ati = 0
     ati_index = -1
     for i, f in enumerate(files):
-        if consts.ACTIVITY_TRACKER_FILE_NAME in f:
-            count_at += 1
-            if count_at >= 2:
+        if consts.ACTIVITY_TRACKER_FILE_NAME in f and not is_ct_file(f):
+            count_ati += 1
+            ati_index = i
+            if count_ati >= 2:
                 log.error('The number of activity tracker files is more than 1')
                 raise ValueError('The number of activity tracker files is more than 1')
-            if not __is_ct_file(f):
-                ati_index = i
     return ati_index
 
 

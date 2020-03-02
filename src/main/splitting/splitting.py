@@ -1,117 +1,51 @@
-import os
+import ast
 import logging
 
 import pandas as pd
 
 from src.main.util import consts
-from src.main.preprocessing.code_tracker_handler import get_ct_language
-from src.main.splitting.tasks_tests_handler import check_tasks, create_in_and_out_dict
-from src.main.util.file_util import ct_file_condition, get_all_file_system_items, get_name_from_path, \
-    get_parent_folder_name, get_result_folder, write_based_on_language
-
-FRAGMENT = consts.CODE_TRACKER_COLUMN.FRAGMENT.value
-TESTS_RESULTS = consts.CODE_TRACKER_COLUMN.TESTS_RESULTS.value
+from main.util.consts import ISO_ENCODING
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
-
-def get_tasks_with_max_rate(tasks: list, test_results: list):
-    max_rate = max(test_results)
-    indices = [i for i, tr in enumerate(test_results) if tr == max_rate]
-    return [tasks[i] for i in indices], max_rate
+TESTS_RESULTS = consts.CODE_TRACKER_COLUMN.TESTS_RESULTS.value
+CHOSEN_TASK = consts.CODE_TRACKER_COLUMN.CHOSEN_TASK.value
+TASK_STATUS = consts.CODE_TRACKER_COLUMN.TASK_STATUS.value
 
 
-def check_tasks_on_correct_fragments(data: pd.DataFrame, tasks: list, in_and_out_files_dict: dict, file_log_info=''):
-    data[FRAGMENT] = data[FRAGMENT].fillna('')
-    # if run after preprocessing, this value can be taken from 'language' column
-    language = get_ct_language(data)
-    # add unique to logs
-    log.info(f'{file_log_info}, language is {language}, found {str(data.shape[0])} fragments')
-
-    if language is consts.LANGUAGE.NOT_DEFINED.value:
-        data[TESTS_RESULTS] = str([consts.TEST_RESULT.LANGUAGE_NOT_DEFINED.value] * len(tasks))
+def get_solved_task(tests_results: str):
+    tests_results = list(map(int, ast.literal_eval(tests_results)))
+    tasks = consts.TASK.tasks()
+    solved_tasks = [t for i, t in enumerate(tasks) if tests_results[i] == 1]
+    if len(solved_tasks) == 0:
+        log.info(f'No solved tasks found, tests results: {tests_results}')
+        return ''
+    elif len(solved_tasks) == 1:
+        log.info(f'Found solved task {solved_tasks[0]}, tests results: {tests_results}')
+        return solved_tasks[0]
     else:
-        unique_fragments = list(data[FRAGMENT].unique())
-        log.info(f'Found {str(len(unique_fragments))} unique fragments')
-
-        fragment_to_test_results_dict = dict(
-            map(lambda f: (f, check_tasks(tasks, f, in_and_out_files_dict, language)), unique_fragments))
-        data[TESTS_RESULTS] = data.apply(lambda row: fragment_to_test_results_dict[row[FRAGMENT]], axis=1)
-
-    return language, data
+        log.error(f'Several tasks are solved: {solved_tasks}, tests results: {tests_results}')
+        raise ValueError(f'Several tasks are solved: {solved_tasks}, tests results: {tests_results}')
 
 
-# since lists of tasks have small size, it should work faster than creating a set
-def intersect(list_1: list, list_2: list):
-    return [e for e in list_1 if e in list_2]
+def find_next_solved_task(cur_i: int, df: pd.DataFrame):
+    df = df.iloc[cur_i:]
+    next_task_df = df[CHOSEN_TASK].where(df[CHOSEN_TASK] != '').dropna()
+    if not next_task_df.empty:
+        return next_task_df.iloc[0]
+    return ''
 
 
-def append_new_split_to_list(splits: list, index: int, rate: float, tasks: list):
-    splits.append({consts.SPLIT_DICT.INDEX.value: index,
-                   consts.SPLIT_DICT.RATE.value: rate,
-                   consts.SPLIT_DICT.TASKS.value: tasks})
+def find_splits(ct_file: str):
+    log.info(f'Start splitting file {ct_file}')
+    ct_df = pd.read_csv(ct_file, encoding=ISO_ENCODING)
+    # fill chosen task according to solved task
+    ct_df[CHOSEN_TASK] = ct_df.apply(lambda row: get_solved_task(row[TESTS_RESULTS]), axis=1)
 
+    # change task status according to chosen task
+    ct_df.loc[ct_df.chosenTask == '', TASK_STATUS] = 'nan'
+    ct_df.loc[ct_df.chosenTask != '', TASK_STATUS] = consts.TASK_STATUS.SOLVED.value
 
-# first version of splitting
-def find_real_splits(supposed_splits: list):
-    real_splits = []
-    if len(supposed_splits) == 0:
-        return real_splits
-
-    prev_split = supposed_splits[0]
-    prev_intersected_tasks = prev_split[consts.SPLIT_DICT.TASKS.value]
-
-    for curr_split in supposed_splits:
-        curr_intersected_tasks = intersect(prev_intersected_tasks, curr_split[consts.SPLIT_DICT.TASKS.value])
-        if len(curr_intersected_tasks) == 0:
-            # it means that the supposed task has changed, so we should split on prev_split
-            append_new_split_to_list(real_splits, prev_split[consts.SPLIT_DICT.INDEX.value],
-                                     prev_split[consts.SPLIT_DICT.RATE.value], prev_intersected_tasks)
-            prev_intersected_tasks = curr_split[consts.SPLIT_DICT.TASKS.value]
-        else:
-            prev_intersected_tasks = curr_intersected_tasks
-
-        prev_split = curr_split
-
-    # add the last split
-    append_new_split_to_list(real_splits, prev_split[consts.SPLIT_DICT.INDEX.value],
-                             prev_split[consts.SPLIT_DICT.RATE.value], prev_intersected_tasks)
-    return real_splits
-
-
-def get_file_and_parent_folder_names(file: str):
-    return os.path.join(get_parent_folder_name(file), get_name_from_path(file))
-
-
-def filter_already_tested_files(files: list, result_folder_path: str):
-    tested_files = get_all_file_system_items(result_folder_path, ct_file_condition, consts.FILE_SYSTEM_ITEM.FILE.value)
-    # to get something like 'ati_239/Main_2323434_343434.csv'
-    tested_folder_and_file_names = list(
-        map(lambda f: get_file_and_parent_folder_names(f), tested_files))
-    return list(filter(lambda f: get_file_and_parent_folder_names(f) not in tested_folder_and_file_names, files))
-
-
-def run_tests(path: str):
-    log.info(f'Start running tests on path {path}')
-    result_folder = get_result_folder(path, consts.RUNNING_TESTS_RESULT_FOLDER)
-
-    files = get_all_file_system_items(path, ct_file_condition, consts.FILE_SYSTEM_ITEM.FILE.value)
-    str_len_files = str(len(files))
-    log.info(f'Found {str_len_files} files to run tests on them')
-
-    files = filter_already_tested_files(files, result_folder)
-    str_len_files = str(len(files))
-    log.info(f'Found {str_len_files} files to run tests on them after filtering already tested')
-
-    tasks = [t.value for t in consts.TASK]
-    in_and_out_files_dict = create_in_and_out_dict(tasks)
-
-    for i, file in enumerate(files):
-        file_log_info = f'file: {str(i + 1)}/{str_len_files}'
-        log.info(f'Start running tests on {file_log_info}, {file}')
-        data = pd.read_csv(file, encoding=consts.ISO_ENCODING)
-        language, data = check_tasks_on_correct_fragments(data, tasks, in_and_out_files_dict, file_log_info)
-        log.info(f'Finish running tests on {file_log_info}, {file}')
-        write_based_on_language(result_folder, file, data, language)
-
-    return result_folder
+    # fill chosen task
+    ct_df[CHOSEN_TASK] = ct_df.apply(lambda row: find_next_solved_task(row.name, ct_df), axis=1)
+    return ct_df

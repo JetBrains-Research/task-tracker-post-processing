@@ -63,6 +63,11 @@ class TASK(Enum):
     BRACKETS = 'brackets'
     MAX_DIGIT = 'max_digit'
 
+    @classmethod
+    def tasks(cls):
+        return [cls.PIES.value, cls.MAX_3.value, cls.ZERO.value,
+                cls.ELECTION.value, cls.BRACKETS.value, cls.MAX_DIGIT.value]
+
 class TASK_STATUS(Enum):
     SOLVED = 'SOLVED'
     NOT_SOLVED = 'NOT_SOLVED'

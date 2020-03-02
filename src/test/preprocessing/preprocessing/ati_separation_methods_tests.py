@@ -16,16 +16,15 @@ class TEST_DATA(Enum):
 
 VALUE_ERROR = 'value_error'
 
-ATI_FILE_1 = consts.TEST_DATA_PATH + "/preprocessing/preprocessing/ide-events_18963327637.58422_2ec6b363dfea2f6e12ea59dbef61c90ef23c4b02.csv'"
+ATI_FILE_1 = consts.TEST_DATA_PATH + '/preprocessing/preprocessing/ide-events_18963327637.58422_2ec6b363dfea2f6e12ea59dbef61c90ef23c4b02.csv'
 ATI_FILE_2 = consts.TEST_DATA_PATH + '/preprocessing/preprocessing/ide-events_18963327648.58422_2ec6b363dfea2f6e12ea59dbef61c90ef23c4b02.csv'
-
 FILE_1 = consts.TEST_DATA_PATH + '/preprocessing/preprocessing/Main_203985_1349205394_43223189605.08081_37c0720d12b4f83bb694fc801a8ab7b20b354bdd.csv'
 FILE_2 = consts.TEST_DATA_PATH + '/preprocessing/preprocessing/Main_69437_1494035819_963152475617.9932_2c75cd4f24b92a7c95ffe3253c2b1d821784a5b3.csv'
 FILE_3 = consts.TEST_DATA_PATH + '/preprocessing/preprocessing/Name_69437_1494035819_963152475617.9932_2c75cd4f24b92a7c95ffe3253c2b1d821784a5b3.csv'
 
 two_ati_case = {
     TEST_DATA.FILES.value: [ATI_FILE_1, ATI_FILE_2, FILE_1],
-    TEST_DATA.RESULT.value: (VALUE_ERROR, None)
+    TEST_DATA.RESULT.value: ([ATI_FILE_2, FILE_1], ATI_FILE_1)
 }
 
 two_same_files_case = {
