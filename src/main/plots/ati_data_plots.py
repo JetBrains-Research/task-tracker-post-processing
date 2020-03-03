@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 from src.main.util import consts
 from src.main.plots import consts as plot_consts
-from main.plots.plots_common import save_plot, add_fragments_length_plot, get_short_name, EVENT_DATA_COL, \
+from src.main.plots.plots_common import save_plot, add_fragments_length_plot, get_short_name, EVENT_DATA_COL, \
     TIMESTAMP_COL, FRAGMENT_COL
 
 log = logging.getLogger(consts.LOGGER_NAME)

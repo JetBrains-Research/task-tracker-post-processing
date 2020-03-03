@@ -4,12 +4,12 @@ import logging
 import numpy as np
 import pandas as pd
 
-from main.preprocessing.code_tracker_handler import get_ct_language
-from main.util.file_util import get_all_file_system_items, ct_file_condition, get_result_folder, \
+from src.main.preprocessing.code_tracker_handler import get_ct_language
+from src.main.util.file_util import get_all_file_system_items, ct_file_condition, get_result_folder, \
     write_based_on_language, get_name_from_path, get_parent_folder_name
-from main.util.strings_util import does_string_contain_any_of_substrings
+from src.main.util.strings_util import does_string_contain_any_of_substrings
 from src.main.util import consts
-from main.util.consts import ISO_ENCODING, FILE_SYSTEM_ITEM, TASK
+from src.main.util.consts import ISO_ENCODING, FILE_SYSTEM_ITEM, TASK
 
 log = logging.getLogger(consts.LOGGER_NAME)
 

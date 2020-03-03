@@ -4,7 +4,7 @@ import logging
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from main.util.consts import EXTENSION
+from src.main.util.consts import EXTENSION
 from src.main.util import consts
 from src.main.plots import consts as plot_consts
 from src.main.util.file_util import get_name_from_path, get_parent_folder_name, png_file_condition, remove_file, \
