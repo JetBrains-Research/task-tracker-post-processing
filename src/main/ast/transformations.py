@@ -828,7 +828,7 @@ def applyTransferLambda(x):
     return tmp
 
 
-def constantFolding(a):
+def constantFolding(a, ops_index=-1):
     """In constant folding, we evaluate all constant expressions instead of doing operations at runtime"""
     if not isinstance(a, ast.AST):
         return a
@@ -1706,13 +1706,12 @@ def deadCodeRemoval(a, liveVars=None, keepPrints=True, inLoop=False):
 
                 # We need to make ALL variables in the loop live, since they update continuously
                 liveVars |= set(allVariableNamesUsed(stmt))
-                old_global_id = stmt.body[0].global_id
                 stmt.body = deadCodeRemoval(stmt.body, copy.deepcopy(liveVars), keepPrints=keepPrints, inLoop=True)
                 stmt.orelse = deadCodeRemoval(stmt.orelse, copy.deepcopy(liveVars), keepPrints=keepPrints,
                                               inLoop=inLoop)
                 # If the body is empty, get rid of it!
                 if len(stmt.body) == 0:
-                    stmt.body = [ast.Pass(removedLines=True, global_id=old_global_id)]
+                    stmt.body = [ast.Pass(removedLines=True)]
             elif t == ast.If:
                 # First, if True/False, just replace it with the lines
                 test = a[i].test

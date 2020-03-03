@@ -514,7 +514,7 @@ def negate(op):
         else:
             values = []
             allOperands = [op.left] + op.comparators
-            for i in range(len(op.ops)):
+            for i in range(len(op.ops) - 1):
                 values.append(ast.Compare(allOperands[i], [negate(op.ops[i])],
                                           [allOperands[i + 1]], multiCompPart=True))
             newOp = ast.BoolOp(ast.Or(multiCompOp=True), values, multiComp=True)

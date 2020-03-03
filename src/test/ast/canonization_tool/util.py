@@ -12,8 +12,10 @@ from src.main.util.file_util import get_all_file_system_items, pair_in_and_out_f
 log = logging.getLogger(LOGGER_NAME)
 
 
-def get_test_in_and_out_files(test_type: CANONIZATION_TESTS_TYPES):
+def get_test_in_and_out_files(test_type: CANONIZATION_TESTS_TYPES, task=None):
     root = os.path.join(CANONIZATION_TESTS.TASKS_TESTS_PATH.value, str(test_type))
+    if task is not None:
+        root = os.path.join(root, str(task))
     in_files = get_all_file_system_items(root, (lambda filename: re.fullmatch(r'in_\d+.py', filename)))
     out_files = get_all_file_system_items(root, (lambda filename: re.fullmatch(r'out_\d+.py', filename)))
     if len(out_files) != len(in_files):
@@ -21,8 +23,8 @@ def get_test_in_and_out_files(test_type: CANONIZATION_TESTS_TYPES):
     return pair_in_and_out_files(in_files, out_files)
 
 
-def run_test(self, test_type: CANONIZATION_TESTS_TYPES, get_code: Callable):
-    files = get_test_in_and_out_files(test_type)
+def run_test(self, test_type: CANONIZATION_TESTS_TYPES, get_code: Callable, task=None):
+    files = get_test_in_and_out_files(test_type, task)
     count_tests = 1
     for source_code, expected_code_path in files:
         actual_code = get_code(source_code)

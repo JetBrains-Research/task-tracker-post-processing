@@ -64,10 +64,14 @@ def get_canonical_form(tree):
     transformations = __get_canonical_transformations()
 
     oldTree = None
+    iter = 1
     while compareASTs(oldTree, tree, checkEquality=True) != 0:
         oldTree = deepcopy(tree)
         for t in transformations:
             tree = t(tree)
+            # if len(tree.body[4].test.comparators) < 3:
+            #     print(t, 'YEAH', iter)
+            iter += 1
 
     return tree
 

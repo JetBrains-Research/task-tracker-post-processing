@@ -4,7 +4,7 @@ import logging
 import unittest
 
 from .util import run_test
-from src.main.util.consts import LOGGER_FORMAT, LOGGER_NAME, LOGGER_TEST_FILE, CANONIZATION_TESTS_TYPES
+from src.main.util.consts import LOGGER_FORMAT, LOGGER_NAME, LOGGER_TEST_FILE, CANONIZATION_TESTS_TYPES, TASK
 from src.main.util.file_util import get_content_from_file
 from src.main.ast.canonicalization_tool import get_cleaned_code, anonymize_names, print_tree, get_ast, get_canonical_form
 
@@ -44,3 +44,12 @@ class TestCanonicalizationTool(unittest.TestCase):
 
     def test_canonical_form(self):
         run_test(self, CANONIZATION_TESTS_TYPES.CANONICAL_FORM.value, get_canonical_code)
+
+    def test_student_code_pies(self):
+        run_test(self, CANONIZATION_TESTS_TYPES.STUDENT_CODE.value, get_canonical_code, TASK.PIES.value)
+
+    def test_student_code_max_3(self):
+        run_test(self, CANONIZATION_TESTS_TYPES.STUDENT_CODE.value, get_canonical_code, TASK.MAX_3.value)
+
+    def test_student_code_is_zero(self):
+        run_test(self, CANONIZATION_TESTS_TYPES.STUDENT_CODE.value, get_canonical_code, TASK.ZERO.value)
