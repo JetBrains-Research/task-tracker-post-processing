@@ -53,3 +53,12 @@ class TestCanonicalizationTool(unittest.TestCase):
 
     def test_student_code_is_zero(self):
         run_test(self, CANONIZATION_TESTS_TYPES.STUDENT_CODE.value, get_canonical_code, TASK.ZERO.value)
+
+    def test_student_code_max_digit(self):
+        run_test(self, CANONIZATION_TESTS_TYPES.STUDENT_CODE.value, get_canonical_code, TASK.MAX_DIGIT.value)
+
+    def test_student_code_election(self):
+        run_test(self, CANONIZATION_TESTS_TYPES.STUDENT_CODE.value, get_canonical_code, TASK.ELECTION.value)
+
+    def test_student_code_brackets(self):
+        run_test(self, CANONIZATION_TESTS_TYPES.STUDENT_CODE.value, get_canonical_code, TASK.BRACKETS.value)

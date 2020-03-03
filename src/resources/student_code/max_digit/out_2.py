@@ -1,0 +1,1 @@
+print(max([int(input()) for r0 in range(3)]))
