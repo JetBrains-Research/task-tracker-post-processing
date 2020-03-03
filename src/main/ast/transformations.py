@@ -2447,7 +2447,9 @@ def cleanupNegations(a):
             # x + (-y)
             if isNegative(a.right):
                 a.right = turnPositive(a.right)
-                a.op = ast.Sub(global_id=a.op.global_id, num_negated=True)
+                # Todo: think about id
+                # a.op = ast.Sub(global_id=a.op.global_id, num_negated=True)
+                a.op = ast.Sub(num_negated=True)
                 return a
             # (-x) + y
             elif isNegative(a.left):
@@ -2455,13 +2457,17 @@ def cleanupNegations(a):
                     return a  # can't switch if it'll change the message
                 else:
                     (a.left, a.right) = (a.right, turnPositive(a.left))
-                    a.op = ast.Sub(global_id=a.op.global_id, num_negated=True)
+                    # Todo: think about id
+                    # a.op = ast.Sub(global_id=a.op.global_id, num_negated=True)
+                    a.op = ast.Sub(num_negated=True)
                     return a
         elif type(a.op) == ast.Sub:
             # x - (-y)
             if isNegative(a.right):
                 a.right = turnPositive(a.right)
-                a.op = ast.Add(global_id=a.op.global_id, num_negated=True)
+                # Todo: think about id
+                # a.op = ast.Add(global_id=a.op.global_id, num_negated=True)
+                a.op = ast.Add(num_negated=True)
                 return a
             elif type(a.right) == ast.BinOp:
                 # x - (y + z) = x + (-y - z)
