@@ -7,7 +7,7 @@ from src.main.util import consts
 from src.main.plots import consts as plot_consts
 from src.main.splitting.splitting import find_splits
 from src.main.util.strings_util import convert_camel_case_to_snake_case
-from main.plots.plots_common import CHOSEN_TASK_COL, TIMESTAMP_COL, TASK_STATUS_COL, FRAGMENT_COL, \
+from src.main.plots.plots_common import CHOSEN_TASK_COL, TIMESTAMP_COL, TASK_STATUS_COL, FRAGMENT_COL, \
     add_fragments_length_plot, get_short_name, save_plot
 
 log = logging.getLogger(consts.LOGGER_NAME)
