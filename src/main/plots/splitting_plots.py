@@ -70,7 +70,7 @@ def __create_splitting_plot(ax: plt.axes, data: pd.DataFrame, title: str,
 # to_snake_case is needed for correct tasks splits showing
 def create_comparative_splitting_plot(path: str, to_snake_case=True, folder_to_save=None, to_show=False):
     data = pd.read_csv(path, encoding=consts.ISO_ENCODING)
-    real_splits_data = find_splits(data)
+    real_splits_data = find_splits(data.copy())
     fig, (ax, real_splits_ax) = plt.subplots(2, 1, figsize=(20, 10))
 
     title = f'{get_short_name(path)} with original splits'
@@ -84,3 +84,4 @@ def create_comparative_splitting_plot(path: str, to_snake_case=True, folder_to_s
     if to_show:
         log.info('Showing ' + path)
         fig.show()
+
