@@ -11,6 +11,7 @@ from src.main.util.strings_util import convert_camel_case_to_snake_case
 from src.main.plots.pyplot_util import CHOSEN_TASK_COL, TIMESTAMP_COL, TASK_STATUS_COL, FRAGMENT_COL, \
     add_fragments_length_plot, save_and_show_if_needed, add_legend_to_the_right
 
+
 log = logging.getLogger(consts.LOGGER_NAME)
 
 
