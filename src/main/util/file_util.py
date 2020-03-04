@@ -116,6 +116,12 @@ def remove_file(file: str):
         os.remove(file)
 
 
+def remove_all_png_files(root: str, condition: Callable):
+    files = get_all_file_system_items(root, condition, FILE_SYSTEM_ITEM.FILE.value)
+    for file in files:
+        remove_file(file)
+
+
 def create_directory(directory: str):
     os.makedirs(directory, exist_ok=True)
         

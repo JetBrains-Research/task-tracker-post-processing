@@ -2,7 +2,7 @@ import logging
 import unittest
 from enum import Enum
 
-from main.util.consts import LOGGER_FORMAT
+from src.main.util.consts import LOGGER_FORMAT
 from src.main.util import consts
 from src.main.preprocessing.preprocessing import __separate_ati_and_other_files
 

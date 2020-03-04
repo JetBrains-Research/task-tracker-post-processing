@@ -5,9 +5,9 @@ import pandas as pd
 from src.main.util import consts
 from src.main.plots import consts as stat_const
 from src.main.preprocessing.code_tracker_handler import handle_ct_file
+from src.main.util.strings_util import does_string_contain_any_of_substrings
 from src.main.util.file_util import get_all_file_system_items, ct_file_condition, \
-    get_result_folder, change_extension_to, serialize_data_and_write_to_file, data_subdirs_condition
-
+    get_result_folder, change_extension_to, serialize_data_and_write_to_file, data_subdirs_condition, get_name_from_path
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -104,3 +104,17 @@ def get_statistics(path: str):
         __add_values_in_statistics_dict(statistics, age, experience)
 
     __write_results(result_folder, statistics)
+
+
+# run after 'split_tasks_into_separate_files' to print simple statistic
+def get_tasks_statistic(path: str):
+    languages = [l.value for l in consts.LANGUAGE]
+    language_folders = get_all_file_system_items(path, (lambda f: does_string_contain_any_of_substrings(f, languages)),
+                                                 consts.FILE_SYSTEM_ITEM.SUBDIR.value)
+    for l_f in language_folders:
+        print(get_name_from_path(l_f, False))
+        task_folders = get_all_file_system_items(l_f, (lambda f: does_string_contain_any_of_substrings(f, consts.TASK.tasks())),
+                                                 consts.FILE_SYSTEM_ITEM.SUBDIR.value)
+        for t_f in task_folders:
+            files = get_all_file_system_items(t_f, (lambda f: True), consts.FILE_SYSTEM_ITEM.FILE.value)
+            print(f'{get_name_from_path(t_f, False)} : {len(files)}')

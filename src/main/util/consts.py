@@ -54,6 +54,8 @@ class ACTIVITY_TRACKER_EVENTS(Enum):
 class DEFAULT_VALUES(Enum):
     AGE = 0
     EXPERIENCE = nan
+    TASK = nan
+    TASK_STATUS = nan
 
 
 class TASK(Enum):
@@ -68,6 +70,7 @@ class TASK(Enum):
     def tasks(cls):
         return [cls.PIES.value, cls.MAX_3.value, cls.ZERO.value,
                 cls.ELECTION.value, cls.BRACKETS.value, cls.MAX_DIGIT.value]
+
 
 class TASK_STATUS(Enum):
     SOLVED = 'SOLVED'
@@ -114,7 +117,7 @@ EXTENSION_TO_LANGUAGE_DICT = {
 
 
 class EXTENSION(Enum):
-    CSV = '.cvs'
+    CSV = '.csv'
     PNG = '.png'
     HTML = '.html'
     TXT = '.txt'
