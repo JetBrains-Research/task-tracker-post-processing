@@ -1,12 +1,12 @@
 import os
-import shutil
 import pickle
-from typing import Callable
-
+import shutil
 import pandas as pd
 
+from typing import Callable
+
 from src.main.util.consts import ACTIVITY_TRACKER_FILE_NAME, FILE_SYSTEM_ITEM, ATI_DATA_FOLDER, \
-    DI_DATA_FOLDER, ISO_ENCODING, LANGUAGE, UTF_ENCODING
+    DI_DATA_FOLDER, ISO_ENCODING, LANGUAGE, UTF_ENCODING, EXTENSION
 
 '''
 To understand correctly these functions' behavior you can see examples in a corresponding test folder.
@@ -69,7 +69,7 @@ def add_dot_to_not_empty_extension(extension: str):
     return extension
 
 
-# if need_to_rуname, it works only for real files because os.rename is called
+# if need_to_rename, it works only for real files because os.rename is called
 def change_extension_to(file: str, new_extension: str, need_to_rename=False):
     new_extension = add_dot_to_not_empty_extension(new_extension)
     base, _ = os.path.splitext(file)
@@ -100,7 +100,7 @@ def get_original_file_name_with_extension(hashed_file_name: str, extension: str)
 
 
 def get_content_from_file(file: str):
-    with open(file, 'r') as f:
+    with open(file, 'r', encoding=ISO_ENCODING) as f:
         return f.read().rstrip('\n')
 
 
@@ -116,6 +116,12 @@ def remove_file(file: str):
         os.remove(file)
 
 
+def remove_all_png_files(root: str, condition: Callable):
+    files = get_all_file_system_items(root, condition, FILE_SYSTEM_ITEM.FILE.value)
+    for file in files:
+        remove_file(file)
+
+
 def create_directory(directory: str):
     os.makedirs(directory, exist_ok=True)
         
@@ -123,6 +129,11 @@ def create_directory(directory: str):
 def remove_directory(directory: str):
     if os.path.exists(directory):
         shutil.rmtree(directory, ignore_errors=True)
+
+
+# to get something like 'ati_239/Main_2323434_343434.csv'
+def get_file_and_parent_folder_names(file: str):
+    return os.path.join(get_parent_folder_name(file), get_name_from_path(file))
 
 
 # To get all files or subdirs (depends on the last parameter) from root that match item_condition
@@ -138,12 +149,16 @@ def get_all_file_system_items(root: str, item_condition: Callable, item_type=FIL
 
 
 def csv_file_condition(name: str):
-    return get_extension_from_file(name) == '.csv'
+    return get_extension_from_file(name) == EXTENSION.CSV.value
 
 
 # to get all codetracker files
 def ct_file_condition(name: str):
     return ACTIVITY_TRACKER_FILE_NAME not in name and csv_file_condition(name)
+
+
+def png_file_condition(name: str):
+    return get_extension_from_file(name) == EXTENSION.PNG.value
 
 
 # to get all subdirs that contain ct and ati data
@@ -190,4 +205,3 @@ def write_based_on_language(result_folder: str, file: str, df: pd.DataFrame, lan
     folder_to_write = os.path.join(result_folder, language, get_parent_folder_name(file))
     file_to_write = os.path.join(folder_to_write, get_name_from_path(file))
     create_folder_and_write_df_to_file(folder_to_write, file_to_write, df)
-

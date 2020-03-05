@@ -127,3 +127,15 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
+# tests compilation and running
+src/resources/tasks_tests/source/
+src/resources/tasks_tests/**/*.class
+src/resources/tasks_tests/**/*.java
+src/resources/tasks_tests/**/*.kt
+src/resources/tasks_tests/**/*.jar
+src/resources/tasks_tests/**/*.py
+
+# data
+data/

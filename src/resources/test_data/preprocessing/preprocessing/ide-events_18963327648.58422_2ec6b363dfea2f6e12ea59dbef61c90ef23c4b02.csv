@@ -1,0 +1,4 @@
+date,timestamp,fileName,fileHashCode,documentHashCode,fragment,chosenTask,writtenTask,age,programExperience,taskStatus,activePane
+2019-12-09T11:36:32.741+03:00,0,ide_events,5266,757958627,,NULL,,0.0,NULL,NULL,infoFormPane
+2019-12-09T11:36:32.800+03:00,16,ide_events,5266,757958627,g,NULL,,0.0,NULL,NULL,infoFormPane
+2019-12-09T11:36:32.881+03:00,17,ide_events,5266,757958627,gn,NULL,,0.0,NULL,NULL,infoFormPane

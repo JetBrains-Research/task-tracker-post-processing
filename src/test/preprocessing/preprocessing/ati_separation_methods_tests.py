@@ -2,7 +2,7 @@ import logging
 import unittest
 from enum import Enum
 
-from main.util.consts import LOGGER_FORMAT
+from src.main.util.consts import LOGGER_FORMAT
 from src.main.util import consts
 from src.main.preprocessing.preprocessing import __separate_ati_and_other_files
 
@@ -16,7 +16,8 @@ class TEST_DATA(Enum):
 
 VALUE_ERROR = 'value_error'
 
-ATI_FILE_1 = consts.TEST_DATA_PATH + "/preprocessing/preprocessing/ide-events_18963327637.58422_2ec6b363dfea2f6e12ea59dbef61c90ef23c4b02.csv'"
+
+ATI_FILE_1 = consts.TEST_DATA_PATH + '/preprocessing/preprocessing/ide-events_18963327637.58422_2ec6b363dfea2f6e12ea59dbef61c90ef23c4b02.csv'
 ATI_FILE_2 = consts.TEST_DATA_PATH + '/preprocessing/preprocessing/ide-events_18963327648.58422_2ec6b363dfea2f6e12ea59dbef61c90ef23c4b02.csv'
 
 FILE_1 = consts.TEST_DATA_PATH + '/preprocessing/preprocessing/Main_203985_1349205394_43223189605.08081_37c0720d12b4f83bb694fc801a8ab7b20b354bdd.csv'
@@ -25,7 +26,8 @@ FILE_3 = consts.TEST_DATA_PATH + '/preprocessing/preprocessing/Name_69437_149403
 
 two_ati_case = {
     TEST_DATA.FILES.value: [ATI_FILE_1, ATI_FILE_2, FILE_1],
-    TEST_DATA.RESULT.value: (VALUE_ERROR, None)
+    TEST_DATA.RESULT.value: ([ATI_FILE_2, FILE_1], ATI_FILE_1)
+
 }
 
 two_same_files_case = {

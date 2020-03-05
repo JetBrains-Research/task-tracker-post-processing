@@ -1,4 +1,5 @@
 import os
+
 from numpy import nan
 from enum import Enum
 
@@ -53,15 +54,27 @@ class ACTIVITY_TRACKER_EVENTS(Enum):
 class DEFAULT_VALUES(Enum):
     AGE = 0
     EXPERIENCE = nan
+    TASK = nan
+    TASK_STATUS = nan
 
 
 class TASK(Enum):
     PIES = 'pies'
     MAX_3 = 'max_3'
-    ZERO = 'zero'
+    ZERO = 'is_zero'
     ELECTION = 'election'
     BRACKETS = 'brackets'
     MAX_DIGIT = 'max_digit'
+
+    @classmethod
+    def tasks(cls):
+        return [cls.PIES.value, cls.MAX_3.value, cls.ZERO.value,
+                cls.ELECTION.value, cls.BRACKETS.value, cls.MAX_DIGIT.value]
+
+
+class TASK_STATUS(Enum):
+    SOLVED = 'SOLVED'
+    NOT_SOLVED = 'NOT_SOLVED'
 
 
 class TASKS_TESTS(Enum):
@@ -93,7 +106,6 @@ class FILE_SYSTEM_ITEM(Enum):
 
 INVALID_FILE_FOR_PREPROCESSING = -1
 
-
 # add the dot to extensions to be consistent with extensions getting in 'os.path' module
 EXTENSION_TO_LANGUAGE_DICT = {
     '.py': LANGUAGE.PYTHON.value,
@@ -102,6 +114,13 @@ EXTENSION_TO_LANGUAGE_DICT = {
     '.cpp': LANGUAGE.CPP.value,
     '': LANGUAGE.NOT_DEFINED.value
 }
+
+
+class EXTENSION(Enum):
+    CSV = '.csv'
+    PNG = '.png'
+    HTML = '.html'
+    TXT = '.txt'
 
 
 class SPLIT_DICT(Enum):
