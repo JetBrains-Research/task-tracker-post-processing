@@ -59,6 +59,10 @@ TASK_COLOR_DICT = {
     TASK.BRACKETS.value: '#DAE3D9'
 }
 
+
+BAR_PALETTE = px.colors.sequential.Sunset
+
+
 TASK_STATUS_COLOR_DICT = {
     TASK_STATUS.SOLVED.value: '#65C32A',
     TASK_STATUS.NOT_SOLVED.value: '#D16B48'
@@ -99,6 +103,9 @@ class STATISTICS_COLORS(Enum):
     PIE_CHART = px.colors.sequential.Sunset
     BAR_CHART_BG = '#FFFAE3'
     BAR_CHART_COLS = '#9B0B9B'
+
+
+DEFAULT_BAR_CHART_COLOR = '#9B0B9B'
 
 
 class PLOT_TYPES(Enum):

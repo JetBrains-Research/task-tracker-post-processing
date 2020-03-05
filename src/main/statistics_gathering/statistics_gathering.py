@@ -92,7 +92,7 @@ def __write_results(result_folder: str, statistics: dict):
         __write_key_result(statistics[key], result_folder, key)
 
 
-def get_statistics(path: str):
+def get_profile_statistics(path: str):
     result_folder = get_result_folder(path, consts.STATISTICS_RESULT_FOLDER)
     folders = get_all_file_system_items(path, data_subdirs_condition, consts.FILE_SYSTEM_ITEM.SUBDIR.value)
     statistics = __get_empty_statistics_dict()
@@ -108,13 +108,24 @@ def get_statistics(path: str):
 
 # run after 'split_tasks_into_separate_files' to print simple statistic
 def get_tasks_statistic(path: str):
+    statistic = {}
     languages = [l.value for l in consts.LANGUAGE]
     language_folders = get_all_file_system_items(path, (lambda f: does_string_contain_any_of_substrings(f, languages)),
                                                  consts.FILE_SYSTEM_ITEM.SUBDIR.value)
     for l_f in language_folders:
-        print(get_name_from_path(l_f, False))
+        language = consts.LANGUAGE(get_name_from_path(l_f, False))
+        if statistic.get(language) is not None:
+            log.error(f'Duplicate language folder for {language}')
+            raise ValueError(f'Duplicate language folder for {language}')
+        statistic[language] = {}
         task_folders = get_all_file_system_items(l_f, (lambda f: does_string_contain_any_of_substrings(f, consts.TASK.tasks())),
                                                  consts.FILE_SYSTEM_ITEM.SUBDIR.value)
         for t_f in task_folders:
             files = get_all_file_system_items(t_f, (lambda f: True), consts.FILE_SYSTEM_ITEM.FILE.value)
-            print(f'{get_name_from_path(t_f, False)} : {len(files)}')
+            task = consts.TASK(get_name_from_path(t_f, False))
+            if statistic.get(language).get(task) is not None:
+                log.error(f'Duplicate task for {task} in folder {l_f}')
+                raise ValueError(f'Duplicate language folder for {l_f}')
+            statistic.get(language)[task] = len(files)
+
+    return statistic
