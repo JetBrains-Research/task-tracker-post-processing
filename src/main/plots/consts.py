@@ -59,6 +59,10 @@ TASK_COLOR_DICT = {
     TASK.BRACKETS.value: '#DAE3D9'
 }
 
+
+BAR_PALETTE = px.colors.sequential.Sunset
+
+
 TASK_STATUS_COLOR_DICT = {
     TASK_STATUS.SOLVED.value: '#65C32A',
     TASK_STATUS.NOT_SOLVED.value: '#D16B48'
@@ -73,7 +77,7 @@ SMALL_SIZE = 2
 LARGE_SIZE = 50
 
 
-class STATISTIC_KEY(Enum):
+class STATISTICS_KEY(Enum):
     AGE = 'age'
     EXPERIENCE = 'experience'
 
@@ -82,7 +86,7 @@ class STATISTIC_KEY(Enum):
         return [cls.AGE.value, cls.EXPERIENCE.value]
 
 
-STATISTIC_FREQ = 'freq'
+STATISTICS_FREQ = 'freq'
 
 
 class STATISTICS_SHOWING_KEY(Enum):
@@ -101,6 +105,9 @@ class STATISTICS_COLORS(Enum):
     BAR_CHART_COLS = '#9B0B9B'
 
 
+DEFAULT_BAR_CHART_COLOR = '#9B0B9B'
+
+
 class PLOT_TYPES(Enum):
     PIE = 'pie'
     BAR = 'bar'
@@ -109,10 +116,6 @@ class PLOT_TYPES(Enum):
 class STATISTICS_INFO_FOR_PLOTS(Enum):
     LABELS = 'labels'
     TITLE = 'title'
-
-
-class OUTPUT_FORMAT(Enum):
-    HTML = '.html'
 
 
 # 'total ascending' means: in order of increasing values in Y
