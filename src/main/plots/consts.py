@@ -77,7 +77,7 @@ SMALL_SIZE = 2
 LARGE_SIZE = 50
 
 
-class STATISTIC_KEY(Enum):
+class STATISTICS_KEY(Enum):
     AGE = 'age'
     EXPERIENCE = 'experience'
 
@@ -116,10 +116,6 @@ class PLOT_TYPES(Enum):
 class STATISTICS_INFO_FOR_PLOTS(Enum):
     LABELS = 'labels'
     TITLE = 'title'
-
-
-class OUTPUT_FORMAT(Enum):
-    HTML = '.html'
 
 
 # 'total ascending' means: in order of increasing values in Y

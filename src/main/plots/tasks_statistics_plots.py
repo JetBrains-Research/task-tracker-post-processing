@@ -5,7 +5,7 @@ import plotly.graph_objects as go
 from src.main.util import consts
 from src.main.plots import consts as plot_consts
 from src.main.plots.plotly_util import save_plot
-from src.main.statistics_gathering.statistics_gathering import get_tasks_statistic
+from src.main.statistics_gathering.statistics_gathering import get_tasks_statistics
 from src.main.plots.plots_common import get_readable_key
 
 
@@ -37,7 +37,7 @@ def __get_colors():
     return colors
 
 
-def __plot_bar_chart(bars: list, path: str, plot_name='result_plot', format=plot_consts.OUTPUT_FORMAT.HTML.value,
+def __plot_bar_chart(bars: list, path: str, plot_name='task_plot', format=consts.EXTENSION.HTML.value,
                      auto_open=False):
     fig = go.Figure(data=bars)
     fig.update_layout(
@@ -55,8 +55,8 @@ def __plot_bar_chart(bars: list, path: str, plot_name='result_plot', format=plot
     save_plot(fig, path, plot_consts.PLOT_TYPES.BAR.value, plot_name, format, auto_open)
 
 
-def plot_tasks_statistics(path: str, plot_name='result_plot', format=plot_consts.OUTPUT_FORMAT.HTML.value,
+def plot_tasks_statistics(path: str, plot_name='result_plot', format=consts.EXTENSION.HTML.value,
                           auto_open=False):
-    statistics_dict = get_tasks_statistic(path)
+    statistics_dict = get_tasks_statistics(path)
     bars = __get_bars_for_plot(statistics_dict)
     __plot_bar_chart(bars, path, plot_name, format, auto_open)

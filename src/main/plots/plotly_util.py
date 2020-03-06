@@ -11,6 +11,6 @@ log = logging.getLogger(consts.LOGGER_NAME)
 
 
 def save_plot(fig, path: str, plot_type: plot_consts.PLOT_TYPES, plot_name='result_plot',
-              format=plot_consts.OUTPUT_FORMAT.HTML.value, auto_open=False):
+              format=consts.EXTENSION.HTML.value, auto_open=False):
     file_name = create_directory_for_plots(path, plot_type, change_extension_to(plot_name, format))
     plotly.offline.plot(fig, filename=file_name, auto_open=auto_open)
