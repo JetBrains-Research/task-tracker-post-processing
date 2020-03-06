@@ -37,7 +37,7 @@ def __get_colors():
     return colors
 
 
-def __plot_bar_chart(bars: list, path: str, plot_name='task_plot', format=consts.EXTENSION.HTML.value,
+def __plot_bar_chart(bars: list, path: str, plot_name='bar_plot', format=consts.EXTENSION.HTML.value,
                      auto_open=False):
     fig = go.Figure(data=bars)
     fig.update_layout(
@@ -55,7 +55,7 @@ def __plot_bar_chart(bars: list, path: str, plot_name='task_plot', format=consts
     save_plot(fig, path, plot_consts.PLOT_TYPES.BAR.value, plot_name, format, auto_open)
 
 
-def plot_tasks_statistics(path: str, plot_name='result_plot', format=consts.EXTENSION.HTML.value,
+def plot_tasks_statistics(path: str, plot_name='task_plot', format=consts.EXTENSION.HTML.value,
                           auto_open=False):
     statistics_dict = get_tasks_statistics(path)
     bars = __get_bars_for_plot(statistics_dict)

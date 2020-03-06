@@ -86,7 +86,7 @@ class STATISTICS_KEY(Enum):
         return [cls.AGE.value, cls.EXPERIENCE.value]
 
 
-STATISTIC_FREQ = 'freq'
+STATISTICS_FREQ = 'freq'
 
 
 class STATISTICS_SHOWING_KEY(Enum):
