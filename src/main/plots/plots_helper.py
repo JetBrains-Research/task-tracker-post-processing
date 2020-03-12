@@ -1,3 +1,5 @@
+# Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
+
 import pandas as pd
 
 from src.main.util.consts import ISO_ENCODING, FILE_SYSTEM_ITEM

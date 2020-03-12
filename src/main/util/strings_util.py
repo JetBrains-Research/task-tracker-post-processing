@@ -1,5 +1,6 @@
-import re
+# Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
+import re
 
 def does_string_contain_any_of_substrings(string: str, substrings: list):
     for substring in substrings:
