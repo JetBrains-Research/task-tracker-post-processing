@@ -1,3 +1,4 @@
+# Copyright (c) 2017 Kelly Rivers
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import ast

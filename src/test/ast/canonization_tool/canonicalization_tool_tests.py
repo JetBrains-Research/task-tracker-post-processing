@@ -11,13 +11,13 @@ from src.main.ast.canonicalization_tool import get_cleaned_code, anonymize_names
 log = logging.getLogger(LOGGER_NAME)
 
 
-def get_actual_cleaned_code(file: str):
+def get_cleaned_code_from_file(file: str):
     source = get_content_from_file(file)
     return get_cleaned_code(source).rstrip('\n')
 
 
 def get_code_with_anonymous_names(file: str):
-    source = get_actual_cleaned_code(file)
+    source = get_cleaned_code_from_file(file)
     tree = get_ast(source)
     actual_code = get_code_from_tree(anonymize_names(tree)).rstrip('\n')
     return actual_code
@@ -34,7 +34,7 @@ class TestCanonicalizationTool(unittest.TestCase):
         logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
 
     def test_cleaned_code(self):
-        run_test(self, CANONIZATION_TESTS_TYPES.CLEANED_CODE.value, get_actual_cleaned_code)
+        run_test(self, CANONIZATION_TESTS_TYPES.CLEANED_CODE.value, get_cleaned_code_from_file)
 
     def test_anonymize_names(self):
         run_test(self, CANONIZATION_TESTS_TYPES.ANONYMIZE_NAMES.value, get_code_with_anonymous_names)
