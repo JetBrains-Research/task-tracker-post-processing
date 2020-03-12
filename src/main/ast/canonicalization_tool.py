@@ -98,9 +98,3 @@ def get_canonical_form(source: str, given_names=None, arg_types=None, imports=No
         for t in transformations:
             tree = t(tree)
 
-    return tree
-
-
-source = ''
-print(f'{source}\n\n\n')
-print(get_code_by_tree(get_canonical_form(source)))
