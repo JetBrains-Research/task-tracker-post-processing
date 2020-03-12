@@ -16,22 +16,13 @@ from src.main.splitting.python_task_checker import PythonTaskChecker
 from src.main.preprocessing.code_tracker_handler import get_ct_language
 from src.main.splitting.not_defined_task_checker import NotDefinedTaskChecker
 from src.main.util.file_util import get_all_file_system_items, get_parent_folder_name, get_name_from_path, \
-    ct_file_condition, get_result_folder, write_based_on_language, get_file_and_parent_folder_names
+    ct_file_condition, get_result_folder, write_based_on_language, get_file_and_parent_folder_names, \
+    pair_in_and_out_files
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
 FRAGMENT = consts.CODE_TRACKER_COLUMN.FRAGMENT.value
 TESTS_RESULTS = consts.CODE_TRACKER_COLUMN.TESTS_RESULTS.value
-
-
-def __pair_in_and_out_files(in_files: list, out_files: list):
-    pairs = []
-    for in_file in in_files:
-        out_file = re.sub(r'in(?=[^in]*$)', 'out', in_file)
-        if out_file not in out_files:
-            raise ValueError(f'List of out files does not contain a file for {in_file}')
-        pairs.append((in_file, out_file))
-    return pairs
 
 
 def create_in_and_out_dict(tasks: list):
@@ -42,7 +33,7 @@ def create_in_and_out_dict(tasks: list):
         out_files = get_all_file_system_items(root, (lambda filename: re.fullmatch(r'out_\d+.txt', filename)))
         if len(out_files) != len(in_files):
             raise ValueError('Length of out files list does not equal in files list')
-        in_and_out_files_dict[task] = __pair_in_and_out_files(in_files, out_files)
+        in_and_out_files_dict[task] = pair_in_and_out_files(in_files, out_files)
     return in_and_out_files_dict
 
 

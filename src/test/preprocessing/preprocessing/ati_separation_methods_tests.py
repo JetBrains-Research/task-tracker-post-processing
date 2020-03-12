@@ -1,9 +1,11 @@
+# Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
+
 import logging
 import unittest
 from enum import Enum
 
-from src.main.util.consts import LOGGER_FORMAT
 from src.main.util import consts
+from src.main.util.consts import LOGGER_FORMAT
 from src.main.preprocessing.preprocessing import __separate_ati_and_other_files
 
 log = logging.getLogger(consts.LOGGER_NAME)

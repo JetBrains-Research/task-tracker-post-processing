@@ -1,6 +1,7 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import os
+import re
 import pickle
 import shutil
 import pandas as pd
@@ -207,3 +208,13 @@ def write_based_on_language(result_folder: str, file: str, df: pd.DataFrame, lan
     folder_to_write = os.path.join(result_folder, language, get_parent_folder_name(file))
     file_to_write = os.path.join(folder_to_write, get_name_from_path(file))
     create_folder_and_write_df_to_file(folder_to_write, file_to_write, df)
+
+
+def pair_in_and_out_files(in_files: list, out_files: list):
+    pairs = []
+    for in_file in in_files:
+        out_file = re.sub(r'in(?=[^in]*$)', 'out', in_file)
+        if out_file not in out_files:
+            raise ValueError(f'List of out files does not contain a file for {in_file}')
+        pairs.append((in_file, out_file))
+    return pairs
