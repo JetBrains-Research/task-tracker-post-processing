@@ -1,3 +1,5 @@
+# Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
+
 import os
 import pandas as pd
 
@@ -14,7 +16,7 @@ def get_short_name(path: str):
 
 
 def filter_rare_values(statistics_df: pd.DataFrame):
-    return statistics_df[plot_consts.STATISTIC_FREQ] <= plot_consts.STATISTICS_RARE_VALUE_THRESHOLD
+    return statistics_df[plot_consts.STATISTICS_FREQ] <= plot_consts.STATISTICS_RARE_VALUE_THRESHOLD
 
 
 def create_directory_for_plots(path: str, folder: plot_consts.PLOT_TYPES, file_name: str,

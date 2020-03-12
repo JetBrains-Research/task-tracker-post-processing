@@ -1,3 +1,5 @@
+# Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
+
 from enum import Enum
 
 import plotly.express as px
@@ -69,6 +71,7 @@ TASK_STATUS_COLOR_DICT = {
 }
 
 FRAGMENT_LENGTH_COL = 'fragment_length'
+
 FRAGMENT_LENGTH_COLOR = '#737DBB'
 
 SHORT_NAME_LENGTH = 10

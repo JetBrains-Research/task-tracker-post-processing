@@ -1,11 +1,11 @@
+# Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
+
 import os
 import sys
 import logging
-import datetime
 
 import pandas as pd
 
-# sys.path.append('.')
 from src.main.util import consts
 from src.main.util.file_util import add_slash
 # from src.main.splitting.splitting import run_tests
