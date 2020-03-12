@@ -23,7 +23,7 @@ def get_cleaned_code(source: str):
     return printFunction(get_ast(source))
 
 
-def print_tree(tree: ast.AST):
+def get_code_by_tree(tree: ast.AST):
     return printFunction(tree)
 
 
@@ -60,32 +60,47 @@ def __get_canonical_transformations():
                 ]
 
 
-def get_canonical_form(source, given_names=None, argTypes=None, imports=None):
+def __init_arg_types(arg_types: dict):
+    if not arg_types:
+        arg_types = {}
+    return arg_types
+
+
+def __init_given_names(given_names: list, tree: ast.AST):
+    if not given_names:
+        given_names = [str(x) for x in getAllImports(tree)]
+    return given_names
+
+
+def __init_imports(imports: list, tree: ast.AST):
+    if not imports:
+        imports = [str(x) for x in getAllImports(tree)]
+    return imports
+
+
+def get_canonical_form(source: str, given_names=None, arg_types=None, imports=None):
     tree = get_ast(get_cleaned_code(source).rstrip('\n'))
 
-    if imports is None:
-        imports = getAllImportStatements(tree)
-
-    if given_names is None:
-        given_names = [str(x) for x in getAllImports(tree)]
-
+    given_names = __init_given_names(given_names, tree)
+    arg_types = __init_arg_types(arg_types)
+    imports = __init_imports(imports, tree)
     transformations = __get_canonical_transformations()
 
     # tree preprocessing from Kelly Rivers code
-    tree = propogateMetadata(tree, argTypes, {}, [0])
+    tree = propogateMetadata(tree, arg_types, {}, [0])
     tree = simplify(tree)
     tree = anonymizeNames(tree, given_names, imports)
 
-    oldTree = None
-    while compareASTs(oldTree, tree, checkEquality=True) != 0:
-        oldTree = deepcopy(tree)
+    old_tree = None
+    while compareASTs(old_tree, tree, checkEquality=True) != 0:
+        old_tree = deepcopy(tree)
         helperFolding(tree, None, imports)
         for t in transformations:
             tree = t(tree)
 
     return tree
 
-
-source = 'a = int(input())\nx=bool(a)\nif(x == True):\n    print(x)'
-print(f'{source}\n\n\n')
-print(print_tree(get_canonical_form(source)))
+#
+# source = 'def test_redundant_lines(x):\n    if x == 5:\n        print("OK")\n        a = True\n    else:\n        print("OK")\n        a = True\n    return a'
+# print(f'{source}\n\n\n')
+# print(get_code_by_tree(get_canonical_form(source)))

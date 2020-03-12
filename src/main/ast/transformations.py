@@ -539,10 +539,10 @@ def simplify(a):
     elif type(a) == ast.AugAssign:
         # Turn all AugAssigns into Assigns
         a.target = simplify(a.target)
-        if eventualType(a.target) not in [bool, int, str, float]:
-            # Can't get rid of AugAssign, in case the += is different
-            a.value = simplify(a.value)
-            return a
+        # if eventualType(a.target) not in [bool, int, str, float]:
+        #     # Can't get rid of AugAssign, in case the += is different
+        #     a.value = simplify(a.value)
+        #     return a
         if type(a.target) == ast.Name:
             loadedTarget = ast.Name(a.target.id, ast.Load())
         elif type(a.target) == ast.Subscript:
