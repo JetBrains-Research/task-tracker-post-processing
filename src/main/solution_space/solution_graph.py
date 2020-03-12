@@ -1,5 +1,7 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
+import ast
+
 from src.main.solution_space import consts as solution_space_consts
 from src.main.solution_space.data_classes import User, Code
 
@@ -17,24 +19,37 @@ class Vertex:
         self._vertex_type = vertex_type
 
     @property
-    def parents(self):
+    def parents(self) -> list:
         return self._parents
 
     @property
-    def children(self):
+    def children(self) -> list:
         return self._children
 
     @property
-    def users(self):
+    def users(self) -> list:
         return self._users
 
     @property
-    def ast(self):
+    def ast(self) -> ast.AST:
         return self._ast
 
     @property
-    def vertex_type(self):
+    def vertex_type(self) -> solution_space_consts.VERTEX_TYPE:
         return self._vertex_type
 
-    def add_parent_to_list(self, parent) -> None:
+    # Use '' for better understanding.
+    # See: https://stackoverflow.com/questions/15853469/putting-current-class-as-return-type-annotation
+    def __add_parent_to_list(self, parent: 'Vertex') -> None:
         self._parents.append(parent)
+
+    def __add_child_to_list(self, child: 'Vertex') -> None:
+        self._children.append(child)
+
+    def add_child(self, child: 'Vertex') -> None:
+        self.__add_child_to_list(child)
+        child.__add_parent_to_list(self)
+
+    def add_parent(self, parent: 'Vertex') -> None:
+        self.__add_parent_to_list(parent)
+        parent.__add_child_to_list(self)

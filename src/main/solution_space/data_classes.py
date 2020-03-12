@@ -1,5 +1,6 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
+import ast
 
 from src.main.util import consts
 
@@ -11,15 +12,15 @@ class AtiItem:
         self._event_data = event_data
 
     @property
-    def timestamp(self):
+    def timestamp(self) -> int:
         return self._timestamp
 
     @property
-    def event_type(self):
+    def event_type(self) -> consts.ACTIVITY_TRACKER_EVENTS:
         return self.event_type
 
     @property
-    def event_data(self):
+    def event_data(self) -> consts.ACTIVITY_TRACKER_EVENTS:
         return self.event_data
 
 
@@ -29,11 +30,12 @@ class Profile:
         self._experience = experience
 
     @property
-    def age(self):
+    def age(self) -> int:
         return self._age
 
+    # Todo: add enum??
     @property
-    def experience(self):
+    def experience(self) -> str:
         return self._experience
 
 
@@ -46,19 +48,19 @@ class User:
         self._date = date
 
     @property
-    def profile(self):
+    def profile(self) -> Profile:
         return self._profile
 
     @property
-    def ati_actions(self):
+    def ati_actions(self) -> list:
         return self._ati_actions
 
     @property
-    def timestamp(self):
+    def timestamp(self) -> int:
         return self._timestamp
 
     @property
-    def date(self):
+    def date(self) -> str:
         return self._date
 
 
@@ -68,11 +70,11 @@ class Code:
         self._rate = rate
 
     @property
-    def ast(self):
+    def ast(self) -> ast.AST:
         return self._ast
 
     @property
-    def rate(self):
+    def rate(self) -> float:
         return self._rate
 
     # Todo: ovveride it - use print function from Kelly Rivers

@@ -17,7 +17,6 @@ def __get_column_value(solutions: pd.DataFrame, index: int, column=None) -> str:
     return solutions[column].iloc[index]
 
 
-# Todo: Replace to ati data class
 def __get_ati_data(solutions: pd.DataFrame, index: int) -> AtiItem:
     timestamp = __get_column_value(solutions, index, consts.ACTIVITY_TRACKER_COLUMN.TIMESTAMP_ATI.value)
     event_type = __get_column_value(solutions, index, consts.ACTIVITY_TRACKER_COLUMN.EVENT_TYPE.value)
@@ -25,6 +24,7 @@ def __get_ati_data(solutions: pd.DataFrame, index: int) -> AtiItem:
     return AtiItem(timestamp=timestamp, event_type=event_type, event_data=event_data)
 
 
+# Find the same code fragments in data and construnct list of ati items for this fragment
 def __find_same_fragments(solutions: pd.DataFrame, start_index: int) -> tuple:
     i, ati_elements = start_index, []
     current_fragment = __get_column_value(solutions, start_index, consts.CODE_TRACKER_COLUMN.FRAGMENT.value)
