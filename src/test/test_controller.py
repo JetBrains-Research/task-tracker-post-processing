@@ -1,7 +1,5 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
-# Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
-
 import os
 import logging
 import unittest
