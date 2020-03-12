@@ -1,7 +1,7 @@
-g0 = bool(input())
-if g0:
-    g1 = 5
+g1 = bool(input())
+if g1:
+    g0 = 5
 else:
-    g1 = 15
-print(g1)
+    g0 = 15
+print(g0)
 

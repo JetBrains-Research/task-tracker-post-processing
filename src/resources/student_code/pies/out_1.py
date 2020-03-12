@@ -1,10 +1,10 @@
+g5 = int(input())
 g4 = int(input())
 g3 = int(input())
-g2 = int(input())
-g1 = (g2 * g4)
-g0 = (g2 * g3)
-if (100 <= (g2 * g3)):
-    g0 = ((g2 * g3) % 100)
-    g1 = (((g2 * g3) // 100) + (g2 * g4))
+g1 = (g3 * g5)
+g0 = (g3 * g4)
+if (100 <= (g3 * g4)):
+    g0 = ((g3 * g4) % 100)
+    g1 = (((g3 * g4) // 100) + (g3 * g5))
 print(g1, end=' ')
 print(g0)

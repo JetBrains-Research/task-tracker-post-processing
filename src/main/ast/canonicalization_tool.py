@@ -24,7 +24,7 @@ def get_cleaned_code(source: str):
     return printFunction(get_ast(source))
 
 
-def get_code_by_tree(tree: ast.AST):
+def get_code_from_tree(tree: ast.AST):
     return printFunction(tree)
 
 
@@ -79,7 +79,7 @@ def __init_imports(imports: list, tree: ast.AST):
     return imports
 
 
-def get_canonical_form(source: str, given_names=None, arg_types=None, imports=None):
+def get_canonicalized_form(source: str, given_names=None, arg_types=None, imports=None):
     tree = get_ast(get_cleaned_code(source).rstrip('\n'))
 
     given_names = __init_given_names(given_names, tree)

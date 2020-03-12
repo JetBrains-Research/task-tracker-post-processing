@@ -1,21 +1,21 @@
+g6 = int(input())
+g5 = int(input())
 g4 = int(input())
-g3 = int(input())
-g2 = int(input())
-g1 = []
-g0 = []
+g3 = []
+g2 = []
+if (g6 == 1):
+    g2.append(g6)
+else:
+    g3.append(g6)
+if (g5 == 1):
+    g2.append(g5)
+else:
+    g3.append(g5)
 if (g4 == 1):
-    g0.append(g4)
+    g2.append(g4)
 else:
-    g1.append(g4)
-if (g3 == 1):
-    g0.append(g3)
-else:
-    g1.append(g3)
-if (g2 == 1):
-    g0.append(g2)
-else:
-    g1.append(g2)
-if (len(g1) < len(g0)):
+    g3.append(g4)
+if (len(g3) < len(g2)):
     print(1)
-elif (len(g0) < len(g1)):
+elif (len(g2) < len(g3)):
     print(0)
