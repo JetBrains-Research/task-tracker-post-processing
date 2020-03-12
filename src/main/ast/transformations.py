@@ -483,7 +483,7 @@ def simplify_multicomp(a):
             values.append(ast.Compare(comps[i], [a.ops[i]], [deepcopy(comps[i + 1])], multiCompPart=True))
         # Combine comparisons with and operators
         boolOp = ast.And(multiCompOp=True)
-        boolopVal = ast.BoolOp(boolOp, values, multiComp=True, global_id=a.global_id)
+        boolopVal = ast.BoolOp(boolOp, values, multiComp=True)
         return boolopVal
     return a
 
@@ -556,11 +556,10 @@ def simplify(a):
         else:
             log.info(f'transformations\tsimplify\tOdd AugAssign target: {str(type(a.target))}, bug')
         transferMetaData(a.target, loadedTarget)
-        loadedTarget.global_id = a.target.global_id
+        # loadedTarget.global_id = a.target.global_id
         a.target.augAssignVal = True  # for later recognition
         loadedTarget.augAssignVal = True
-        assignVal = ast.Assign([a.target], ast.BinOp(loadedTarget, a.op, a.value, augAssignBinOp=True),
-                               global_id=a.global_id)
+        assignVal = ast.Assign([a.target], ast.BinOp(loadedTarget, a.op, a.value, augAssignBinOp=True))
         return simplify(assignVal)
     elif type(a) == ast.Compare and len(a.ops) > 1:
         return simplify(simplify_multicomp(a))

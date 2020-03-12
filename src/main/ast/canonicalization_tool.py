@@ -60,22 +60,32 @@ def __get_canonical_transformations():
                 ]
 
 
-def get_canonical_form(tree):
+def get_canonical_form(source, given_names=None, argTypes=None, imports=None):
+    tree = get_ast(get_cleaned_code(source).rstrip('\n'))
+
+    if imports is None:
+        imports = getAllImportStatements(tree)
+
+    if given_names is None:
+        given_names = [str(x) for x in getAllImports(tree)]
+
     transformations = __get_canonical_transformations()
+
+    # tree preprocessing from Kelly Rivers code
+    tree = propogateMetadata(tree, argTypes, {}, [0])
+    tree = simplify(tree)
+    tree = anonymizeNames(tree, given_names, imports)
 
     oldTree = None
     while compareASTs(oldTree, tree, checkEquality=True) != 0:
         oldTree = deepcopy(tree)
+        helperFolding(tree, None, imports)
         for t in transformations:
             tree = t(tree)
 
     return tree
 
 
-source = "n=int(input())\nA=[int(i)for i in input().split()]\nk=0\nA=sorted(A)\nwhile k>n and A[k]!=0 and A[k]<1:\n    k+=1\nif A[k]==0:\n    print('YES')\nelse:\n    print('NO')"
-
-
-anon_tree = get_ast(get_cleaned_code(source).rstrip('\n'))
-canonical_form = get_canonical_form(anon_tree)
-print_tree(canonical_form)
-
+source = 'a = int(input())\nx=bool(a)\nif(x == True):\n    print(x)'
+print(f'{source}\n\n\n')
+print(print_tree(get_canonical_form(source)))
