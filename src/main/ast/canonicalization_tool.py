@@ -75,7 +75,7 @@ def __init_given_names(given_names: list, tree: ast.AST):
 
 def __init_imports(imports: list, tree: ast.AST):
     if not imports:
-        imports = [str(x) for x in getAllImports(tree)]
+        imports = getAllImportStatements(tree)
     return imports
 
 
