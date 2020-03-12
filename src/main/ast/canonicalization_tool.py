@@ -100,7 +100,7 @@ def get_canonical_form(source: str, given_names=None, arg_types=None, imports=No
 
     return tree
 
-#
-# source = 'def test_redundant_lines(x):\n    if x == 5:\n        print("OK")\n        a = True\n    else:\n        print("OK")\n        a = True\n    return a'
-# print(f'{source}\n\n\n')
-# print(get_code_by_tree(get_canonical_form(source)))
+
+source = ''
+print(f'{source}\n\n\n')
+print(get_code_by_tree(get_canonical_form(source)))

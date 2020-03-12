@@ -5,6 +5,6 @@ A=sorted(A)
 while k>n and A[k]!=0 and A[k]<1:
     k+=1
 if A[k]==0:
-    print('YES')
+    print("YES")
 else:
-    print('NO')
+    print("NO")

@@ -3,7 +3,7 @@ while True:
     g1 = int(input())
     g2 = int(input())
     g3 = int(input())
-    if ((g2 == 0) or (g3 == 0) or (g1 == 0) or (g0 == 0)):
+    if ((g0 == 0) or (g1 == 0) or (g2 == 0) or (g3 == 0)):
         print('Yes')
     else:
         print('No')

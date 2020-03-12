@@ -2150,7 +2150,7 @@ def orderCommutativeOperations(a):
             # This might be concatenation, not addition
             if type(r) == ast.BinOp and type(r.op) == top:
                 # We want the operators to descend to the left
-                a.left = orderCommutativeOperations(ast.BinOp(l, r.op, r.left, global_id=r.global_id))
+                a.left = orderCommutativeOperations(ast.BinOp(l, r.op, r.left))
                 a.right = r.right
         return a
     elif type(a) == ast.Dict:
@@ -2685,17 +2685,17 @@ def conditionalRedundancy(a):
                 if len(stmt.body) > 0 and len(stmt.orelse) > 0 and compareASTs(stmt.body[-1], stmt.orelse[-1],
                                                                                checkEquality=True) == 0:
                     nextLine = stmt.body[-1]
-                    nextLine.second_global_id = stmt.orelse[-1].global_id
+                    # nextLine.second_global_id = stmt.orelse[-1].global_id
                     stmt.body = stmt.body[:-1]
                     stmt.orelse = stmt.orelse[:-1]
-                    stmt.moved_line = nextLine.global_id
+                    # stmt.moved_line = nextLine.global_id
                     # Remove the if statement if both if and else are empty
-                    if len(stmt.body) == 0 and len(stmt.orelse) == 0:
-                        newLine = ast.Expr(stmt.test)
-                        transferMetaData(stmt, newLine)
-                        a[i:i + 1] = [newLine, nextLine]
+                    # if len(stmt.body) == 0 and len(stmt.orelse) == 0:
+                    #     newLine = ast.Expr(stmt.test)
+                    #     transferMetaData(stmt, newLine)
+                    #     a[i:i + 1] = [newLine, nextLine]
                     # Switch if and else if if is empty
-                    elif len(stmt.body) == 0:
+                    if len(stmt.body) == 0:
                         stmt.test = ast.UnaryOp(ast.Not(addedNotOp=True), stmt.test, addedNot=True)
                         stmt.body = stmt.orelse
                         stmt.orelse = []
