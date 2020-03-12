@@ -539,6 +539,7 @@ def simplify(a):
     elif type(a) == ast.AugAssign:
         # Turn all AugAssigns into Assigns
         a.target = simplify(a.target)
+        # TODO (AB) comment it for correct handling a += 5 case
         # if eventualType(a.target) not in [bool, int, str, float]:
         #     # Can't get rid of AugAssign, in case the += is different
         #     a.value = simplify(a.value)
@@ -556,9 +557,11 @@ def simplify(a):
         else:
             log.info(f'transformations\tsimplify\tOdd AugAssign target: {str(type(a.target))}, bug')
         transferMetaData(a.target, loadedTarget)
+        # (AB) global id is None
         # loadedTarget.global_id = a.target.global_id
         a.target.augAssignVal = True  # for later recognition
         loadedTarget.augAssignVal = True
+        # (AB) global id is None - delete global id
         assignVal = ast.Assign([a.target], ast.BinOp(loadedTarget, a.op, a.value, augAssignBinOp=True))
         return simplify(assignVal)
     elif type(a) == ast.Compare and len(a.ops) > 1:
@@ -1705,11 +1708,14 @@ def deadCodeRemoval(a, liveVars=None, keepPrints=True, inLoop=False):
 
                 # We need to make ALL variables in the loop live, since they update continuously
                 liveVars |= set(allVariableNamesUsed(stmt))
+                # (AB) global id is None
+                # old_global_id = stmt.body[0].global_id
                 stmt.body = deadCodeRemoval(stmt.body, copy.deepcopy(liveVars), keepPrints=keepPrints, inLoop=True)
                 stmt.orelse = deadCodeRemoval(stmt.orelse, copy.deepcopy(liveVars), keepPrints=keepPrints,
                                               inLoop=inLoop)
                 # If the body is empty, get rid of it!
                 if len(stmt.body) == 0:
+                    # (AB) global id is None - delete global id
                     stmt.body = [ast.Pass(removedLines=True)]
             elif t == ast.If:
                 # First, if True/False, just replace it with the lines
@@ -2150,6 +2156,7 @@ def orderCommutativeOperations(a):
             # This might be concatenation, not addition
             if type(r) == ast.BinOp and type(r.op) == top:
                 # We want the operators to descend to the left
+                # (AB) global id is None - delete global id
                 a.left = orderCommutativeOperations(ast.BinOp(l, r.op, r.left))
                 a.right = r.right
         return a
@@ -2445,7 +2452,7 @@ def cleanupNegations(a):
             # x + (-y)
             if isNegative(a.right):
                 a.right = turnPositive(a.right)
-                # Todo: think about id
+                # (AB) global id is None
                 # a.op = ast.Sub(global_id=a.op.global_id, num_negated=True)
                 a.op = ast.Sub(num_negated=True)
                 return a
@@ -2455,7 +2462,7 @@ def cleanupNegations(a):
                     return a  # can't switch if it'll change the message
                 else:
                     (a.left, a.right) = (a.right, turnPositive(a.left))
-                    # Todo: think about id
+                    # (AB) global id is None
                     # a.op = ast.Sub(global_id=a.op.global_id, num_negated=True)
                     a.op = ast.Sub(num_negated=True)
                     return a
@@ -2463,7 +2470,7 @@ def cleanupNegations(a):
             # x - (-y)
             if isNegative(a.right):
                 a.right = turnPositive(a.right)
-                # Todo: think about id
+                # (AB) global id is None
                 # a.op = ast.Add(global_id=a.op.global_id, num_negated=True)
                 a.op = ast.Add(num_negated=True)
                 return a
@@ -2685,11 +2692,14 @@ def conditionalRedundancy(a):
                 if len(stmt.body) > 0 and len(stmt.orelse) > 0 and compareASTs(stmt.body[-1], stmt.orelse[-1],
                                                                                checkEquality=True) == 0:
                     nextLine = stmt.body[-1]
+                    # (AB) global id is None - delete global id
                     # nextLine.second_global_id = stmt.orelse[-1].global_id
                     stmt.body = stmt.body[:-1]
                     stmt.orelse = stmt.orelse[:-1]
+                    # (AB) global id is None - delete global id
                     # stmt.moved_line = nextLine.global_id
                     # Remove the if statement if both if and else are empty
+                    # Todo: (AB) delete is for correct handling case "Redundant Lines"
                     # if len(stmt.body) == 0 and len(stmt.orelse) == 0:
                     #     newLine = ast.Expr(stmt.test)
                     #     transferMetaData(stmt, newLine)
