@@ -483,7 +483,7 @@ def simplify_multicomp(a):
             values.append(ast.Compare(comps[i], [a.ops[i]], [deepcopy(comps[i + 1])], multiCompPart=True))
         # Combine comparisons with and operators
         boolOp = ast.And(multiCompOp=True)
-        boolopVal = ast.BoolOp(boolOp, values, multiComp=True, global_id=a.global_id)
+        boolopVal = ast.BoolOp(boolOp, values, multiComp=True)
         return boolopVal
     return a
 
@@ -539,10 +539,11 @@ def simplify(a):
     elif type(a) == ast.AugAssign:
         # Turn all AugAssigns into Assigns
         a.target = simplify(a.target)
-        if eventualType(a.target) not in [bool, int, str, float]:
-            # Can't get rid of AugAssign, in case the += is different
-            a.value = simplify(a.value)
-            return a
+        # TODO (AB) comment it for correct handling a += 5 case
+        # if eventualType(a.target) not in [bool, int, str, float]:
+        #     # Can't get rid of AugAssign, in case the += is different
+        #     a.value = simplify(a.value)
+        #     return a
         if type(a.target) == ast.Name:
             loadedTarget = ast.Name(a.target.id, ast.Load())
         elif type(a.target) == ast.Subscript:
@@ -556,11 +557,12 @@ def simplify(a):
         else:
             log.info(f'transformations\tsimplify\tOdd AugAssign target: {str(type(a.target))}, bug')
         transferMetaData(a.target, loadedTarget)
-        loadedTarget.global_id = a.target.global_id
+        # (AB) global id is None
+        # loadedTarget.global_id = a.target.global_id
         a.target.augAssignVal = True  # for later recognition
         loadedTarget.augAssignVal = True
-        assignVal = ast.Assign([a.target], ast.BinOp(loadedTarget, a.op, a.value, augAssignBinOp=True),
-                               global_id=a.global_id)
+        # (AB) global id is None - delete global id
+        assignVal = ast.Assign([a.target], ast.BinOp(loadedTarget, a.op, a.value, augAssignBinOp=True))
         return simplify(assignVal)
     elif type(a) == ast.Compare and len(a.ops) > 1:
         return simplify(simplify_multicomp(a))
@@ -828,7 +830,7 @@ def applyTransferLambda(x):
     return tmp
 
 
-def constantFolding(a):
+def constantFolding(a, ops_index=-1):
     """In constant folding, we evaluate all constant expressions instead of doing operations at runtime"""
     if not isinstance(a, ast.AST):
         return a
@@ -1706,13 +1708,15 @@ def deadCodeRemoval(a, liveVars=None, keepPrints=True, inLoop=False):
 
                 # We need to make ALL variables in the loop live, since they update continuously
                 liveVars |= set(allVariableNamesUsed(stmt))
-                old_global_id = stmt.body[0].global_id
+                # (AB) global id is None
+                # old_global_id = stmt.body[0].global_id
                 stmt.body = deadCodeRemoval(stmt.body, copy.deepcopy(liveVars), keepPrints=keepPrints, inLoop=True)
                 stmt.orelse = deadCodeRemoval(stmt.orelse, copy.deepcopy(liveVars), keepPrints=keepPrints,
                                               inLoop=inLoop)
                 # If the body is empty, get rid of it!
                 if len(stmt.body) == 0:
-                    stmt.body = [ast.Pass(removedLines=True, global_id=old_global_id)]
+                    # (AB) global id is None - delete global id
+                    stmt.body = [ast.Pass(removedLines=True)]
             elif t == ast.If:
                 # First, if True/False, just replace it with the lines
                 test = a[i].test
@@ -2152,7 +2156,8 @@ def orderCommutativeOperations(a):
             # This might be concatenation, not addition
             if type(r) == ast.BinOp and type(r.op) == top:
                 # We want the operators to descend to the left
-                a.left = orderCommutativeOperations(ast.BinOp(l, r.op, r.left, global_id=r.global_id))
+                # (AB) global id is None - delete global id
+                a.left = orderCommutativeOperations(ast.BinOp(l, r.op, r.left))
                 a.right = r.right
         return a
     elif type(a) == ast.Dict:
@@ -2447,7 +2452,9 @@ def cleanupNegations(a):
             # x + (-y)
             if isNegative(a.right):
                 a.right = turnPositive(a.right)
-                a.op = ast.Sub(global_id=a.op.global_id, num_negated=True)
+                # (AB) global id is None
+                # a.op = ast.Sub(global_id=a.op.global_id, num_negated=True)
+                a.op = ast.Sub(num_negated=True)
                 return a
             # (-x) + y
             elif isNegative(a.left):
@@ -2455,13 +2462,17 @@ def cleanupNegations(a):
                     return a  # can't switch if it'll change the message
                 else:
                     (a.left, a.right) = (a.right, turnPositive(a.left))
-                    a.op = ast.Sub(global_id=a.op.global_id, num_negated=True)
+                    # (AB) global id is None
+                    # a.op = ast.Sub(global_id=a.op.global_id, num_negated=True)
+                    a.op = ast.Sub(num_negated=True)
                     return a
         elif type(a.op) == ast.Sub:
             # x - (-y)
             if isNegative(a.right):
                 a.right = turnPositive(a.right)
-                a.op = ast.Add(global_id=a.op.global_id, num_negated=True)
+                # (AB) global id is None
+                # a.op = ast.Add(global_id=a.op.global_id, num_negated=True)
+                a.op = ast.Add(num_negated=True)
                 return a
             elif type(a.right) == ast.BinOp:
                 # x - (y + z) = x + (-y - z)
@@ -2681,17 +2692,20 @@ def conditionalRedundancy(a):
                 if len(stmt.body) > 0 and len(stmt.orelse) > 0 and compareASTs(stmt.body[-1], stmt.orelse[-1],
                                                                                checkEquality=True) == 0:
                     nextLine = stmt.body[-1]
-                    nextLine.second_global_id = stmt.orelse[-1].global_id
+                    # (AB) global id is None - delete global id
+                    # nextLine.second_global_id = stmt.orelse[-1].global_id
                     stmt.body = stmt.body[:-1]
                     stmt.orelse = stmt.orelse[:-1]
-                    stmt.moved_line = nextLine.global_id
+                    # (AB) global id is None - delete global id
+                    # stmt.moved_line = nextLine.global_id
                     # Remove the if statement if both if and else are empty
-                    if len(stmt.body) == 0 and len(stmt.orelse) == 0:
-                        newLine = ast.Expr(stmt.test)
-                        transferMetaData(stmt, newLine)
-                        a[i:i + 1] = [newLine, nextLine]
+                    # Todo: (AB) delete is for correct handling case "Redundant Lines"
+                    # if len(stmt.body) == 0 and len(stmt.orelse) == 0:
+                    #     newLine = ast.Expr(stmt.test)
+                    #     transferMetaData(stmt, newLine)
+                    #     a[i:i + 1] = [newLine, nextLine]
                     # Switch if and else if if is empty
-                    elif len(stmt.body) == 0:
+                    if len(stmt.body) == 0:
                         stmt.test = ast.UnaryOp(ast.Not(addedNotOp=True), stmt.test, addedNot=True)
                         stmt.body = stmt.orelse
                         stmt.orelse = []
@@ -2856,3 +2870,4 @@ def collapseConditionals(a):
         return l
     else:
         log.info(f'transformations\tcollapseConditionals\tStrange type: {str(type(a))}, bug')
+

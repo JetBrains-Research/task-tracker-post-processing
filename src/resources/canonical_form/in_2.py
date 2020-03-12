@@ -1,4 +1,5 @@
-# Make series of nested if statements and delete the day variable, because it is a const
+# Make series of nested if statements
+# Delete the day variable, because it is a const
 def get_day_number(day_of_week):
     day = 0
     if day_of_week == 'Monday':
