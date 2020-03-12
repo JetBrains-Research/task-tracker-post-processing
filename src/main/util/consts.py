@@ -26,3 +26,12 @@ class CANONIZATION_TESTS_TYPES(Enum):
     CLEANED_CODE = 'cleaned_code'
     ANONYMIZE_NAMES = 'anonymize_names'
     CANONICAL_FORM = 'canonical_form'
+    STUDENT_CODE = 'student_code'
+
+class TASK(Enum):
+    PIES = 'pies'
+    MAX_3 = 'max_3'
+    ZERO = 'is_zero'
+    ELECTION = 'election'
+    BRACKETS = 'brackets'
+    MAX_DIGIT = 'max_digit'

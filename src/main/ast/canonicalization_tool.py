@@ -1,8 +1,10 @@
+# Copyright (c) 2017 Kelly Rivers
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import ast
 import logging
 from src.main.ast.ast_tools import getAllImports, getAllImportStatements
+from src.main.ast.preprocessing_tree import runGiveIds
 from src.main.ast.transformations import *
 from src.main.util import consts
 from src.main.ast.display import printFunction
@@ -23,7 +25,7 @@ def get_cleaned_code(source: str):
     return printFunction(get_ast(source))
 
 
-def print_tree(tree: ast.AST):
+def get_code_from_tree(tree: ast.AST):
     return printFunction(tree)
 
 
@@ -60,16 +62,43 @@ def __get_canonical_transformations():
                 ]
 
 
-def get_canonical_form(tree):
+def __init_arg_types(arg_types: dict):
+    if not arg_types:
+        arg_types = {}
+    return arg_types
+
+
+def __init_given_names(given_names: list, tree: ast.AST):
+    if not given_names:
+        given_names = [str(x) for x in getAllImports(tree)]
+    return given_names
+
+
+def __init_imports(imports: list, tree: ast.AST):
+    if not imports:
+        imports = getAllImportStatements(tree)
+    return imports
+
+
+def get_canonicalized_form(source: str, given_names=None, arg_types=None, imports=None):
+    tree = get_ast(get_cleaned_code(source).rstrip('\n'))
+
+    given_names = __init_given_names(given_names, tree)
+    arg_types = __init_arg_types(arg_types)
+    imports = __init_imports(imports, tree)
     transformations = __get_canonical_transformations()
 
-    oldTree = None
-    while compareASTs(oldTree, tree, checkEquality=True) != 0:
-        oldTree = deepcopy(tree)
+    # tree preprocessing from Kelly Rivers code
+    tree = propogateMetadata(tree, arg_types, {}, [0])
+    tree = simplify(tree)
+    tree = anonymizeNames(tree, given_names, imports)
+    # Todo: correct handler for global ID
+    # runGiveIds(tree)
+
+    old_tree = None
+    while compareASTs(old_tree, tree, checkEquality=True) != 0:
+        old_tree = deepcopy(tree)
+        helperFolding(tree, None, imports)
         for t in transformations:
             tree = t(tree)
-
     return tree
-
-
-
