@@ -29,7 +29,7 @@ def run_test(self, test_type: CANONIZATION_TESTS_TYPES, get_code: Callable, task
     for source_code, expected_code_path in files:
         actual_code = get_code(source_code)
         expected_code = get_content_from_file(expected_code_path)
-        log.info(f'Test number is {count_tests}\nActual code is:\n{actual_code}\nExpected code '
+        log.info(f'Test number is {count_tests}\nSource code is: {source_code}\nActual code is:\n{actual_code}\nExpected code '
                  f'is:\n{expected_code}\n')
         self.assertEqual(expected_code, actual_code)
         count_tests += 1

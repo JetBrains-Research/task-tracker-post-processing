@@ -2870,3 +2870,4 @@ def collapseConditionals(a):
         return l
     else:
         log.info(f'transformations\tcollapseConditionals\tStrange type: {str(type(a))}, bug')
+

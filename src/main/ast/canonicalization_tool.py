@@ -3,6 +3,7 @@
 import ast
 import logging
 from src.main.ast.ast_tools import getAllImports, getAllImportStatements
+from src.main.ast.preprocessing_tree import runGiveIds
 from src.main.ast.transformations import *
 from src.main.util import consts
 from src.main.ast.display import printFunction
@@ -90,6 +91,8 @@ def get_canonical_form(source: str, given_names=None, arg_types=None, imports=No
     tree = propogateMetadata(tree, arg_types, {}, [0])
     tree = simplify(tree)
     tree = anonymizeNames(tree, given_names, imports)
+    # Todo: correct handler for global ID
+    # runGiveIds(tree)
 
     old_tree = None
     while compareASTs(old_tree, tree, checkEquality=True) != 0:
@@ -97,4 +100,4 @@ def get_canonical_form(source: str, given_names=None, arg_types=None, imports=No
         helperFolding(tree, None, imports)
         for t in transformations:
             tree = t(tree)
-
+    return tree
