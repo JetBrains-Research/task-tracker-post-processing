@@ -1,3 +1,5 @@
+# Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
+
 import os
 import sys
 import logging
@@ -60,4 +62,3 @@ class TestPythonParsing(unittest.TestCase):
             log.info(f'mypy: {mypy}, pylint: {pylint}, mypy with compile: {mypy_with_execution}')
 
         log.info(f'mypy: {mypy_rate}, pylint: {pylint_rate}, mypy with compile: {mypy_with_execution_rate}, all: {len(files)}')
-

@@ -1,3 +1,5 @@
+# Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
+
 import os
 import sys
 import logging
@@ -11,7 +13,7 @@ from src.main.util.file_util import add_slash
 # from src.main.splitting.splitting import run_tests
 from src.main.util.consts import PATH_CMD_ARG, LOGGER_FORMAT
 from src.main.preprocessing.preprocessing import preprocess_data
-from main.splitting.splitting import split_tasks_into_separate_files
+from src.main.splitting.splitting import split_tasks_into_separate_files
 
 
 pd.set_option('display.max_rows', 250)

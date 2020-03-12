@@ -1,10 +1,12 @@
+# Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
+
 import logging
 import unittest
 
 from enum import Enum
 
-from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT
 from src.main.util.file_util import get_name_from_path
+from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT
 
 
 class PATHS_TEST_DATA(Enum):
