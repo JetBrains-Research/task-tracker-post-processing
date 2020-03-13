@@ -11,11 +11,11 @@ class SolutionGraph:
 
 
 class Vertex:
-    def __init__(self, ast=None, vertex_type=solution_space_consts.VERTEX_TYPE.MIDDLE.value):
+    def __init__(self, code=None, vertex_type=solution_space_consts.VERTEX_TYPE.MIDDLE.value):
         self._parents = []
         self._children = []
         self._users = []
-        self._ast = ast
+        self._code = code
         self._vertex_type = vertex_type
 
     @property
@@ -31,8 +31,8 @@ class Vertex:
         return self._users
 
     @property
-    def ast(self) -> ast.AST:
-        return self._ast
+    def code(self) -> Code:
+        return self._code
 
     @property
     def vertex_type(self) -> solution_space_consts.VERTEX_TYPE:

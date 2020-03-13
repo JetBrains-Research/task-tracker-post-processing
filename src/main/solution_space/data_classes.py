@@ -18,11 +18,14 @@ class AtiItem:
 
     @property
     def event_type(self) -> consts.ACTIVITY_TRACKER_EVENTS:
-        return self.event_type
+        return self._event_type
 
     @property
     def event_data(self) -> consts.ACTIVITY_TRACKER_EVENTS:
-        return self.event_data
+        return self._event_data
+
+    def is_empty(self):
+        return self._timestamp == 0 and self._event_type is None and self._event_data is None
 
 
 class Profile:

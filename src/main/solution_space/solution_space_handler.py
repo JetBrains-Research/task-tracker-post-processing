@@ -25,15 +25,29 @@ def __get_ati_data(solutions: pd.DataFrame, index: int) -> AtiItem:
     return AtiItem(timestamp=timestamp, event_type=event_type, event_data=event_data)
 
 
-# Find the same code fragments in data and construnct list of ati items for this fragment
+def __is_last_index(collection_size: int, index: int) -> bool:
+    return index == collection_size - 1
+
+
+def __are_same_fragments(fragment_1: str, fragment_2: str) -> bool:
+    return fragment_1 == fragment_2
+
+
+def __get_empty_fragment() -> str:
+    return ''
+
+
+# Find the same code fragments in data and construct list of ati items for this fragment
 def __find_same_fragments(solutions: pd.DataFrame, start_index: int) -> tuple:
     i, ati_elements = start_index, []
-    current_fragment = __get_column_value(solutions, start_index, consts.CODE_TRACKER_COLUMN.FRAGMENT.value)
-    while i < solutions.shape[0] - 1:
+    current_fragment, next_fragment = __get_empty_fragment(), __get_empty_fragment()
+
+    while __are_same_fragments(current_fragment, next_fragment) and not __is_last_index(solutions.shape[0] - 1, i):
+        current_fragment = __get_column_value(solutions, start_index, consts.CODE_TRACKER_COLUMN.FRAGMENT.value)
         next_fragment = __get_column_value(solutions, i + 1, consts.CODE_TRACKER_COLUMN.FRAGMENT.value)
-        if current_fragment != next_fragment:
-            return i, ati_elements
-        ati_elements.append(__get_ati_data(solutions, i))
+        ati_element = __get_ati_data(solutions, i)
+        if not ati_element.is_empty():
+            ati_elements.append(ati_element)
         i += 1
     return i, ati_elements
 
@@ -52,6 +66,7 @@ def __get_user(solutions: pd.DataFrame, index: int, profile: Profile) -> User:
 
 def __add_user_solutions(file: str, sg: SolutionGraph) -> SolutionGraph:
     log.info(f'Start solution space creating file {file}')
+    # Todo: filter data: miss items with rate -1 for all tasks
     solutions = pd.read_csv(file, encoding=consts.ISO_ENCODING)
     i = 0
     while i < solutions.shape[0]:
@@ -60,7 +75,8 @@ def __add_user_solutions(file: str, sg: SolutionGraph) -> SolutionGraph:
         fragment = __get_column_value(solutions, i, consts.CODE_TRACKER_COLUMN.FRAGMENT.value)
         canon_tree = get_canonicalized_form(fragment)
         i, ati_elements = __find_same_fragments(solutions, i)
-        # Todo: add Vertex to graph: profile, user, canon_tree, ati_elements
+        # Todo: create Code, get rate - get i element from rate
+        # Todo: add Vertex to graph: user, canon_tree, ati_elements
         pass
     return sg
 
