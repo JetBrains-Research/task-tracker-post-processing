@@ -3,6 +3,7 @@
 import ast
 
 from src.main.util import consts
+from src.main.canonicalization.canonicalization import get_code_from_tree
 
 
 class AtiItem:
@@ -77,8 +78,7 @@ class Code:
     def rate(self) -> float:
         return self._rate
 
-    # Todo: ovveride it - use print function from Kelly Rivers
     def __str__(self) -> str:
-        return super().__str__()
+        return f'Rate: {self._rate}\nCode:\n{get_code_from_tree(self._ast)}\n'
 
 

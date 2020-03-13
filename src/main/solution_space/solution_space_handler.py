@@ -7,6 +7,7 @@ import pandas as pd
 from src.main.util import consts
 from src.main.solution_space.solution_graph import SolutionGraph
 from src.main.solution_space.data_classes import AtiItem, Profile, User
+from src.main.canonicalization.canonicalization import get_canonicalized_form
 from src.main.util.file_util import get_all_file_system_items, csv_file_condition
 
 
@@ -57,8 +58,9 @@ def __add_user_solutions(file: str, sg: SolutionGraph) -> SolutionGraph:
         profile = __get_profile(solutions, i)
         user = __get_user(solutions, i, profile)
         fragment = __get_column_value(solutions, i, consts.CODE_TRACKER_COLUMN.FRAGMENT.value)
+        canon_tree = get_canonicalized_form(fragment)
         i, ati_elements = __find_same_fragments(solutions, i)
-        #Todo: create ast and run canonacalization process and modify sg
+        # Todo: add Vertex to graph: profile, user, canon_tree, ati_elements
         pass
     return sg
 
@@ -68,5 +70,4 @@ def construct_solution_graph(path: str) -> SolutionGraph:
     sg = SolutionGraph()
     for file in files:
         sg = __add_user_solutions(file, sg)
-        pass
     return sg
