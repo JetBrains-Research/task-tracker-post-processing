@@ -1,14 +1,12 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
-
 import logging
-from typing import Tuple, List
-
 import pandas as pd
 
+from typing import Tuple, List
 from src.main.util import consts
 from src.main.splitting.splitting import unpack_tests_results
-from src.main.solution_space.solution_graph import SolutionGraph, Vertex
+from src.main.solution_space.solution_graph import SolutionGraph
 from src.main.solution_space.data_classes import AtiItem, Profile, User, Code
 from src.main.canonicalization.canonicalization import get_canonicalized_form
 from src.main.util.file_util import get_all_file_system_items, csv_file_condition

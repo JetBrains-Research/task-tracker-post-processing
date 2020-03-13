@@ -1,8 +1,8 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import ast
-from typing import List
 
+from typing import List
 from src.main.util import consts
 from src.main.canonicalization.canonicalization import get_code_from_tree
 

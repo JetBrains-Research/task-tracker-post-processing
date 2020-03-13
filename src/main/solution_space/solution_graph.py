@@ -1,8 +1,6 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
-import ast
 from typing import List
-
 from src.main.solution_space.data_classes import User, Code
 from src.main.solution_space import consts as solution_space_consts
 
