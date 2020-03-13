@@ -17,12 +17,17 @@ CHOSEN_TASK = consts.CODE_TRACKER_COLUMN.CHOSEN_TASK.value
 TASK_STATUS = consts.CODE_TRACKER_COLUMN.TASK_STATUS.value
 
 
-def get_solved_task(tests_results: str):
+def unpack_tests_results(tests_results: str, tasks: list) -> list:
     tests_results = ast.literal_eval(tests_results)
-    tasks = consts.TASK.tasks()
     if len(tests_results) != len(tasks):
         log.error(f'Cannot identify tasks because of unexpected tests_results length: {len(tests_results)}')
         raise ValueError(f'Cannot identify tasks because of unexpected tests_results length: {len(tests_results)}')
+    return tests_results
+
+
+def get_solved_task(tests_results: str):
+    tasks = consts.TASK.tasks()
+    tests_results = unpack_tests_results(tests_results, tasks)
     solved_tasks = [t for i, t in enumerate(tasks) if tests_results[i] == 1]
     if len(solved_tasks) == 0:
         log.info(f'No solved tasks found, tests results: {tests_results}')

@@ -1,9 +1,10 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import ast
+from typing import List
 
-from src.main.solution_space import consts as solution_space_consts
 from src.main.solution_space.data_classes import User, Code
+from src.main.solution_space import consts as solution_space_consts
 
 
 class SolutionGraph:
@@ -19,15 +20,15 @@ class Vertex:
         self._vertex_type = vertex_type
 
     @property
-    def parents(self) -> list:
+    def parents(self) -> List['Vertex']:
         return self._parents
 
     @property
-    def children(self) -> list:
+    def children(self) -> List['Vertex']:
         return self._children
 
     @property
-    def users(self) -> list:
+    def users(self) -> List[User]:
         return self._users
 
     @property
