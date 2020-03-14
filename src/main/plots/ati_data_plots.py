@@ -39,4 +39,4 @@ def create_ati_data_plot(path: str, folder_to_save=None, to_show=False):
     __create_ati_events_plot(ax_editor, data, [e.value for e in plot_consts.ATI_EDITOR_EVENT],
                              plot_consts.ATI_EDITOR_EVENT_COLOR_DICT, editor_title)
 
-    save_and_show_if_needed(folder_to_save, to_show, path, fig, 'ati_events')
+    save_and_show_if_needed(folder_to_save, to_show, fig, data_path=path, name_prefix='ati_events')

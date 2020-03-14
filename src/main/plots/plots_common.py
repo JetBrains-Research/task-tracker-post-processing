@@ -6,7 +6,15 @@ import pandas as pd
 from src.main.util import consts
 from src.main.plots import consts as plot_consts
 from src.main.util.strings_util import crop_string
-from src.main.util.file_util import get_parent_folder_name, get_name_from_path, create_directory, get_parent_folder
+from src.main.util.file_util import get_parent_folder_name, get_name_from_path, create_directory, get_parent_folder, \
+    get_file_and_parent_folder_names, change_extension_to
+
+
+def get_result_file_name(name_prefix: str, data_path=None, extension=consts.EXTENSION.PNG.value):
+    name = name_prefix
+    if data_path:
+        name += '_' + (get_file_and_parent_folder_names(data_path).replace('/', '_'))
+    return change_extension_to(name, extension)
 
 
 def get_short_name(path: str):
