@@ -2,9 +2,10 @@
 
 import ast
 
-from typing import List
+from typing import List, Union
 from src.main.util import consts
 from src.main.canonicalization.canonicalization import get_code_from_tree
+from src.main.util.consts import EXPERIENCE, DEFAULT_VALUES
 
 
 class AtiItem:
@@ -30,7 +31,7 @@ class AtiItem:
 
 
 class Profile:
-    def __init__(self, age=consts.DEFAULT_VALUES.AGE.value, experience=consts.DEFAULT_VALUES.EXPERIENCE.value):
+    def __init__(self, age=consts.DEFAULT_VALUES.AGE.value, experience: Union[EXPERIENCE, DEFAULT_VALUES] = DEFAULT_VALUES.EXPERIENCE):
         self._age = age
         self._experience = experience
 
@@ -38,9 +39,8 @@ class Profile:
     def age(self) -> int:
         return self._age
 
-    # Todo: add enum??
     @property
-    def experience(self) -> str:
+    def experience(self) -> Union[EXPERIENCE, DEFAULT_VALUES]:
         return self._experience
 
 
@@ -87,7 +87,6 @@ class CodeInfo:
     @property
     def date(self) -> str:
         return self._date
-
 
 
 class Code:

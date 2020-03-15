@@ -3,12 +3,13 @@
 import logging
 import pandas as pd
 
-from typing import Tuple, List
+from typing import Tuple, List, Union
 from src.main.util import consts
 from src.main.splitting.splitting import unpack_tests_results
 from src.main.solution_space.solution_graph import SolutionGraph
 from src.main.solution_space.data_classes import AtiItem, Profile, User, Code, CodeInfo
 from src.main.canonicalization.canonicalization import get_canonicalized_form
+from src.main.util.consts import EXPERIENCE, DEFAULT_VALUES
 from src.main.util.file_util import get_all_file_system_items, csv_file_condition
 
 
@@ -62,10 +63,18 @@ def __find_same_fragments(solutions: pd.DataFrame, start_index: int) -> Tuple[in
     return i, ati_elements
 
 
+def __get_experience_from_str(experience: str) -> Union[EXPERIENCE, DEFAULT_VALUES]:
+    for e in EXPERIENCE:
+        if e.value == experience:
+            return e
+    return DEFAULT_VALUES.EXPERIENCE
+
+
 def __get_profile(solutions: pd.DataFrame) -> Profile:
     # data should be preprocessed so in 'age' and 'experience' columns should be only 1 unique value for each column
     age = __get_column_unique_value(solutions, consts.CODE_TRACKER_COLUMN.AGE.value)
-    experience = __get_column_unique_value(solutions, consts.CODE_TRACKER_COLUMN.EXPERIENCE.value)
+    str_experience = __get_column_unique_value(solutions, consts.CODE_TRACKER_COLUMN.EXPERIENCE.value)
+    experience = __get_experience_from_str(str_experience)
     return Profile(age=age, experience=experience)
 
 
