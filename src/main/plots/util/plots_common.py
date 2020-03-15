@@ -11,10 +11,9 @@ from src.main.util.file_util import get_parent_folder_name, get_name_from_path, 
 
 
 def get_result_file_name(name_prefix: str, data_path=None, extension=consts.EXTENSION.PNG.value):
-    name = name_prefix
     if data_path:
-        name += '_' + (get_file_and_parent_folder_names(data_path).replace('/', '_'))
-    return change_extension_to(name, extension)
+        name_prefix += '_' + (get_file_and_parent_folder_names(data_path).replace('/', '_'))
+    return change_extension_to(name_prefix, extension)
 
 
 def get_short_name(path: str):
