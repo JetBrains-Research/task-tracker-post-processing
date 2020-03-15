@@ -45,18 +45,36 @@ class Profile:
 
 
 class User:
-    def __init__(self, profile=None, timestamp=0, date=None, ati_actions=None):
-        # Todo: add id
+    _last_id = -1
+
+    def __init__(self, profile=None):
         self._profile = profile
-        self._ati_actions = []
-        if ati_actions is not None:
-            self._ati_actions = ati_actions
-        self._timestamp = timestamp
-        self._date = date
+        self._id = User.__get_id()
+
+    @classmethod
+    def __get_id(cls):
+        cls._last_id += 1
+        return cls._last_id
 
     @property
     def profile(self) -> Profile:
         return self._profile
+
+    @property
+    def id(self) -> int:
+        return self._id
+
+
+class CodeInfo:
+    def __init__(self, user: User, timestamp: int = 0, date: str = None, ati_actions: List[AtiItem] = None):
+        self._user = user
+        self._ati_actions = ati_actions if ati_actions else []
+        self._timestamp = timestamp
+        self._date = date
+
+    @property
+    def user(self) -> User:
+        return self._user
 
     @property
     def ati_actions(self) -> List[AtiItem]:
@@ -69,6 +87,7 @@ class User:
     @property
     def date(self) -> str:
         return self._date
+
 
 
 class Code:

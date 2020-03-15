@@ -2,12 +2,12 @@
 
 import logging
 import collections
-from typing import Optional, List, Tuple
+from typing import Optional, List, Tuple, Set
 
 from src.main.util.consts import LOGGER_NAME
 from src.main.solution_space.consts import VERTEX_TYPE
 from src.main.canonicalization.ast_tools import compareASTs
-from src.main.solution_space.data_classes import User, Code
+from src.main.solution_space.data_classes import User, Code, CodeInfo
 from src.main.solution_space import consts as solution_space_consts
 
 
@@ -18,7 +18,7 @@ class Vertex:
     def __init__(self, code: Code = None, vertex_type=solution_space_consts.VERTEX_TYPE.INTERMEDIATE.value):
         self._parents = []
         self._children = []
-        self._users = []
+        self._code_infos = []
         self._code = code
         self._vertex_type = vertex_type
 
@@ -31,8 +31,8 @@ class Vertex:
         return self._children
 
     @property
-    def users(self) -> List[User]:
-        return self._users
+    def code_infos(self) -> List[CodeInfo]:
+        return self._code_infos
 
     @property
     def code(self) -> Code:
@@ -58,8 +58,12 @@ class Vertex:
         self.__add_parent_to_list(parent)
         parent.__add_child_to_list(self)
 
-    def add_user(self, user: User) -> None:
-        self._users.append(user)
+    def add_code_info(self, code_info: CodeInfo) -> None:
+        self._code_infos.append(code_info)
+
+    def get_unique_users(self) -> Set[User]:
+        users = [code_info.user for code_info in self._code_infos]
+        return set(users)
 
 
 class GraphIterator(collections.abc.Iterator):
@@ -109,7 +113,7 @@ class SolutionGraph(collections.abc.Iterable):
     def get_traversal(self):
         return self.__iter__().traversal
 
-    def find_or_create_vertex(self, code: Optional[Code], user: User) -> Vertex:
+    def find_or_create_vertex(self, code: Optional[Code], code_info: CodeInfo) -> Vertex:
         if code is None:
             log.info('Code should not be None')
             raise ValueError('Code should not be None')
@@ -119,11 +123,11 @@ class SolutionGraph(collections.abc.Iterable):
             # if compareAST == 0, then they are equal, so we should add 'not'
             if vertex.code and not compareASTs(vertex.code.ast, code.ast):
                 log.info(f'Found an existing vertex for code: {str(code)}')
-                vertex.add_user(user)
+                vertex.add_code_info(code_info)
                 return vertex
         log.info(f'Not found any existing vertex for code: {str(code)}, creating a new one')
         vertex = Vertex(code)
-        vertex.add_user(user)
+        vertex.add_code_info(code_info)
         if code.is_full():
             log.info(f'Connect full code to the end vertex')
             self.connect_to_end_vertex(vertex)
@@ -135,16 +139,16 @@ class SolutionGraph(collections.abc.Iterable):
     def connect_to_end_vertex(self, vertex) -> None:
         self._end_vertex.add_parent(vertex)
 
-    def add_code_user_chain(self, code_user_chain: List[Tuple[Code, User]]) -> None:
+    def add_code_info_chain(self, code_info_chain: List[Tuple[Code, CodeInfo]]) -> None:
         log.info(f'Start adding code-user chain')
-        if code_user_chain:
+        if code_info_chain:
             log.info(f'Connect the first vertex in a chain to the start vertex')
-            first_code_user = code_user_chain[0]
-            first_vertex = self.find_or_create_vertex(first_code_user[0], first_code_user[1])
+            first_code_info = code_info_chain[0]
+            first_vertex = self.find_or_create_vertex(first_code_info[0], first_code_info[1])
             self.connect_to_start_vertex(first_vertex)
 
             prev_vertex = first_vertex
-            for next_code_user in code_user_chain[1:]:
+            for next_code_user in code_info_chain[1:]:
                 next_vertex = self.find_or_create_vertex(next_code_user[0], next_code_user[1])
                 prev_vertex.add_child(next_vertex)
                 prev_vertex = next_vertex
