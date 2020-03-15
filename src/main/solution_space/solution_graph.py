@@ -4,6 +4,7 @@ import logging
 import collections
 from typing import Optional, List, Tuple, Set
 
+from src.main.canonicalization.canonicalization import are_asts_equal
 from src.main.util.consts import LOGGER_NAME
 from src.main.solution_space.consts import VERTEX_TYPE
 from src.main.canonicalization.ast_tools import compareASTs
@@ -119,9 +120,7 @@ class SolutionGraph(collections.abc.Iterable):
             raise ValueError('Code should not be None')
         vertices = iter(self)
         for vertex in vertices:
-            # todo: add tests for comparator
-            # if compareAST == 0, then they are equal, so we should add 'not'
-            if vertex.code and not compareASTs(vertex.code.ast, code.ast):
+            if vertex.code and are_asts_equal(vertex.code.ast, code.ast):
                 log.info(f'Found an existing vertex for code: {str(code)}')
                 vertex.add_code_info(code_info)
                 return vertex
