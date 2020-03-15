@@ -1,16 +1,14 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
-import ast
-import collections
 import logging
-import queue
+import collections
 from typing import Optional, List, Tuple
 
-from src.main.canonicalization.ast_tools import compareASTs
-from src.main.solution_space import consts as solution_space_consts
-from src.main.solution_space.consts import VERTEX_TYPE
-from src.main.solution_space.data_classes import User, Code
 from src.main.util.consts import LOGGER_NAME
+from src.main.solution_space.consts import VERTEX_TYPE
+from src.main.canonicalization.ast_tools import compareASTs
+from src.main.solution_space.data_classes import User, Code
+from src.main.solution_space import consts as solution_space_consts
 
 
 log = logging.getLogger(LOGGER_NAME)

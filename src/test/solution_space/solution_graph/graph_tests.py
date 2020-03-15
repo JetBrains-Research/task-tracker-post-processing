@@ -2,11 +2,11 @@ import ast
 import logging
 import unittest
 from enum import Enum
-from typing import List, Tuple, Optional, Dict, Union
+from typing import List, Tuple
 
 from src.main.solution_space.data_classes import Code, User
-from src.main.canonicalization.canonicalization import get_code_from_tree
 from src.main.solution_space.solution_graph import Vertex, SolutionGraph
+from src.main.canonicalization.canonicalization import get_code_from_tree
 from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT, TEST_RESULT, LOGGER_NAME
 
 log = logging.getLogger(LOGGER_NAME)
