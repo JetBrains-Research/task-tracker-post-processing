@@ -5,7 +5,7 @@ import logging
 import pandas as pd
 
 from src.main.util import consts
-from src.main.plots import consts as stat_const
+from src.main.plots.util import consts as stat_const
 from src.main.preprocessing.code_tracker_handler import handle_ct_file
 from src.main.util.strings_util import does_string_contain_any_of_substrings
 from src.main.util.file_util import get_all_file_system_items, ct_file_condition, \

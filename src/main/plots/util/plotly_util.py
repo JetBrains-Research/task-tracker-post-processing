@@ -4,9 +4,9 @@ import plotly
 import logging
 
 from src.main.util import consts
-from src.main.plots import consts as plot_consts
+from src.main.plots.util import consts as plot_consts
 from src.main.util.file_util import change_extension_to
-from src.main.plots.plots_common import create_directory_for_plots
+from src.main.plots.util.plots_common import create_directory_for_plots
 
 
 log = logging.getLogger(consts.LOGGER_NAME)

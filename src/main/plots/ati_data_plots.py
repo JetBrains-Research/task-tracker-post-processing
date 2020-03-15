@@ -6,9 +6,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 from src.main.util import consts
-from src.main.plots import consts as plot_consts
-from src.main.plots.plots_common import get_short_name
-from src.main.plots.pyplot_util import add_fragments_length_plot, EVENT_DATA_COL, TIMESTAMP_COL, FRAGMENT_COL, \
+from src.main.plots.util import consts as plot_consts
+from src.main.plots.util.plots_common import get_short_name
+from src.main.plots.util.pyplot_util import add_fragments_length_plot, EVENT_DATA_COL, TIMESTAMP_COL, FRAGMENT_COL, \
     save_and_show_if_needed, add_legend_to_the_right
 
 log = logging.getLogger(consts.LOGGER_NAME)
@@ -39,4 +39,4 @@ def create_ati_data_plot(path: str, folder_to_save=None, to_show=False):
     __create_ati_events_plot(ax_editor, data, [e.value for e in plot_consts.ATI_EDITOR_EVENT],
                              plot_consts.ATI_EDITOR_EVENT_COLOR_DICT, editor_title)
 
-    save_and_show_if_needed(folder_to_save, to_show, path, fig, 'ati_events')
+    save_and_show_if_needed(folder_to_save, to_show, fig, data_path=path, name_prefix='ati_events')

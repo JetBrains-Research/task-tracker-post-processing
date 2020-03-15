@@ -7,8 +7,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 from src.main.util import consts
-from src.main.plots import consts as plot_consts
-from src.main.util.file_util import change_extension_to, get_file_and_parent_folder_names
+from src.main.plots.util import consts as plot_consts
+from src.main.plots.util.plots_common import get_result_file_name
 
 FRAGMENT_COL = consts.CODE_TRACKER_COLUMN.FRAGMENT.value
 TIMESTAMP_COL = consts.CODE_TRACKER_COLUMN.TIMESTAMP.value
@@ -20,9 +20,10 @@ EVENT_DATA_COL = consts.ACTIVITY_TRACKER_COLUMN.EVENT_DATA.value
 log = logging.getLogger(consts.LOGGER_NAME)
 
 
-def save_plot(folder_to_save: str, data_path: str, fig: plt.figure, name_prefix: str, extension=consts.EXTENSION.PNG.value):
-    log.info('Saving' + data_path)
-    name = name_prefix + '_' + (get_file_and_parent_folder_names(change_extension_to(data_path, extension)).replace('/', '_'))
+def save_plot(folder_to_save: str, fig: plt.figure, name_prefix: str, data_path=None,
+              extension=consts.EXTENSION.PNG.value):
+    name = get_result_file_name(name_prefix, data_path, extension)
+    log.info('Saving' + name)
     # 'tight' is used to alter the size of the bounding box (whitespace) around the output image
     fig.savefig(os.path.join(folder_to_save, name), bbox_inches='tight')
 
@@ -39,9 +40,9 @@ def add_legend_to_the_right(ax: plt.axes):
     ax.legend(bbox_to_anchor=(1.04, 1), borderaxespad=0)
 
 
-def save_and_show_if_needed(folder_to_save: str, to_show: bool, path: str, fig: plt.figure, name_prefix=''):
+def save_and_show_if_needed(folder_to_save: str, to_show: bool, fig: plt.figure, data_path=None, name_prefix=''):
     if folder_to_save:
-        save_plot(folder_to_save, path, fig, name_prefix)
+        save_plot(folder_to_save, fig, name_prefix, data_path)
     if to_show:
-        log.info('Showing ' + path)
+        log.info('Showing ' + data_path)
         fig.show()
