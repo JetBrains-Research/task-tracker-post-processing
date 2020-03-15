@@ -6,9 +6,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 from src.main.util import consts
-from src.main.plots import consts as plot_consts
-from src.main.plots.plots_common import get_short_name
-from src.main.plots.pyplot_util import add_fragments_length_plot, EVENT_DATA_COL, TIMESTAMP_COL, FRAGMENT_COL, \
+from src.main.plots.util import consts as plot_consts
+from src.main.plots.util.plots_common import get_short_name
+from src.main.plots.util.pyplot_util import add_fragments_length_plot, EVENT_DATA_COL, TIMESTAMP_COL, FRAGMENT_COL, \
     save_and_show_if_needed, add_legend_to_the_right
 
 log = logging.getLogger(consts.LOGGER_NAME)

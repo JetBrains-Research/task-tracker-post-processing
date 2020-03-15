@@ -5,10 +5,10 @@ import plotly.graph_objects as go
 
 
 from src.main.util import consts
-from src.main.plots import consts as plot_consts
-from src.main.plots.plotly_util import save_plot
+from src.main.plots.util import consts as plot_consts
+from src.main.plots.util.plotly_util import save_plot
 from src.main.statistics_gathering.statistics_gathering import get_tasks_statistics
-from src.main.plots.plots_common import get_readable_key
+from src.main.plots.util.plots_common import get_readable_key
 
 
 log = logging.getLogger(consts.LOGGER_NAME)

@@ -6,12 +6,12 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 from src.main.util import consts
-from src.main.plots import consts as plot_consts
+from src.main.plots.util import consts as plot_consts
 from src.main.splitting.splitting import find_splits
-from src.main.plots.plots_common import get_short_name
+from src.main.plots.util.plots_common import get_short_name
 from src.main.util.file_util import get_name_from_path
 from src.main.util.strings_util import convert_camel_case_to_snake_case
-from src.main.plots.pyplot_util import CHOSEN_TASK_COL, TIMESTAMP_COL, TASK_STATUS_COL, FRAGMENT_COL, \
+from src.main.plots.util.pyplot_util import CHOSEN_TASK_COL, TIMESTAMP_COL, TASK_STATUS_COL, FRAGMENT_COL, \
     add_fragments_length_plot, save_and_show_if_needed, add_legend_to_the_right
 
 

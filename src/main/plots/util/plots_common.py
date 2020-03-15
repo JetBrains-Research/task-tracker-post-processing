@@ -4,7 +4,7 @@ import os
 import pandas as pd
 
 from src.main.util import consts
-from src.main.plots import consts as plot_consts
+from src.main.plots.util import consts as plot_consts
 from src.main.util.strings_util import crop_string
 from src.main.util.file_util import get_parent_folder_name, get_name_from_path, create_directory, get_parent_folder, \
     get_file_and_parent_folder_names, change_extension_to
