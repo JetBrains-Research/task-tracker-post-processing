@@ -114,7 +114,7 @@ class TestGraph(unittest.TestCase):
     def setUp(self) -> None:
         logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
 
-    def test_bfs_traversal(self):
+    def test_bfs_traversal(self) -> None:
         # a simple graph without any code just to check bfs
         sg = SolutionGraph()
         #          START_VERTEX
@@ -146,24 +146,24 @@ class TestGraph(unittest.TestCase):
         actual_traversal = sg.get_traversal()
         self.assertEqual(actual_traversal, expected_traversal)
 
-    def test_finding_vertex(self):
+    def test_finding_vertex(self) -> None:
         sg, vertices, sources = create_graph_with_code()
         for i, vertex in enumerate(vertices):
             found_vertex = find_or_create_vertex_with_code_info_and_rate_check(self, sg, sources[i])
             self.assertEqual(found_vertex, vertex)
 
-    def test_creating_vertex(self):
+    def test_creating_vertex(self) -> None:
         sg, vertices, sources = create_graph_with_code()
         source = 'while(True):\n    print(\'Hi\')'
         found_vertex = find_or_create_vertex_with_code_info_and_rate_check(self, sg, source, TEST_RESULT.FULL_SOLUTION.value)
         self.assertTrue(found_vertex not in vertices)
 
-    def test_finding_or_creating_vertex_with_none(self):
+    def test_finding_or_creating_vertex_with_none(self) -> None:
         sg, vertices, sources = create_graph_with_code()
         user = User()
         self.assertRaises(ValueError, sg.find_or_create_vertex, None, user)
 
-    def test_adding_code_info_chain(self):
+    def test_adding_code_info_chain(self) -> None:
         sg, vertices, vertex_sources = create_graph_with_code()
 
         # Graph with code:

@@ -57,22 +57,22 @@ class TestTimeMethods(unittest.TestCase):
     def setUp(self) -> None:
         logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
 
-    def test_all_correct(self):
+    def test_all_correct(self) -> None:
         before_filter_df = pd.DataFrame(ALL_CORRECT)
         expected_after_filter_df = pd.DataFrame(ALL_CORRECT)
         self.assertTrue(run_test(before_filter_df, expected_after_filter_df))
 
-    def test_all_incorrect(self):
+    def test_all_incorrect(self) -> None:
         before_filter_df = pd.DataFrame(ALL_INCORRECT)
         expected_after_filter_df = clear_df(before_filter_df.copy())
         self.assertTrue(run_test(before_filter_df, expected_after_filter_df))
 
-    def test_all_mixed(self):
+    def test_all_mixed(self) -> None:
         before_filter_df = pd.DataFrame(MIXED)
         expected_after_filter_df = pd.DataFrame(MIXED_FILTERED)
         self.assertTrue(run_test(before_filter_df, expected_after_filter_df))
 
-    def test_incorrect_data(self):
+    def test_incorrect_data(self) -> None:
         before_filter_df = pd.DataFrame(INCORRECT_DATA)
         expected_after_filter_df = pd.DataFrame(INCORRECT_DATA)
         self.assertEqual(run_test(before_filter_df, expected_after_filter_df), False)

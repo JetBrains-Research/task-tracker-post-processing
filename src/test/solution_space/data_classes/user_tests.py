@@ -9,7 +9,7 @@ class TestUser(unittest.TestCase):
     def setUp(self) -> None:
         logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
 
-    def test_user_id(self):
+    def test_user_id(self) -> None:
         n = 100
         for i in range(n):
             user = User()
