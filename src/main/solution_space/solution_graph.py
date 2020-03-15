@@ -120,11 +120,14 @@ class SolutionGraph(collections.abc.Iterable):
             # todo: add tests for comparator
             # if compareAST == 0, then they are equal, so we should add 'not'
             if vertex.code and not compareASTs(vertex.code.ast, code.ast):
+                log.info(f'Found an existing vertex for code: {str(code)}')
                 vertex.add_user(user)
                 return vertex
+        log.info(f'Not found any existing vertex for code: {str(code)}, creating a new one')
         vertex = Vertex(code)
         vertex.add_user(user)
         if code.is_full():
+            log.info(f'Connect full code to the end vertex')
             self.connect_to_end_vertex(vertex)
         return vertex
 
@@ -135,7 +138,9 @@ class SolutionGraph(collections.abc.Iterable):
         self._end_vertex.add_parent(vertex)
 
     def add_code_user_chain(self, code_user_chain: List[Tuple[Code, User]]) -> None:
+        log.info(f'Start adding code-user chain')
         if code_user_chain:
+            log.info(f'Connect the first vertex in a chain to the start vertex')
             first_code_user = code_user_chain[0]
             first_vertex = self.find_or_create_vertex(first_code_user[0], first_code_user[1])
             self.connect_to_start_vertex(first_vertex)
@@ -145,5 +150,4 @@ class SolutionGraph(collections.abc.Iterable):
                 next_vertex = self.find_or_create_vertex(next_code_user[0], next_code_user[1])
                 prev_vertex.add_child(next_vertex)
                 prev_vertex = next_vertex
-
-
+        log.info(f'Finish adding code-user chain')

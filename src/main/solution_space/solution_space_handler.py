@@ -130,7 +130,6 @@ def construct_solution_graph(path: str, task: str,) -> SolutionGraph:
     for file in files:
         log.info(f'Start handling file {file}')
         code_user_chain = __add_user_solutions(file, task)
-        # Todo: add items from user_code_chain to sg
-        pass
+        sg.add_code_user_chain(code_user_chain)
     log.info(f'Finish creating of solution space')
     return sg
