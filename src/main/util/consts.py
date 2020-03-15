@@ -98,6 +98,8 @@ class TEST_RESULT(Enum):
     LANGUAGE_NOT_DEFINED = -2
     # It can be incorrect although, but our checking tools cannot find any errors
     CORRECT_CODE = 0
+    # It means that all tests are passed
+    FULL_SOLUTION = 1
 
 
 class FILE_SYSTEM_ITEM(Enum):

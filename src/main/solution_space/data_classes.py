@@ -84,4 +84,6 @@ class Code:
     def __str__(self) -> str:
         return f'Rate: {self._rate}\nCode:\n{get_code_from_tree(self._ast)}\n'
 
+    def is_full(self) -> bool:
+        return self._rate == consts.TEST_RESULT.FULL_SOLUTION.value
 

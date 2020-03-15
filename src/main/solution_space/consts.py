@@ -6,4 +6,4 @@ from enum import Enum
 class VERTEX_TYPE(Enum):
     START = 'start'
     END = 'end'
-    MIDDLE = 'middle'
+    INTERMEDIATE = 'intermediate'

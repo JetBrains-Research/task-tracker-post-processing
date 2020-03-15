@@ -1,8 +1,8 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import logging
-
 import javalang
+
 from javalang.tokenizer import LexerError
 from javalang.parser import JavaSyntaxError, JavaParserError
 

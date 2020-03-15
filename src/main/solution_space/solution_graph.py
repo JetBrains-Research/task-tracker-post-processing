@@ -1,17 +1,22 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import ast
+import collections
+import logging
+import queue
+from typing import Optional, List, Tuple
 
+from src.main.canonicalization.ast_tools import compareASTs
 from src.main.solution_space import consts as solution_space_consts
+from src.main.solution_space.consts import VERTEX_TYPE
 from src.main.solution_space.data_classes import User, Code
+from src.main.util.consts import LOGGER_NAME
 
-
-class SolutionGraph:
-    pass
+log = logging.getLogger(LOGGER_NAME)
 
 
 class Vertex:
-    def __init__(self, code=None, vertex_type=solution_space_consts.VERTEX_TYPE.MIDDLE.value):
+    def __init__(self, code: Code = None, vertex_type=solution_space_consts.VERTEX_TYPE.INTERMEDIATE.value):
         self._parents = []
         self._children = []
         self._users = []
@@ -19,15 +24,15 @@ class Vertex:
         self._vertex_type = vertex_type
 
     @property
-    def parents(self) -> list:
+    def parents(self) -> List['Vertex']:
         return self._parents
 
     @property
-    def children(self) -> list:
+    def children(self) -> List['Vertex']:
         return self._children
 
     @property
-    def users(self) -> list:
+    def users(self) -> List['Vertex']:
         return self._users
 
     @property
@@ -53,3 +58,91 @@ class Vertex:
     def add_parent(self, parent: 'Vertex') -> None:
         self.__add_parent_to_list(parent)
         parent.__add_child_to_list(self)
+
+    def add_user(self, user: User) -> None:
+        self._users.append(user)
+
+
+class GraphIterator(collections.abc.Iterator):
+    def __init__(self, root_vertex: Vertex):
+        self._root = root_vertex
+        self._traversal = self.__bfs_traverse()
+        self._cursor = -1
+
+    @property
+    def traversal(self) -> List[Vertex]:
+        return self._traversal
+
+    def __bfs_traverse(self) -> List[Vertex]:
+        visited = [self._root]
+        vertices_queue = collections.deque(visited)
+        while vertices_queue:
+            vertex = vertices_queue.popleft()
+            for child in vertex.children:
+                if child not in visited and child.vertex_type != VERTEX_TYPE.END.value:
+                    vertices_queue.append(child)
+                    visited.append(child)
+        return visited
+
+    def __next__(self):
+        if self._cursor + 1 >= len(self._traversal):
+            raise StopIteration
+        self._cursor += 1
+        return self._traversal[self._cursor]
+
+
+class SolutionGraph(collections.abc.Iterable):
+    def __init__(self):
+        self._start_vertex = Vertex(vertex_type=solution_space_consts.VERTEX_TYPE.START.value)
+        self._end_vertex = Vertex(vertex_type=solution_space_consts.VERTEX_TYPE.END.value)
+
+    @property
+    def start_vertex(self) -> Vertex:
+        return self._start_vertex
+
+    @property
+    def end_vertex(self) -> Vertex:
+        return self._end_vertex
+
+    def __iter__(self) -> GraphIterator:
+        return GraphIterator(self._start_vertex)
+
+    def get_traversal(self):
+        return self.__iter__().traversal
+
+    def find_or_create_vertex(self, code: Optional[Code], user: User) -> Vertex:
+        if code is None:
+            log.info('Code should not be None')
+            raise ValueError('Code should not be None')
+        vertices = iter(self)
+        for vertex in vertices:
+            # todo: add tests for comparator
+            # if compareAST == 0, then they are equal, so we should add 'not'
+            if vertex.code and not compareASTs(vertex.code.ast, code.ast):
+                vertex.add_user(user)
+                return vertex
+        vertex = Vertex(code)
+        vertex.add_user(user)
+        if code.is_full():
+            self.connect_to_end_vertex(vertex)
+        return vertex
+
+    def connect_to_start_vertex(self, vertex) -> None:
+        self._start_vertex.add_child(vertex)
+
+    def connect_to_end_vertex(self, vertex) -> None:
+        self._end_vertex.add_parent(vertex)
+
+    def add_code_user_chain(self, code_user_chain: List[Tuple[Code, User]]) -> None:
+        if code_user_chain:
+            first_code_user = code_user_chain[0]
+            first_vertex = self.find_or_create_vertex(first_code_user[0], first_code_user[1])
+            self.connect_to_start_vertex(first_vertex)
+
+            prev_vertex = first_vertex
+            for next_code_user in code_user_chain[1:]:
+                next_vertex = self.find_or_create_vertex(next_code_user[0], next_code_user[1])
+                prev_vertex.add_child(next_vertex)
+                prev_vertex = next_vertex
+
+
