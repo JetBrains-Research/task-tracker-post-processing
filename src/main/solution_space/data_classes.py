@@ -2,6 +2,7 @@
 
 import ast
 
+from typing import List
 from src.main.util import consts
 from src.main.canonicalization.canonicalization import get_code_from_tree
 
@@ -24,7 +25,7 @@ class AtiItem:
     def event_data(self) -> consts.ACTIVITY_TRACKER_EVENTS:
         return self._event_data
 
-    def is_empty(self):
+    def is_empty(self) -> bool:
         return self._timestamp == 0 and self._event_type is None and self._event_data is None
 
 
@@ -44,10 +45,12 @@ class Profile:
 
 
 class User:
-    def __init__(self, profile=None, timestamp=0, date=None):
+    def __init__(self, profile=None, timestamp=0, date=None, ati_actions=None):
         # Todo: add id
         self._profile = profile
         self._ati_actions = []
+        if ati_actions is not None:
+            self._ati_actions = ati_actions
         self._timestamp = timestamp
         self._date = date
 
@@ -56,7 +59,7 @@ class User:
         return self._profile
 
     @property
-    def ati_actions(self) -> list:
+    def ati_actions(self) -> List[AtiItem]:
         return self._ati_actions
 
     @property

@@ -12,6 +12,7 @@ from src.main.solution_space.consts import VERTEX_TYPE
 from src.main.solution_space.data_classes import User, Code
 from src.main.util.consts import LOGGER_NAME
 
+
 log = logging.getLogger(LOGGER_NAME)
 
 
@@ -32,7 +33,7 @@ class Vertex:
         return self._children
 
     @property
-    def users(self) -> List['Vertex']:
+    def users(self) -> List[User]:
         return self._users
 
     @property
