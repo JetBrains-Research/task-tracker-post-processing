@@ -18,7 +18,7 @@ class ADJACENT_VERTEX_TYPE(Enum):
 
 
 class VERTEX_STRUCTURE(Enum):
-    CODE_INFOS_LEN = 'users_number'
+    CODE_INFO_LIST_LEN = 'users_number'
     SOURCE = 'source'
 
 
@@ -68,7 +68,7 @@ def find_or_create_vertex_with_code_info_and_rate_check(self: unittest.TestCase,
     code_info = CodeInfo(User())
     found_vertex = sg.find_or_create_vertex(create_code_from_source(source, rate), code_info)
     # check if user is added to user list
-    self.assertTrue(code_info in found_vertex.code_infos)
+    self.assertTrue(code_info in found_vertex.code_info_list)
     # check if vertex is connected with end_vertex if it has 'full_solution'-code
     if rate == TEST_RESULT.FULL_SOLUTION.value:
         self.assertTrue(sg.end_vertex in found_vertex.children)
@@ -93,7 +93,7 @@ def create_code_info_chain() -> (List[Tuple[Code, CodeInfo]], List[str]):
 
 def get_vertex_structure(vertex: Vertex) -> dict:
     source = get_code_from_tree(vertex.code.ast).strip('\n') if vertex.code else None
-    return {VERTEX_STRUCTURE.SOURCE.value: source, VERTEX_STRUCTURE.CODE_INFOS_LEN.value: len(vertex.code_infos)}
+    return {VERTEX_STRUCTURE.SOURCE.value: source, VERTEX_STRUCTURE.CODE_INFO_LIST_LEN.value: len(vertex.code_info_list)}
 
 
 def check_adjacent_vertices_structure(self: unittest.TestCase, adjacent_vertex_type: ADJACENT_VERTEX_TYPE, vertex: Vertex,
@@ -205,10 +205,10 @@ class TestGraph(unittest.TestCase):
         end_vertex_structure = get_vertex_structure(sg.end_vertex)
 
         # Also, the structure of the new chain vertices should be like that:
-        chain_0_structure = {VERTEX_STRUCTURE.SOURCE.value: chain_sources[0], VERTEX_STRUCTURE.CODE_INFOS_LEN.value: 1}
-        chain_1_structure = {VERTEX_STRUCTURE.SOURCE.value: chain_sources[1], VERTEX_STRUCTURE.CODE_INFOS_LEN.value: 2}
-        chain_2_structure = {VERTEX_STRUCTURE.SOURCE.value: chain_sources[2], VERTEX_STRUCTURE.CODE_INFOS_LEN.value: 1}
-        chain_3_structure = {VERTEX_STRUCTURE.SOURCE.value: chain_sources[3], VERTEX_STRUCTURE.CODE_INFOS_LEN.value: 1}
+        chain_0_structure = {VERTEX_STRUCTURE.SOURCE.value: chain_sources[0], VERTEX_STRUCTURE.CODE_INFO_LIST_LEN.value: 1}
+        chain_1_structure = {VERTEX_STRUCTURE.SOURCE.value: chain_sources[1], VERTEX_STRUCTURE.CODE_INFO_LIST_LEN.value: 2}
+        chain_2_structure = {VERTEX_STRUCTURE.SOURCE.value: chain_sources[2], VERTEX_STRUCTURE.CODE_INFO_LIST_LEN.value: 1}
+        chain_3_structure = {VERTEX_STRUCTURE.SOURCE.value: chain_sources[3], VERTEX_STRUCTURE.CODE_INFO_LIST_LEN.value: 1}
 
         # we should have 1 joined vertex: [chain_1, vertex_2] with the same structure:
         self.assertEqual(chain_1_structure, vertex_2_structure)

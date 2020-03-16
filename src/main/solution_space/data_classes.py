@@ -9,7 +9,7 @@ from src.main.util.consts import EXPERIENCE, DEFAULT_VALUES
 
 
 class AtiItem:
-    def __init__(self, timestamp=0, event_type=None, event_data=None):
+    def __init__(self, timestamp: int = 0, event_type=None, event_data=None):
         self._timestamp = timestamp
         self._event_type = event_type
         self._event_data = event_data
@@ -45,16 +45,13 @@ class Profile:
 
 
 class User:
-    _last_id = -1
+    _last_id = 0
 
     def __init__(self, profile=None):
         self._profile = profile
-        self._id = User.__get_id()
+        self._id = self._last_id
+        self.__class__._last_id += 1
 
-    @classmethod
-    def __get_id(cls):
-        cls._last_id += 1
-        return cls._last_id
 
     @property
     def profile(self) -> Profile:

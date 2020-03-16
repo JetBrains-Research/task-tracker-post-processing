@@ -3,7 +3,7 @@
 import logging
 import pandas as pd
 
-from typing import Tuple, List, Union
+from typing import Tuple, List, Union, Any
 from src.main.util import consts
 from src.main.splitting.splitting import unpack_tests_results
 from src.main.solution_space.solution_graph import SolutionGraph
@@ -20,9 +20,13 @@ def __get_column_value(solutions: pd.DataFrame, index: int, column=None) -> str:
     return solutions[column].iloc[index]
 
 
-def __get_column_unique_value(solutions: pd.DataFrame, column=None) -> str:
+def __get_column_unique_value(solutions: pd.DataFrame, column: consts.CODE_TRACKER_COLUMN, defualt: Any) -> Any:
+    column = column.value
     unique_values = solutions[column].unique()
-    if len(unique_values) != 1:
+    if len(unique_values) == 0:
+        log.info(f'Unique values not found')
+        return defualt
+    if len(unique_values) > 1:
         log.error(f'There is more than 1 unique value in column {column}: {unique_values}')
         raise ValueError(f'There is more than 1 unique value in column {column}: {unique_values}')
     return unique_values[0]

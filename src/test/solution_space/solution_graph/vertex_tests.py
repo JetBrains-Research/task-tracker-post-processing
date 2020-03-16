@@ -30,26 +30,26 @@ class TestVertex(unittest.TestCase):
 
     def test_adding_code_info(self) -> None:
         vertex = Vertex()
-        code_infos_len = 100
-        code_infos = [CodeInfo(User()) for _ in range(code_infos_len)]
-        for code_info in code_infos:
+        code_info_list_len = 100
+        code_info_list = [CodeInfo(User()) for _ in range(code_info_list_len)]
+        for code_info in code_info_list:
             vertex.add_code_info(code_info)
-        self.assertEqual(vertex.code_infos, code_infos)
+        self.assertEqual(vertex.code_info_list, code_info_list)
 
     def test_getting_unique_users(self) -> None:
         users = [User(), User(), User()]
         users_dist = [3, 0, 20]
-        code_infos = []
-        # create code_infos with users distribution
+        code_info_list = []
+        # create code_info_list with users distribution
         for i, dist in enumerate(users_dist):
             for j in range(dist):
-                code_infos.append(CodeInfo(users[i]))
-        self.assertEqual(len(code_infos), sum(users_dist))
+                code_info_list.append(CodeInfo(users[i]))
+        self.assertEqual(len(code_info_list), sum(users_dist))
 
         vertex = Vertex()
-        for code_info in code_infos:
+        for code_info in code_info_list:
             vertex.add_code_info(code_info)
 
-        # in result set wiil be only two users form three because the second one has 0 code_infos
+        # in result set wiil be only two users form three because the second one has 0 code_info
         self.assertEqual(vertex.get_unique_users(), {users[0], users[2]})
 
