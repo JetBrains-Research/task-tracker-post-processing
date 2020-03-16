@@ -20,6 +20,10 @@ def get_ast(source: str) -> ast.AST:
         log.error(e)
 
 
+def are_asts_equal(ast_1, ast_2) -> bool:
+    return compareASTs(ast_1, ast_2) == 0
+
+
 # Get code without extra spaces, comments and others (to call printFunction from Kelly Rivers code)
 def get_cleaned_code(source: str) -> str:
     return printFunction(get_ast(source))

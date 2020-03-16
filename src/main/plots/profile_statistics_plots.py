@@ -6,9 +6,9 @@ import plotly.express as px
 
 
 from src.main.util import consts
-from src.main.plots import consts as plot_consts
-from src.main.plots.plotly_util import save_plot
-from src.main.plots.plots_common import filter_rare_values, get_readable_key
+from src.main.plots.util import consts as plot_consts
+from src.main.plots.util.plotly_util import save_plot
+from src.main.plots.util.plots_common import filter_rare_values, get_readable_key
 from src.main.util.file_util import get_parent_folder, deserialize_data_from_file
 
 

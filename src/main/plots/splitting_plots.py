@@ -6,11 +6,12 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 from src.main.util import consts
-from src.main.plots import consts as plot_consts
+from src.main.plots.util import consts as plot_consts
 from src.main.splitting.splitting import find_splits
-from src.main.plots.plots_common import get_short_name
+from src.main.plots.util.plots_common import get_short_name
+from src.main.util.file_util import get_name_from_path
 from src.main.util.strings_util import convert_camel_case_to_snake_case
-from src.main.plots.pyplot_util import CHOSEN_TASK_COL, TIMESTAMP_COL, TASK_STATUS_COL, FRAGMENT_COL, \
+from src.main.plots.util.pyplot_util import CHOSEN_TASK_COL, TIMESTAMP_COL, TASK_STATUS_COL, FRAGMENT_COL, \
     add_fragments_length_plot, save_and_show_if_needed, add_legend_to_the_right
 
 
@@ -75,17 +76,39 @@ def __create_splitting_plot(ax: plt.axes, data: pd.DataFrame, title: str,
     ax.set_title(title)
 
 
+def __create_comparative_plot(first_df: pd.DataFrame, second_df: pd.DataFrame, first_title: str, second_title: str,
+                              data_path=None, folder_to_save=None, name_prefix='', to_snake_case=True, to_show=False):
+    fig, (ax, second_df_ax) = plt.subplots(2, 1, figsize=(20, 10))
+    __create_splitting_plot(ax, first_df, first_title, to_snake_case=to_snake_case)
+    __create_splitting_plot(second_df_ax, second_df, second_title, to_snake_case=to_snake_case)
+
+    save_and_show_if_needed(folder_to_save, to_show, fig, data_path=data_path, name_prefix=name_prefix)
+
+
 # show plot with changes of code fragments size, colored according to 'chosenTask' field before and after finding splits
 # to_snake_case is needed for correct tasks splits showing
-def create_comparative_splitting_plot(path: str, to_snake_case=True, folder_to_save=None, to_show=False):
-    data = pd.read_csv(path, encoding=consts.ISO_ENCODING)
-    real_splits_data = find_splits(data.copy())
-    fig, (ax, real_splits_ax) = plt.subplots(2, 1, figsize=(20, 10))
+def create_comparative_splitting_plot(data_path: str, to_snake_case=True, folder_to_save=None, to_show=False):
+    original_splits_data = pd.read_csv(data_path, encoding=consts.ISO_ENCODING)
+    original_splits_title = f'{get_short_name(data_path)} with original splits'
 
-    title = f'{get_short_name(path)} with original splits'
-    __create_splitting_plot(ax, data, title, to_snake_case=to_snake_case)
+    real_splits_data = find_splits(original_splits_data.copy())
+    real_splits_title = f'{get_short_name(data_path)} with real splits'
 
-    real_splits_title = f'{get_short_name(path)} with real splits'
-    __create_splitting_plot(real_splits_ax, real_splits_data, real_splits_title, to_snake_case=to_snake_case)
+    __create_comparative_plot(original_splits_data, real_splits_data, original_splits_title, real_splits_title,
+                              data_path, folder_to_save, 'split', to_snake_case, to_show)
 
-    save_and_show_if_needed(folder_to_save, to_show, path, fig, 'split')
+
+def create_comparative_filtering_plot(original_data_path: str, filtered_data_path: str,
+                                      to_snake_case=True, folder_to_save=None, to_show=False):
+    original_data = pd.read_csv(original_data_path, encoding=consts.ISO_ENCODING)
+    original_data_title = f'Original data {get_short_name(original_data_path)}'
+
+    filtered_data_data = pd.read_csv(filtered_data_path, encoding=consts.ISO_ENCODING)
+    filtered_data_title = f'Filtered data {get_short_name(filtered_data_path)}'
+
+    result_name_prefix = 'comparative_filtering_' + get_short_name(get_name_from_path(original_data_path))
+
+    __create_comparative_plot(original_data, filtered_data_data, original_data_title, filtered_data_title,
+                              folder_to_save=folder_to_save, to_snake_case=to_snake_case, to_show=to_show,
+                              name_prefix=result_name_prefix)
+

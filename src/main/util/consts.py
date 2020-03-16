@@ -1,9 +1,12 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import os
+from typing import Any, Callable
 
-from numpy import nan
+from numpy import nan, datetime64, isnat, equal
 from enum import Enum
+
+from pandas import isna
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -58,6 +61,25 @@ class DEFAULT_VALUES(Enum):
     EXPERIENCE = nan
     TASK = nan
     TASK_STATUS = nan
+    DATE = datetime64('NaT')
+    EVENT_TYPE = nan
+    EVENT_DATA = nan
+
+    def is_equal(self, value) -> bool:
+        if isna(self.value):
+            return isna(value)
+        if isnat(self.value):
+            return isnat(value)
+        return equal(self.value, value)
+
+
+class EXPERIENCE(Enum):
+    LESS_THAN_HALF_YEAR = 'LESS_THAN_HALF_YEAR'
+    FROM_HALF_TO_ONE_YEAR = 'FROM_HALF_TO_ONE_YEAR'
+    FROM_ONE_TO_TWO_YEARS = 'FROM_ONE_TO_TWO_YEARS'
+    FROM_TWO_TO_FOUR_YEARS = 'FROM_TWO_TO_FOUR_YEARS'
+    FROM_FOUR_TO_SIX_YEARS = 'FROM_FOUR_TO_SIX_YEARS'
+    MORE_THAN_SIX = 'MORE_THAN_SIX'
 
 
 class TASK(Enum):
@@ -98,6 +120,8 @@ class TEST_RESULT(Enum):
     LANGUAGE_NOT_DEFINED = -2
     # It can be incorrect although, but our checking tools cannot find any errors
     CORRECT_CODE = 0
+    # It means that all tests are passed
+    FULL_SOLUTION = 1
 
 
 class FILE_SYSTEM_ITEM(Enum):
