@@ -1,9 +1,12 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import os
+from typing import Any, Callable
 
-from numpy import nan
+from numpy import nan, datetime64, isnat, equal
 from enum import Enum
+
+from pandas import isna
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -58,6 +61,16 @@ class DEFAULT_VALUES(Enum):
     EXPERIENCE = nan
     TASK = nan
     TASK_STATUS = nan
+    DATE = datetime64('NaT')
+    EVENT_TYPE = nan
+    EVENT_DATA = nan
+
+    def is_equal(self, value) -> bool:
+        if isna(self.value):
+            return isna(value)
+        if isnat(self.value):
+            return isnat(value)
+        return equal(self.value, value)
 
 
 class EXPERIENCE(Enum):

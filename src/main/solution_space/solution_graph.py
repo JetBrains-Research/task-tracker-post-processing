@@ -16,7 +16,7 @@ log = logging.getLogger(LOGGER_NAME)
 
 
 class Vertex:
-    def __init__(self, code: Code = None, vertex_type=solution_space_consts.VERTEX_TYPE.INTERMEDIATE.value):
+    def __init__(self, code: Code = None, vertex_type: solution_space_consts.VERTEX_TYPE = solution_space_consts.VERTEX_TYPE.INTERMEDIATE):
         self._parents = []
         self._children = []
         self._code_info_ist = []
@@ -83,7 +83,7 @@ class GraphIterator(collections.abc.Iterator):
         while vertices_queue:
             vertex = vertices_queue.popleft()
             for child in vertex.children:
-                if child not in visited and child.vertex_type != VERTEX_TYPE.END.value:
+                if child not in visited and child.vertex_type != VERTEX_TYPE.END:
                     vertices_queue.append(child)
                     visited.append(child)
         return visited
@@ -97,8 +97,8 @@ class GraphIterator(collections.abc.Iterator):
 
 class SolutionGraph(collections.abc.Iterable):
     def __init__(self):
-        self._start_vertex = Vertex(vertex_type=solution_space_consts.VERTEX_TYPE.START.value)
-        self._end_vertex = Vertex(vertex_type=solution_space_consts.VERTEX_TYPE.END.value)
+        self._start_vertex = Vertex(vertex_type=solution_space_consts.VERTEX_TYPE.START)
+        self._end_vertex = Vertex(vertex_type=solution_space_consts.VERTEX_TYPE.END)
 
     @property
     def start_vertex(self) -> Vertex:
@@ -111,7 +111,7 @@ class SolutionGraph(collections.abc.Iterable):
     def __iter__(self) -> GraphIterator:
         return GraphIterator(self._start_vertex)
 
-    def get_traversal(self):
+    def get_traversal(self) -> List[Vertex]:
         return self.__iter__().traversal
 
     def create_vertex(self, code: Code, code_info: CodeInfo) -> Vertex:
@@ -122,10 +122,11 @@ class SolutionGraph(collections.abc.Iterable):
             self.connect_to_end_vertex(vertex)
         return vertex
 
-    def find_vertex(self, code: Code):
-        vertices = iter(self)
+    def find_vertex(self, code: Code) -> Optional[Vertex]:
+        vertices = self.get_traversal()
+        vertices.remove(self.start_vertex)
         for vertex in vertices:
-            if vertex.code and are_asts_equal(vertex.code.ast, code.ast):
+            if are_asts_equal(vertex.code.ast, code.ast):
                 log.info(f'Found an existing vertex for code: {str(code)}')
                 return vertex
         return None
@@ -147,7 +148,7 @@ class SolutionGraph(collections.abc.Iterable):
     def connect_to_end_vertex(self, vertex) -> None:
         self._end_vertex.add_parent(vertex)
 
-    def add_code_info_chain(self, code_info_chain: List[Tuple[Code, CodeInfo]]) -> None:
+    def add_code_info_chain(self, code_info_chain: Optional[List[Tuple[Code, CodeInfo]]]) -> None:
         log.info(f'Start adding code-user chain')
         if code_info_chain is None:
             log.error(f'Code info chain should not be None')
