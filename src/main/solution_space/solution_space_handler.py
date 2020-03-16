@@ -34,10 +34,7 @@ def __get_column_unique_value(solutions: pd.DataFrame, column: COLUMN_TYPE, defa
 
 
 def __get_enum_or_default(enum_meta: enum.EnumMeta, value: str, default: DEFAULT_VALUES) -> Union[enum.EnumMeta, DEFAULT_VALUES]:
-    for event in enum_meta:
-        if event.value == value:
-            return event
-    return default
+    return enum_meta._value2member_map_.get(value, default)
 
 
 def __get_ati_data(solutions: pd.DataFrame, index: int) -> AtiItem:
