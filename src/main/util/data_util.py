@@ -36,8 +36,10 @@ def crop_data_and_save(original_data_path: str, column: Union[CODE_TRACKER_COLUM
 
 
 def crop_data_and_create_plots(original_data_path: str, column: Union[CODE_TRACKER_COLUMN, ACTIVITY_TRACKER_COLUMN],
-                               start_value: Any, end_value: Any = None) -> None:
-    cropped_data_result_path = crop_data_and_save(original_data_path, column, start_value, end_value)
+                               start_value: Any, end_value: Any = None, file_name_prefix='crop_',
+                               folder_name_prefix='cropped_data', create_sub_folder=True) -> None:
+    cropped_data_result_path = crop_data_and_save(original_data_path, column, start_value, end_value, file_name_prefix,
+                                                  folder_name_prefix, create_sub_folder)
     create_comparative_filtering_plot(original_data_path, cropped_data_result_path,
                                       folder_to_save=get_parent_folder(cropped_data_result_path))
 
