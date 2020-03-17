@@ -41,8 +41,8 @@ def __get_enum_or_default(enum_meta: enum.EnumMeta, value: str, default: DEFAULT
 
 def __get_ati_data(solutions: pd.DataFrame, index: int) -> AtiItem:
     timestamp = __get_column_value(solutions, index, consts.ACTIVITY_TRACKER_COLUMN.TIMESTAMP_ATI)
-    event_type = __get_column_value(solutions, index, consts.ACTIVITY_TRACKER_COLUMN.EVENT_TYPE)
-    # event_type = __get_enum_or_default(consts.ACTIVITY_TRACKER_EVENTS, str_event_type, DEFAULT_VALUES.EVENT_TYPE)
+    str_event_type = __get_column_value(solutions, index, consts.ACTIVITY_TRACKER_COLUMN.EVENT_TYPE)
+    event_type = __get_enum_or_default(consts.ACTIVITY_TRACKER_EVENTS, str_event_type, DEFAULT_VALUES.EVENT_TYPE)
     event_data = __get_column_value(solutions, index, consts.ACTIVITY_TRACKER_COLUMN.EVENT_DATA)
     return AtiItem(timestamp=timestamp, event_type=event_type, event_data=event_data)
 

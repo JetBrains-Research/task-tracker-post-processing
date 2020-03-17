@@ -27,11 +27,11 @@ def __get_timestamps() -> List[int]:
     return list(range(0, COUNT_SOURCE_1)) + list(range(20, 20 + COUNT_SOURCE_2))
 
 
-def __get_ati_events() -> List[int]:
+def __get_ati_event_types() -> List[str]:
     return [ACTIVITY_TRACKER_EVENTS.ACTION.value] * (COUNT_SOURCE_1 + COUNT_SOURCE_2)
 
 
-def __get_ati_actions() -> List[int]:
+def __get_ati_action_events() -> List[str]:
     return [ACTIVITY_TRACKER_EVENTS.action_events()[0]] * (COUNT_SOURCE_1 + COUNT_SOURCE_2)
 
 
@@ -57,8 +57,8 @@ def create_solutions() -> pd.DataFrame:
     return pd.DataFrame({CODE_TRACKER_COLUMN.TIMESTAMP.value: __get_timestamps(),
                          CODE_TRACKER_COLUMN.FRAGMENT.value: __get_fragments(),
                          ACTIVITY_TRACKER_COLUMN.TIMESTAMP_ATI.value: __get_timestamps(),
-                         ACTIVITY_TRACKER_COLUMN.EVENT_DATA.value: __get_ati_events(),
-                         ACTIVITY_TRACKER_COLUMN.EVENT_TYPE.value: __get_ati_actions()})
+                         ACTIVITY_TRACKER_COLUMN.EVENT_DATA.value: __get_ati_action_events(),
+                         ACTIVITY_TRACKER_COLUMN.EVENT_TYPE.value: __get_ati_event_types()})
 
 
 def get_expected_out(solutions: pd.DataFrame, start_index: int, end_index: int) -> Tuple[int, List[AtiItem], ast.AST]:

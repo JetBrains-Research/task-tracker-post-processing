@@ -10,9 +10,8 @@ from src.main.util.consts import EXPERIENCE, DEFAULT_VALUES, ACTIVITY_TRACKER_EV
 
 
 class AtiItem:
-    # Todo: Add event_type to EVENT_EVENTS??
     def __init__(self, timestamp: datetime = DEFAULT_VALUES.DATE.value,
-                 event_type: Union[str, DEFAULT_VALUES] = DEFAULT_VALUES.EVENT_TYPE,
+                 event_type: Union[ACTIVITY_TRACKER_EVENTS, DEFAULT_VALUES] = DEFAULT_VALUES.EVENT_TYPE,
                  event_data: str = DEFAULT_VALUES.EVENT_DATA.value):
         self._timestamp = timestamp
         self._event_type = event_type
@@ -23,7 +22,7 @@ class AtiItem:
         return self._timestamp
 
     @property
-    def event_type(self) -> Union[str, DEFAULT_VALUES]:
+    def event_type(self) -> Union[ACTIVITY_TRACKER_EVENTS, DEFAULT_VALUES]:
         return self._event_type
 
     @property
