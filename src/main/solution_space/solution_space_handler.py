@@ -139,7 +139,7 @@ def __convert_to_datetime(df: pd.DataFrame) -> None:
 
 
 def __add_user_solutions(file: str, task: str) -> List[Tuple[Code, CodeInfo]]:
-    log.info(f'Start solution space creating file {file} for task {task}')
+    log.info(f'Start solution space creating for file {file} for task {task}')
     data = pd.read_csv(file, encoding=consts.ISO_ENCODING)
     __convert_to_datetime(data)
     solutions = __filter_incorrect_fragments(data)
@@ -153,7 +153,7 @@ def __add_user_solutions(file: str, task: str) -> List[Tuple[Code, CodeInfo]]:
         code = __get_code(solutions, old_index, task_index, tree)
         code_info = __get_code_info(solutions, user, old_index, ati_actions)
         code_info_chain.append((code, code_info))
-    log.info(f'Finish solution space creating file {file} for task {task}')
+    log.info(f'Finish solution space creating for file {file} for task {task}')
     return code_info_chain
 
 

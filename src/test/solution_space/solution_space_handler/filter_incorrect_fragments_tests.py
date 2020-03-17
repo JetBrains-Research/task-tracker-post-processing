@@ -46,11 +46,8 @@ ERROR_DATA = {
 
 
 def run_test(before_filtering: pd.DataFrame, expected_after_filtering: pd.DataFrame) -> bool:
-    try:
-        actual_after_filtering = __filter_incorrect_fragments(before_filtering)
-        actual_after_filtering.index = [*range(actual_after_filtering.shape[0])]
-    except ValueError:
-        return False
+    actual_after_filtering = __filter_incorrect_fragments(before_filtering)
+    actual_after_filtering.index = [*range(actual_after_filtering.shape[0])]
     return actual_after_filtering.equals(expected_after_filtering)
 
 
@@ -81,10 +78,10 @@ class TestFilterIncorrectFragments(unittest.TestCase):
     def test_incorrect_data(self) -> None:
         before_filter_df = pd.DataFrame(INCORRECT_DATA)
         expected_after_filter_df = pd.DataFrame(INCORRECT_DATA)
-        self.assertFalse(run_test(before_filter_df, expected_after_filter_df))
+        self.assertRaises(ValueError, run_test, before_filter_df, expected_after_filter_df)
 
     def test_error_data(self) -> None:
         before_filter_df = pd.DataFrame(ERROR_DATA)
         expected_after_filter_df = pd.DataFrame(ERROR_DATA)
-        self.assertFalse(run_test(before_filter_df, expected_after_filter_df))
+        self.assertRaises(ValueError, run_test, before_filter_df, expected_after_filter_df)
 
