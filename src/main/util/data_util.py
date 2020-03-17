@@ -22,8 +22,8 @@ def crop_data_by_timestamp(data: pd.DataFrame, column: Union[CODE_TRACKER_COLUMN
 
 
 def crop_data_and_save(original_data_path: str, column: Union[CODE_TRACKER_COLUMN, ACTIVITY_TRACKER_COLUMN],
-                       start_value: Any, end_value: Any = None, file_name_prefix='crop_',
-                       folder_name_prefix='cropped_data', create_sub_folder=True) -> str:
+                       start_value: Any, end_value: Any = None, file_name_prefix: str = 'crop_',
+                       folder_name_prefix: str = 'cropped_data', create_sub_folder: bool = True) -> str:
     original_data = pd.read_csv(original_data_path, encoding=ISO_ENCODING)
     cropped_data = crop_data_by_timestamp(original_data, column, start_value, end_value)
     cropped_data_name = file_name_prefix + get_name_from_path(original_data_path)
@@ -36,8 +36,8 @@ def crop_data_and_save(original_data_path: str, column: Union[CODE_TRACKER_COLUM
 
 
 def crop_data_and_create_plots(original_data_path: str, column: Union[CODE_TRACKER_COLUMN, ACTIVITY_TRACKER_COLUMN],
-                               start_value: Any, end_value: Any = None, file_name_prefix='crop_',
-                               folder_name_prefix='cropped_data', create_sub_folder=True) -> None:
+                               start_value: Any, end_value: Any = None, file_name_prefix: str = 'crop_',
+                               folder_name_prefix: str = 'cropped_data', create_sub_folder: bool = True) -> None:
     cropped_data_result_path = crop_data_and_save(original_data_path, column, start_value, end_value, file_name_prefix,
                                                   folder_name_prefix, create_sub_folder)
     create_comparative_filtering_plot(original_data_path, cropped_data_result_path,

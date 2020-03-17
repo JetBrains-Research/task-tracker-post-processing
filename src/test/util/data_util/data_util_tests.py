@@ -38,7 +38,7 @@ def get_data_with_deleted_by_start() -> Tuple[pd.DataFrame, int, None]:
     }), start, None
 
 
-def are_equal(df_1: pd.DataFrame, df_2: pd.DataFrame):
+def are_equal(df_1: pd.DataFrame, df_2: pd.DataFrame) -> bool:
     df_1.index = [*range(df_1.shape[0])]
     df_2.index = [*range(df_2.shape[0])]
     return df_1.equals(df_2)
