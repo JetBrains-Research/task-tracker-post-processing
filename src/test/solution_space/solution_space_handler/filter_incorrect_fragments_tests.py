@@ -52,7 +52,7 @@ def clear_df(df: pd.DataFrame) -> pd.DataFrame:
     return df.iloc[0:0]
 
 
-class TestTimeMethods(unittest.TestCase):
+class TestFilterIncorrectFragments(unittest.TestCase):
 
     def setUp(self) -> None:
         logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
@@ -75,5 +75,5 @@ class TestTimeMethods(unittest.TestCase):
     def test_incorrect_data(self) -> None:
         before_filter_df = pd.DataFrame(INCORRECT_DATA)
         expected_after_filter_df = pd.DataFrame(INCORRECT_DATA)
-        self.assertEqual(run_test(before_filter_df, expected_after_filter_df), False)
+        self.assertFalse(run_test(before_filter_df, expected_after_filter_df))
 

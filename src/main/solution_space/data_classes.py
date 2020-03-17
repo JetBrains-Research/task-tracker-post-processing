@@ -1,7 +1,6 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import ast
-import numpy as np
 from datetime import datetime
 
 from typing import List, Union
@@ -11,8 +10,9 @@ from src.main.util.consts import EXPERIENCE, DEFAULT_VALUES, ACTIVITY_TRACKER_EV
 
 
 class AtiItem:
+    # Todo: Add event_type to EVENT_EVENTS??
     def __init__(self, timestamp: datetime = DEFAULT_VALUES.DATE.value,
-                 event_type: Union[ACTIVITY_TRACKER_EVENTS, DEFAULT_VALUES] = DEFAULT_VALUES.EVENT_TYPE,
+                 event_type: Union[str, DEFAULT_VALUES] = DEFAULT_VALUES.EVENT_TYPE,
                  event_data: str = DEFAULT_VALUES.EVENT_DATA.value):
         self._timestamp = timestamp
         self._event_type = event_type
@@ -23,7 +23,7 @@ class AtiItem:
         return self._timestamp
 
     @property
-    def event_type(self) -> Union[ACTIVITY_TRACKER_EVENTS, DEFAULT_VALUES]:
+    def event_type(self) -> Union[str, DEFAULT_VALUES]:
         return self._event_type
 
     @property
@@ -31,11 +31,19 @@ class AtiItem:
         return self._event_data
 
     def is_empty(self) -> bool:
-        return DEFAULT_VALUES.DATE.is_equal(self._timestamp) and DEFAULT_VALUES.EVENT_DATA.is_equal(self._event_type.value)\
+        return DEFAULT_VALUES.DATE.is_equal(self._timestamp) and DEFAULT_VALUES.EVENT_DATA.is_equal(
+            self._event_type.value) \
                and DEFAULT_VALUES.EVENT_DATA.is_equal(self._event_data)
 
     def __str__(self) -> str:
-        return f'Timestamp: {self._timestamp}, event_type: {self._event_type.value}, event_data: {self._event_data}'
+        return f'Timestamp: {self._timestamp}, event_type: {self._event_type}, event_data: {self._event_data}'
+
+    def __eq__(self, o: object) -> bool:
+        if not isinstance(o, AtiItem):
+            return False
+        return self._timestamp == o._timestamp and \
+               self._event_type == o._event_type and \
+               self._event_data == o._event_data
 
 
 class Profile:
@@ -51,6 +59,9 @@ class Profile:
     @property
     def experience(self) -> Union[EXPERIENCE, DEFAULT_VALUES]:
         return self._experience
+
+    def __str__(self) -> str:
+        return f'Experience: {self._experience}, age: {self._age}'
 
 
 class User:
@@ -68,6 +79,9 @@ class User:
     @property
     def id(self) -> int:
         return self._id
+
+    def __str__(self) -> str:
+        return f'Id: {self._id}, profile: {self._profile}'
 
 
 class CodeInfo:
@@ -94,6 +108,10 @@ class CodeInfo:
     def date(self) -> timestamp:
         return self._date
 
+    def __str__(self) -> str:
+        return f'User: {self._user}, timestamp: {self._timestamp}, date: {self._date}. Length of ' \
+               f'ati actions is {len(self._ati_actions)}'
+
 
 class Code:
     def __init__(self, ast: ast.AST = None, rate: float = 0.0):
@@ -113,4 +131,3 @@ class Code:
 
     def is_full(self) -> bool:
         return self._rate == consts.TEST_RESULT.FULL_SOLUTION.value
-
