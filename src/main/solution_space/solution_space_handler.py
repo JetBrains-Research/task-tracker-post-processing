@@ -100,8 +100,13 @@ def __is_compiled(test_result: int) -> bool:
 def __is_correct_fragment(tests_results: str) -> bool:
     tasks = consts.TASK.tasks()
     tests_results = unpack_tests_results(tests_results, tasks)
-    compiled_task = [t for i, t in enumerate(tasks) if __is_compiled(tests_results[i])]
-    return len(compiled_task) > 0
+    compiled_task_count = len([t for i, t in enumerate(tasks) if __is_compiled(tests_results[i])])
+    # It is an error, if a part of the tasks is incorrect, but another part is correct.
+    # For example: [-1,1,0.5,0.5,-1,-1]
+    if 0 < compiled_task_count < len(tasks):
+        log.error(f'A part of the tasks is incorrect, but another part is correct: {tests_results}')
+        raise ValueError(f'A part of the tasks is incorrect, but another part is correct: {tests_results}')
+    return compiled_task_count == len(tasks)
 
 
 def __filter_incorrect_fragments(solutions: pd.DataFrame) -> pd.DataFrame:

@@ -10,8 +10,9 @@ from src.main.util.consts import LOGGER_NAME, LOGGER_TEST_FILE, LOGGER_FORMAT, T
 log = logging.getLogger(LOGGER_NAME)
 
 INCORRECT = '[-1,-1,-1,-1,-1,-1]'
-CORRECT = '[-1,1,0.5,0.5,-1,-1]'
+CORRECT = '[0,1,0.5,0.5,0,0]'
 LESS_TASKS = '[-1,-1]'
+ERROR = '[-1,1,0.5,0.5,-1,-1]'
 
 ALL_CORRECT = {
     'Data': [1, 2, 3],
@@ -36,6 +37,11 @@ MIXED_FILTERED = {
 INCORRECT_DATA = {
     'Data': [1, 2, 3],
     CODE_TRACKER_COLUMN.TESTS_RESULTS.value: [LESS_TASKS, LESS_TASKS, LESS_TASKS]
+}
+
+ERROR_DATA = {
+    'Data': [1, 2, 3],
+    CODE_TRACKER_COLUMN.TESTS_RESULTS.value: [ERROR, ERROR, ERROR]
 }
 
 
@@ -75,5 +81,10 @@ class TestFilterIncorrectFragments(unittest.TestCase):
     def test_incorrect_data(self) -> None:
         before_filter_df = pd.DataFrame(INCORRECT_DATA)
         expected_after_filter_df = pd.DataFrame(INCORRECT_DATA)
+        self.assertFalse(run_test(before_filter_df, expected_after_filter_df))
+
+    def test_error_data(self) -> None:
+        before_filter_df = pd.DataFrame(ERROR_DATA)
+        expected_after_filter_df = pd.DataFrame(ERROR_DATA)
         self.assertFalse(run_test(before_filter_df, expected_after_filter_df))
 
