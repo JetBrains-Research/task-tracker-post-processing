@@ -26,7 +26,7 @@ def __read_statistics_from_file(path: str, default_value: consts.DEFAULT_VALUES)
 def __get_statistics_df_from_file(path: str, column: plot_consts.STATISTICS_KEY, default_value: consts.DEFAULT_VALUES,
                                   to_union_rare=False):
     statistics_dict = __read_statistics_from_file(path, default_value)
-    statistics_df = pd.DataFrame(statistics_dict.items(), columns=[column, plot_consts.STATISTIC_FREQ])
+    statistics_df = pd.DataFrame(statistics_dict.items(), columns=[column, plot_consts.STATISTICS_FREQ])
     # If we want to union rare values
     if to_union_rare:
         statistics_df.loc[filter_rare_values(statistics_df), column] = plot_consts.STATISTICS_SHOWING_KEY.OTHERS.value
@@ -35,7 +35,7 @@ def __get_statistics_df_from_file(path: str, column: plot_consts.STATISTICS_KEY,
 
 def __get_labels_for_plots(column: plot_consts.STATISTICS_KEY):
     return {
-        plot_consts.STATISTIC_FREQ: plot_consts.STATISTICS_SHOWING_KEY.FREQ.value,
+        plot_consts.STATISTICS_FREQ: plot_consts.STATISTICS_SHOWING_KEY.FREQ.value,
         column: get_readable_key(str(column))
     }
 
@@ -62,9 +62,9 @@ def __get_statistics_info_for_plots(column: plot_consts.STATISTICS_KEY):
 def __plot_pie_chart(statistics_df: pd.DataFrame, title: str, path: str, column: plot_consts.STATISTICS_KEY,
                      labels: dict, plot_name='distribution_plot',
                      format=consts.EXTENSION.HTML.value, auto_open=False):
-    fig = px.pie(statistics_df, values=plot_consts.STATISTIC_FREQ, names=column, title=title,
+    fig = px.pie(statistics_df, values=plot_consts.STATISTICS_FREQ, names=column, title=title,
                  color_discrete_sequence=plot_consts.STATISTICS_COLORS.PIE_CHART.value,
-                 hover_data=[plot_consts.STATISTIC_FREQ],
+                 hover_data=[plot_consts.STATISTICS_FREQ],
                  labels=labels)
     fig.update_traces(textposition='inside', textinfo='percent')
     save_plot(fig, path, plot_consts.PLOT_TYPES.PIE.value, plot_name, format, auto_open)
@@ -76,8 +76,8 @@ def __plot_bar_chart(statistics_df: pd.DataFrame, column: plot_consts.STATISTICS
                      auto_open=False, x_category_order=plot_consts.PLOTTY_CATEGORY_ORDER.TOTAL_ASCENDING.value):
     # x_category_order='total ascending' means: in order of increasing values in Y
     # x_category_order='category ascending' means: in order of increasing values in X
-    fig = px.bar(statistics_df, x=column, y=plot_consts.STATISTIC_FREQ, title=title, labels=labels,
-                 hover_data=[column, plot_consts.STATISTIC_FREQ])
+    fig = px.bar(statistics_df, x=column, y=plot_consts.STATISTICS_FREQ, title=title, labels=labels,
+                 hover_data=[column, plot_consts.STATISTICS_FREQ])
     fig.update_layout(
         yaxis=dict(
             title_text=plot_consts.STATISTICS_SHOWING_KEY.FREQ.value
