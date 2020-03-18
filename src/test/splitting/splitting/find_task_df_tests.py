@@ -21,7 +21,7 @@ class TestFindingTaskDfs(unittest.TestCase):
 
     def testFindingTaskDfs(self):
         df = pd.read_csv(DF_FILE, encoding=consts.ISO_ENCODING)
-        for task in consts.TASK.tasks():
+        for task in consts.TASK:
             actual_task_dfs = list(map(lambda task_df: task_df.sort_index(inplace=True), find_task_dfs(df, task)))
             expected_tasks_dfs = list(map(lambda task_df: task_df.sort_index(inplace=True), get_expected_task_dfs(task)))
             self.assertEqual(actual_task_dfs, expected_tasks_dfs)

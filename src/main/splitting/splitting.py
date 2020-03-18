@@ -41,31 +41,31 @@ def get_solved_task(tests_results: str) -> str:
 
 
 def find_splits(ct_df: pd.DataFrame) -> pd.DataFrame:
-    # fill chosen task according to solved task
+    # Fill chosen task according to solved task
     ct_df[CHOSEN_TASK] = ct_df.apply(lambda row: get_solved_task(row[TESTS_RESULTS]), axis=1)
 
-    # change task status according to chosen task
+    # Change task status according to chosen task
     ct_df.loc[ct_df[CHOSEN_TASK].isnull(), TASK_STATUS] = consts.DEFAULT_VALUES.TASK_STATUS.value
     ct_df.loc[ct_df[CHOSEN_TASK].notnull(), TASK_STATUS] = consts.TASK_STATUS.SOLVED.value
 
-    # backward fill chosen task
+    # Backward fill chosen task
     ct_df[CHOSEN_TASK] = ct_df[CHOSEN_TASK].bfill()
     return ct_df
 
 
-# to find start index for each group of rows with the same task
+# To find start index for each group of rows with the same task
 def find_task_start_indices(df: pd.DataFrame, task: consts.TASK) -> List[int]:
-    # an index is the start index for some task, if CHOSEN_TASK at this index equals task, but at index-1 -- doesn't,
-    # so we should compare it with shifted dataframe
+    # An index is the start index for some task, if CHOSEN_TASK at this index equals task, but at index-1 -- doesn't,
+    # So we should compare it with shifted dataframe
     return df.index[(df[CHOSEN_TASK] == task.value) & (df[CHOSEN_TASK].shift(1) != task.value)].tolist()
 
 
 def find_task_dfs(df: pd.DataFrame, task: consts.TASK) -> List[pd.DataFrame]:
     start_indices = find_task_start_indices(df, task)
     split_indices = zip(start_indices, start_indices[1:] + [df.shape[0]])
-    # split df into several dfs with only one group of rows with the same task
+    # Split df into several dfs with only one group of rows with the same task
     split_dfs = [df[start_index:end_index] for start_index, end_index in split_indices]
-    # in each df find this group of rows with the same task
+    # In each df find this group of rows with the same task
     return [split_df[split_df[CHOSEN_TASK] == task.value] for split_df in split_dfs]
 
 
@@ -78,10 +78,10 @@ def split_tasks_into_separate_files(path: str, result_name_suffix='tasks_2') -> 
         ct_df = pd.read_csv(file, encoding=consts.ISO_ENCODING)
         language = get_ct_language(ct_df)
         split_df = find_splits(ct_df)
-        for task in consts.TASK.tasks():
+        for task in consts.TASK:
             task_dfs = find_task_dfs(split_df, task)
             for i, task_df in enumerate(task_dfs):
                 if not task_df.empty:
-                    # change name to get something like pies/ati_207_test_5894859_i.csv
+                    # Change name to get something like pies/ati_207_test_5894859_i.csv
                     filename = task.value + '/' + get_parent_folder_name(file) + '_' + get_name_from_path(file, False) + f'_{i}' + get_extension_from_file(file)
                     write_based_on_language(result_folder, filename, task_df, language)

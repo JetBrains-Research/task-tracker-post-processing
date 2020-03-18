@@ -51,7 +51,7 @@ def add_slash(path: str):
 # You can find more examples in the tests
 def get_name_from_path(path: str, with_extension=True):
     head, tail = os.path.split(path)
-    # tail can be empty if '/' is at the end of the path
+    # Tail can be empty if '/' is at the end of the path
     file_name = tail or os.path.basename(head)
     if not with_extension:
         file_name = os.path.splitext(file_name)[0]
@@ -60,8 +60,8 @@ def get_name_from_path(path: str, with_extension=True):
     return file_name
 
 
-# not empty extensions are returned with a dot, for example, '.txt'
-# if file has no extensions, an empty one ('') is returned
+# Not empty extensions are returned with a dot, for example, '.txt'
+# If file has no extensions, an empty one ('') is returned
 def get_extension_from_file(file: str):
     return os.path.splitext(file)[1]
 
@@ -72,7 +72,7 @@ def add_dot_to_not_empty_extension(extension: str):
     return extension
 
 
-# if need_to_rename, it works only for real files because os.rename is called
+# If need_to_rename, it works only for real files because os.rename is called
 def change_extension_to(file: str, new_extension: str, need_to_rename=False):
     new_extension = add_dot_to_not_empty_extension(new_extension)
     base, _ = os.path.splitext(file)
@@ -107,7 +107,7 @@ def get_content_from_file(file: str):
         return f.read().rstrip('\n')
 
 
-# file should contain the full path and its extension
+# File should contain the full path and its extension
 def create_file(content: str, file: str):
     create_directory(os.path.dirname(file))
     with open(file, 'w') as f:
@@ -134,7 +134,7 @@ def remove_directory(directory: str):
         shutil.rmtree(directory, ignore_errors=True)
 
 
-# to get something like 'ati_239/Main_2323434_343434.csv'
+# To get something like 'ati_239/Main_2323434_343434.csv'
 def get_file_and_parent_folder_names(file: str):
     return os.path.join(get_parent_folder_name(file), get_name_from_path(file))
 
@@ -155,7 +155,7 @@ def csv_file_condition(name: str):
     return get_extension_from_file(name) == EXTENSION.CSV.value
 
 
-# to get all codetracker files
+# To get all codetracker files
 def ct_file_condition(name: str):
     return ACTIVITY_TRACKER_FILE_NAME not in name and csv_file_condition(name)
 
@@ -164,12 +164,12 @@ def png_file_condition(name: str):
     return get_extension_from_file(name) == EXTENSION.PNG.value
 
 
-# to get all subdirs that contain ct and ati data
+# To get all subdirs that contain ct and ati data
 def data_subdirs_condition(name: str):
     return ATI_DATA_FOLDER in name or DI_DATA_FOLDER in name
 
 
-# to get path to the result folder that is near to the original folder
+# To get path to the result folder that is near to the original folder
 # and has the same name but with a suffix added at the end
 def get_result_folder(folder: str, result_name_suffix: str):
     result_folder_name = get_name_from_path(folder, False) + '_' + result_name_suffix
@@ -179,7 +179,7 @@ def get_result_folder(folder: str, result_name_suffix: str):
 def create_folder_and_write_df_to_file(folder_to_write: str, file_to_write: str, df: pd.DataFrame):
     create_directory(folder_to_write)
 
-    # get error with this encoding=ENCODING on ati_225/153e12:
+    # Get error with this encoding=ENCODING on ati_225/153e12:
     # "UnicodeEncodeError: 'latin-1' codec can't encode character '\u0435' in position 36: ordinal not in range(256)"
     # So change it then to 'utf-8'
     try:
@@ -188,8 +188,8 @@ def create_folder_and_write_df_to_file(folder_to_write: str, file_to_write: str,
         df.to_csv(file_to_write, encoding=UTF_ENCODING, index=False)
 
 
-# to write a dataframe to the result_folder remaining the same file structure as it was before
-# for example, for path home/codetracker/data and file home/codetracker/data/folder1/folder2/ati_566/file.csv
+# To write a dataframe to the result_folder remaining the same file structure as it was before
+# For example, for path home/codetracker/data and file home/codetracker/data/folder1/folder2/ati_566/file.csv
 # the dataframe will be written to result_folder/folder1/folder2/ati_566/file.csv
 def write_result(result_folder: str, path: str, file: str, df: pd.DataFrame):
     # check if file is in a path, otherwise we cannot reproduce its structure inside of result_folder
@@ -201,8 +201,8 @@ def write_result(result_folder: str, path: str, file: str, df: pd.DataFrame):
     create_folder_and_write_df_to_file(folder_to_write, file_to_write, df)
 
 
-# to write a dataframe to the result_folder based on the language and remaining only the parent folder structure
-# for example, for file path/folder1/folder2/ati_566/file.csv and python language the dataframe will be
+# To write a dataframe to the result_folder based on the language and remaining only the parent folder structure
+# For example, for file path/folder1/folder2/ati_566/file.csv and python language the dataframe will be
 # written to result_folder/python/ati_566/file.csv
 def write_based_on_language(result_folder: str, file: str, df: pd.DataFrame, language=LANGUAGE.PYTHON.value):
     folder_to_write = os.path.join(result_folder, language, get_parent_folder_name(file))

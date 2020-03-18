@@ -45,7 +45,7 @@ class TestStartIndexFinding(unittest.TestCase):
         actual_indices = find_task_start_indices(df, consts.TASK.PIES)
         self.assertEqual(expected_indices, actual_indices)
 
-    # finding start indices in:
+    # Finding start indices in:
     #
     #   chosenTask
     # 0     pies
@@ -64,7 +64,7 @@ class TestStartIndexFinding(unittest.TestCase):
     def test_finding_start_indices_everywhere(self) -> None:
         self.find_and_check_start_indices(get_df(), [START_INDEX_1, START_INDEX_2, START_INDEX_3])
 
-    # finding start indices in:
+    # Finding start indices in:
     #
     #   chosenTask
     # 2     is_zero
@@ -79,7 +79,7 @@ class TestStartIndexFinding(unittest.TestCase):
     def test_finding_start_indices_in_the_middle(self) -> None:
         self.find_and_check_start_indices(crop_last_pies(crop_first_pies(get_df())), [START_INDEX_2])
 
-    # finding start indices in:
+    # Finding start indices in:
     #
     #   chosenTask
     # 0     pies
@@ -96,7 +96,7 @@ class TestStartIndexFinding(unittest.TestCase):
     def test_finding_start_indices_at_the_beginning(self) -> None:
         self.find_and_check_start_indices(crop_last_pies(get_df()), [START_INDEX_1, START_INDEX_2])
 
-    # finding start indices in:
+    # Finding start indices in:
     #
     #   chosenTask
     # 2     is_zero
@@ -113,7 +113,7 @@ class TestStartIndexFinding(unittest.TestCase):
     def test_finding_start_indices_at_the_end(self) -> None:
         self.find_and_check_start_indices(crop_first_pies(get_df()), [START_INDEX_2, START_INDEX_3])
 
-    # finding start indices in:
+    # Finding start indices in:
     #
     #   chosenTask
     # 0     pies
@@ -121,7 +121,7 @@ class TestStartIndexFinding(unittest.TestCase):
     def test_finding_start_indices_in_full_df(self):
         self.find_and_check_start_indices(crop_last_pies(get_df(), -PIES_COUNT_1), [START_INDEX_1])
 
-    # finding start indices in:
+    # Finding start indices in:
     #
     #   chosenTask
     # 7     is_zero

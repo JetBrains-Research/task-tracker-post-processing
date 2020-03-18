@@ -11,12 +11,12 @@ from src.main.util.file_util import get_all_file_system_items, get_file_and_pare
 log = logging.getLogger(LOGGER_NAME)
 
 
-# to find all '.csv' files in root with the same names as in result folder and replace them
+# To find all '.csv' files in root with the same names as in result folder and replace them
 def replace_ct_files(path: str, tested_path: str):
     files = get_all_file_system_items(path, csv_file_condition, FILE_SYSTEM_ITEM.FILE.value)
     tested_files = get_all_file_system_items(tested_path, csv_file_condition, FILE_SYSTEM_ITEM.FILE.value)
 
-    # just for checking
+    # Just for checking
     folder_and_file_names = set(map(lambda f: get_file_and_parent_folder_names(f), files))
     tested_folder_and_file_names = set(map(lambda f: get_file_and_parent_folder_names(f), tested_files))
     log.info(f'Symmetric difference between tested and not files is {folder_and_file_names.symmetric_difference(tested_folder_and_file_names)}')

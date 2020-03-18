@@ -100,7 +100,7 @@ def get_profile_statistics(path: str):
     __write_results(result_folder, statistics)
 
 
-# run after 'split_tasks_into_separate_files' to return simple statistics dictionary
+# Run after 'split_tasks_into_separate_files' to return simple statistics dictionary
 def get_tasks_statistics(path: str):
     statistics = {}
     languages = [l.value for l in consts.LANGUAGE]

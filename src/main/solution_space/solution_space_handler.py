@@ -75,7 +75,7 @@ def __find_same_fragments(solutions: pd.DataFrame, start_index: int) -> Tuple[in
 
 
 def __get_profile(solutions: pd.DataFrame) -> Profile:
-    # data should be preprocessed so in 'age' and 'experience' columns should be only 1 unique value for each column
+    # Data should be preprocessed so in 'age' and 'experience' columns should be only 1 unique value for each column
     age = __get_column_unique_value(solutions, consts.CODE_TRACKER_COLUMN.AGE, consts.DEFAULT_VALUES.AGE.value)
     str_experience = __get_column_unique_value(solutions, consts.CODE_TRACKER_COLUMN.EXPERIENCE,
                                                consts.DEFAULT_VALUES.EXPERIENCE.value)

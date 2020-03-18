@@ -92,12 +92,7 @@ class TASK(Enum):
 
     @classmethod
     def tasks_values(cls):
-        return [cls.PIES.value, cls.MAX_3.value, cls.ZERO.value,
-                cls.ELECTION.value, cls.BRACKETS.value, cls.MAX_DIGIT.value]
-
-    @classmethod
-    def tasks(cls):
-        return [cls.PIES, cls.MAX_3, cls.ZERO, cls.ELECTION, cls.BRACKETS, cls.MAX_DIGIT]
+        return [member.value for _, member in TASK.__members__.items()]
 
 
 class TASK_STATUS(Enum):

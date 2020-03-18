@@ -19,8 +19,8 @@ from src.main.plots.util.pyplot_util import CHOSEN_TASK_COL, TIMESTAMP_COL, TASK
 log = logging.getLogger(consts.LOGGER_NAME)
 
 
-# get x for original task splits according 'chosenTask' column
-# make sure all tasks are written in snake case
+# Get x for original task splits according 'chosenTask' column
+# Make sure all tasks are written in snake case
 def __create_task_split_x_dict(data: pd.DataFrame) -> Dict[consts.TASK, pd.Series]:
     task_split_x_dict = {}
     for task in consts.TASK:
@@ -28,8 +28,8 @@ def __create_task_split_x_dict(data: pd.DataFrame) -> Dict[consts.TASK, pd.Serie
     return task_split_x_dict
 
 
-# get x for original task status according 'taskStatus' column
-# make sure all tasks are written in snake case
+# Get x for original task status according 'taskStatus' column
+# Make sure all tasks are written in snake case
 def __create_status_x_dict(data: pd.DataFrame) -> Dict[consts.TASK_STATUS, pd.Series]:
     status_x_dict = {}
     for status in consts.TASK_STATUS:
@@ -63,13 +63,13 @@ def __create_splitting_plot(ax: plt.axes, data: pd.DataFrame, title: str, task_s
     if to_snake_case:
         data[CHOSEN_TASK_COL] = data[CHOSEN_TASK_COL].fillna('').apply(lambda t: convert_camel_case_to_snake_case(t))
 
-    # add colored background to the plot
+    # Add colored background to the plot
     __add_tasks_colored_background(ax, data, task_split_x_dict)
 
-    # add fragments length plot
+    # Add fragments length plot
     add_fragments_length_plot(ax, data)
 
-    # add task status to the plot
+    # Add task status to the plot
     __add_task_status_to_plot(ax, data, status_x_dict)
 
     add_legend_to_the_right(ax)
@@ -88,7 +88,7 @@ def __create_comparative_plot(first_df: pd.DataFrame, second_df: pd.DataFrame, f
     save_and_show_if_needed(folder_to_save, to_show, fig, data_path=data_path, name_prefix=name_prefix)
 
 
-# show plot with changes of code fragments size, colored according to 'chosenTask' field before and after finding splits
+# Show plot with changes of code fragments size, colored according to 'chosenTask' field before and after finding splits
 # to_snake_case is needed for correct tasks splits showing
 def create_comparative_splitting_plot(data_path: str, to_snake_case: bool = True, folder_to_save: str = None,
                                       to_show: bool = False) -> None:
