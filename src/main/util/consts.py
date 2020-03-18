@@ -91,9 +91,13 @@ class TASK(Enum):
     MAX_DIGIT = 'max_digit'
 
     @classmethod
-    def tasks(cls):
+    def tasks_values(cls):
         return [cls.PIES.value, cls.MAX_3.value, cls.ZERO.value,
                 cls.ELECTION.value, cls.BRACKETS.value, cls.MAX_DIGIT.value]
+
+    @classmethod
+    def tasks(cls):
+        return [cls.PIES, cls.MAX_3, cls.ZERO, cls.ELECTION, cls.BRACKETS, cls.MAX_DIGIT]
 
 
 class TASK_STATUS(Enum):

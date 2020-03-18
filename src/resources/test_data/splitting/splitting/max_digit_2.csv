@@ -1,0 +1,10 @@
+date,timestamp,fragment,chosenTask
+2019-12-20T14:44:36.808+04:00,811,s = inpu,max_digit
+2019-12-20T14:44:37.059+04:00,821,s = input,max_digit
+2019-12-20T14:44:37.065+04:00,825,s = input(,max_digit
+2019-12-20T14:44:37.578+04:00,826,s = input(),max_digit
+2019-12-20T14:44:37.629+04:00,830,"s = input()",max_digit
+2019-12-20T14:44:37.945+04:00,834,"s = input()",max_digit
+2019-12-20T14:44:38.193+04:00,837,"s = input()m",max_digit
+2019-12-20T14:44:38.276+04:00,853,"s = input()ma",max_digit
+2019-12-20T14:44:38.770+04:00,857,"s = input()max",max_digit
