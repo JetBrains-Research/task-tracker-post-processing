@@ -112,7 +112,7 @@ def get_tasks_statistics(path: str):
             log.error(f'Duplicate language folder for {language}')
             raise ValueError(f'Duplicate language folder for {language}')
         statistics[language] = {}
-        task_folders = get_all_file_system_items(l_f, (lambda f: does_string_contain_any_of_substrings(f, consts.TASK.tasks())),
+        task_folders = get_all_file_system_items(l_f, (lambda f: does_string_contain_any_of_substrings(f, consts.TASK.tasks_values())),
                                                  consts.FILE_SYSTEM_ITEM.SUBDIR.value)
         for t_f in task_folders:
             files = get_all_file_system_items(t_f, (lambda f: True), consts.FILE_SYSTEM_ITEM.FILE.value)

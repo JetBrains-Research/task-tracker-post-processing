@@ -1,0 +1,5 @@
+date,timestamp,fragment,chosenTask
+2019-12-20T14:44:42.049+04:00,889,"s = input()mm",max_digit
+2019-12-20T14:44:42.128+04:00,899,"s = input()mm ",max_digit
+2019-12-20T14:44:42.211+04:00,903,"s = input()mm =",max_digit
+2019-12-20T14:44:42.342+04:00,908,"s = input()mm = ",max_digit

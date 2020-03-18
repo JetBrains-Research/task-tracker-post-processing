@@ -1,0 +1,4 @@
+date,timestamp,fragment,chosenTask
+2019-12-20T14:44:40.944+04:00,874,"s = input()max",is_zero
+2019-12-20T14:44:41.274+04:00,878,"s = input()ma",is_zero
+2019-12-20T14:44:41.828+04:00,884,"s = input()m",is_zero
