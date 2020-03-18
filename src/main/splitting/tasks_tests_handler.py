@@ -54,7 +54,7 @@ def check_tasks(tasks: list, source_code: str, in_and_out_files_dict: dict, lang
 
 def __check_tasks_on_correct_fragments(data: pd.DataFrame, tasks: list, in_and_out_files_dict: dict, file_log_info=''):
     data[FRAGMENT] = data[FRAGMENT].fillna('')
-    # if run after preprocessing, this value can be taken from 'language' column
+    # If run after preprocessing, this value can be taken from 'language' column
     language = get_ct_language(data)
     log.info(f'{file_log_info}, language is {language}, found {str(data.shape[0])} fragments')
 

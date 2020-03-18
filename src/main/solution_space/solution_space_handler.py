@@ -75,7 +75,7 @@ def __find_same_fragments(solutions: pd.DataFrame, start_index: int) -> Tuple[in
 
 
 def __get_profile(solutions: pd.DataFrame) -> Profile:
-    # data should be preprocessed so in 'age' and 'experience' columns should be only 1 unique value for each column
+    # Data should be preprocessed so in 'age' and 'experience' columns should be only 1 unique value for each column
     age = __get_column_unique_value(solutions, consts.CODE_TRACKER_COLUMN.AGE, consts.DEFAULT_VALUES.AGE.value)
     str_experience = __get_column_unique_value(solutions, consts.CODE_TRACKER_COLUMN.EXPERIENCE,
                                                consts.DEFAULT_VALUES.EXPERIENCE.value)
@@ -98,7 +98,7 @@ def __is_compiled(test_result: int) -> bool:
 
 
 def __is_correct_fragment(tests_results: str) -> bool:
-    tasks = consts.TASK.tasks()
+    tasks = consts.TASK.tasks_values()
     tests_results = unpack_tests_results(tests_results, tasks)
     compiled_task_count = len([t for i, t in enumerate(tasks) if __is_compiled(tests_results[i])])
     # It is an error, if a part of the tasks is incorrect, but another part is correct.
@@ -114,11 +114,11 @@ def __filter_incorrect_fragments(solutions: pd.DataFrame) -> pd.DataFrame:
 
 
 def __get_task_index(task: str) -> int:
-    return consts.TASK.tasks().index(task)
+    return consts.TASK.tasks_values().index(task)
 
 
 def __get_rate(tests_results: str, task_index: int) -> float:
-    tasks = consts.TASK.tasks()
+    tasks = consts.TASK.tasks_values()
     tests_results = unpack_tests_results(tests_results, tasks)
     if task_index >= len(tasks) or task_index >= len(tests_results):
         log.error(f'Task index {task_index} is more than length of tasks list')

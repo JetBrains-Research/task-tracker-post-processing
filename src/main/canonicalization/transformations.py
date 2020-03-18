@@ -2492,7 +2492,9 @@ def cleanupNegations(a):
                         return a
                     else:
                         (a.right.left, a.right.right) = (a.right.right, a.right.left)
-                        a.op = ast.Add(global_id=a.op.global_id, num_negated=True)
+                        # (EL) remove global_id
+                        # a.op = ast.Add(global_id=a.op.global_id, num_negated=True)
+                        a.op = ast.Add(num_negated=True)
                         return a
         # Move negations to the outer part of multiplications
         elif type(a.op) == ast.Mult:

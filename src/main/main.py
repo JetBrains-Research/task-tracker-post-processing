@@ -33,10 +33,10 @@ def main():
     logging.basicConfig(filename=consts.LOGGER_FILE, format=LOGGER_FORMAT, level=logging.INFO)
     path = __get_data_path()
 
-    # preprocess data before splitting
-    # preprocess_data(path)
+    # Preprocess data before splitting
+    # Preprocess_data(path)
 
-    # path should contain files after preprocessing with tests results
+    # Path should contain files after preprocessing with tests results
     split_tasks_into_separate_files(path)
 
 

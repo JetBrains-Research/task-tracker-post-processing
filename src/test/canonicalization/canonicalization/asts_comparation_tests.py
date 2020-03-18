@@ -124,7 +124,7 @@ class TestASTsComparation(unittest.TestCase):
         not_empty_asts = get_asts_from_sources(sources_without_empty)
         empty_ast_1 = ast.parse('')
         empty_ast_2 = ast.parse('')
-        # check that different empty asts are equal
+        # Check that different empty asts are equal
         self.assertTrue(are_asts_equal(empty_ast_1, empty_ast_2))
 
         for not_empty_ast in not_empty_asts:

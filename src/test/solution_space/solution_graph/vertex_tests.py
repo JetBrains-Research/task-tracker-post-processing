@@ -40,7 +40,7 @@ class TestVertex(unittest.TestCase):
         users = [User(), User(), User()]
         users_dist = [3, 0, 20]
         code_info_list = []
-        # create code_info_list with users distribution
+        # Create code_info_list with users distribution
         for i, dist in enumerate(users_dist):
             for j in range(dist):
                 code_info_list.append(CodeInfo(users[i]))
@@ -50,6 +50,6 @@ class TestVertex(unittest.TestCase):
         for code_info in code_info_list:
             vertex.add_code_info(code_info)
 
-        # in result set wiil be only two users form three because the second one has 0 code_info
+        # In result set will be only two users form three because the second one has 0 code_info
         self.assertEqual(vertex.get_unique_users(), {users[0], users[2]})
 

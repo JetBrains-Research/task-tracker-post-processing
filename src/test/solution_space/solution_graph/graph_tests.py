@@ -43,12 +43,12 @@ def create_graph_with_code() -> (SolutionGraph, List[Vertex], List[str]):
     #           \     /
     #           vertex_3
 
-    # vertex_1 has to have a full_solution code since this vertex is connected with end_vertex
+    # Vertex_1 has to have a full_solution code since this vertex is connected with end_vertex
     rates = [TEST_RESULT.CORRECT_CODE.value, TEST_RESULT.FULL_SOLUTION.value, TEST_RESULT.CORRECT_CODE.value, TEST_RESULT.CORRECT_CODE.value]
 
     vertices = [Vertex(create_code_from_source(s, rates[i])) for i, s in enumerate(sources)]
 
-    # add code infos with different users
+    # Add code infos with different users
     list(map(lambda v: v.add_code_info(CodeInfo(User())), vertices))
 
     sg.connect_to_start_vertex(vertices[0])
@@ -67,9 +67,9 @@ def find_or_create_vertex_with_code_info_and_rate_check(self: unittest.TestCase,
                                                         rate=TEST_RESULT.CORRECT_CODE.value) -> Vertex:
     code_info = CodeInfo(User())
     found_vertex = sg.find_or_create_vertex(create_code_from_source(source, rate), code_info)
-    # check if user is added to user list
+    # Check if user is added to user list
     self.assertTrue(code_info in found_vertex.code_info_list)
-    # check if vertex is connected with end_vertex if it has 'full_solution'-code
+    # Check if vertex is connected with end_vertex if it has 'full_solution'-code
     if rate == TEST_RESULT.FULL_SOLUTION.value:
         self.assertTrue(sg.end_vertex in found_vertex.children)
     return found_vertex
@@ -84,7 +84,7 @@ def create_code_info_chain() -> (List[Tuple[Code, CodeInfo]], List[str]):
                      (source_2, TEST_RESULT.CORRECT_CODE.value),
                      (source_3, TEST_RESULT.CORRECT_CODE.value),
                      (source_4, TEST_RESULT.FULL_SOLUTION.value)]
-    # user is the same for all chain elements
+    # User is the same for all chain elements
     user = User()
     chain = [(create_code_from_source(rs[0], rs[1]), CodeInfo(user)) for rs in rated_sources]
     sources = [rs[0] for rs in rated_sources]
@@ -106,7 +106,7 @@ def check_adjacent_vertices_structure(self: unittest.TestCase, adjacent_vertex_t
         self.assertTrue(real_structure in adjacent_vertices_structure)
         adjacent_vertices_structure.remove(real_structure)
 
-    # check if empty
+    # Check if empty
     self.assertTrue(not adjacent_vertices_structure)
 
 
@@ -115,7 +115,7 @@ class TestGraph(unittest.TestCase):
         logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
 
     def test_bfs_traversal(self) -> None:
-        # a simple graph without any code just to check bfs
+        # A simple graph without any code just to check bfs
         sg = SolutionGraph()
         #          START_VERTEX
         #               |
@@ -141,7 +141,7 @@ class TestGraph(unittest.TestCase):
         vertex_4.add_child(vertex_6)
 
         sg.connect_to_end_vertex(vertex_6)
-        # with start_vertex, but without end_vertex
+        # With start_vertex, but without end_vertex
         expected_traversal = [sg.start_vertex, vertex_1, vertex_2, vertex_3, vertex_4, vertex_5, vertex_6]
         actual_traversal = sg.get_traversal()
         self.assertEqual(actual_traversal, expected_traversal)
@@ -192,7 +192,7 @@ class TestGraph(unittest.TestCase):
         #                        \        /
         #                       END_VERTEX
 
-        # since new vertices for the chain were created, we cannot compare them to any existed vertices for checking,
+        # Since new vertices for the chain were created, we cannot compare them to any existed vertices for checking,
         # but we can check children and parents structure (source and code infos len) of the known old vertices
 
         # We can find the structure of the known old vertices:
@@ -210,7 +210,7 @@ class TestGraph(unittest.TestCase):
         chain_2_structure = {VERTEX_STRUCTURE.SOURCE.value: chain_sources[2], VERTEX_STRUCTURE.CODE_INFO_LIST_LEN.value: 1}
         chain_3_structure = {VERTEX_STRUCTURE.SOURCE.value: chain_sources[3], VERTEX_STRUCTURE.CODE_INFO_LIST_LEN.value: 1}
 
-        # we should have 1 joined vertex: [chain_1, vertex_2] with the same structure:
+        # We should have 1 joined vertex: [chain_1, vertex_2] with the same structure:
         self.assertEqual(chain_1_structure, vertex_2_structure)
 
         # Now we can check that each of the old known vertices

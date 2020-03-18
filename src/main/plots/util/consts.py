@@ -53,12 +53,12 @@ ATI_EDITOR_EVENT_COLOR_DICT = {
 }
 
 TASK_COLOR_DICT = {
-    TASK.PIES.value: '#B8C4DD',
-    TASK.MAX_3.value: '#FFF3CC',
-    TASK.ELECTION.value: '#F9D4CE',
-    TASK.ZERO.value: '#D5F5F5',
-    TASK.MAX_DIGIT.value: '#E9DFEF',
-    TASK.BRACKETS.value: '#DAE3D9'
+    TASK.PIES: '#B8C4DD',
+    TASK.MAX_3: '#FFF3CC',
+    TASK.ELECTION: '#F9D4CE',
+    TASK.ZERO: '#D5F5F5',
+    TASK.MAX_DIGIT: '#E9DFEF',
+    TASK.BRACKETS: '#DAE3D9'
 }
 
 
@@ -66,8 +66,8 @@ BAR_PALETTE = px.colors.sequential.Sunset
 
 
 TASK_STATUS_COLOR_DICT = {
-    TASK_STATUS.SOLVED.value: '#65C32A',
-    TASK_STATUS.NOT_SOLVED.value: '#D16B48'
+    TASK_STATUS.SOLVED: '#65C32A',
+    TASK_STATUS.NOT_SOLVED: '#D16B48'
 }
 
 FRAGMENT_LENGTH_COL = 'fragment_length'

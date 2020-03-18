@@ -18,7 +18,7 @@ def fill_column(data: pd.DataFrame, column: consts.CODE_TRACKER_COLUMN, default_
     index = np.argwhere((values == default_value) | pd.isnull(values))
     if (index.shape[0] == 0 and len(values) > 1) or len(values) > 2:
         log.error('Invalid value for column!')
-        # it is an invalid file
+        # It is an invalid file
         return consts.INVALID_FILE_FOR_PREPROCESSING
     values = np.delete(values, index)
     if len(values) == 1:
@@ -43,7 +43,7 @@ def get_ct_language(data: pd.DataFrame):
 def handle_ct_file(ct_file: str):
     log.info(f'Start handling the file {ct_file}')
     ct_df = pd.read_csv(ct_file, encoding=consts.ISO_ENCODING)
-    # it's easier to have all tasks written in snake case because further they will be used as folders names and so on
+    # It's easier to have all tasks written in snake case because further they will be used as folders names and so on
     ct_df[consts.CODE_TRACKER_COLUMN.CHOSEN_TASK.value] = ct_df[consts.CODE_TRACKER_COLUMN.CHOSEN_TASK.value].fillna(''). \
         apply(lambda t: convert_camel_case_to_snake_case(t))
     language = get_ct_language(ct_df)

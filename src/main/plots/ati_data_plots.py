@@ -25,7 +25,7 @@ def __create_ati_events_plot(ax: plt.axes, df: pd.DataFrame, event_data: list, e
     ax.set_title(title)
 
 
-# create plots with different event types (running events and editor events), taken from ati data
+# Create plots with different event types (running events and editor events), taken from ati data
 def create_ati_data_plot(path: str, folder_to_save=None, to_show=False):
     data = pd.read_csv(path, encoding=consts.ISO_ENCODING)
     data[plot_consts.FRAGMENT_LENGTH_COL] = data[FRAGMENT_COL].fillna('').str.len()

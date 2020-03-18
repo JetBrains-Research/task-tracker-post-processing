@@ -28,7 +28,7 @@ def save_plot(folder_to_save: str, fig: plt.figure, name_prefix: str, data_path=
     fig.savefig(os.path.join(folder_to_save, name), bbox_inches='tight')
 
 
-# add fragments lengths to the plot
+# Add fragments lengths to the plot
 def add_fragments_length_plot(ax: plt.axes, data: pd.DataFrame, color=plot_consts.FRAGMENT_LENGTH_COLOR,
                               s=plot_consts.SMALL_SIZE, label=None):
     ax.scatter(data[TIMESTAMP_COL], data[plot_consts.FRAGMENT_LENGTH_COL], color=color, s=s, label=label)

@@ -88,7 +88,7 @@ def get_canonicalized_form(source: str, given_names=None, arg_types=None, import
 
     transformations = __get_canonical_transformations()
 
-    # tree preprocessing from Kelly Rivers code
+    # Tree preprocessing from Kelly Rivers code
     tree = propogateMetadata(tree, arg_types, {}, [0])
     tree = simplify(tree)
     tree = anonymizeNames(tree, given_names, imports)
