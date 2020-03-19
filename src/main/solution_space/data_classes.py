@@ -148,22 +148,18 @@ class Code:
         self._file_with_code = file_with_code
 
     @staticmethod
-    def __create_file(graph_folder: str, graph_id: int, code_id: int, code: str, extension: str,
-                      graph_folder_prefix: str = GRAPH_FOLDER_PREFIX, file_prefix: str = FILE_PREFIX):
-        if not is_exist(graph_folder):
-            log.error(f'The graph with id {graph_id} does not have directory for code for vertices. '
-                      f'Expected name: {graph_folder_prefix}{graph_id}')
-            raise OSError(f'The graph with id {graph_id} does not have directory for code for vertices. Expected name: '
-                          f'{graph_folder_prefix}{graph_id}')
-        file_path = os.path.join(graph_folder, graph_folder_prefix + str(graph_id) + '_' + file_prefix + str(code_id))
+    def __create_file(graph_directory: str, code_id: int, code: str, extension: str, graph_folder_prefix: str):
+        if not is_exist(graph_directory):
+            log.error(f'The graph does not have directory for code for vertices. Expected graph folder prefix: '
+                      f'{graph_folder_prefix}')
+            raise OSError(f'The graph does not have directory for code for vertices. Expected graph folder prefix: '
+                          f'{graph_folder_prefix}')
+        file_path = os.path.join(graph_directory, graph_folder_prefix + str(code_id))
         create_file(code, file_path)
         return change_extension_to(file_path, extension, need_to_rename=True)
 
-    def create_file_with_code(self, graph_id: int, task: consts.TASK,
-                              language: consts.LANGUAGE = consts.LANGUAGE.PYTHON,
-                              graph_folder_prefix: str = GRAPH_FOLDER_PREFIX,
-                              file_prefix: str = FILE_PREFIX,
-                              folder_with_code_files: str = FOLDER_WITH_CODE_FILES) -> None:
+    def create_file_with_code(self, graph_directory: str, graph_folder_prefix: str,
+                              language: consts.LANGUAGE = consts.LANGUAGE.PYTHON) -> None:
         if not self._ast:
             log.error(f'Ast in the code {self} is None')
             raise ValueError(f'Ast in the code {self} is None')
@@ -171,12 +167,8 @@ class Code:
         code = get_code_from_tree(self._ast)
         extension = get_extension_by_language(language)
 
-        graph_folder = get_graph_directory(graph_id, task,
-                                           folder_with_code_files=folder_with_code_files,
-                                           graph_folder_prefix=graph_folder_prefix)
-        self._file_with_code = self.__class__.__create_file(graph_folder, graph_id, self._id, code, extension,
-                                                            graph_folder_prefix=graph_folder_prefix,
-                                                            file_prefix=file_prefix)
+        self._file_with_code = self.__class__.__create_file(graph_directory, self._id, code, extension,
+                                                            graph_folder_prefix)
 
     def __str__(self) -> str:
         return f'Id: {self._id}, rate: {self._rate}\nCode:\n{get_code_from_tree(self._ast)}\n'

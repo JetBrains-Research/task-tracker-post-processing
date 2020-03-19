@@ -2,6 +2,7 @@
 
 import logging
 import collections
+import os
 
 from src.main.util import consts
 from typing import Optional, List, Tuple, Set
@@ -26,10 +27,8 @@ class Vertex:
         self._vertex_type = vertex_type
 
         if code:
-            code.create_file_with_code(graph.id, graph.task, graph.language,
-                                       folder_with_code_files=SolutionGraph.folder_with_code_files,
-                                       file_prefix=graph.file_prefix,
-                                       graph_folder_prefix=graph.graph_folder_prefix)
+            graph_folder_prefix = graph.graph_folder_prefix + str(graph.id) + '_' + graph.file_prefix
+            code.create_file_with_code(graph.graph_directory, graph_folder_prefix, graph.language)
 
     @property
     def parents(self) -> List['Vertex']:
@@ -123,17 +122,19 @@ class SolutionGraph(collections.abc.Iterable):
 
         self._graph_folder_prefix = graph_folder_prefix
         self._file_prefix = file_prefix
+        self._graph_directory = self.__get_graph_directory()
 
         if to_delete_old_graph:
-            graph_folder = get_graph_directory(self._id, task, graph_folder_prefix,
-                                               folder_with_code_files=SolutionGraph.folder_with_code_files)
-            remove_directory(graph_folder)
-
-        self.__class__.__create_graph_directory(self._id, task, graph_folder_prefix)
+            remove_directory(self._graph_directory)
+        self.__create_graph_directory()
 
     @property
     def id(self) -> int:
         return self._id
+
+    @property
+    def graph_directory(self) -> str:
+        return self._graph_directory
 
     @property
     def graph_folder_prefix(self) -> str:
@@ -159,12 +160,12 @@ class SolutionGraph(collections.abc.Iterable):
     def language(self) -> LANGUAGE:
         return self._language
 
-    @staticmethod
-    def __create_graph_directory(graph_id: int, task: consts.TASK, graph_folder_prefix: str = GRAPH_FOLDER_PREFIX):
-        graph_directory = get_graph_directory(graph_id, task, graph_folder_prefix,
-                                              folder_with_code_files=SolutionGraph.folder_with_code_files)
-        create_directory(graph_directory)
-        return graph_directory
+    def __get_graph_directory(self) -> str:
+        return os.path.join(self.__class__.folder_with_code_files, str(self._task.value),
+                            self._graph_folder_prefix + str(self._id))
+
+    def __create_graph_directory(self) -> None:
+        create_directory(self._graph_directory)
 
     def __iter__(self) -> GraphIterator:
         return GraphIterator(self._start_vertex)
