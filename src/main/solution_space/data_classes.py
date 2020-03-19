@@ -7,9 +7,9 @@ from datetime import datetime
 
 from src.main.util import consts
 from typing import List, Union, Optional
+from src.main.util.file_util import create_file
 from src.main.util.language_util import get_extension_by_language
 from src.main.canonicalization.canonicalization import get_code_from_tree
-from src.main.util.file_util import create_file, change_extension_to, is_exist
 from src.main.util.consts import EXPERIENCE, DEFAULT_VALUES, ACTIVITY_TRACKER_EVENTS
 
 log = logging.getLogger(consts.LOGGER_NAME)
@@ -151,18 +151,11 @@ class Code:
             log.error(f'Ast in the code {self} is None')
             raise ValueError(f'Ast in the code {self} is None')
 
-        if not is_exist(folder_to_write):
-            log.error(f'The graph does not have directory for code for vertices. Expected graph folder prefix: '
-                      f'{name_prefix}')
-            raise OSError(f'The graph does not have directory for code for vertices. Expected graph folder prefix: '
-                          f'{name_prefix}')
-
-        file_path = os.path.join(folder_to_write, name_prefix + str(self._id))
         extension = get_extension_by_language(language)
+        file_path = os.path.join(folder_to_write, name_prefix + str(self._id) + extension)
         code = get_code_from_tree(self._ast)
         create_file(code, file_path)
-
-        self._file_with_code = change_extension_to(file_path, extension, need_to_rename=True)
+        self._file_with_code = file_path
 
     def __str__(self) -> str:
         return f'Id: {self._id}, rate: {self._rate}\nCode:\n{get_code_from_tree(self._ast)}\n'
