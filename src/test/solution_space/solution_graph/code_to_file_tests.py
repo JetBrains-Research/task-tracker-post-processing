@@ -9,7 +9,7 @@ from src.main.solution_space.data_classes import Code
 from src.main.util.language_util import get_extension_by_language
 from src.main.solution_space.solution_graph import Vertex, SolutionGraph
 from src.test.solution_space.solution_graph.util import create_code_from_source
-from src.main.util.file_util import get_all_file_system_items, all_items_condition
+from src.main.util.file_util import get_all_file_system_items, all_items_condition, remove_directory
 from src.main.solution_space.consts import GRAPH_FOLDER_PREFIX, FOLDER_WITH_CODE_FILES_FOR_TESTS, FILE_PREFIX
 from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT, TEST_RESULT, LOGGER_NAME, TASK, FILE_SYSTEM_ITEM, \
     LANGUAGE
@@ -87,12 +87,17 @@ def init_default_ids() -> None:
     Code._last_id = 0
 
 
+def delete_folder() -> None:
+    remove_directory(get_test_folder_path())
+
+
 class TestCodeToFile(unittest.TestCase):
     def setUp(self) -> None:
         logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
 
     # Create three graphs and check all folders names which was created for each graph
     def test_folders_names(self):
+        delete_folder()
         init_default_ids()
         sg_0, sg_1, sg_2 = create_three_graphs()
         expected_folders_names = get_full_paths([GRAPH_FOLDER_PREFIX + '0',

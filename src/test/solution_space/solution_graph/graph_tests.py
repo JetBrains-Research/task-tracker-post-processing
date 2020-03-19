@@ -7,13 +7,15 @@ from typing import List, Tuple
 from src.main.solution_space.data_classes import Code, User, CodeInfo
 from src.main.solution_space.solution_graph import Vertex, SolutionGraph
 from src.main.canonicalization.canonicalization import get_code_from_tree
-from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT, TEST_RESULT, LOGGER_NAME, TASK
+from src.main.solution_space.consts import FOLDER_WITH_CODE_FILES_FOR_TESTS
 from src.test.solution_space.solution_graph.util import create_code_from_source
+from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT, TEST_RESULT, LOGGER_NAME, TASK
 
 log = logging.getLogger(LOGGER_NAME)
 
 
 CURRENT_TASK = TASK.PIES
+SolutionGraph.folder_with_code_files = FOLDER_WITH_CODE_FILES_FOR_TESTS
 
 
 class ADJACENT_VERTEX_TYPE(Enum):
