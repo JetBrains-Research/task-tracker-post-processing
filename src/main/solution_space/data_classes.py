@@ -145,25 +145,24 @@ class Code:
     def file_with_code(self, file_with_code) -> None:
         self._file_with_code = file_with_code
 
-    def __create_file(self, folder_to_write: str, name_prefix: str, extension: str) -> str:
-        if not is_exist(folder_to_write):
-            log.error(f'The graph does not have directory for code for vertices. Expected graph folder prefix: '
-                      f'{name_prefix}')
-            raise OSError(f'The graph does not have directory for code for vertices. Expected graph folder prefix: '
-                          f'{name_prefix}')
-        file_path = os.path.join(folder_to_write, name_prefix + str(self._id))
-        code = get_code_from_tree(self._ast)
-        create_file(code, file_path)
-        return change_extension_to(file_path, extension, need_to_rename=True)
-
     def create_file_with_code(self, folder_to_write: str, name_prefix: str,
                               language: consts.LANGUAGE = consts.LANGUAGE.PYTHON) -> None:
         if not self._ast:
             log.error(f'Ast in the code {self} is None')
             raise ValueError(f'Ast in the code {self} is None')
 
+        if not is_exist(folder_to_write):
+            log.error(f'The graph does not have directory for code for vertices. Expected graph folder prefix: '
+                      f'{name_prefix}')
+            raise OSError(f'The graph does not have directory for code for vertices. Expected graph folder prefix: '
+                          f'{name_prefix}')
+
+        file_path = os.path.join(folder_to_write, name_prefix + str(self._id))
         extension = get_extension_by_language(language)
-        self._file_with_code = self.__create_file(folder_to_write, name_prefix, extension)
+        code = get_code_from_tree(self._ast)
+        create_file(code, file_path)
+
+        self._file_with_code = change_extension_to(file_path, extension, need_to_rename=True)
 
     def __str__(self) -> str:
         return f'Id: {self._id}, rate: {self._rate}\nCode:\n{get_code_from_tree(self._ast)}\n'

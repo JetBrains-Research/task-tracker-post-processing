@@ -43,13 +43,13 @@ class TestZeroTests(unittest.TestCase):
         logging.basicConfig(filename=consts.LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
 
     def test_python(self):
-        test_task(self, python_actual_pairs, LANGUAGE.PYTHON.value)
+        test_task(self, python_actual_pairs, LANGUAGE.PYTHON)
 
     def test_java(self):
-        test_task(self, java_actual_pairs, LANGUAGE.JAVA.value)
+        test_task(self, java_actual_pairs, LANGUAGE.JAVA)
 
     def test_kotlin(self):
-        test_task(self, kotlin_actual_pairs, LANGUAGE.KOTLIN.value)
+        test_task(self, kotlin_actual_pairs, LANGUAGE.KOTLIN)
 
     def test_cpp(self):
-        test_task(self, cpp_actual_pairs, LANGUAGE.CPP.value)
+        test_task(self, cpp_actual_pairs, LANGUAGE.CPP)

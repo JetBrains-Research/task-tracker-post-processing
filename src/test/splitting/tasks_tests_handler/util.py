@@ -22,12 +22,13 @@ class SOLUTION(Enum):
     ERROR = "error"
 
 
-def get_actual_rate(task: str, language: str, code: str, in_and_out_files_dict: dict):
+def get_actual_rate(task: str, language: consts.LANGUAGE, code: str, in_and_out_files_dict: dict):
     return check_tasks([task], code, in_and_out_files_dict, language, False)[0]
 
 
-def get_source_code(task: str, language: str, solution: str):
-    return get_content_from_file(os.path.join(TEST_DATA_PATH, "splitting/tasks_tests_handler", task, language, solution + ".txt"))
+def get_source_code(task: str, language: consts.LANGUAGE, solution: str):
+    return get_content_from_file(os.path.join(TEST_DATA_PATH, "splitting/tasks_tests_handler", task, language.value,
+                                              solution + ".txt"))
 
 
 def get_tasks():
@@ -45,4 +46,5 @@ def test_task(self, expected_pairs, language):
         expected_pair = expected_pairs[s.value]
         expected_rate = expected_pair[1] / expected_pair[0]
         actual_rate = get_actual_rate(self.task, language, code, in_and_out_files_dict)
-        self.assertEqual(expected_rate, actual_rate, f'Actual rate for task {self.task}, language {language}, solution {s} is wrong, code:\n{code}')
+        self.assertEqual(expected_rate, actual_rate,
+                         f'Actual rate for task {self.task}, language {language}, solution {s} is wrong, code:\n{code}')

@@ -37,14 +37,15 @@ def create_in_and_out_dict(tasks: list):
     return in_and_out_files_dict
 
 
-def check_tasks(tasks: list, source_code: str, in_and_out_files_dict: dict, language=LANGUAGE.PYTHON.value, stop_after_first_false=True):
-    if language == LANGUAGE.PYTHON.value:
+def check_tasks(tasks: list, source_code: str, in_and_out_files_dict: dict, language=LANGUAGE.PYTHON,
+                stop_after_first_false=True):
+    if language == LANGUAGE.PYTHON:
         task_checker = PythonTaskChecker()
-    elif language == LANGUAGE.JAVA.value:
+    elif language == LANGUAGE.JAVA:
         task_checker = JavaTaskChecker()
-    elif language == LANGUAGE.CPP.value:
+    elif language == LANGUAGE.CPP:
         task_checker = CppTaskChecker()
-    elif language == LANGUAGE.KOTLIN.value:
+    elif language == LANGUAGE.KOTLIN:
         task_checker = KotlinTaskChecker()
     else:
         task_checker = NotDefinedTaskChecker()
