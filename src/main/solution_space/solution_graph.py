@@ -4,9 +4,7 @@ import logging
 import collections
 import os
 
-from src.main.util import consts
 from typing import Optional, List, Tuple, Set
-from src.main.solution_space.util import get_graph_directory
 from src.main.util.consts import LOGGER_NAME, TASK, LANGUAGE
 from src.main.solution_space import consts as solution_space_consts
 from src.main.canonicalization.canonicalization import are_asts_equal
