@@ -1,12 +1,20 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
+import os
 import ast
+import logging
 from datetime import datetime
 
-from typing import List, Union
 from src.main.util import consts
+from typing import List, Union, Optional
+from src.main.solution_space.util import get_graph_directory
+from src.main.util.language_util import get_extension_by_language
+from src.main.util.file_util import create_file, change_extension_to, is_exist
 from src.main.canonicalization.canonicalization import get_code_from_tree
+from src.main.solution_space.consts import GRAPH_FOLDER_PREFIX, FILE_PREFIX, FOLDER_WITH_CODE_FILES
 from src.main.util.consts import EXPERIENCE, DEFAULT_VALUES, ACTIVITY_TRACKER_EVENTS
+
+log = logging.getLogger(consts.LOGGER_NAME)
 
 
 class AtiItem:
@@ -113,9 +121,15 @@ class CodeInfo:
 
 
 class Code:
-    def __init__(self, ast: ast.AST = None, rate: float = 0.0):
+    _last_id = 0
+
+    def __init__(self, ast: ast.AST = None, rate: float = 0.0, file_with_code: Optional[str] = None):
         self._ast = ast
+        self._file_with_code = file_with_code
         self._rate = rate
+
+        self._id = self._last_id
+        self.__class__._last_id += 1
 
     @property
     def ast(self) -> ast.AST:
@@ -125,8 +139,47 @@ class Code:
     def rate(self) -> float:
         return self._rate
 
+    @property
+    def file_with_code(self) -> Optional[str]:
+        return self._file_with_code
+
+    @file_with_code.setter
+    def file_with_code(self, file_with_code) -> None:
+        self._file_with_code = file_with_code
+
+    @staticmethod
+    def __create_file(graph_folder: str, graph_id: int, code_id: int, code: str, extension: str,
+                      graph_folder_prefix: str = GRAPH_FOLDER_PREFIX, file_prefix: str = FILE_PREFIX):
+        if not is_exist(graph_folder):
+            log.error(f'The graph with id {graph_id} does not have directory for code for vertices. '
+                      f'Expected name: {graph_folder_prefix}{graph_id}')
+            raise OSError(f'The graph with id {graph_id} does not have directory for code for vertices. Expected name: '
+                          f'{graph_folder_prefix}{graph_id}')
+        file_path = os.path.join(graph_folder, graph_folder_prefix + str(graph_id) + '_' + file_prefix + str(code_id))
+        create_file(code, file_path)
+        return change_extension_to(file_path, extension, need_to_rename=True)
+
+    def create_file_with_code(self, graph_id: int, task: consts.TASK,
+                              language: consts.LANGUAGE = consts.LANGUAGE.PYTHON,
+                              graph_folder_prefix: str = GRAPH_FOLDER_PREFIX,
+                              file_prefix: str = FILE_PREFIX,
+                              folder_with_code_files: str = FOLDER_WITH_CODE_FILES) -> None:
+        if not self._ast:
+            log.error(f'Ast in the code {self} is None')
+            raise ValueError(f'Ast in the code {self} is None')
+
+        code = get_code_from_tree(self._ast)
+        extension = get_extension_by_language(language)
+
+        graph_folder = get_graph_directory(graph_id, task,
+                                           folder_with_code_files=folder_with_code_files,
+                                           graph_folder_prefix=graph_folder_prefix)
+        self._file_with_code = self.__class__.__create_file(graph_folder, graph_id, self._id, code, extension,
+                                                            graph_folder_prefix=graph_folder_prefix,
+                                                            file_prefix=file_prefix)
+
     def __str__(self) -> str:
-        return f'Rate: {self._rate}\nCode:\n{get_code_from_tree(self._ast)}\n'
+        return f'Id: {self._id}, rate: {self._rate}\nCode:\n{get_code_from_tree(self._ast)}\n'
 
     def is_full(self) -> bool:
         return self._rate == consts.TEST_RESULT.FULL_SOLUTION.value

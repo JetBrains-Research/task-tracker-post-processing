@@ -125,6 +125,10 @@ def remove_all_png_files(root: str, condition: Callable):
         remove_file(file)
 
 
+def is_exist(path: str) -> bool:
+    return os.path.exists(path)
+
+
 def create_directory(directory: str):
     os.makedirs(directory, exist_ok=True)
         
@@ -162,6 +166,10 @@ def ct_file_condition(name: str):
 
 def png_file_condition(name: str):
     return get_extension_from_file(name) == EXTENSION.PNG.value
+
+
+def all_items_condition(name: str):
+    return True
 
 
 # To get all subdirs that contain ct and ati data

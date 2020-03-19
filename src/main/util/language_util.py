@@ -9,6 +9,6 @@ def get_language_by_extension(extension: str):
 
 def get_extension_by_language(language: consts.LANGUAGE):
     for extension, cur_language in consts.EXTENSION_TO_LANGUAGE_DICT.items():
-        if cur_language == language:
+        if cur_language == language.value:
             return extension
     return None
