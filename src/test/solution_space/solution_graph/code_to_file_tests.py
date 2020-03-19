@@ -77,7 +77,7 @@ def __get_sources_and_rates() -> Tuple[List[str], List[int]]:
 
 def get_vertices(sg: SolutionGraph) -> List[Vertex]:
     sources, rates = __get_sources_and_rates()
-    return [Vertex(sg, CURRENT_TASK, code=create_code_from_source(s, rates[i])) for i, s in enumerate(sources)]
+    return [Vertex(sg, code=create_code_from_source(s, rates[i])) for i, s in enumerate(sources)]
 
 
 # Reset graph, vertex and code last ids to avoid different ids in one-by-one test running and running them all at once

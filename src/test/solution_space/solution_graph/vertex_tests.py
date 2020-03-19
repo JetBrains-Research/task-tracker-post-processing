@@ -2,8 +2,13 @@ import logging
 import unittest
 
 from src.main.solution_space.data_classes import User, CodeInfo
-from src.main.solution_space.solution_graph import Vertex
-from src.main.util.consts import LOGGER_FORMAT, LOGGER_TEST_FILE
+from src.main.util.consts import LOGGER_FORMAT, LOGGER_TEST_FILE, TASK
+from src.main.solution_space.solution_graph import Vertex, SolutionGraph
+from src.main.solution_space.consts import FOLDER_WITH_CODE_FILES_FOR_TESTS
+
+
+CURRENT_TASK = TASK.PIES
+SolutionGraph.folder_with_code_files = FOLDER_WITH_CODE_FILES_FOR_TESTS
 
 
 class TestVertex(unittest.TestCase):
@@ -11,25 +16,28 @@ class TestVertex(unittest.TestCase):
         logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
 
     def test_adding_parent(self) -> None:
-        child = Vertex()
+        sg = SolutionGraph(CURRENT_TASK)
+        child = Vertex(sg)
         parents_len = 100
-        parents = [Vertex() for _ in range(parents_len)]
+        parents = [Vertex(sg) for _ in range(parents_len)]
         for parent in parents:
             child.add_parent(parent)
             self.assertEqual(parent.children, [child])
         self.assertEqual(child.parents, parents)
 
     def test_adding_children(self) -> None:
-        parent = Vertex()
+        sg = SolutionGraph(CURRENT_TASK)
+        parent = Vertex(sg)
         children_len = 100
-        children = [Vertex() for _ in range(children_len)]
+        children = [Vertex(sg) for _ in range(children_len)]
         for child in children:
             parent.add_child(child)
             self.assertEqual(child.parents, [parent])
         self.assertEqual(parent.children, children)
 
     def test_adding_code_info(self) -> None:
-        vertex = Vertex()
+        sg = SolutionGraph(CURRENT_TASK)
+        vertex = Vertex(sg)
         code_info_list_len = 100
         code_info_list = [CodeInfo(User()) for _ in range(code_info_list_len)]
         for code_info in code_info_list:
@@ -46,7 +54,8 @@ class TestVertex(unittest.TestCase):
                 code_info_list.append(CodeInfo(users[i]))
         self.assertEqual(len(code_info_list), sum(users_dist))
 
-        vertex = Vertex()
+        sg = SolutionGraph(CURRENT_TASK)
+        vertex = Vertex(sg)
         for code_info in code_info_list:
             vertex.add_code_info(code_info)
 

@@ -17,9 +17,8 @@ log = logging.getLogger(LOGGER_NAME)
 
 
 class Vertex:
-    def __init__(self, graph: 'SolutionGraph', task: consts.TASK, code: Code = None,
-                 vertex_type: solution_space_consts.VERTEX_TYPE = solution_space_consts.VERTEX_TYPE.INTERMEDIATE,
-                 language: consts.LANGUAGE = consts.LANGUAGE.PYTHON):
+    def __init__(self, graph: 'SolutionGraph', code: Code = None,
+                 vertex_type: solution_space_consts.VERTEX_TYPE = solution_space_consts.VERTEX_TYPE.INTERMEDIATE):
         self._parents = []
         self._children = []
         self._code_info_ist = []
@@ -27,7 +26,7 @@ class Vertex:
         self._vertex_type = vertex_type
 
         if code:
-            code.create_file_with_code(graph.id, task, language,
+            code.create_file_with_code(graph.id, graph.task, graph.language,
                                        folder_with_code_files=SolutionGraph.folder_with_code_files,
                                        file_prefix=graph.file_prefix,
                                        graph_folder_prefix=graph.graph_folder_prefix)
@@ -119,10 +118,8 @@ class SolutionGraph(collections.abc.Iterable):
         self._id = self._last_id
         self.__class__._last_id += 1
 
-        self._start_vertex = Vertex(self, task, language=language,
-                                    vertex_type=solution_space_consts.VERTEX_TYPE.START)
-        self._end_vertex = Vertex(self, task, language=language,
-                                  vertex_type=solution_space_consts.VERTEX_TYPE.END)
+        self._start_vertex = Vertex(self, vertex_type=solution_space_consts.VERTEX_TYPE.START)
+        self._end_vertex = Vertex(self, vertex_type=solution_space_consts.VERTEX_TYPE.END)
 
         self._graph_folder_prefix = graph_folder_prefix
         self._file_prefix = file_prefix
@@ -176,7 +173,7 @@ class SolutionGraph(collections.abc.Iterable):
         return self.__iter__().traversal
 
     def create_vertex(self, code: Code, code_info: CodeInfo) -> Vertex:
-        vertex = Vertex(self, self._task, code=code, language=self._language)
+        vertex = Vertex(self, code=code)
         vertex.add_code_info(code_info)
         if code.is_full():
             log.info(f'Connect full code to the end vertex')

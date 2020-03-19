@@ -49,7 +49,7 @@ def create_graph_with_code() -> (SolutionGraph, List[Vertex], List[str]):
     rates = [TEST_RESULT.CORRECT_CODE.value, TEST_RESULT.FULL_SOLUTION.value, TEST_RESULT.CORRECT_CODE.value,
              TEST_RESULT.CORRECT_CODE.value]
 
-    vertices = [Vertex(sg, CURRENT_TASK, code=create_code_from_source(s, rates[i])) for i, s in enumerate(sources)]
+    vertices = [Vertex(sg, code=create_code_from_source(s, rates[i])) for i, s in enumerate(sources)]
 
     # Add code infos with different users
     list(map(lambda v: v.add_code_info(CodeInfo(User())), vertices))
@@ -129,16 +129,15 @@ class TestGraph(unittest.TestCase):
         #       vertex_5    vertex_6
         #                      |
         #                  END_VERTEX
-        vertex_1 = Vertex(sg, CURRENT_TASK)
+        vertex_1 = Vertex(sg)
         sg.connect_to_start_vertex(vertex_1)
 
-        vertex_2, vertex_3, vertex_4 = Vertex(sg, CURRENT_TASK), Vertex(sg, CURRENT_TASK), \
-                                       Vertex(sg, CURRENT_TASK)
+        vertex_2, vertex_3, vertex_4 = Vertex(sg), Vertex(sg), Vertex(sg)
         vertex_1.add_child(vertex_2)
         vertex_1.add_child(vertex_3)
         vertex_1.add_child(vertex_4)
 
-        vertex_5, vertex_6 = Vertex(sg, CURRENT_TASK), Vertex(sg, CURRENT_TASK)
+        vertex_5, vertex_6 = Vertex(sg), Vertex(sg)
         vertex_2.add_child(vertex_5)
         vertex_3.add_child(vertex_5)
         vertex_3.add_child(vertex_6)
