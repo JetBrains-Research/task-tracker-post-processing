@@ -9,7 +9,7 @@ from src.main.util.consts import LOGGER_NAME, TASK, LANGUAGE
 from src.main.solution_space import consts as solution_space_consts
 from src.main.canonicalization.canonicalization import are_asts_equal
 from src.main.solution_space.data_classes import User, Code, CodeInfo
-from src.main.util.file_util import remove_directory, create_directory, is_exists
+from src.main.util.file_util import remove_directory, create_directory, does_exist
 from src.main.solution_space.consts import VERTEX_TYPE, GRAPH_FOLDER_PREFIX, FOLDER_WITH_CODE_FILES, FILE_PREFIX
 
 log = logging.getLogger(LOGGER_NAME)
@@ -25,7 +25,7 @@ class Vertex:
         self._vertex_type = vertex_type
 
         if code:
-            if not is_exists(graph.graph_directory):
+            if not does_exist(graph.graph_directory):
                 log.error(f'The graph with id {graph.id} does not have directory for vertex code. Expected graph '
                           f'folder prefix: {graph.graph_folder_prefix}{graph.id}')
                 raise OSError(f'The graph with id {graph.id} does not have directory for vertex code. Expected '
