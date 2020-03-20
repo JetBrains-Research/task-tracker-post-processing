@@ -4,7 +4,7 @@ import os
 import logging
 
 from src.main.util import consts
-from typing import List, Tuple, Dict
+from typing import List, Tuple, Dict, Optional
 from abc import ABCMeta, abstractmethod
 from src.main.util.language_util import get_extension_by_language
 from src.main.util.strings_util import does_string_contain_any_of_substrings
@@ -36,7 +36,7 @@ def check_output_safely(input: str, expected_output: str, popen_args: List[str],
 
 # returns True if time is out, because it means that no other errors were raised,
 # so in case of code correctness checking it means that code is correct
-def check_call_safely(call_args: List[str], timeout: int = consts.SUBPROCESS_TIMEOUT,
+def check_call_safely(call_args: List[str], timeout: Optional[int] = consts.SUBPROCESS_TIMEOUT,
                       timeout_return: bool = True) -> bool:
     try:
         check_call(call_args, timeout=timeout)

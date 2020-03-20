@@ -8,8 +8,8 @@ def get_language_by_extension(extension: consts.EXTENSION) -> consts.LANGUAGE:
     return consts.EXTENSION_TO_LANGUAGE_DICT.get(extension, consts.LANGUAGE.NOT_DEFINED)
 
 
-def get_extension_by_language(language: consts.LANGUAGE) -> Optional[consts.EXTENSION]:
+def get_extension_by_language(language: consts.LANGUAGE) -> consts.EXTENSION:
     for extension, cur_language in consts.EXTENSION_TO_LANGUAGE_DICT.items():
-        if cur_language == language.value:
+        if cur_language == language:
             return extension
-    return None
+    return consts.EXTENSION.EMPTY
