@@ -32,12 +32,12 @@ def fill_column(data: pd.DataFrame, column: consts.CODE_TRACKER_COLUMN, default_
 # For example, we have a set of files: a.py, b.py. The function returns python because we have one extension for all
 # files.
 # For a case: a.py, b.p and c.java the function returns NOT_DEFINED because the files have different extensions
-def get_ct_language(data: pd.DataFrame):
+def get_ct_language(data: pd.DataFrame) -> consts.LANGUAGE:
     values = data[consts.CODE_TRACKER_COLUMN.FILE_NAME.value].unique()
     extensions = set(map(get_extension_from_file, values))
     if len(extensions) == 1:
         return get_language_by_extension(extensions.pop())
-    return consts.LANGUAGE.NOT_DEFINED.value
+    return consts.LANGUAGE.NOT_DEFINED
 
 
 def handle_ct_file(ct_file: str):
@@ -47,7 +47,7 @@ def handle_ct_file(ct_file: str):
     ct_df[consts.CODE_TRACKER_COLUMN.CHOSEN_TASK.value] = ct_df[consts.CODE_TRACKER_COLUMN.CHOSEN_TASK.value].fillna(''). \
         apply(lambda t: convert_camel_case_to_snake_case(t))
     language = get_ct_language(ct_df)
-    ct_df[consts.CODE_TRACKER_COLUMN.LANGUAGE.value] = language
+    ct_df[consts.CODE_TRACKER_COLUMN.LANGUAGE.value] = language.value
     ct_df[consts.CODE_TRACKER_COLUMN.AGE.value] = fill_column(ct_df,
                                                               consts.CODE_TRACKER_COLUMN.AGE.value,
                                                               consts.DEFAULT_VALUES.AGE.value)

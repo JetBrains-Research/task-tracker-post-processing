@@ -27,21 +27,9 @@ def get_test_folder_path(task: TASK = CURRENT_TASK) -> str:
     return os.path.join(FOLDER_WITH_CODE_FILES_FOR_TESTS, task.value)
 
 
-def compare_two_lists_of_names(l_1: list, l_2: list) -> bool:
-    if len(l_1) != len(l_2):
-        return False
-    for item in l_1:
-        if item not in l_2:
-            return False
-    return True
-
-
 def get_full_paths(short_paths: List[str]) -> List[str]:
     test_folder_path = get_test_folder_path()
-    full_paths = []
-    for s_p in short_paths:
-        full_paths.append(os.path.join(test_folder_path, s_p))
-    return full_paths
+    return [os.path.join(test_folder_path, s_p) for s_p in short_paths]
 
 
 def create_three_graphs() -> Tuple[SolutionGraph, SolutionGraph, SolutionGraph]:
@@ -95,7 +83,7 @@ class TestCodeToFile(unittest.TestCase):
     def setUp(self) -> None:
         logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
 
-    # Create three graphs and check all folders names which was created for each graph
+    # Create three graphs and check all folders names which were created for each graph
     def test_folders_names(self):
         delete_folder()
         init_default_ids()
@@ -103,7 +91,7 @@ class TestCodeToFile(unittest.TestCase):
         expected_folders_names = get_full_paths([GRAPH_FOLDER_PREFIX + '0',
                                                  GRAPH_FOLDER_PREFIX + '1',
                                                  NOT_DEFAULT_GRAPH_PREFIX + '2'])
-        self.assertTrue(compare_two_lists_of_names(expected_folders_names, get_actual_folders_names()))
+        self.assertCountEqual(expected_folders_names, get_actual_folders_names())
 
     def test_folder_structure_with_default_files_names(self):
         init_default_ids()
@@ -113,7 +101,7 @@ class TestCodeToFile(unittest.TestCase):
         actual_files_names = get_actual_files_names(folder)
 
         expected_files_names = get_full_paths([get_file_name(sg_0.id, 0), get_file_name(sg_0.id, 1)])
-        self.assertTrue(compare_two_lists_of_names(expected_files_names, actual_files_names))
+        self.assertCountEqual(expected_files_names, actual_files_names)
 
     def test_folder_structure_with_not_default_files_names(self):
         init_default_ids()
@@ -124,7 +112,7 @@ class TestCodeToFile(unittest.TestCase):
 
         expected_files_names = get_full_paths([get_file_name(sg_1.id, 0, file_prefix=NOT_DEFAULT_FILE_PREFIX),
                                                get_file_name(sg_1.id, 1, file_prefix=NOT_DEFAULT_FILE_PREFIX)])
-        self.assertTrue(compare_two_lists_of_names(expected_files_names, actual_files_names))
+        self.assertCountEqual(expected_files_names, actual_files_names)
 
     def test_folder_structure_with_all_not_default_names(self):
         init_default_ids()
@@ -137,4 +125,4 @@ class TestCodeToFile(unittest.TestCase):
                                                              graph_prefix=NOT_DEFAULT_GRAPH_PREFIX),
                                                get_file_name(sg_2.id, 1, file_prefix=NOT_DEFAULT_FILE_PREFIX,
                                                              graph_prefix=NOT_DEFAULT_GRAPH_PREFIX)])
-        self.assertTrue(compare_two_lists_of_names(expected_files_names, actual_files_names))
+        self.assertCountEqual(expected_files_names, actual_files_names)

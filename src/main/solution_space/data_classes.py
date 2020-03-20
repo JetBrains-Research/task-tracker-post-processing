@@ -142,7 +142,7 @@ class Code:
         return self._file_with_code
 
     @file_with_code.setter
-    def file_with_code(self, file_with_code) -> None:
+    def file_with_code(self, file_with_code: str) -> None:
         self._file_with_code = file_with_code
 
     def create_file_with_code(self, folder_to_write: str, name_prefix: str,

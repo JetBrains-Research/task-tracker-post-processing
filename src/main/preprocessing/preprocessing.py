@@ -93,7 +93,7 @@ def preprocess_data(path: str):
 
         for ct_file in ct_files:
             ct_df, language = handle_ct_file(ct_file)
-            ct_df = handle_ct_and_at(ct_file, ct_df, ati_file, ati_df, language)
+            ct_df = handle_ct_and_at(ct_file, ct_df, ati_file, ati_df, language.value)
 
             write_result(result_folder, path, ct_file, ct_df)
 

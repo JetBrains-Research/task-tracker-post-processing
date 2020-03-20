@@ -138,7 +138,7 @@ def __convert_to_datetime(df: pd.DataFrame) -> None:
         df[column.value] = pd.to_datetime(df[column.value], errors='ignore')
 
 
-def __add_user_solutions(file: str, task: TASK) -> List[Tuple[Code, CodeInfo]]:
+def __create_code_user_chain(file: str, task: TASK) -> List[Tuple[Code, CodeInfo]]:
     log.info(f'Start solution space creating for file {file} for task {task}')
     data = pd.read_csv(file, encoding=consts.ISO_ENCODING)
     __convert_to_datetime(data)
@@ -158,12 +158,12 @@ def __add_user_solutions(file: str, task: TASK) -> List[Tuple[Code, CodeInfo]]:
 
 
 def construct_solution_graph(path: str, task: TASK, language: LANGUAGE = LANGUAGE.PYTHON) -> SolutionGraph:
-    files = get_all_file_system_items(path, csv_file_condition, consts.FILE_SYSTEM_ITEM.SUBDIR.value)
+    files = get_all_file_system_items(path, csv_file_condition, consts.FILE_SYSTEM_ITEM.FILE.value)
     sg = SolutionGraph(task, language)
     log.info(f'Start creating of solution space')
     for file in files:
         log.info(f'Start handling file {file}')
-        code_info_chain = __add_user_solutions(file, task)
+        code_info_chain = __create_code_user_chain(file, task)
         sg.add_code_info_chain(code_info_chain)
     log.info(f'Finish creating of solution space')
     return sg

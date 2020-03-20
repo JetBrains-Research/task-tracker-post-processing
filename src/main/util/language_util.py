@@ -5,7 +5,7 @@ from src.main.util import consts
 
 
 def get_language_by_extension(extension: str) -> consts.LANGUAGE:
-    return consts.EXTENSION_TO_LANGUAGE_DICT.get(extension, consts.LANGUAGE.NOT_DEFINED.value)
+    return consts.EXTENSION_TO_LANGUAGE_DICT.get(extension, consts.LANGUAGE.NOT_DEFINED)
 
 
 def get_extension_by_language(language: consts.LANGUAGE) -> Optional[str]:
