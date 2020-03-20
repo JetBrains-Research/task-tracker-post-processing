@@ -125,7 +125,7 @@ def remove_all_png_files(root: str, condition: Callable) -> None:
         remove_file(file)
 
 
-def is_exists(path: str) -> bool:
+def does_exist(path: str) -> bool:
     return os.path.exists(path)
 
 
