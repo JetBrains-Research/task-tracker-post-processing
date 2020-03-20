@@ -6,7 +6,7 @@ import pickle
 import shutil
 import pandas as pd
 
-from typing import Callable, Any, List, Tuple
+from typing import Callable, Any, List, Tuple, Union
 from src.main.util.consts import ACTIVITY_TRACKER_FILE_NAME, FILE_SYSTEM_ITEM, ATI_DATA_FOLDER, \
     DI_DATA_FOLDER, ISO_ENCODING, LANGUAGE, UTF_ENCODING, EXTENSION
 
@@ -48,31 +48,32 @@ def add_slash(path: str) -> str:
 # For getting name of the last folder or file
 # For example, returns 'folder' for both 'path/data/folder' and 'path/data/folder/'
 # You can find more examples in the tests
-def get_name_from_path(path: str, with_extension=True) -> str:
+def get_name_from_path(path: str, with_extension: bool = True) -> str:
     head, tail = os.path.split(path)
     # Tail can be empty if '/' is at the end of the path
     file_name = tail or os.path.basename(head)
     if not with_extension:
         file_name = os.path.splitext(file_name)[0]
-    elif not get_extension_from_file(file_name):
+    elif get_extension_from_file(file_name) == EXTENSION.EMPTY:
         raise ValueError('Cannot get file name with extension, because the passed path does not contain it')
     return file_name
 
 
 # Not empty extensions are returned with a dot, for example, '.txt'
 # If file has no extensions, an empty one ('') is returned
-def get_extension_from_file(file: str) -> str:
-    return os.path.splitext(file)[1]
+def get_extension_from_file(file: str) -> EXTENSION:
+    return EXTENSION(os.path.splitext(file)[1])
 
 
-def add_dot_to_not_empty_extension(extension: str) -> str:
-    if extension and not extension.startswith('.'):
-        extension = '.' + extension
-    return extension
+def add_dot_to_not_empty_extension(extension: EXTENSION) -> str:
+    new_extension = extension.value
+    if extension != EXTENSION.EMPTY and not extension.value.startswith('.'):
+        new_extension = '.' + new_extension
+    return new_extension
 
 
 # If need_to_rename, it works only for real files because os.rename is called
-def change_extension_to(file: str, new_extension: str, need_to_rename=False) -> str:
+def change_extension_to(file: str, new_extension: EXTENSION, need_to_rename: bool = False) -> str:
     new_extension = add_dot_to_not_empty_extension(new_extension)
     base, _ = os.path.splitext(file)
     if need_to_rename:
@@ -80,7 +81,7 @@ def change_extension_to(file: str, new_extension: str, need_to_rename=False) -> 
     return base + new_extension
 
 
-def get_parent_folder(path: str, to_add_slash=False) -> str:
+def get_parent_folder(path: str, to_add_slash: bool = False) -> str:
     path = remove_slash(path)
     parent_folder = '/'.join(path.split('/')[:-1])
     if to_add_slash:
@@ -96,7 +97,7 @@ def get_original_file_name(hashed_file_name: str) -> str:
     return '_'.join(hashed_file_name.split('_')[:-4])
 
 
-def get_original_file_name_with_extension(hashed_file_name: str, extension: str) -> str:
+def get_original_file_name_with_extension(hashed_file_name: str, extension: EXTENSION) -> str:
     extension = add_dot_to_not_empty_extension(extension)
     return get_original_file_name(hashed_file_name) + extension
 
@@ -155,7 +156,7 @@ def get_all_file_system_items(root: str, item_condition: Callable, item_type=FIL
 
 
 def csv_file_condition(name: str) -> bool:
-    return get_extension_from_file(name) == EXTENSION.CSV.value
+    return get_extension_from_file(name) == EXTENSION.CSV
 
 
 # To get all codetracker files
@@ -164,7 +165,7 @@ def ct_file_condition(name: str) -> bool:
 
 
 def png_file_condition(name: str) -> bool:
-    return get_extension_from_file(name) == EXTENSION.PNG.value
+    return get_extension_from_file(name) == EXTENSION.PNG
 
 
 def all_items_condition(name: str) -> bool:

@@ -6,6 +6,7 @@ import logging
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from typing import Optional
 from src.main.util import consts
 from src.main.plots.util import consts as plot_consts
 from src.main.plots.util.plots_common import get_result_file_name
@@ -20,8 +21,8 @@ EVENT_DATA_COL = consts.ACTIVITY_TRACKER_COLUMN.EVENT_DATA.value
 log = logging.getLogger(consts.LOGGER_NAME)
 
 
-def save_plot(folder_to_save: str, fig: plt.figure, name_prefix: str, data_path=None,
-              extension=consts.EXTENSION.PNG.value):
+def save_plot(folder_to_save: str, fig: plt.figure, name_prefix: str, data_path: Optional[str] = None,
+              extension: consts.EXTENSION = consts.EXTENSION.PNG) -> None:
     name = get_result_file_name(name_prefix, data_path, extension)
     log.info('Saving' + name)
     # 'tight' is used to alter the size of the bounding box (whitespace) around the output image
@@ -29,18 +30,19 @@ def save_plot(folder_to_save: str, fig: plt.figure, name_prefix: str, data_path=
 
 
 # Add fragments lengths to the plot
-def add_fragments_length_plot(ax: plt.axes, data: pd.DataFrame, color=plot_consts.FRAGMENT_LENGTH_COLOR,
-                              s=plot_consts.SMALL_SIZE, label=None):
+def add_fragments_length_plot(ax: plt.axes, data: pd.DataFrame, color: str = plot_consts.FRAGMENT_LENGTH_COLOR,
+                              s: int = plot_consts.SMALL_SIZE, label: Optional[str] = None) -> None:
     ax.scatter(data[TIMESTAMP_COL], data[plot_consts.FRAGMENT_LENGTH_COL], color=color, s=s, label=label)
 
 
-def add_legend_to_the_right(ax: plt.axes):
+def add_legend_to_the_right(ax: plt.axes) -> None:
     # borderaxespad is the pad between the axes and legend border.
     # bbox_to_anchor sets coordinates of legend's corners
     ax.legend(bbox_to_anchor=(1.04, 1), borderaxespad=0)
 
 
-def save_and_show_if_needed(folder_to_save: str, to_show: bool, fig: plt.figure, data_path=None, name_prefix=''):
+def save_and_show_if_needed(folder_to_save: str, to_show: bool, fig: plt.figure, data_path: Optional[str] = None,
+                            name_prefix: str = '') -> None:
     if folder_to_save:
         save_plot(folder_to_save, fig, name_prefix, data_path)
     if to_show:

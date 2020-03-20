@@ -152,7 +152,7 @@ class Code:
             raise ValueError(f'Ast in the code {self} is None')
 
         extension = get_extension_by_language(language)
-        file_path = os.path.join(folder_to_write, name_prefix + str(self._id) + extension)
+        file_path = os.path.join(folder_to_write, name_prefix + str(self._id) + str(extension.value))
         code = get_code_from_tree(self._ast)
         create_file(code, file_path)
         self._file_with_code = file_path

@@ -7,6 +7,7 @@ import logging
 import pandas as pd
 
 from src.main.util import consts
+from typing import List, Dict, Tuple
 from src.main.util.consts import LANGUAGE
 from src.main.splitting.task_checker import TASKS_TESTS_PATH
 from src.main.splitting.cpp_task_checker import CppTaskChecker
@@ -15,9 +16,8 @@ from src.main.splitting.kotlin_task_checker import KotlinTaskChecker
 from src.main.splitting.python_task_checker import PythonTaskChecker
 from src.main.preprocessing.code_tracker_handler import get_ct_language
 from src.main.splitting.not_defined_task_checker import NotDefinedTaskChecker
-from src.main.util.file_util import get_all_file_system_items, get_parent_folder_name, get_name_from_path, \
-    ct_file_condition, get_result_folder, write_based_on_language, get_file_and_parent_folder_names, \
-    pair_in_and_out_files
+from src.main.util.file_util import get_all_file_system_items, ct_file_condition, get_result_folder, \
+    write_based_on_language, get_file_and_parent_folder_names, pair_in_and_out_files
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -25,7 +25,7 @@ FRAGMENT = consts.CODE_TRACKER_COLUMN.FRAGMENT.value
 TESTS_RESULTS = consts.CODE_TRACKER_COLUMN.TESTS_RESULTS.value
 
 
-def create_in_and_out_dict(tasks: list):
+def create_in_and_out_dict(tasks: List[str]) -> Dict[str, List[Tuple[str, str]]]:
     in_and_out_files_dict = {}
     for task in tasks:
         root = os.path.join(TASKS_TESTS_PATH, task)
@@ -37,8 +37,8 @@ def create_in_and_out_dict(tasks: list):
     return in_and_out_files_dict
 
 
-def check_tasks(tasks: list, source_code: str, in_and_out_files_dict: dict, language=LANGUAGE.PYTHON,
-                stop_after_first_false=True):
+def check_tasks(tasks: List[str], source_code: str, in_and_out_files_dict: Dict[str, List[Tuple[str, str]]],
+                language: LANGUAGE = LANGUAGE.PYTHON, stop_after_first_false: bool = True) -> List[float]:
     if language == LANGUAGE.PYTHON:
         task_checker = PythonTaskChecker()
     elif language == LANGUAGE.JAVA:
@@ -53,7 +53,9 @@ def check_tasks(tasks: list, source_code: str, in_and_out_files_dict: dict, lang
     return task_checker.check_tasks(tasks, source_code, in_and_out_files_dict, stop_after_first_false)
 
 
-def __check_tasks_on_correct_fragments(data: pd.DataFrame, tasks: list, in_and_out_files_dict: dict, file_log_info=''):
+def __check_tasks_on_correct_fragments(data: pd.DataFrame, tasks: List[str],
+                                       in_and_out_files_dict: Dict[str, List[Tuple[str, str]]],
+                                       file_log_info: str = '') -> Tuple[LANGUAGE, pd.DataFrame]:
     data[FRAGMENT] = data[FRAGMENT].fillna('')
     # If run after preprocessing, this value can be taken from 'language' column
     language = get_ct_language(data)
@@ -72,13 +74,13 @@ def __check_tasks_on_correct_fragments(data: pd.DataFrame, tasks: list, in_and_o
     return language, data
 
 
-def filter_already_tested_files(files: list, result_folder_path: str):
+def filter_already_tested_files(files: List[str], result_folder_path: str) -> List[str]:
     tested_files = get_all_file_system_items(result_folder_path, ct_file_condition, consts.FILE_SYSTEM_ITEM.FILE.value)
     tested_folder_and_file_names = list(map(lambda f: get_file_and_parent_folder_names(f), tested_files))
     return list(filter(lambda f: get_file_and_parent_folder_names(f) not in tested_folder_and_file_names, files))
 
 
-def run_tests(path: str):
+def run_tests(path: str) -> str:
     log.info(f'Start running tests on path {path}')
     result_folder = get_result_folder(path, consts.RUNNING_TESTS_RESULT_FOLDER)
 

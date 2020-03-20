@@ -43,7 +43,8 @@ class TestPythonParsing(unittest.TestCase):
     def test_python_parsing(self):
         log.info('mypy and pylint testing:')
         # files contain 12 incorrect files, which have 'error' in their names, and 1 correct file, which hasn't
-        files = get_all_file_system_items(PARSING_TEST_DATA_PATH, (lambda name: get_extension_from_file(name) == '.txt'))
+        files = get_all_file_system_items(PARSING_TEST_DATA_PATH,
+                                          (lambda name: get_extension_from_file(name) == consts.EXTENSION.TXT))
         mypy_rate = 0
         pylint_rate = 0
         mypy_with_execution_rate = 0

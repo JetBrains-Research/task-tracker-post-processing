@@ -2,10 +2,10 @@
 
 import logging
 import pandas as pd
-from typing import Dict
 import matplotlib.pyplot as plt
 
 from src.main.util import consts
+from typing import Dict, Optional
 from src.main.splitting.splitting import find_splits
 from src.main.plots.util import consts as plot_consts
 from src.main.plots.util.plots_common import get_short_name
@@ -43,10 +43,13 @@ def __add_tasks_colored_background(ax: plt.axes, data: pd.DataFrame,
         task_split_x_dict = __create_task_split_x_dict(data)
     max_length = data[plot_consts.FRAGMENT_LENGTH_COL].max()
     for task in consts.TASK:
-        ax.fill_between(task_split_x_dict[task], 0, max_length, color=plot_consts.TASK_COLOR_DICT[task], label=task.value)
+        ax.fill_between(task_split_x_dict[task], 0, max_length,
+                        color=plot_consts.TASK_COLOR_DICT[task],
+                        label=task.value)
 
 
-def __add_task_status_to_plot(ax: plt.axes, data: pd.DataFrame, status_x_dict: Dict[consts.TASK_STATUS, pd.Series] = None) -> None:
+def __add_task_status_to_plot(ax: plt.axes, data: pd.DataFrame,
+                              status_x_dict: Optional[Dict[consts.TASK_STATUS, pd.Series]] = None) -> None:
     if not status_x_dict:
         status_x_dict = __create_status_x_dict(data)
     for status in consts.TASK_STATUS:
@@ -57,8 +60,10 @@ def __add_task_status_to_plot(ax: plt.axes, data: pd.DataFrame, status_x_dict: D
                    s=plot_consts.LARGE_SIZE)
 
 
-def __create_splitting_plot(ax: plt.axes, data: pd.DataFrame, title: str, task_split_x_dict: Dict[consts.TASK, pd.Series] = None,
-                            status_x_dict: Dict[consts.TASK_STATUS, pd.Series] = None, to_snake_case: bool = True) -> None:
+def __create_splitting_plot(ax: plt.axes, data: pd.DataFrame, title: str,
+                            task_split_x_dict: Optional[Dict[consts.TASK, pd.Series]] = None,
+                            status_x_dict: Optional[Dict[consts.TASK_STATUS, pd.Series]] = None,
+                            to_snake_case: bool = True) -> None:
     data[plot_consts.FRAGMENT_LENGTH_COL] = data[FRAGMENT_COL].fillna('').str.len()
     if to_snake_case:
         data[CHOSEN_TASK_COL] = data[CHOSEN_TASK_COL].fillna('').apply(lambda t: convert_camel_case_to_snake_case(t))
@@ -79,8 +84,9 @@ def __create_splitting_plot(ax: plt.axes, data: pd.DataFrame, title: str, task_s
 
 
 def __create_comparative_plot(first_df: pd.DataFrame, second_df: pd.DataFrame, first_title: str, second_title: str,
-                              data_path: str = None, folder_to_save: str = None, name_prefix: str = '',
-                              to_snake_case: bool = True, to_show: bool = False) -> None:
+                              data_path: Optional[str] = None, folder_to_save: Optional[str] = None,
+                              name_prefix: str = '', to_snake_case: bool = True,
+                              to_show: bool = False) -> None:
     fig, (ax, second_df_ax) = plt.subplots(2, 1, figsize=(20, 10))
     __create_splitting_plot(ax, first_df, first_title, to_snake_case=to_snake_case)
     __create_splitting_plot(second_df_ax, second_df, second_title, to_snake_case=to_snake_case)
@@ -102,8 +108,8 @@ def create_comparative_splitting_plot(data_path: str, to_snake_case: bool = True
                               data_path, folder_to_save, 'split', to_snake_case, to_show)
 
 
-def create_comparative_filtering_plot(original_data_path: str, filtered_data_path: str, to_snake_case: bool =True,
-                                      folder_to_save: str = None, to_show: bool = False) -> None:
+def create_comparative_filtering_plot(original_data_path: str, filtered_data_path: str, to_snake_case: bool = True,
+                                      folder_to_save: Optional[str] = None, to_show: bool = False) -> None:
     original_data = pd.read_csv(original_data_path, encoding=consts.ISO_ENCODING)
     original_data_title = f'Original data {get_short_name(original_data_path)}'
 

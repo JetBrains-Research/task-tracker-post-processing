@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 
 from src.main.util import consts
+from typing import Union, Any, Tuple
 from src.main.util.file_util import get_extension_from_file
 from src.main.util.language_util import get_language_by_extension
 from src.main.util.strings_util import convert_camel_case_to_snake_case
@@ -13,7 +14,8 @@ from src.main.util.strings_util import convert_camel_case_to_snake_case
 log = logging.getLogger(consts.LOGGER_NAME)
 
 
-def fill_column(data: pd.DataFrame, column: consts.CODE_TRACKER_COLUMN, default_value: consts.DEFAULT_VALUES):
+def fill_column(data: pd.DataFrame, column: consts.CODE_TRACKER_COLUMN,
+                default_value: consts.DEFAULT_VALUES) -> Union[Any, consts.DEFAULT_VALUES]:
     values = data[column].unique()
     index = np.argwhere((values == default_value) | pd.isnull(values))
     if (index.shape[0] == 0 and len(values) > 1) or len(values) > 2:
@@ -40,7 +42,7 @@ def get_ct_language(data: pd.DataFrame) -> consts.LANGUAGE:
     return consts.LANGUAGE.NOT_DEFINED
 
 
-def handle_ct_file(ct_file: str):
+def handle_ct_file(ct_file: str) -> Tuple[pd.DataFrame, consts.LANGUAGE]:
     log.info(f'Start handling the file {ct_file}')
     ct_df = pd.read_csv(ct_file, encoding=consts.ISO_ENCODING)
     # It's easier to have all tasks written in snake case because further they will be used as folders names and so on

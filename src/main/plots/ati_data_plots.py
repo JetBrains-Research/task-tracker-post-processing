@@ -5,6 +5,7 @@ import logging
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from typing import List
 from src.main.util import consts
 from src.main.plots.util import consts as plot_consts
 from src.main.plots.util.plots_common import get_short_name
@@ -14,7 +15,8 @@ from src.main.plots.util.pyplot_util import add_fragments_length_plot, EVENT_DAT
 log = logging.getLogger(consts.LOGGER_NAME)
 
 
-def __create_ati_events_plot(ax: plt.axes, df: pd.DataFrame, event_data: list, event_colors: dict, title: str):
+def __create_ati_events_plot(ax: plt.axes, df: pd.DataFrame, event_data: List[str],
+                             event_colors: dict, title: str) -> None:
     add_fragments_length_plot(ax, df)
     for event in event_data:
         event_df = df.loc[df[EVENT_DATA_COL] == event]
@@ -26,7 +28,7 @@ def __create_ati_events_plot(ax: plt.axes, df: pd.DataFrame, event_data: list, e
 
 
 # Create plots with different event types (running events and editor events), taken from ati data
-def create_ati_data_plot(path: str, folder_to_save=None, to_show=False):
+def create_ati_data_plot(path: str, folder_to_save: str = None, to_show: bool = False) -> None:
     data = pd.read_csv(path, encoding=consts.ISO_ENCODING)
     data[plot_consts.FRAGMENT_LENGTH_COL] = data[FRAGMENT_COL].fillna('').str.len()
 

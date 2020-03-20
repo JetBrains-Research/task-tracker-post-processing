@@ -52,7 +52,7 @@ def get_actual_files_names(folder: str) -> List[str]:
 def get_file_name(graph_id: int, code_id: int, graph_prefix: str = GRAPH_FOLDER_PREFIX, file_prefix: str = FILE_PREFIX,
                   language: LANGUAGE = LANGUAGE.PYTHON) -> str:
     return os.path.join(graph_prefix + str(graph_id), graph_prefix + str(graph_id) + '_' + file_prefix + str(code_id)
-                        + get_extension_by_language(language))
+                        + str(get_extension_by_language(language).value))
 
 
 def __get_sources_and_rates() -> Tuple[List[str], List[int]]:
