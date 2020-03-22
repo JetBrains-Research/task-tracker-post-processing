@@ -2,6 +2,8 @@
 
 import os
 import logging
+from typing import Any, Tuple, Optional, Set, List, Dict
+
 import pandas as pd
 
 from src.main.util import consts
@@ -15,7 +17,7 @@ log = logging.getLogger(consts.LOGGER_NAME)
 
 
 # We must have one value in a profile column else it is an incorrect case
-def __get_profile_info(ct_df: pd.DataFrame, column: stat_const.STATISTICS_KEY):
+def __get_profile_info(ct_df: pd.DataFrame, column: stat_const.STATISTICS_KEY) -> Any:
     values = ct_df[column].unique()
     if len(values) == 1:
         return values[0]
@@ -23,7 +25,7 @@ def __get_profile_info(ct_df: pd.DataFrame, column: stat_const.STATISTICS_KEY):
     raise ValueError(f'Have found {len(values)} unique value in profile column {column}')
 
 
-def __get_ct_df(ct_file: str, needs_handling=True):
+def __get_ct_df(ct_file: str, needs_handling: bool = True) -> pd.DataFrame:
     # If we need handling we do it else we read the data
     if needs_handling:
         ct_df, _ = handle_ct_file(ct_file)
@@ -31,7 +33,9 @@ def __get_ct_df(ct_file: str, needs_handling=True):
     return pd.read_csv(ct_file, encoding=consts.ISO_ENCODING)
 
 
-def __get_age_and_experience(ct_file: str, needs_preprocessing=True):
+def __get_age_and_experience(ct_file: str,
+                             needs_preprocessing: bool = True)\
+        -> Tuple[Optional[consts.DEFAULT_VALUES, int], Optional[consts.DEFAULT_VALUES, str]]:
     ct_df = __get_ct_df(ct_file, needs_preprocessing)
     age = __get_profile_info(ct_df, consts.CODE_TRACKER_COLUMN.AGE.value)
     experience = __get_profile_info(ct_df, consts.CODE_TRACKER_COLUMN.EXPERIENCE.value)
@@ -43,7 +47,7 @@ def __get_age_and_experience(ct_file: str, needs_preprocessing=True):
 # Return default_value if files with the same code tracker id (or the same activity tracker id) have different values
 # for profile data (age or experience for example)
 # Note: you should run it for each profile column
-def __handle_profile_data_of_one_user(profile_data: set, default_value=None):
+def __handle_profile_data_of_one_user(profile_data: Set[Any], default_value: Optional[str] = None) -> Optional[Any]:
     if default_value in profile_data:
         profile_data.remove(default_value)
     if len(profile_data) == 1:
@@ -53,7 +57,8 @@ def __handle_profile_data_of_one_user(profile_data: set, default_value=None):
     return default_value
 
 
-def __get_age_and_experience_of_one_user(ages_and_experiences: list):
+def __get_age_and_experience_of_one_user(ages_and_experiences: List[Tuple[int, str]]) \
+        -> Tuple[Optional[Any], Optional[Any]]:
     ages = set([pair[0] for pair in ages_and_experiences])
     experiences = set([pair[1] for pair in ages_and_experiences])
     age = __handle_profile_data_of_one_user(ages, consts.DEFAULT_VALUES.AGE.value)
@@ -61,32 +66,33 @@ def __get_age_and_experience_of_one_user(ages_and_experiences: list):
     return age, experience
 
 
-def __get_empty_statistics_dict():
+def __get_empty_statistics_dict() -> Dict[str, Dict[str, Any]]:
     columns = stat_const.STATISTICS_KEY.statistics_keys()
     return {column: {} for column in columns}
 
 
-def __update_statistics_dict_column(statistics: dict, column: stat_const.STATISTICS_KEY, value=None):
+def __update_statistics_dict_column(statistics: Dict[str, Dict[str, Any]], column: stat_const.STATISTICS_KEY,
+                                    value: Optional[Any] = None):
     str_value = str(value)
     statistics[column][str_value] = statistics.get(column).get(str_value, 0) + 1
 
 
-def __add_values_in_statistics_dict(statistics: dict, age: int, experience: str):
+def __add_values_in_statistics_dict(statistics: Dict[str, Dict[str, Any]], age: int, experience: str) -> None:
     __update_statistics_dict_column(statistics, stat_const.STATISTICS_KEY.AGE.value, age)
     __update_statistics_dict_column(statistics, stat_const.STATISTICS_KEY.EXPERIENCE.value, experience)
 
 
-def __write_key_result(statistics_value: dict, result_folder: str, file_name: str):
-    file_path = os.path.join(result_folder, change_extension_to(file_name, 'pickle'))
+def __write_key_result(statistics_value: Dict[str, Any], result_folder: str, file_name: str) -> None:
+    file_path = os.path.join(result_folder, change_extension_to(file_name, consts.EXTENSION.PICKLE))
     serialize_data_and_write_to_file(file_path, statistics_value)
 
 
-def __write_results(result_folder: str, statistics: dict):
+def __write_results(result_folder: str, statistics: Dict[str, Dict[str, Any]]) -> None:
     for key in statistics.keys():
         __write_key_result(statistics[key], result_folder, key)
 
 
-def get_profile_statistics(path: str):
+def get_profile_statistics(path: str) -> None:
     result_folder = get_result_folder(path, consts.STATISTICS_RESULT_FOLDER)
     folders = get_all_file_system_items(path, data_subdirs_condition, consts.FILE_SYSTEM_ITEM.SUBDIR.value)
     statistics = __get_empty_statistics_dict()
@@ -101,25 +107,25 @@ def get_profile_statistics(path: str):
 
 
 # Run after 'split_tasks_into_separate_files' to return simple statistics dictionary
-def get_tasks_statistics(path: str):
+def get_tasks_statistics(path: str) -> Dict[str, Dict[str, Any]]:
     statistics = {}
     languages = [l.value for l in consts.LANGUAGE]
     language_folders = get_all_file_system_items(path, (lambda f: does_string_contain_any_of_substrings(f, languages)),
                                                  consts.FILE_SYSTEM_ITEM.SUBDIR.value)
     for l_f in language_folders:
-        language = consts.LANGUAGE(get_name_from_path(l_f, False))
-        if not statistics.get(language):
+        language = consts.LANGUAGE(get_name_from_path(l_f, False)).value
+        if not statistics.get(language.value):
             log.error(f'Duplicate language folder for {language}')
             raise ValueError(f'Duplicate language folder for {language}')
-        statistics[language] = {}
+        statistics[language.value] = {}
         task_folders = get_all_file_system_items(l_f, (lambda f: does_string_contain_any_of_substrings(f, consts.TASK.tasks_values())),
                                                  consts.FILE_SYSTEM_ITEM.SUBDIR.value)
         for t_f in task_folders:
             files = get_all_file_system_items(t_f, (lambda f: True), consts.FILE_SYSTEM_ITEM.FILE.value)
             task = consts.TASK(get_name_from_path(t_f, False))
-            if not statistics.get(language).get(task):
+            if not statistics.get(language.value).get(task):
                 log.error(f'Duplicate task for {task} in folder {l_f}')
                 raise ValueError(f'Duplicate language folder for {l_f}')
-            statistics.get(language)[task] = len(files)
+            statistics.get(language.value)[task] = len(files)
 
     return statistics

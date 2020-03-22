@@ -131,21 +131,32 @@ class FILE_SYSTEM_ITEM(Enum):
 
 INVALID_FILE_FOR_PREPROCESSING = -1
 
-# add the dot to extensions to be consistent with extensions getting in 'os.path' module
-EXTENSION_TO_LANGUAGE_DICT = {
-    '.py': LANGUAGE.PYTHON.value,
-    '.java': LANGUAGE.JAVA.value,
-    '.kt': LANGUAGE.KOTLIN.value,
-    '.cpp': LANGUAGE.CPP.value,
-    '': LANGUAGE.NOT_DEFINED.value
-}
-
 
 class EXTENSION(Enum):
+    EMPTY = ''
     CSV = '.csv'
     PNG = '.png'
     HTML = '.html'
     TXT = '.txt'
+    OUT = '.out'
+    JAR = '.jar'
+    PICKLE = '.pickle'
+    PY = '.py'
+    JAVA = '.java'
+    KT = '.kt'
+    CPP = '.cpp'
+    # Todo: find a better way
+    TXT_WITHOUT_DOT = 'txt'
+
+
+# add the dot to extensions to be consistent with extensions getting in 'os.path' module
+EXTENSION_TO_LANGUAGE_DICT = {
+    EXTENSION.PY: LANGUAGE.PYTHON,
+    EXTENSION.JAVA: LANGUAGE.JAVA,
+    EXTENSION.KT: LANGUAGE.KOTLIN,
+    EXTENSION.CPP: LANGUAGE.CPP,
+    EXTENSION.EMPTY: LANGUAGE.NOT_DEFINED
+}
 
 
 class SPLIT_DICT(Enum):

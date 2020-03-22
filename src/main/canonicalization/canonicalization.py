@@ -20,7 +20,7 @@ def get_ast(source: str) -> ast.AST:
         log.error(e)
 
 
-def are_asts_equal(ast_1, ast_2) -> bool:
+def are_asts_equal(ast_1: ast.AST, ast_2: ast.AST) -> bool:
     return compareASTs(ast_1, ast_2) == 0
 
 
@@ -40,7 +40,7 @@ def anonymize_names(tree: ast.AST) -> ast.AST:
 
 
 # It is the transformations from Kelly Rivers code
-def __get_canonical_transformations() -> list:
+def __get_canonical_transformations() -> List[Callable]:
     return [
                 constantFolding,
 
@@ -68,15 +68,16 @@ def get_arg_types() -> dict:
     return {}
 
 
-def get_given_names(tree: ast.AST) -> list:
+def get_given_names(tree: ast.AST) -> List[str]:
     return [str(x) for x in getAllImports(tree)]
 
 
-def get_imports(tree: ast.AST) -> list:
+def get_imports(tree: ast.AST) -> List[str]:
     return getAllImportStatements(tree)
 
 
-def get_canonicalized_form(source: str, given_names=None, arg_types=None, imports=None) -> ast.AST:
+def get_canonicalized_form(source: str, given_names: Optional[List[str]] = None,
+                           arg_types: Optional[dict] = None, imports: Optional[List[str]] = None) -> ast.AST:
     tree = get_ast(get_cleaned_code(source).rstrip('\n'))
 
     if not given_names:

@@ -2,8 +2,10 @@
 
 import re
 
+from typing import List
 
-def does_string_contain_any_of_substrings(string: str, substrings: list) -> bool:
+
+def does_string_contain_any_of_substrings(string: str, substrings: List[str]) -> bool:
     for substring in substrings:
         if substring in string:
             return True

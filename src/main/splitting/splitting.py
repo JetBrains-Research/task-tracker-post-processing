@@ -3,8 +3,8 @@
 import ast
 import logging
 import pandas as pd
-from typing import List
 
+from typing import List
 from src.main.util import consts
 from src.main.preprocessing.code_tracker_handler import get_ct_language
 from src.main.util.file_util import get_all_file_system_items, ct_file_condition, get_result_folder, \
@@ -17,7 +17,7 @@ CHOSEN_TASK = consts.CODE_TRACKER_COLUMN.CHOSEN_TASK.value
 TASK_STATUS = consts.CODE_TRACKER_COLUMN.TASK_STATUS.value
 
 
-def unpack_tests_results(tests_results: str, tasks: list) -> list:
+def unpack_tests_results(tests_results: str, tasks: List[str]) -> List[float]:
     tests_results = ast.literal_eval(tests_results)
     if len(tests_results) != len(tasks):
         log.error(f'Cannot identify tasks because of unexpected tests_results length: {len(tests_results)}')
@@ -70,7 +70,7 @@ def find_task_dfs(df: pd.DataFrame, task: consts.TASK) -> List[pd.DataFrame]:
 
 
 # 2.0 version with a different task_df extraction
-def split_tasks_into_separate_files(path: str, result_name_suffix='tasks_2') -> None:
+def split_tasks_into_separate_files(path: str, result_name_suffix: str = 'tasks_2') -> None:
     files = get_all_file_system_items(path, ct_file_condition, consts.FILE_SYSTEM_ITEM.FILE.value)
     result_folder = get_result_folder(path, result_name_suffix)
     for file in files:
@@ -83,5 +83,6 @@ def split_tasks_into_separate_files(path: str, result_name_suffix='tasks_2') -> 
             for i, task_df in enumerate(task_dfs):
                 if not task_df.empty:
                     # Change name to get something like pies/ati_207_test_5894859_i.csv
-                    filename = task.value + '/' + get_parent_folder_name(file) + '_' + get_name_from_path(file, False) + f'_{i}' + get_extension_from_file(file)
+                    filename = task.value + '/' + get_parent_folder_name(file) + '_' + get_name_from_path(file, False) \
+                               + f'_{i}' + get_extension_from_file(file).value
                     write_based_on_language(result_folder, filename, task_df, language)

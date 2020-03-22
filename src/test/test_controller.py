@@ -12,7 +12,7 @@ log = logging.getLogger(consts.LOGGER_NAME)
 
 def get_module_from_file(file: str):
     file = os.path.abspath(file)
-    return change_extension_to(file[file.index('src/test'):], '').replace('/', '.')
+    return change_extension_to(file[file.index('src/test'):], consts.EXTENSION.EMPTY).replace('/', '.')
 
 
 test_files = get_all_file_system_items(consts.TEST_PATH, (lambda f: f.endswith('_tests.py')),

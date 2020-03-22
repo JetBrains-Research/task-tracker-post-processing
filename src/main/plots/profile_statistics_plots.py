@@ -1,11 +1,13 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import logging
+
 import pandas as pd
 import plotly.express as px
 
 
 from src.main.util import consts
+from typing import Optional, Dict, Any
 from src.main.plots.util import consts as plot_consts
 from src.main.plots.util.plotly_util import save_plot
 from src.main.plots.util.plots_common import filter_rare_values, get_readable_key
@@ -15,7 +17,7 @@ from src.main.util.file_util import get_parent_folder, deserialize_data_from_fil
 log = logging.getLogger(consts.LOGGER_NAME)
 
 
-def __read_statistics_from_file(path: str, default_value: consts.DEFAULT_VALUES):
+def __read_statistics_from_file(path: str, default_value: consts.DEFAULT_VALUES) -> Dict[str, Any]:
     statistics_dict = deserialize_data_from_file(path)
     readable_statistics_dict = {}
     for key in statistics_dict.keys():
@@ -24,7 +26,7 @@ def __read_statistics_from_file(path: str, default_value: consts.DEFAULT_VALUES)
 
 
 def __get_statistics_df_from_file(path: str, column: plot_consts.STATISTICS_KEY, default_value: consts.DEFAULT_VALUES,
-                                  to_union_rare=False):
+                                  to_union_rare: bool = False) -> pd.DataFrame:
     statistics_dict = __read_statistics_from_file(path, default_value)
     statistics_df = pd.DataFrame(statistics_dict.items(), columns=[column, plot_consts.STATISTICS_FREQ])
     # If we want to union rare values
@@ -33,18 +35,18 @@ def __get_statistics_df_from_file(path: str, column: plot_consts.STATISTICS_KEY,
     return statistics_df
 
 
-def __get_labels_for_plots(column: plot_consts.STATISTICS_KEY):
+def __get_labels_for_plots(column: plot_consts.STATISTICS_KEY) -> Dict[str, Any]:
     return {
         plot_consts.STATISTICS_FREQ: plot_consts.STATISTICS_SHOWING_KEY.FREQ.value,
         column: get_readable_key(str(column))
     }
 
 
-def __get_title_for_plots(column: plot_consts.STATISTICS_KEY):
+def __get_title_for_plots(column: plot_consts.STATISTICS_KEY) -> str:
     return get_readable_key(str(column)) + ' distribution'
 
 
-def __get_default_value_for_plots(column: plot_consts.STATISTICS_KEY):
+def __get_default_value_for_plots(column: plot_consts.STATISTICS_KEY) -> Optional[consts.DEFAULT_VALUES]:
     if column == plot_consts.STATISTICS_KEY.AGE.value:
         return consts.DEFAULT_VALUES.AGE.value
     if column == plot_consts.STATISTICS_KEY.EXPERIENCE.value:
@@ -52,7 +54,7 @@ def __get_default_value_for_plots(column: plot_consts.STATISTICS_KEY):
     return None
 
 
-def __get_statistics_info_for_plots(column: plot_consts.STATISTICS_KEY):
+def __get_statistics_info_for_plots(column: plot_consts.STATISTICS_KEY) -> Dict[str, str]:
     return {
         plot_consts.STATISTICS_INFO_FOR_PLOTS.LABELS.value: __get_labels_for_plots(column),
         plot_consts.STATISTICS_INFO_FOR_PLOTS.TITLE.value: __get_title_for_plots(column)
@@ -60,8 +62,8 @@ def __get_statistics_info_for_plots(column: plot_consts.STATISTICS_KEY):
 
 
 def __plot_pie_chart(statistics_df: pd.DataFrame, title: str, path: str, column: plot_consts.STATISTICS_KEY,
-                     labels: dict, plot_name='distribution_plot',
-                     format=consts.EXTENSION.HTML.value, auto_open=False):
+                     labels: dict, plot_name: str = 'distribution_plot',
+                     format: consts.EXTENSION = consts.EXTENSION.HTML, auto_open: bool = False) -> None:
     fig = px.pie(statistics_df, values=plot_consts.STATISTICS_FREQ, names=column, title=title,
                  color_discrete_sequence=plot_consts.STATISTICS_COLORS.PIE_CHART.value,
                  hover_data=[plot_consts.STATISTICS_FREQ],
@@ -71,9 +73,9 @@ def __plot_pie_chart(statistics_df: pd.DataFrame, title: str, path: str, column:
 
 
 def __plot_bar_chart(statistics_df: pd.DataFrame, column: plot_consts.STATISTICS_KEY,
-                     title: str, labels: dict,
-                     path: str, plot_name='distribution_plot', format=consts.EXTENSION.HTML.value,
-                     auto_open=False, x_category_order=plot_consts.PLOTTY_CATEGORY_ORDER.TOTAL_ASCENDING.value):
+                     title: str, labels: dict, path: str, plot_name: str = 'distribution_plot',
+                     format: consts.EXTENSION = consts.EXTENSION.HTML, auto_open: bool = False,
+                     x_category_order: plot_consts.PLOTTY_CATEGORY_ORDER = plot_consts.PLOTTY_CATEGORY_ORDER.TOTAL_ASCENDING) -> None:
     # x_category_order='total ascending' means: in order of increasing values in Y
     # x_category_order='category ascending' means: in order of increasing values in X
     fig = px.bar(statistics_df, x=column, y=plot_consts.STATISTICS_FREQ, title=title, labels=labels,
@@ -86,7 +88,7 @@ def __plot_bar_chart(statistics_df: pd.DataFrame, column: plot_consts.STATISTICS
             title_text=get_readable_key(str(column)),
             # We use type = 'category' because we want to display all values (numbers and strings)
             type='category',
-            categoryorder=x_category_order
+            categoryorder=x_category_order.value
         ),
         plot_bgcolor=plot_consts.STATISTICS_COLORS.BAR_CHART_BG.value
     )
@@ -95,8 +97,9 @@ def __plot_bar_chart(statistics_df: pd.DataFrame, column: plot_consts.STATISTICS
 
 
 def plot_profile_statistics(file: str, column: plot_consts.STATISTICS_KEY, plot_type: plot_consts.PLOT_TYPES,
-                            to_union_rare=False, format=consts.EXTENSION.HTML.value, auto_open=False,
-                            x_category_order=plot_consts.PLOTTY_CATEGORY_ORDER.TOTAL_ASCENDING.value):
+                            to_union_rare: bool = False, format: consts.EXTENSION =consts.EXTENSION.HTML,
+                            auto_open: bool = False,
+                            x_category_order: plot_consts.PLOTTY_CATEGORY_ORDER = plot_consts.PLOTTY_CATEGORY_ORDER.TOTAL_ASCENDING) -> None:
     default_value = __get_default_value_for_plots(column)
     statistics_df = __get_statistics_df_from_file(file, column, default_value, to_union_rare)
     path = get_parent_folder(file)
@@ -107,7 +110,7 @@ def plot_profile_statistics(file: str, column: plot_consts.STATISTICS_KEY, plot_
                          auto_open=auto_open)
     elif plot_type == plot_consts.PLOT_TYPES.BAR.value:
         __plot_bar_chart(statistics_df, column, title, labels, path, plot_name=str(column), format=format,
-                         auto_open=auto_open, x_category_order=x_category_order)
+                         auto_open=auto_open, x_category_order=x_category_order.value)
     else:
         log.error(f'Plot type {plot_type} is incorrect!')
         raise ValueError(f'Plot type {plot_type} is incorrect!')

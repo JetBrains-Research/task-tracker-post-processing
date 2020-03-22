@@ -12,7 +12,7 @@ log = logging.getLogger(LOGGER_NAME)
 
 
 # To find all '.csv' files in root with the same names as in result folder and replace them
-def replace_ct_files(path: str, tested_path: str):
+def replace_ct_files(path: str, tested_path: str) -> None:
     files = get_all_file_system_items(path, csv_file_condition, FILE_SYSTEM_ITEM.FILE.value)
     tested_files = get_all_file_system_items(tested_path, csv_file_condition, FILE_SYSTEM_ITEM.FILE.value)
 
@@ -35,9 +35,9 @@ def replace_ct_files(path: str, tested_path: str):
             raise ValueError(f'Found several files for {file}, they are {tested_files}')
 
 
-def check_replacing(path: str):
+def check_replacing(path: str) -> None:
     ct_files = get_all_file_system_items(path, ct_file_condition, FILE_SYSTEM_ITEM.FILE.value)
-    not_ct_files = list(filter(lambda f: not is_ct_file(f, consts.CODE_TRACKER_COLUMN.TESTS_RESULTS.value), ct_files))
+    not_ct_files = list(filter(lambda f: not is_ct_file(f, consts.CODE_TRACKER_COLUMN.TESTS_RESULTS), ct_files))
     if not_ct_files:
         log.error(f'Some of ct files does not have \'testsResults\' column: {not_ct_files}')
         raise ValueError(f'Some of ct files does not have \'testsResults\' column: {not_ct_files}')
