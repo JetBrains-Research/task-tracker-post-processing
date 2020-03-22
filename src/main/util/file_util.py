@@ -65,20 +65,13 @@ def get_extension_from_file(file: str) -> EXTENSION:
     return EXTENSION(os.path.splitext(file)[1])
 
 
-def add_dot_to_not_empty_extension(extension: EXTENSION) -> str:
-    new_extension = extension.value
-    if extension != EXTENSION.EMPTY and not extension.value.startswith('.'):
-        new_extension = '.' + new_extension
-    return new_extension
-
-
 # If need_to_rename, it works only for real files because os.rename is called
 def change_extension_to(file: str, new_extension: EXTENSION, need_to_rename: bool = False) -> str:
-    new_extension = add_dot_to_not_empty_extension(new_extension)
     base, _ = os.path.splitext(file)
+    base_with_extension = base + new_extension.value
     if need_to_rename:
-        os.rename(file, base + new_extension)
-    return base + new_extension
+        os.rename(file, base_with_extension)
+    return base_with_extension
 
 
 def get_parent_folder(path: str, to_add_slash: bool = False) -> str:
@@ -98,8 +91,7 @@ def get_original_file_name(hashed_file_name: str) -> str:
 
 
 def get_original_file_name_with_extension(hashed_file_name: str, extension: EXTENSION) -> str:
-    extension = add_dot_to_not_empty_extension(extension)
-    return get_original_file_name(hashed_file_name) + extension
+    return get_original_file_name(hashed_file_name) + extension.value
 
 
 def get_content_from_file(file: str) -> str:

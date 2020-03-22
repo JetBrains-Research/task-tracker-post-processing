@@ -6,7 +6,7 @@ import unittest
 
 from src.main.util.consts import LOGGER_TEST_FILE, TEST_DATA_PATH, LOGGER_FORMAT, EXTENSION
 from src.main.util.file_util import get_extension_from_file, change_extension_to, create_file, remove_file, \
-    remove_directory, create_directory, add_dot_to_not_empty_extension
+    remove_directory, create_directory
 
 # Assuming there cannot be any slashes at the end of the file, because path 'home/data/file.txt/ is incorrect
 file_with_txt_extension = os.path.join(TEST_DATA_PATH, 'util/file_util/extension_tests/file.txt')
@@ -15,7 +15,6 @@ file_without_extension = os.path.join(TEST_DATA_PATH, 'util/file_util/extension_
 folder_with_slash = os.path.join(TEST_DATA_PATH, 'util/file_util/extension_tests/')
 
 extension_with_dot = EXTENSION.TXT
-extension_without_dot = EXTENSION.TXT_WITHOUT_DOT
 empty_extension = EXTENSION.EMPTY
 
 
@@ -59,12 +58,3 @@ class TestExtensionMethods(unittest.TestCase):
         change_extension_to(file_without_extension, EXTENSION.TXT, True)
         self.assertTrue(os.path.isfile(file_with_txt_extension))
         remove_file(file_with_txt_extension)
-
-    def test_adding_dot_to_extension_with_dot(self):
-        self.assertTrue(extension_with_dot.value == add_dot_to_not_empty_extension(extension_with_dot))
-
-    def test_adding_dot_to_extension_without_dot(self):
-        self.assertTrue(extension_with_dot.value == add_dot_to_not_empty_extension(extension_without_dot))
-
-    def test_adding_dot_to_empty_extension(self):
-        self.assertTrue(empty_extension.value == add_dot_to_not_empty_extension(empty_extension))

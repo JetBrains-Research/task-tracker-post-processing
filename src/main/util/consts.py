@@ -132,6 +132,8 @@ class FILE_SYSTEM_ITEM(Enum):
 INVALID_FILE_FOR_PREPROCESSING = -1
 
 
+# Make sure all extensions (except an empty one) have a dot
+# to be consistent with extensions getting in 'os.path' module
 class EXTENSION(Enum):
     EMPTY = ''
     CSV = '.csv'
@@ -145,11 +147,8 @@ class EXTENSION(Enum):
     JAVA = '.java'
     KT = '.kt'
     CPP = '.cpp'
-    # Todo: find a better way
-    TXT_WITHOUT_DOT = 'txt'
 
 
-# add the dot to extensions to be consistent with extensions getting in 'os.path' module
 EXTENSION_TO_LANGUAGE_DICT = {
     EXTENSION.PY: LANGUAGE.PYTHON,
     EXTENSION.JAVA: LANGUAGE.JAVA,
