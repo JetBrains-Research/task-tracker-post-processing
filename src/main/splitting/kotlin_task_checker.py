@@ -14,7 +14,7 @@ class KotlinTaskChecker(ITaskChecker):
 
     @property
     def language(self):
-        return LANGUAGE.KOTLIN.value
+        return LANGUAGE.KOTLIN
 
     # fun main(args: Array<String>){
     # val a:Int=readLine()!!.toInt()

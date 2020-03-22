@@ -14,7 +14,7 @@ class PythonTaskChecker(ITaskChecker):
 
     @property
     def language(self):
-        return LANGUAGE.PYTHON.value
+        return LANGUAGE.PYTHON
 
     # a=int(input())
     # print(a)

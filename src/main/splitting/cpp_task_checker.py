@@ -14,7 +14,7 @@ class CppTaskChecker(ITaskChecker):
 
     @property
     def language(self):
-        return LANGUAGE.CPP.value
+        return LANGUAGE.CPP
 
     # #include <iostream>
     # int main(){

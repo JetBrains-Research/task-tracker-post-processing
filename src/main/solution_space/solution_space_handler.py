@@ -6,7 +6,7 @@ import pandas as pd
 
 from src.main.util import consts
 from typing import Tuple, List, Union, Any
-from src.main.util.consts import EXPERIENCE, DEFAULT_VALUES
+from src.main.util.consts import EXPERIENCE, DEFAULT_VALUES, TASK, LANGUAGE
 from src.main.splitting.splitting import unpack_tests_results
 from src.main.solution_space.solution_graph import SolutionGraph
 from src.main.util.file_util import get_all_file_system_items, csv_file_condition
@@ -113,8 +113,8 @@ def __filter_incorrect_fragments(solutions: pd.DataFrame) -> pd.DataFrame:
     return solutions.loc[solutions[consts.CODE_TRACKER_COLUMN.TESTS_RESULTS.value].apply(__is_correct_fragment)]
 
 
-def __get_task_index(task: str) -> int:
-    return consts.TASK.tasks_values().index(task)
+def __get_task_index(task: TASK) -> int:
+    return consts.TASK.index(task)
 
 
 def __get_rate(tests_results: str, task_index: int) -> float:
@@ -138,7 +138,7 @@ def __convert_to_datetime(df: pd.DataFrame) -> None:
         df[column.value] = pd.to_datetime(df[column.value], errors='ignore')
 
 
-def __add_user_solutions(file: str, task: str) -> List[Tuple[Code, CodeInfo]]:
+def __create_code_user_chain(file: str, task: TASK) -> List[Tuple[Code, CodeInfo]]:
     log.info(f'Start solution space creating for file {file} for task {task}')
     data = pd.read_csv(file, encoding=consts.ISO_ENCODING)
     __convert_to_datetime(data)
@@ -157,13 +157,13 @@ def __add_user_solutions(file: str, task: str) -> List[Tuple[Code, CodeInfo]]:
     return code_info_chain
 
 
-def construct_solution_graph(path: str, task: str,) -> SolutionGraph:
+def construct_solution_graph(path: str, task: TASK, language: LANGUAGE = LANGUAGE.PYTHON) -> SolutionGraph:
     files = get_all_file_system_items(path, csv_file_condition, consts.FILE_SYSTEM_ITEM.FILE.value)
-    sg = SolutionGraph()
+    sg = SolutionGraph(task, language)
     log.info(f'Start creating of solution space')
     for file in files:
         log.info(f'Start handling file {file}')
-        code_info_chain = __add_user_solutions(file, task)
+        code_info_chain = __create_code_user_chain(file, task)
         sg.add_code_info_chain(code_info_chain)
     log.info(f'Finish creating of solution space')
     return sg

@@ -6,8 +6,7 @@ import pickle
 import shutil
 import pandas as pd
 
-from typing import Callable
-
+from typing import Callable, Any, List, Tuple
 from src.main.util.consts import ACTIVITY_TRACKER_FILE_NAME, FILE_SYSTEM_ITEM, ATI_DATA_FOLDER, \
     DI_DATA_FOLDER, ISO_ENCODING, LANGUAGE, UTF_ENCODING, EXTENSION
 
@@ -26,21 +25,21 @@ If extension is passed without any dots, a dot will be added (for example, see c
 '''
 
 
-def remove_slash(path: str):
+def remove_slash(path: str) -> str:
     return path.rstrip('/')
 
 
-def serialize_data_and_write_to_file(path: str, data: any):
+def serialize_data_and_write_to_file(path: str, data: any) -> None:
     with open(path, 'wb') as f:
         pickle.dump(data, f)
 
 
-def deserialize_data_from_file(path: str):
+def deserialize_data_from_file(path: str) -> Any:
     with open(path, 'rb') as f:
         return pickle.load(f)
 
 
-def add_slash(path: str):
+def add_slash(path: str) -> str:
     if not path.endswith('/'):
         path += '/'
     return path
@@ -49,7 +48,7 @@ def add_slash(path: str):
 # For getting name of the last folder or file
 # For example, returns 'folder' for both 'path/data/folder' and 'path/data/folder/'
 # You can find more examples in the tests
-def get_name_from_path(path: str, with_extension=True):
+def get_name_from_path(path: str, with_extension=True) -> str:
     head, tail = os.path.split(path)
     # Tail can be empty if '/' is at the end of the path
     file_name = tail or os.path.basename(head)
@@ -62,18 +61,18 @@ def get_name_from_path(path: str, with_extension=True):
 
 # Not empty extensions are returned with a dot, for example, '.txt'
 # If file has no extensions, an empty one ('') is returned
-def get_extension_from_file(file: str):
+def get_extension_from_file(file: str) -> str:
     return os.path.splitext(file)[1]
 
 
-def add_dot_to_not_empty_extension(extension: str):
+def add_dot_to_not_empty_extension(extension: str) -> str:
     if extension and not extension.startswith('.'):
         extension = '.' + extension
     return extension
 
 
 # If need_to_rename, it works only for real files because os.rename is called
-def change_extension_to(file: str, new_extension: str, need_to_rename=False):
+def change_extension_to(file: str, new_extension: str, need_to_rename=False) -> str:
     new_extension = add_dot_to_not_empty_extension(new_extension)
     base, _ = os.path.splitext(file)
     if need_to_rename:
@@ -81,7 +80,7 @@ def change_extension_to(file: str, new_extension: str, need_to_rename=False):
     return base + new_extension
 
 
-def get_parent_folder(path: str, to_add_slash=False):
+def get_parent_folder(path: str, to_add_slash=False) -> str:
     path = remove_slash(path)
     parent_folder = '/'.join(path.split('/')[:-1])
     if to_add_slash:
@@ -89,60 +88,64 @@ def get_parent_folder(path: str, to_add_slash=False):
     return parent_folder
 
 
-def get_parent_folder_name(path: str):
+def get_parent_folder_name(path: str) -> str:
     return get_name_from_path(get_parent_folder(path), False)
 
 
-def get_original_file_name(hashed_file_name: str):
+def get_original_file_name(hashed_file_name: str) -> str:
     return '_'.join(hashed_file_name.split('_')[:-4])
 
 
-def get_original_file_name_with_extension(hashed_file_name: str, extension: str):
+def get_original_file_name_with_extension(hashed_file_name: str, extension: str) -> str:
     extension = add_dot_to_not_empty_extension(extension)
     return get_original_file_name(hashed_file_name) + extension
 
 
-def get_content_from_file(file: str):
+def get_content_from_file(file: str) -> str:
     with open(file, 'r', encoding=ISO_ENCODING) as f:
         return f.read().rstrip('\n')
 
 
 # File should contain the full path and its extension
-def create_file(content: str, file: str):
+def create_file(content: str, file: str) -> None:
     create_directory(os.path.dirname(file))
     with open(file, 'w') as f:
         f.write(content)
 
 
-def remove_file(file: str):
+def remove_file(file: str) -> None:
     if os.path.isfile(file):
         os.remove(file)
 
 
-def remove_all_png_files(root: str, condition: Callable):
+def remove_all_png_files(root: str, condition: Callable) -> None:
     files = get_all_file_system_items(root, condition, FILE_SYSTEM_ITEM.FILE.value)
     for file in files:
         remove_file(file)
 
 
-def create_directory(directory: str):
+def does_exist(path: str) -> bool:
+    return os.path.exists(path)
+
+
+def create_directory(directory: str) -> None:
     os.makedirs(directory, exist_ok=True)
         
         
-def remove_directory(directory: str):
+def remove_directory(directory: str) -> None:
     if os.path.exists(directory):
         shutil.rmtree(directory, ignore_errors=True)
 
 
 # To get something like 'ati_239/Main_2323434_343434.csv'
-def get_file_and_parent_folder_names(file: str):
+def get_file_and_parent_folder_names(file: str) -> str:
     return os.path.join(get_parent_folder_name(file), get_name_from_path(file))
 
 
 # To get all files or subdirs (depends on the last parameter) from root that match item_condition
 # Can be used to get all codetracker files, all data folders, etc.
 # Note that all subdirs or files already contain the full path for them
-def get_all_file_system_items(root: str, item_condition: Callable, item_type=FILE_SYSTEM_ITEM.FILE.value):
+def get_all_file_system_items(root: str, item_condition: Callable, item_type=FILE_SYSTEM_ITEM.FILE.value) -> List[str]:
     items = []
     for fs_tuple in os.walk(root):
         for item in fs_tuple[item_type]:
@@ -151,32 +154,36 @@ def get_all_file_system_items(root: str, item_condition: Callable, item_type=FIL
     return items
 
 
-def csv_file_condition(name: str):
+def csv_file_condition(name: str) -> bool:
     return get_extension_from_file(name) == EXTENSION.CSV.value
 
 
 # To get all codetracker files
-def ct_file_condition(name: str):
+def ct_file_condition(name: str) -> bool:
     return ACTIVITY_TRACKER_FILE_NAME not in name and csv_file_condition(name)
 
 
-def png_file_condition(name: str):
+def png_file_condition(name: str) -> bool:
     return get_extension_from_file(name) == EXTENSION.PNG.value
 
 
+def all_items_condition(name: str) -> bool:
+    return True
+
+
 # To get all subdirs that contain ct and ati data
-def data_subdirs_condition(name: str):
+def data_subdirs_condition(name: str) -> bool:
     return ATI_DATA_FOLDER in name or DI_DATA_FOLDER in name
 
 
 # To get path to the result folder that is near to the original folder
 # and has the same name but with a suffix added at the end
-def get_result_folder(folder: str, result_name_suffix: str):
+def get_result_folder(folder: str, result_name_suffix: str) -> str:
     result_folder_name = get_name_from_path(folder, False) + '_' + result_name_suffix
     return os.path.join(get_parent_folder(folder), result_folder_name)
 
 
-def create_folder_and_write_df_to_file(folder_to_write: str, file_to_write: str, df: pd.DataFrame):
+def create_folder_and_write_df_to_file(folder_to_write: str, file_to_write: str, df: pd.DataFrame) -> None:
     create_directory(folder_to_write)
 
     # Get error with this encoding=ENCODING on ati_225/153e12:
@@ -191,7 +198,7 @@ def create_folder_and_write_df_to_file(folder_to_write: str, file_to_write: str,
 # To write a dataframe to the result_folder remaining the same file structure as it was before
 # For example, for path home/codetracker/data and file home/codetracker/data/folder1/folder2/ati_566/file.csv
 # the dataframe will be written to result_folder/folder1/folder2/ati_566/file.csv
-def write_result(result_folder: str, path: str, file: str, df: pd.DataFrame):
+def write_result(result_folder: str, path: str, file: str, df: pd.DataFrame) -> None:
     # check if file is in a path, otherwise we cannot reproduce its structure inside of result_folder
     if path != file[:len(path)]:
         raise ValueError('File is not in a path')
@@ -204,13 +211,13 @@ def write_result(result_folder: str, path: str, file: str, df: pd.DataFrame):
 # To write a dataframe to the result_folder based on the language and remaining only the parent folder structure
 # For example, for file path/folder1/folder2/ati_566/file.csv and python language the dataframe will be
 # written to result_folder/python/ati_566/file.csv
-def write_based_on_language(result_folder: str, file: str, df: pd.DataFrame, language=LANGUAGE.PYTHON.value):
+def write_based_on_language(result_folder: str, file: str, df: pd.DataFrame, language=LANGUAGE.PYTHON.value) -> None:
     folder_to_write = os.path.join(result_folder, language, get_parent_folder_name(file))
     file_to_write = os.path.join(folder_to_write, get_name_from_path(file))
     create_folder_and_write_df_to_file(folder_to_write, file_to_write, df)
 
 
-def pair_in_and_out_files(in_files: list, out_files: list):
+def pair_in_and_out_files(in_files: list, out_files: list) -> List[Tuple[str, str]]:
     pairs = []
     for in_file in in_files:
         out_file = re.sub(r'in(?=[^in]*$)', 'out', in_file)

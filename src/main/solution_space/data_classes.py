@@ -1,12 +1,18 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
+import os
 import ast
+import logging
 from datetime import datetime
 
-from typing import List, Union
 from src.main.util import consts
+from typing import List, Union, Optional
+from src.main.util.file_util import create_file
+from src.main.util.language_util import get_extension_by_language
 from src.main.canonicalization.canonicalization import get_code_from_tree
 from src.main.util.consts import EXPERIENCE, DEFAULT_VALUES, ACTIVITY_TRACKER_EVENTS
+
+log = logging.getLogger(consts.LOGGER_NAME)
 
 
 class AtiItem:
@@ -113,9 +119,15 @@ class CodeInfo:
 
 
 class Code:
-    def __init__(self, ast: ast.AST = None, rate: float = 0.0):
+    _last_id = 0
+
+    def __init__(self, ast: ast.AST = None, rate: float = 0.0, file_with_code: Optional[str] = None):
         self._ast = ast
+        self._file_with_code = file_with_code
         self._rate = rate
+
+        self._id = self._last_id
+        self.__class__._last_id += 1
 
     @property
     def ast(self) -> ast.AST:
@@ -125,8 +137,28 @@ class Code:
     def rate(self) -> float:
         return self._rate
 
+    @property
+    def file_with_code(self) -> Optional[str]:
+        return self._file_with_code
+
+    @file_with_code.setter
+    def file_with_code(self, file_with_code: str) -> None:
+        self._file_with_code = file_with_code
+
+    def create_file_with_code(self, folder_to_write: str, name_prefix: str,
+                              language: consts.LANGUAGE = consts.LANGUAGE.PYTHON) -> None:
+        if not self._ast:
+            log.error(f'Ast in the code {self} is None')
+            raise ValueError(f'Ast in the code {self} is None')
+
+        extension = get_extension_by_language(language)
+        file_path = os.path.join(folder_to_write, name_prefix + str(self._id) + extension)
+        code = get_code_from_tree(self._ast)
+        create_file(code, file_path)
+        self._file_with_code = file_path
+
     def __str__(self) -> str:
-        return f'Rate: {self._rate}\nCode:\n{get_code_from_tree(self._ast)}\n'
+        return f'Id: {self._id}, rate: {self._rate}\nCode:\n{get_code_from_tree(self._ast)}\n'
 
     def is_full(self) -> bool:
         return self._rate == consts.TEST_RESULT.FULL_SOLUTION.value

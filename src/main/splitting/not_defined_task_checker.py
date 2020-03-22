@@ -15,7 +15,7 @@ class NotDefinedTaskChecker(ITaskChecker):
 
     @property
     def language(self):
-        return LANGUAGE.NOT_DEFINED.value
+        return LANGUAGE.NOT_DEFINED
 
     @property
     def min_symbols_number(self):

@@ -22,7 +22,7 @@ class JavaTaskChecker(ITaskChecker):
 
     @property
     def language(self):
-        return LANGUAGE.JAVA.value
+        return LANGUAGE.JAVA
 
     # class A{
     # public static void main(String args[]){
