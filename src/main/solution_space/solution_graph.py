@@ -1,16 +1,17 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
+import os
 import logging
 import collections
-import os
 
-from typing import Optional, List, Tuple, Set
-from src.main.util.consts import LOGGER_NAME, TASK, LANGUAGE
+from typing import Optional, List, Tuple, Set, Union, Any
 from src.main.solution_space import consts as solution_space_consts
 from src.main.canonicalization.canonicalization import are_asts_equal
 from src.main.solution_space.data_classes import User, Code, CodeInfo
+from src.main.util.consts import LOGGER_NAME, TASK, LANGUAGE, EXPERIENCE, DEFAULT_VALUES
 from src.main.util.file_util import remove_directory, create_directory, does_exist
 from src.main.solution_space.consts import VERTEX_TYPE, GRAPH_FOLDER_PREFIX, FOLDER_WITH_CODE_FILES, FILE_PREFIX
+from src.main.util.statistics_util import calculate_safety_median, calculate_median_for_objects
 
 log = logging.getLogger(LOGGER_NAME)
 
@@ -228,3 +229,23 @@ class SolutionGraph(collections.abc.Iterable):
                 prev_vertex.add_child(next_vertex)
                 prev_vertex = next_vertex
         log.info(f'Finish adding code-user chain')
+
+    @staticmethod
+    def update_ages_and_experiences(code_info_list: List[CodeInfo],
+                                    ages: List[int],
+                                    experiences: List[Any]) -> None:
+        for code_info in code_info_list:
+            if not code_info.user.profile.age != DEFAULT_VALUES.AGE.value:
+                ages.append(code_info.user.profile.age)
+            if not code_info.user.profile.experience != DEFAULT_VALUES.EXPERIENCE:
+                experiences.append(code_info.user.profile.experience)
+
+    def calculate_median_of_profile_info(self) -> Tuple[int, Any]:
+        ages, experiences = [], []
+        vertices = self.get_traversal()
+        vertices.remove(self.start_vertex)
+        for vertex in vertices:
+            self.__class__.update_ages_and_experiences(vertex.code_info_list, ages, experiences)
+        return calculate_safety_median(ages, default_value=DEFAULT_VALUES.AGE.value), \
+               calculate_median_for_objects(experiences, default_value=DEFAULT_VALUES.EXPERIENCE)
+

@@ -72,6 +72,14 @@ class DEFAULT_VALUES(Enum):
             return isnat(value)
         return equal(self.value, value)
 
+    def __lt__(self, o: object) -> bool:
+        if not isinstance(o, DEFAULT_VALUES):
+            # All values more than default value
+            return True
+        # Todo: what should we do?
+        return self.is_equal(o)
+
+
 
 class EXPERIENCE(Enum):
     LESS_THAN_HALF_YEAR = 'LESS_THAN_HALF_YEAR'
@@ -80,6 +88,15 @@ class EXPERIENCE(Enum):
     FROM_TWO_TO_FOUR_YEARS = 'FROM_TWO_TO_FOUR_YEARS'
     FROM_FOUR_TO_SIX_YEARS = 'FROM_FOUR_TO_SIX_YEARS'
     MORE_THAN_SIX = 'MORE_THAN_SIX'
+
+    def __lt__(self, o: object) -> bool:
+        if not isinstance(o, EXPERIENCE) and o != DEFAULT_VALUES.EXPERIENCE:
+            raise ValueError(f'The object {o} is not {self.__class__} class')
+        if o == DEFAULT_VALUES.EXPERIENCE:
+            return False
+        experiences = [ex for ex in EXPERIENCE]
+        return experiences.index(self) < experiences.index(o)
+
 
 
 class TASK(Enum):
