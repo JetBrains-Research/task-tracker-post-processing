@@ -5,7 +5,7 @@ import unittest
 
 from typing import Tuple, Any
 from src.main.solution_space.solution_graph import SolutionGraph
-from src.test.solution_space.solution_graph.util import get_two_vertices
+from src.test.solution_space.solution_graph.util import get_two_vertices, init_default_ids
 from src.main.solution_space.data_classes import Profile, User, CodeInfo
 from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT, LOGGER_NAME, TASK, DEFAULT_VALUES, EXPERIENCE
 
@@ -59,15 +59,18 @@ class TestCalculateMedianMethods(unittest.TestCase):
         logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
 
     def test_empty_profiles(self):
+        init_default_ids()
         age, experience = SG.calculate_median_of_profile_info()
         self.assertTrue((DEFAULT_VALUES.AGE.value, DEFAULT_VALUES.EXPERIENCE), (age, experience))
 
     def test_default_profiles(self):
+        init_default_ids()
         add_user_to_all_vertices(DEFAULT_USER)
         age, experience = SG.calculate_median_of_profile_info()
         self.assertTrue((DEFAULT_VALUES.AGE.value, DEFAULT_VALUES.EXPERIENCE), (age, experience))
 
     def test_default_ages(self):
+        init_default_ids()
         profile_1 = Profile(experience=EXPERIENCE.FROM_FOUR_TO_SIX_YEARS)
         profile_2 = Profile(experience=EXPERIENCE.LESS_THAN_HALF_YEAR)
         add_user_to_all_vertices(User(profile_1))
@@ -76,6 +79,7 @@ class TestCalculateMedianMethods(unittest.TestCase):
         self.assertTrue((DEFAULT_VALUES.AGE.value, EXPERIENCE.FROM_FOUR_TO_SIX_YEARS), (age, experience))
 
     def test_default_experience(self):
+        init_default_ids()
         profile_1 = Profile(age=15)
         profile_2 = Profile(age=21)
         add_user_to_all_vertices(User(profile_1))
@@ -84,6 +88,7 @@ class TestCalculateMedianMethods(unittest.TestCase):
         self.assertTrue((15, DEFAULT_VALUES.EXPERIENCE), (age, experience))
 
     def test_same_ages_1(self):
+        init_default_ids()
         profile_1 = Profile(age=15)
         profile_2 = Profile(age=21)
         add_user_to_all_vertices(User(profile_1))
@@ -92,6 +97,7 @@ class TestCalculateMedianMethods(unittest.TestCase):
         self.assertTrue((15, EXPERIENCE.FROM_FOUR_TO_SIX_YEARS), (age, experience))
 
     def test_same_ages_2(self):
+        init_default_ids()
         profile_1 = Profile(age=15)
         profile_2 = Profile(age=21)
         add_user_to_all_vertices(User(profile_2))
@@ -100,6 +106,7 @@ class TestCalculateMedianMethods(unittest.TestCase):
         self.assertTrue((15, EXPERIENCE.FROM_FOUR_TO_SIX_YEARS), (age, experience))
 
     def test_same_experience_1(self):
+        init_default_ids()
         profile_1 = Profile(experience=EXPERIENCE.FROM_FOUR_TO_SIX_YEARS)
         profile_2 = Profile(experience=EXPERIENCE.LESS_THAN_HALF_YEAR)
         add_user_to_all_vertices(User(profile_1))
@@ -108,6 +115,7 @@ class TestCalculateMedianMethods(unittest.TestCase):
         self.assertTrue((DEFAULT_VALUES.AGE.value, EXPERIENCE.LESS_THAN_HALF_YEAR), (age, experience))
 
     def test_same_experience_2(self):
+        init_default_ids()
         profile_1 = Profile(experience=EXPERIENCE.FROM_FOUR_TO_SIX_YEARS)
         profile_2 = Profile(experience=EXPERIENCE.LESS_THAN_HALF_YEAR)
         add_user_to_all_vertices(User(profile_2))

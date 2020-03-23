@@ -8,7 +8,7 @@ from typing import List, Tuple
 from src.main.solution_space.data_classes import Code
 from src.main.util.language_util import get_extension_by_language
 from src.main.solution_space.solution_graph import Vertex, SolutionGraph
-from src.test.solution_space.solution_graph.util import get_two_vertices
+from src.test.solution_space.solution_graph.util import get_two_vertices, init_default_ids
 from src.main.util.file_util import get_all_file_system_items, all_items_condition, remove_directory
 from src.main.solution_space.consts import GRAPH_FOLDER_PREFIX, FOLDER_WITH_CODE_FILES_FOR_TESTS, FILE_PREFIX
 from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT, LOGGER_NAME, TASK, FILE_SYSTEM_ITEM, LANGUAGE
@@ -52,13 +52,6 @@ def get_file_name(graph_id: int, code_id: int, graph_prefix: str = GRAPH_FOLDER_
                   language: LANGUAGE = LANGUAGE.PYTHON) -> str:
     return os.path.join(graph_prefix + str(graph_id), graph_prefix + str(graph_id) + '_' + file_prefix + str(code_id)
                         + str(get_extension_by_language(language).value))
-
-
-# Reset graph, vertex and code last ids to avoid different ids in one-by-one test running and running them all at once
-def init_default_ids() -> None:
-    SolutionGraph._last_id = 0
-    Vertex._last_id = 0
-    Code._last_id = 0
 
 
 def delete_folder() -> None:

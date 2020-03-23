@@ -5,6 +5,8 @@ import logging
 import collections
 
 from typing import Optional, List, Tuple, Set, Any
+
+from src.main.gum_tree_diff.gum_tree_diff import get_diffs_number
 from src.main.solution_space import consts as solution_space_consts
 from src.main.canonicalization.canonicalization import are_asts_equal
 from src.main.solution_space.data_classes import User, Code, CodeInfo
@@ -249,3 +251,12 @@ class SolutionGraph(collections.abc.Iterable):
         return calculate_safety_median(ages, default_value=DEFAULT_VALUES.AGE.value), \
                calculate_median_for_objects(experiences, default_value=DEFAULT_VALUES.EXPERIENCE)
 
+    def calculate_median_of_diff_number_to_goal(self, goal: Vertex) -> int:
+        diffs = []
+        goals = self.end_vertex.parents
+        vertices = self.get_traversal()
+        vertices.remove(self.start_vertex)
+        for vertex in vertices:
+            if vertex not in goals:
+                diffs.append(get_diffs_number(vertex.code.file_with_code, goal.code.file_with_code))
+        return calculate_safety_median(diffs, default_value=0)
