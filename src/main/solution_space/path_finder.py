@@ -2,6 +2,7 @@
 
 import logging
 
+from src.main.canonicalization.canonicalization import are_asts_equal, get_canonicalized_form
 from src.main.util import consts
 from typing import List, Optional, Union, Any
 from src.main.solution_space.data_classes import Code, User, Profile
@@ -32,6 +33,7 @@ class PathFinder:
 
     # Find a next canonicalization state for user code
     def find_next_code_state(self, user_code: Code, user: User) -> Code:
+        # Todo: check if user_code is not valid
         log.info(f'Start finding the next code state for the user code: {user_code} and the user: {user}')
         goal = self.__find_closest_goal(user_code, user)
         log.info(f'The goal for the user code: {user_code} is\n{goal}')
@@ -48,10 +50,11 @@ class PathFinder:
         return next_code
 
     # Sort candidates and return the best for user_code from ones
-    def __choose_best_vertex(self, user_code: Code, user: User, vertices: List[Vertex]) -> Optional[Vertex]:
+    @staticmethod
+    def __choose_best_vertex(user_code: Code, user: User, vertices: List[Vertex]) -> Optional[Vertex]:
         if len(vertices) == 0:
             return None
-        candidates = list(map(lambda vertex: Candidate(user_code, vertex, self), vertices))
+        candidates = list(map(lambda vertex: Candidate(user_code, vertex, user), vertices))
         candidates.sort()
         return candidates[-1].vertex
 
@@ -65,7 +68,18 @@ class PathFinder:
     # Return None, if the size of the set is zero, otherwise run '__choose_best_vertex'
     # Note: we have to remove the 'user_code' from the set
     def __find_closest_vertex_with_path(self, user_code: Code, user: User, goal: Vertex) -> Optional[Vertex]:
-        pass
+        user_diffs_to_goal = get_diffs_number(user_code.file_with_code, goal.code.file_with_code)
+        candidates = []
+        vertices = self._graph.get_traversal()
+        vertices.remove(self._graph.start_vertex)
+        for vertex in vertices:
+            # We don't want to add to result the same vertex
+            if are_asts_equal(user_code.ast, vertex.code.ast):
+                continue
+            diffs = get_diffs_number(vertex.code.file_with_code, goal.code.file_with_code)
+            if diffs <= user_diffs_to_goal:
+                candidates.append(vertex)
+        return self.__choose_best_vertex(user_code, user, vertices)
 
     # Choose the best way to go to the goal
     # For example, if we have a good way through the graph, we should advise it,
@@ -74,17 +88,22 @@ class PathFinder:
         pass
 
     # Call gumTreeDiff methods
-    def __apply_minimal_actions_number(self, user_code: Code, dst_code: Code) -> Code:
-        pass
+    @staticmethod
+    def __apply_minimal_actions_number(user_code: Code, dst_code: Code) -> Code:
+        str_code = apply_diffs(user_code.file_with_code, dst_code.file_with_code)
+        ast = get_canonicalized_form(str_code)
+        # Todo: get rate
+        return Code(ast)
 
 
 # Todo: rename it???
 class Candidate:
-    def __init__(self, user_code: Code, vertex: Vertex, path_finder: PathFinder):
+    def __init__(self, user_code: Code, vertex: Vertex, user: User, distance: Optional[int] = None):
         self._vertex = vertex
-        self._distance = get_diffs_number(user_code.file_with_code, vertex.code.file_with_code)
+        self._distance = distance if distance \
+            else get_diffs_number(user_code.file_with_code, vertex.code.file_with_code)
         # Todo: get actual vertex profile
-        self._profile = self.__init_profile()
+        self._profile = self.__init_profile(user)
 
     @property
     def vertex(self) -> Vertex:
@@ -98,19 +117,12 @@ class Candidate:
     def profile(self) -> Profile:
         return self._profile
 
-    def __init_profile(self) -> Profile:
+    def __init_profile(self, user: User) -> Profile:
+        # Todo: add user handling
         ages, experiences = [], []
         SolutionGraph.update_ages_and_experiences(self._vertex.code_info_list, ages, experiences)
         return Profile(calculate_safety_median(ages, default_value=DEFAULT_VALUES.AGE.value),
                        calculate_median_for_objects(experiences, default_value=DEFAULT_VALUES.EXPERIENCE))
-
-    #
-    # @staticmethod
-    # def __init_profile(user_profile: Profile, median_age: int, median_experience: Any) -> Profile:
-    #     age = median_age if user_profile.age == consts.DEFAULT_VALUES.AGE.value else user_profile.age
-    #     experience = median_experience \
-    #         if user_profile.experience == consts.DEFAULT_VALUES.EXPERIENCE else user_profile.experience
-    #     return Profile(age, experience)
 
     def __eq__(self, o: object) -> bool:
         if not isinstance(o, Candidate):
