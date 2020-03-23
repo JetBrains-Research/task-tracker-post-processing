@@ -2,13 +2,13 @@
 
 import logging
 
-from src.main.canonicalization.canonicalization import are_asts_equal, get_canonicalized_form
 from src.main.util import consts
-from typing import List, Optional, Union, Any
+from typing import List, Optional, Any
+from src.main.util.consts import DEFAULT_VALUES
 from src.main.solution_space.data_classes import Code, User, Profile
 from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 from src.main.gum_tree_diff.gum_tree_diff import get_diffs_number, apply_diffs
-from src.main.util.consts import DEFAULT_VALUES
+from src.main.canonicalization.canonicalization import are_asts_equal, get_canonicalized_form
 from src.main.util.statistics_util import calculate_safety_median, calculate_median_for_objects
 
 log = logging.getLogger(consts.LOGGER_NAME)

@@ -8,11 +8,10 @@ from typing import List, Tuple
 from src.main.solution_space.data_classes import Code
 from src.main.util.language_util import get_extension_by_language
 from src.main.solution_space.solution_graph import Vertex, SolutionGraph
-from src.test.solution_space.solution_graph.util import create_code_from_source, get_two_vertices
+from src.test.solution_space.solution_graph.util import get_two_vertices
 from src.main.util.file_util import get_all_file_system_items, all_items_condition, remove_directory
 from src.main.solution_space.consts import GRAPH_FOLDER_PREFIX, FOLDER_WITH_CODE_FILES_FOR_TESTS, FILE_PREFIX
-from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT, TEST_RESULT, LOGGER_NAME, TASK, FILE_SYSTEM_ITEM, \
-    LANGUAGE
+from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT, LOGGER_NAME, TASK, FILE_SYSTEM_ITEM, LANGUAGE
 
 log = logging.getLogger(LOGGER_NAME)
 

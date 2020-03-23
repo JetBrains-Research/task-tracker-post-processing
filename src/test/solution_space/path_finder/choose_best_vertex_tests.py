@@ -4,14 +4,14 @@ import os
 import logging
 import unittest
 
-from typing import List, Optional
-from src.main.canonicalization.canonicalization import get_canonicalized_form
-from src.main.solution_space.data_classes import Code, Profile, User
-from src.main.solution_space.path_finder import PathFinder
-from src.main.solution_space.solution_graph import SolutionGraph, Vertex
-from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT, TEST_DATA_PATH, TASK
+from typing import Optional
 from src.main.util.file_util import get_content_from_file
+from src.main.solution_space.path_finder import PathFinder
+from src.main.solution_space.data_classes import Code, Profile, User
+from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 from src.test.solution_space.solution_graph.util import get_two_vertices
+from src.main.canonicalization.canonicalization import get_canonicalized_form
+from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT, TEST_DATA_PATH, TASK
 
 USER_SOURCE_PATH = os.path.join(TEST_DATA_PATH, 'solution_space', 'choose_best_vertex', 'source.py')
 USER_SOURCE = get_content_from_file(USER_SOURCE_PATH)

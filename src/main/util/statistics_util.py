@@ -1,9 +1,8 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 from statistics import median
-from typing import List, Any, Optional, Union
 from collections import Counter
-from src.main.util.consts import DEFAULT_VALUES, EXPERIENCE
+from typing import List, Any, Optional, Union
 
 
 def calculate_safety_median(values: List[int],

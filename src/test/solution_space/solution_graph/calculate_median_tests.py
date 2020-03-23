@@ -4,9 +4,9 @@ import logging
 import unittest
 
 from typing import Tuple, Any
-from src.main.solution_space.data_classes import Code, Profile, User, CodeInfo
 from src.main.solution_space.solution_graph import SolutionGraph
 from src.test.solution_space.solution_graph.util import get_two_vertices
+from src.main.solution_space.data_classes import Profile, User, CodeInfo
 from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT, LOGGER_NAME, TASK, DEFAULT_VALUES, EXPERIENCE
 
 log = logging.getLogger(LOGGER_NAME)

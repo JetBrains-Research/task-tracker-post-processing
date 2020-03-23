@@ -1,7 +1,6 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import os
-from typing import Any, Callable
 
 from numpy import nan, datetime64, isnat, equal
 from enum import Enum

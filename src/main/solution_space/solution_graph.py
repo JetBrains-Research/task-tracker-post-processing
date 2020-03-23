@@ -4,11 +4,11 @@ import os
 import logging
 import collections
 
-from typing import Optional, List, Tuple, Set, Union, Any
+from typing import Optional, List, Tuple, Set, Any
 from src.main.solution_space import consts as solution_space_consts
 from src.main.canonicalization.canonicalization import are_asts_equal
 from src.main.solution_space.data_classes import User, Code, CodeInfo
-from src.main.util.consts import LOGGER_NAME, TASK, LANGUAGE, EXPERIENCE, DEFAULT_VALUES
+from src.main.util.consts import LOGGER_NAME, TASK, LANGUAGE, DEFAULT_VALUES
 from src.main.util.file_util import remove_directory, create_directory, does_exist
 from src.main.solution_space.consts import VERTEX_TYPE, GRAPH_FOLDER_PREFIX, FOLDER_WITH_CODE_FILES, FILE_PREFIX
 from src.main.util.statistics_util import calculate_safety_median, calculate_median_for_objects
