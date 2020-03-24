@@ -10,7 +10,6 @@ from src.main.solution_space.data_classes import Code, User, Profile
 from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 from src.main.gum_tree_diff.gum_tree_diff import get_diffs_number, apply_diffs
 from src.main.canonicalization.canonicalization import are_asts_equal, get_canonicalized_form
-from src.main.util.statistics_util import calculate_median_safely, calculate_median_for_objects
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -18,19 +17,10 @@ log = logging.getLogger(consts.LOGGER_NAME)
 class PathFinder:
     def __init__(self, graph: SolutionGraph):
         self._graph = graph
-        self._median_age, self._median_experience = graph.calculate_median_of_profile_info()
 
     @property
     def graph(self) -> SolutionGraph:
         return self._graph
-
-    @property
-    def median_age(self) -> int:
-        return self._median_age
-
-    @property
-    def median_experience(self) -> Any:
-        return self._median_experience
 
     # Find a next canonicalization state for user code
     def find_next_code_state(self, user_code: Code, user: User) -> Code:
@@ -142,9 +132,7 @@ class Candidate:
 
     def __init_profile(self, user: User) -> Profile:
         # Todo: add user handling
-        ages, experiences = SolutionGraph.get_ages_and_experiences(self._vertex)
-        return Profile(calculate_median_safely(ages, default_value=DEFAULT_VALUES.AGE.value),
-                       calculate_median_for_objects(experiences, default_value=DEFAULT_VALUES.EXPERIENCE))
+        return Profile()
 
     def __eq__(self, o: object) -> bool:
         if not isinstance(o, Candidate):

@@ -14,7 +14,6 @@ from src.main.util.consts import LOGGER_NAME, TASK, LANGUAGE, DEFAULT_VALUES
 from src.main.util.file_util import remove_directory, create_directory, does_exist
 from src.main.solution_space.consts import VERTEX_TYPE, GRAPH_FOLDER_PREFIX, FOLDER_WITH_CODE_FILES, FILE_PREFIX, \
     EMPTY_CODE_FILE
-from src.main.util.statistics_util import calculate_median_safely, calculate_median_for_objects
 
 log = logging.getLogger(LOGGER_NAME)
 
@@ -232,34 +231,3 @@ class SolutionGraph(collections.abc.Iterable):
                 prev_vertex.add_child(next_vertex)
                 prev_vertex = next_vertex
         log.info(f'Finish adding code-user chain')
-
-    @staticmethod
-    def get_ages_and_experiences(vertex: Vertex) -> Tuple[List[int], List[Any]]:
-        ages, experiences = [], []
-        for code_info in vertex.code_info_list:
-            if not code_info.user.profile.age != DEFAULT_VALUES.AGE.value:
-                ages.append(code_info.user.profile.age)
-            if not code_info.user.profile.experience != DEFAULT_VALUES.EXPERIENCE:
-                experiences.append(code_info.user.profile.experience)
-        return ages, experiences
-
-    def calculate_median_of_profile_info(self) -> Tuple[int, Any]:
-        ages, experiences = [], []
-        vertices = self.get_traversal()
-        vertices.remove(self.start_vertex)
-        for vertex in vertices:
-            cur_ages, cur_experiences = self.__class__.get_ages_and_experiences(vertex)
-            ages += cur_ages
-            experiences += cur_experiences
-        return calculate_median_safely(ages, default_value=DEFAULT_VALUES.AGE.value), \
-               calculate_median_for_objects(experiences, default_value=DEFAULT_VALUES.EXPERIENCE)
-
-    def calculate_median_of_diff_number_to_goal(self) -> int:
-        diffs = []
-        goals = self.end_vertex.parents
-        vertices = self.get_traversal()
-        vertices.remove(self.start_vertex)
-        for vertex in vertices:
-            if vertex not in goals:
-                diffs.append(get_diffs_number(EMPTY_CODE_FILE, vertex.code.file_with_code))
-        return calculate_median_safely(diffs, default_value=0)
