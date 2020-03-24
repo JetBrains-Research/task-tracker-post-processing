@@ -2,7 +2,7 @@
 
 import logging
 
-from src.main.solution_space.consts import DIFFS_PERCENT_GO_THROUGH_GRAPH
+from src.main.solution_space.consts import DIFFS_PERCENT_GO_DIRECTLY, EMPTY_CODE_FILE, TO_GRAPH_DISTANCE_THRESHOLD
 from src.main.util import consts
 from typing import List, Optional, Any
 from src.main.util.consts import DEFAULT_VALUES
@@ -10,7 +10,7 @@ from src.main.solution_space.data_classes import Code, User, Profile
 from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 from src.main.gum_tree_diff.gum_tree_diff import get_diffs_number, apply_diffs
 from src.main.canonicalization.canonicalization import are_asts_equal, get_canonicalized_form
-from src.main.util.statistics_util import calculate_safety_median, calculate_median_for_objects
+from src.main.util.statistics_util import calculate_median_safely, calculate_median_for_objects
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -37,12 +37,12 @@ class PathFinder:
         # Todo: check if user_code is not valid
         log.info(f'Start finding the next code state for the user code: {user_code} and the user: {user}')
         goal = self.__find_closest_goal(user_code, user)
-        median_of_diff_number_to_goal = self._graph.calculate_median_of_diff_number_to_goal(goal)
-        log.info(f'The goal for the user code: {user_code} is\n{goal}\n'
-                 f'Median of diff number is {median_of_diff_number_to_goal}')
+        # median_of_diff_number_to_goal = self._graph.calculate_median_of_diff_number_to_goal(goal)
+        # log.info(f'The goal for the user code: {user_code} is\n{goal}\n'
+        #          f'Median of diff number is {median_of_diff_number_to_goal}')
         graph_vertex = self.__find_closest_vertex_with_path(user_code, user, goal)
         # We can have graph_vertex = None
-        if graph_vertex and self.__go_through_graph(user_code, graph_vertex, goal, median_of_diff_number_to_goal):
+        if graph_vertex and self.__go_through_graph(user_code, graph_vertex, goal):
             log.info(f'We are going through graph')
             next_code = self.__apply_minimal_actions_number(user_code, graph_vertex.code)
         else:
@@ -82,20 +82,28 @@ class PathFinder:
             diffs = get_diffs_number(vertex.code.file_with_code, goal.code.file_with_code)
             if diffs <= user_diffs_to_goal:
                 candidates.append(vertex)
-        return self.__choose_best_vertex(user_code, user, vertices)
+        return self.__choose_best_vertex(user_code, user, candidates)
+
+    @staticmethod
+    def __is_closer_goal(user_diffs_to_goal: int, user_diffs_to_graph: int) -> bool:
+        return user_diffs_to_graph / user_diffs_to_goal > TO_GRAPH_DISTANCE_THRESHOLD
+
+    @staticmethod
+    def __is_almost_goal(empty_diffs_to_goal: int, user_diffs_to_goal: int) -> bool:
+        return abs(empty_diffs_to_goal - user_diffs_to_goal) <= empty_diffs_to_goal * DIFFS_PERCENT_GO_DIRECTLY
 
     # Choose the best way to go to the goal
     # For example, if we have a good way through the graph, we should advise it,
     # but if don't we would advise going directly to the goal
     @staticmethod
-    def __go_through_graph(user_code: Code, graph_vertex: Vertex, goal: Vertex,
-                           median_of_diff_number_to_goal: int) -> bool:
-        # Todo: use graph_vertex too
-        diffs_to_goal = get_diffs_number(user_code.file_with_code, goal.code.file_with_code)
-        border_go_through_graph = median_of_diff_number_to_goal * (1 - DIFFS_PERCENT_GO_THROUGH_GRAPH)
-        if diffs_to_goal <= border_go_through_graph:
+    def __go_through_graph(user_code: Code, graph_vertex: Vertex, goal: Vertex) -> bool:
+        empty_diffs_to_goal = get_diffs_number(EMPTY_CODE_FILE, goal.code.file_with_code)
+        user_diffs_to_goal = get_diffs_number(user_code.file_with_code, goal.code.file_with_code)
+        if PathFinder.__is_almost_goal(empty_diffs_to_goal, user_diffs_to_goal):
             return False
-        return True
+
+        user_diffs_to_graph = get_diffs_number(user_code.file_with_code, graph_vertex.code.file_with_code)
+        return not PathFinder.__is_closer_goal(user_diffs_to_goal, user_diffs_to_graph)
 
     # Call gumTreeDiff methods
     @staticmethod
@@ -134,9 +142,8 @@ class Candidate:
 
     def __init_profile(self, user: User) -> Profile:
         # Todo: add user handling
-        ages, experiences = [], []
-        SolutionGraph.update_ages_and_experiences(self._vertex.code_info_list, ages, experiences)
-        return Profile(calculate_safety_median(ages, default_value=DEFAULT_VALUES.AGE.value),
+        ages, experiences = SolutionGraph.get_ages_and_experiences(self._vertex)
+        return Profile(calculate_median_safely(ages, default_value=DEFAULT_VALUES.AGE.value),
                        calculate_median_for_objects(experiences, default_value=DEFAULT_VALUES.EXPERIENCE))
 
     def __eq__(self, o: object) -> bool:

@@ -5,7 +5,7 @@ from collections import Counter
 from typing import List, Any, Optional, Union
 
 
-def calculate_safety_median(values: List[int],
+def calculate_median_safely(values: List[int],
                             default_value: Optional[int] = None) -> Optional[Union[int, int]]:
     if len(values) == 0:
         return default_value

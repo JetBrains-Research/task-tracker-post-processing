@@ -12,8 +12,9 @@ from src.main.canonicalization.canonicalization import are_asts_equal
 from src.main.solution_space.data_classes import User, Code, CodeInfo
 from src.main.util.consts import LOGGER_NAME, TASK, LANGUAGE, DEFAULT_VALUES
 from src.main.util.file_util import remove_directory, create_directory, does_exist
-from src.main.solution_space.consts import VERTEX_TYPE, GRAPH_FOLDER_PREFIX, FOLDER_WITH_CODE_FILES, FILE_PREFIX
-from src.main.util.statistics_util import calculate_safety_median, calculate_median_for_objects
+from src.main.solution_space.consts import VERTEX_TYPE, GRAPH_FOLDER_PREFIX, FOLDER_WITH_CODE_FILES, FILE_PREFIX, \
+    EMPTY_CODE_FILE
+from src.main.util.statistics_util import calculate_median_safely, calculate_median_for_objects
 
 log = logging.getLogger(LOGGER_NAME)
 
@@ -233,30 +234,32 @@ class SolutionGraph(collections.abc.Iterable):
         log.info(f'Finish adding code-user chain')
 
     @staticmethod
-    def update_ages_and_experiences(code_info_list: List[CodeInfo],
-                                    ages: List[int],
-                                    experiences: List[Any]) -> None:
-        for code_info in code_info_list:
+    def get_ages_and_experiences(vertex: Vertex) -> Tuple[List[int], List[Any]]:
+        ages, experiences = [], []
+        for code_info in vertex.code_info_list:
             if not code_info.user.profile.age != DEFAULT_VALUES.AGE.value:
                 ages.append(code_info.user.profile.age)
             if not code_info.user.profile.experience != DEFAULT_VALUES.EXPERIENCE:
                 experiences.append(code_info.user.profile.experience)
+        return ages, experiences
 
     def calculate_median_of_profile_info(self) -> Tuple[int, Any]:
         ages, experiences = [], []
         vertices = self.get_traversal()
         vertices.remove(self.start_vertex)
         for vertex in vertices:
-            self.__class__.update_ages_and_experiences(vertex.code_info_list, ages, experiences)
-        return calculate_safety_median(ages, default_value=DEFAULT_VALUES.AGE.value), \
+            cur_ages, cur_experiences = self.__class__.get_ages_and_experiences(vertex)
+            ages += cur_ages
+            experiences += cur_experiences
+        return calculate_median_safely(ages, default_value=DEFAULT_VALUES.AGE.value), \
                calculate_median_for_objects(experiences, default_value=DEFAULT_VALUES.EXPERIENCE)
 
-    def calculate_median_of_diff_number_to_goal(self, goal: Vertex) -> int:
+    def calculate_median_of_diff_number_to_goal(self) -> int:
         diffs = []
         goals = self.end_vertex.parents
         vertices = self.get_traversal()
         vertices.remove(self.start_vertex)
         for vertex in vertices:
             if vertex not in goals:
-                diffs.append(get_diffs_number(vertex.code.file_with_code, goal.code.file_with_code))
-        return calculate_safety_median(diffs, default_value=0)
+                diffs.append(get_diffs_number(EMPTY_CODE_FILE, vertex.code.file_with_code))
+        return calculate_median_safely(diffs, default_value=0)
