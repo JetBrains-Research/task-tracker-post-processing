@@ -37,7 +37,7 @@ SG = init_graph()
 PF = PathFinder(SG)
 
 
-def run_empty_list_test() -> Optional[Vertex]:
+def get_best_vertex_from_empty_list() -> Optional[Vertex]:
     # Call the private function
     return PF._PathFinder__choose_best_vertex(USER_CODE, DEFAULT_USER, [])
 
@@ -48,6 +48,6 @@ class TestChooseBestVertexMethod(unittest.TestCase):
         logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
 
     def test_empty_list(self):
-        self.assertEqual(run_empty_list_test(), None)
+        self.assertEqual(get_best_vertex_from_empty_list(), None)
 
     # Todo: add tests
