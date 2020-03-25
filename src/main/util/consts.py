@@ -1,7 +1,6 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import os
-from typing import Any, Callable
 
 from numpy import nan, datetime64, isnat, equal
 from enum import Enum
@@ -73,6 +72,7 @@ class DEFAULT_VALUES(Enum):
         return equal(self.value, value)
 
 
+
 class EXPERIENCE(Enum):
     LESS_THAN_HALF_YEAR = 'LESS_THAN_HALF_YEAR'
     FROM_HALF_TO_ONE_YEAR = 'FROM_HALF_TO_ONE_YEAR'
@@ -80,6 +80,7 @@ class EXPERIENCE(Enum):
     FROM_TWO_TO_FOUR_YEARS = 'FROM_TWO_TO_FOUR_YEARS'
     FROM_FOUR_TO_SIX_YEARS = 'FROM_FOUR_TO_SIX_YEARS'
     MORE_THAN_SIX = 'MORE_THAN_SIX'
+
 
 
 class TASK(Enum):
