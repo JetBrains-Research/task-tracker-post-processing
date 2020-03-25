@@ -20,7 +20,7 @@ pd.set_option('display.max_columns', 100)
 log = logging.getLogger(consts.LOGGER_NAME)
 
 
-def __get_data_path():
+def __get_data_path() -> str:
     args = sys.argv
     path = args[args.index(PATH_CMD_ARG) + 1]
     if not os.path.isdir(path):
@@ -29,7 +29,7 @@ def __get_data_path():
     return add_slash(path)
 
 
-def main():
+def main() -> None:
     logging.basicConfig(filename=consts.LOGGER_FILE, format=LOGGER_FORMAT, level=logging.INFO)
     path = __get_data_path()
 
