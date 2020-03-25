@@ -8,16 +8,16 @@ import pandas as pd
 
 from src.main.util import consts
 from typing import List, Dict, Tuple
-from src.main.util.consts import LANGUAGE
-from src.main.splitting.task_checker import TASKS_TESTS_PATH
+from src.main.util.consts import LANGUAGE, TASK
 from src.main.splitting.cpp_task_checker import CppTaskChecker
 from src.main.splitting.java_task_checker import JavaTaskChecker
 from src.main.splitting.kotlin_task_checker import KotlinTaskChecker
 from src.main.splitting.python_task_checker import PythonTaskChecker
 from src.main.preprocessing.code_tracker_handler import get_ct_language
+from src.main.splitting.task_checker import TASKS_TESTS_PATH, FilesDict
 from src.main.splitting.not_defined_task_checker import NotDefinedTaskChecker
 from src.main.util.file_util import get_all_file_system_items, ct_file_condition, get_result_folder, \
-    write_based_on_language, get_file_and_parent_folder_names, pair_in_and_out_files
+    write_based_on_language, get_file_and_parent_folder_names, pair_in_and_out_files, match_condition
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -25,19 +25,19 @@ FRAGMENT = consts.CODE_TRACKER_COLUMN.FRAGMENT.value
 TESTS_RESULTS = consts.CODE_TRACKER_COLUMN.TESTS_RESULTS.value
 
 
-def create_in_and_out_dict(tasks: List[str]) -> Dict[str, List[Tuple[str, str]]]:
+def create_in_and_out_dict(tasks: List[TASK]) -> FilesDict:
     in_and_out_files_dict = {}
     for task in tasks:
-        root = os.path.join(TASKS_TESTS_PATH, task)
-        in_files = get_all_file_system_items(root, (lambda filename: re.fullmatch(r'in_\d+.txt', filename)))
-        out_files = get_all_file_system_items(root, (lambda filename: re.fullmatch(r'out_\d+.txt', filename)))
+        root = os.path.join(TASKS_TESTS_PATH, task.value)
+        in_files = get_all_file_system_items(root, match_condition(r'in_\d+.txt'))
+        out_files = get_all_file_system_items(root, match_condition(r'out_\d+.txt'))
         if len(out_files) != len(in_files):
             raise ValueError('Length of out files list does not equal in files list')
         in_and_out_files_dict[task] = pair_in_and_out_files(in_files, out_files)
     return in_and_out_files_dict
 
 
-def check_tasks(tasks: List[str], source_code: str, in_and_out_files_dict: Dict[str, List[Tuple[str, str]]],
+def check_tasks(tasks: List[TASK], source_code: str, in_and_out_files_dict: FilesDict,
                 language: LANGUAGE = LANGUAGE.PYTHON, stop_after_first_false: bool = True) -> List[float]:
     if language == LANGUAGE.PYTHON:
         task_checker = PythonTaskChecker()
@@ -53,15 +53,14 @@ def check_tasks(tasks: List[str], source_code: str, in_and_out_files_dict: Dict[
     return task_checker.check_tasks(tasks, source_code, in_and_out_files_dict, stop_after_first_false)
 
 
-def __check_tasks_on_correct_fragments(data: pd.DataFrame, tasks: List[str],
-                                       in_and_out_files_dict: Dict[str, List[Tuple[str, str]]],
+def __check_tasks_on_correct_fragments(data: pd.DataFrame, tasks: List[TASK], in_and_out_files_dict: FilesDict,
                                        file_log_info: str = '') -> Tuple[LANGUAGE, pd.DataFrame]:
     data[FRAGMENT] = data[FRAGMENT].fillna('')
     # If run after preprocessing, this value can be taken from 'language' column
     language = get_ct_language(data)
-    log.info(f'{file_log_info}, language is {language}, found {str(data.shape[0])} fragments')
+    log.info(f'{file_log_info}, language is {language.value}, found {str(data.shape[0])} fragments')
 
-    if language is consts.LANGUAGE.NOT_DEFINED.value:
+    if language == consts.LANGUAGE.NOT_DEFINED:
         data[TESTS_RESULTS] = str([consts.TEST_RESULT.LANGUAGE_NOT_DEFINED.value] * len(tasks))
     else:
         unique_fragments = list(data[FRAGMENT].unique())
@@ -92,7 +91,7 @@ def run_tests(path: str) -> str:
     str_len_files = str(len(files))
     log.info(f'Found {str_len_files} files to run tests on them after filtering already tested')
 
-    tasks = [t.value for t in consts.TASK]
+    tasks = TASK.tasks()
     in_and_out_files_dict = create_in_and_out_dict(tasks)
 
     for i, file in enumerate(files):

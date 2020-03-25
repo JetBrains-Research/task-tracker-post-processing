@@ -59,7 +59,7 @@ def __separate_ati_and_other_files(files: List[str]) -> Tuple[List[str], Optiona
 
 
 def handle_ct_and_at(ct_file: str, ct_df: pd.DataFrame, ati_file: str, ati_df: pd.DataFrame,
-                     language: consts.LANGUAGE.PYTHON = consts.LANGUAGE.PYTHON) -> pd.DataFrame:
+                     language: consts.LANGUAGE = consts.LANGUAGE.PYTHON) -> pd.DataFrame:
     files_from_at = None
     if ati_df is not None:
         try:

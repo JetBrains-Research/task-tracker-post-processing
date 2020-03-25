@@ -37,7 +37,7 @@ cpp_actual_pairs = {
 
 
 class TestPiesTests(unittest.TestCase):
-    task = TASK.PIES.value
+    task = TASK.PIES
 
     def setUp(self) -> None:
         logging.basicConfig(filename=consts.LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)

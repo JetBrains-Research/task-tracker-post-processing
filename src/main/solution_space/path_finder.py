@@ -5,7 +5,7 @@ import logging
 from src.main.solution_space.consts import DIFFS_PERCENT_TO_GO_DIRECTLY, EMPTY_CODE_FILE, DISTANCE_TO_GRAPH_THRESHOLD
 from src.main.util import consts
 from typing import List, Optional, Any
-from src.main.util.consts import DEFAULT_VALUES
+from src.main.util.consts import DEFAULT_VALUE
 from src.main.solution_space.data_classes import Code, User, Profile
 from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 from src.main.gum_tree_diff.gum_tree_diff import get_diffs_number, apply_diffs

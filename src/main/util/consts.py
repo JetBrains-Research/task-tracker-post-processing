@@ -2,10 +2,11 @@
 
 import os
 
-from numpy import nan, datetime64, isnat, equal
 from enum import Enum
-
 from pandas import isna
+from typing import List
+from numpy import nan, datetime64, isnat, equal
+
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -37,8 +38,9 @@ class ACTIVITY_TRACKER_COLUMN(Enum):
     TASK = 'task',
     ATI_ID = 'atiId'
 
+    # Todo: is it okay we don't have ATI_ID there?
     @classmethod
-    def activity_tracker_columns(cls):
+    def activity_tracker_columns(cls) -> List[str]:
         return [cls.TIMESTAMP_ATI.value, cls.USERNAME.value, cls.EVENT_TYPE.value, cls.EVENT_DATA.value,
                 cls.PROJECT_NAME.value, cls.FOCUSED_COMPONENT.value, cls.CURRENT_FILE.value, cls.PSI_PATH.value,
                 cls.EDITOR_LINE.value, cls.EDITOR_COLUMN.value, cls.TASK.value]
@@ -49,13 +51,13 @@ class ACTIVITY_TRACKER_EVENTS(Enum):
     COMPILATION_FINISHED = 'CompilationFinished'
 
     @classmethod
-    def action_events(cls):
+    def action_events(cls) -> List[str]:
         return ['Run', 'Rerun', 'RunClass', 'DebugClass', 'ToggleLineBreakpoint', 'Debugger.AddToWatch', 'Debug',
                 'Stop', 'Resume', 'StepInto', 'CompileDirty', 'EditorCopy', 'EditorPaste', 'EditorCut', 'ReformatCode',
                 '$Undo', '$Paste', '$Copy', 'ChooseRunConfiguration', 'CopyElement', 'PasteElement', 'CutElement']
 
 
-class DEFAULT_VALUES(Enum):
+class DEFAULT_VALUE(Enum):
     AGE = 0
     EXPERIENCE = nan
     TASK = nan
@@ -72,7 +74,6 @@ class DEFAULT_VALUES(Enum):
         return equal(self.value, value)
 
 
-
 class EXPERIENCE(Enum):
     LESS_THAN_HALF_YEAR = 'LESS_THAN_HALF_YEAR'
     FROM_HALF_TO_ONE_YEAR = 'FROM_HALF_TO_ONE_YEAR'
@@ -80,7 +81,6 @@ class EXPERIENCE(Enum):
     FROM_TWO_TO_FOUR_YEARS = 'FROM_TWO_TO_FOUR_YEARS'
     FROM_FOUR_TO_SIX_YEARS = 'FROM_FOUR_TO_SIX_YEARS'
     MORE_THAN_SIX = 'MORE_THAN_SIX'
-
 
 
 class TASK(Enum):
@@ -92,7 +92,11 @@ class TASK(Enum):
     MAX_DIGIT = 'max_digit'
 
     @classmethod
-    def tasks_values(cls):
+    def tasks(cls) -> List['TASK']:
+        return [task for task in TASK]
+
+    @classmethod
+    def tasks_values(cls) -> List[str]:
         return [member.value for _, member in TASK.__members__.items()]
 
 
@@ -195,5 +199,5 @@ RUNNING_TESTS_RESULT_FOLDER = 'running_tests_result_3'
 
 MAX_DIFF_SYMBOLS = 30
 
-SUBPROCESS_TIMEOUT = 5
+TIMEOUT = 5
 

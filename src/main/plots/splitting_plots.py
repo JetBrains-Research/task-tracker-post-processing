@@ -4,6 +4,7 @@ import logging
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from src.main.plots.util.consts import TASK_COLOR_DICT, FRAGMENT_LENGTH_COL, TASK_STATUS_COLOR_DICT, LARGE_SIZE
 from src.main.util import consts
 from typing import Dict, Optional
 from src.main.splitting.splitting import find_splits
@@ -41,11 +42,9 @@ def __add_tasks_colored_background(ax: plt.axes, data: pd.DataFrame,
                                    task_split_x_dict: Dict[consts.TASK, pd.Series] = None) -> None:
     if not task_split_x_dict:
         task_split_x_dict = __create_task_split_x_dict(data)
-    max_length = data[plot_consts.FRAGMENT_LENGTH_COL].max()
+    max_length = data[FRAGMENT_LENGTH_COL].max()
     for task in consts.TASK:
-        ax.fill_between(task_split_x_dict[task], 0, max_length,
-                        color=plot_consts.TASK_COLOR_DICT[task],
-                        label=task.value)
+        ax.fill_between(task_split_x_dict[task], 0, max_length, color=TASK_COLOR_DICT[task], label=task.value)
 
 
 def __add_task_status_to_plot(ax: plt.axes, data: pd.DataFrame,
@@ -54,17 +53,17 @@ def __add_task_status_to_plot(ax: plt.axes, data: pd.DataFrame,
         status_x_dict = __create_status_x_dict(data)
     for status in consts.TASK_STATUS:
         ax.scatter(status_x_dict[status],
-                   data.loc[data.index.isin(status_x_dict[status].index)][plot_consts.FRAGMENT_LENGTH_COL],
-                   color=plot_consts.TASK_STATUS_COLOR_DICT[status],
+                   data.loc[data.index.isin(status_x_dict[status].index)][FRAGMENT_LENGTH_COL],
+                   color=TASK_STATUS_COLOR_DICT[status],
                    label=status.value.lower(),
-                   s=plot_consts.LARGE_SIZE)
+                   s=LARGE_SIZE)
 
 
 def __create_splitting_plot(ax: plt.axes, data: pd.DataFrame, title: str,
                             task_split_x_dict: Optional[Dict[consts.TASK, pd.Series]] = None,
                             status_x_dict: Optional[Dict[consts.TASK_STATUS, pd.Series]] = None,
                             to_snake_case: bool = True) -> None:
-    data[plot_consts.FRAGMENT_LENGTH_COL] = data[FRAGMENT_COL].fillna('').str.len()
+    data[FRAGMENT_LENGTH_COL] = data[FRAGMENT_COL].fillna('').str.len()
     if to_snake_case:
         data[CHOSEN_TASK_COL] = data[CHOSEN_TASK_COL].fillna('').apply(lambda t: convert_camel_case_to_snake_case(t))
 
@@ -79,7 +78,7 @@ def __create_splitting_plot(ax: plt.axes, data: pd.DataFrame, title: str,
 
     add_legend_to_the_right(ax)
     ax.set_xlabel(TIMESTAMP_COL)
-    ax.set_ylabel(plot_consts.FRAGMENT_LENGTH_COL)
+    ax.set_ylabel(FRAGMENT_LENGTH_COL)
     ax.set_title(title)
 
 

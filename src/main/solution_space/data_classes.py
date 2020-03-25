@@ -10,15 +10,15 @@ from typing import List, Union, Optional
 from src.main.util.file_util import create_file
 from src.main.util.language_util import get_extension_by_language
 from src.main.canonicalization.canonicalization import get_code_from_tree
-from src.main.util.consts import EXPERIENCE, DEFAULT_VALUES, ACTIVITY_TRACKER_EVENTS
+from src.main.util.consts import EXPERIENCE, DEFAULT_VALUE, ACTIVITY_TRACKER_EVENTS
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
 
 class AtiItem:
-    def __init__(self, timestamp: datetime = DEFAULT_VALUES.DATE.value,
-                 event_type: Union[ACTIVITY_TRACKER_EVENTS, DEFAULT_VALUES] = DEFAULT_VALUES.EVENT_TYPE,
-                 event_data: str = DEFAULT_VALUES.EVENT_DATA.value):
+    def __init__(self, timestamp: datetime = DEFAULT_VALUE.DATE.value,
+                 event_type: Union[ACTIVITY_TRACKER_EVENTS, DEFAULT_VALUE] = DEFAULT_VALUE.EVENT_TYPE,
+                 event_data: str = DEFAULT_VALUE.EVENT_DATA.value):
         self._timestamp = timestamp
         self._event_type = event_type
         self._event_data = event_data
@@ -28,7 +28,7 @@ class AtiItem:
         return self._timestamp
 
     @property
-    def event_type(self) -> Union[ACTIVITY_TRACKER_EVENTS, DEFAULT_VALUES]:
+    def event_type(self) -> Union[ACTIVITY_TRACKER_EVENTS, DEFAULT_VALUE]:
         return self._event_type
 
     @property
@@ -36,9 +36,9 @@ class AtiItem:
         return self._event_data
 
     def is_empty(self) -> bool:
-        return DEFAULT_VALUES.DATE.is_equal(self._timestamp) and DEFAULT_VALUES.EVENT_DATA.is_equal(
+        return DEFAULT_VALUE.DATE.is_equal(self._timestamp) and DEFAULT_VALUE.EVENT_DATA.is_equal(
             self._event_type.value) \
-               and DEFAULT_VALUES.EVENT_DATA.is_equal(self._event_data)
+               and DEFAULT_VALUE.EVENT_DATA.is_equal(self._event_data)
 
     def __str__(self) -> str:
         return f'Timestamp: {self._timestamp}, event_type: {self._event_type}, event_data: {self._event_data}'
@@ -52,8 +52,8 @@ class AtiItem:
 
 
 class Profile:
-    def __init__(self, age: int = consts.DEFAULT_VALUES.AGE.value,
-                 experience: Union[EXPERIENCE, DEFAULT_VALUES] = DEFAULT_VALUES.EXPERIENCE):
+    def __init__(self, age: int = consts.DEFAULT_VALUE.AGE.value,
+                 experience: Union[EXPERIENCE, DEFAULT_VALUE] = DEFAULT_VALUE.EXPERIENCE):
         self._age = age
         self._experience = experience
 
@@ -62,7 +62,7 @@ class Profile:
         return self._age
 
     @property
-    def experience(self) -> Union[EXPERIENCE, DEFAULT_VALUES]:
+    def experience(self) -> Union[EXPERIENCE, DEFAULT_VALUE]:
         return self._experience
 
     def __str__(self) -> str:
@@ -90,7 +90,7 @@ class User:
 
 
 class CodeInfo:
-    def __init__(self, user: User, timestamp: int = 0, date: datetime = DEFAULT_VALUES.DATE.value,
+    def __init__(self, user: User, timestamp: int = 0, date: datetime = DEFAULT_VALUE.DATE.value,
                  ati_actions: List[AtiItem] = None):
         self._user = user
         self._ati_actions = ati_actions if ati_actions else []

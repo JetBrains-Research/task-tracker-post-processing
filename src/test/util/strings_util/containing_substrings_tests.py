@@ -4,7 +4,7 @@ import logging
 import unittest
 
 from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT
-from src.main.util.strings_util import does_string_contain_any_of_substrings
+from src.main.util.strings_util import contains_any_of_substrings
 
 string = 'Roses are red, violets are blue, sugar is sweet, and so are you'
 contained_substrings = ['red', 'blue']
@@ -18,11 +18,11 @@ class TestContainingSubstrings(unittest.TestCase):
         logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
 
     def test_contained_substrings(self):
-        self.assertTrue(does_string_contain_any_of_substrings(string, contained_substrings))
+        self.assertTrue(contains_any_of_substrings(string, contained_substrings))
 
     def test_partly_contained_substrings(self):
-        self.assertTrue(does_string_contain_any_of_substrings(string, partly_contained_substrings))
+        self.assertTrue(contains_any_of_substrings(string, partly_contained_substrings))
 
     def test_not_contained_substrings(self):
-        self.assertFalse(does_string_contain_any_of_substrings(string, not_contained_substrings))
+        self.assertFalse(contains_any_of_substrings(string, not_contained_substrings))
 

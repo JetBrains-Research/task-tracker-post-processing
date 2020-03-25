@@ -4,20 +4,21 @@ import ast
 import logging
 import pandas as pd
 
-from typing import List
+from typing import List, Union
 from src.main.util import consts
+from src.main.util.consts import TASK
 from src.main.preprocessing.code_tracker_handler import get_ct_language
 from src.main.util.file_util import get_all_file_system_items, ct_file_condition, get_result_folder, \
     write_based_on_language, get_name_from_path, get_parent_folder_name, get_extension_from_file
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
-TESTS_RESULTS = consts.CODE_TRACKER_COLUMN.TESTS_RESULTS.value
 CHOSEN_TASK = consts.CODE_TRACKER_COLUMN.CHOSEN_TASK.value
 TASK_STATUS = consts.CODE_TRACKER_COLUMN.TASK_STATUS.value
+TESTS_RESULTS = consts.CODE_TRACKER_COLUMN.TESTS_RESULTS.value
 
 
-def unpack_tests_results(tests_results: str, tasks: List[str]) -> List[float]:
+def unpack_tests_results(tests_results: str, tasks: List[TASK]) -> List[float]:
     tests_results = ast.literal_eval(tests_results)
     if len(tests_results) != len(tasks):
         log.error(f'Cannot identify tasks because of unexpected tests_results length: {len(tests_results)}')
@@ -25,13 +26,13 @@ def unpack_tests_results(tests_results: str, tasks: List[str]) -> List[float]:
     return tests_results
 
 
-def get_solved_task(tests_results: str) -> str:
-    tasks = consts.TASK.tasks_values()
+def get_solved_task(tests_results: str) -> Union[TASK, consts.DEFAULT_VALUE]:
+    tasks = consts.TASK.tasks()
     tests_results = unpack_tests_results(tests_results, tasks)
     solved_tasks = [t for i, t in enumerate(tasks) if tests_results[i] == 1]
     if len(solved_tasks) == 0:
         log.info(f'No solved tasks found, tests results: {tests_results}')
-        return consts.DEFAULT_VALUES.TASK.value
+        return consts.DEFAULT_VALUE.TASK
     elif len(solved_tasks) == 1:
         log.info(f'Found solved task {solved_tasks[0]}, tests results: {tests_results}')
         return solved_tasks[0]
@@ -42,10 +43,10 @@ def get_solved_task(tests_results: str) -> str:
 
 def find_splits(ct_df: pd.DataFrame) -> pd.DataFrame:
     # Fill chosen task according to solved task
-    ct_df[CHOSEN_TASK] = ct_df.apply(lambda row: get_solved_task(row[TESTS_RESULTS]), axis=1)
+    ct_df[CHOSEN_TASK] = ct_df.apply(lambda row: get_solved_task(row[TESTS_RESULTS]).value, axis=1)
 
     # Change task status according to chosen task
-    ct_df.loc[ct_df[CHOSEN_TASK].isnull(), TASK_STATUS] = consts.DEFAULT_VALUES.TASK_STATUS.value
+    ct_df.loc[ct_df[CHOSEN_TASK].isnull(), TASK_STATUS] = consts.DEFAULT_VALUE.TASK_STATUS.value
     ct_df.loc[ct_df[CHOSEN_TASK].notnull(), TASK_STATUS] = consts.TASK_STATUS.SOLVED.value
 
     # Backward fill chosen task

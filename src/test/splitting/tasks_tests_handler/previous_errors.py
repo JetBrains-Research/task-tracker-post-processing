@@ -19,12 +19,11 @@ class TestPreviousErrors(unittest.TestCase):
 
     def test_fragments(self):
         fragment_files = get_all_file_system_items(PREVIOUS_ERRORS_TEST_DATA, (lambda name: 'fragment' in name))
-        tasks = [t.value for t in TASK]
-        in_and_out_files_dict = create_in_and_out_dict(tasks)
+        in_and_out_files_dict = create_in_and_out_dict(TASK.tasks())
 
         for file in fragment_files:
             language = get_language_by_extension(get_extension_from_file(file))
-            check_tasks(tasks, get_content_from_file(file), in_and_out_files_dict, language, False)
+            check_tasks(TASK.tasks(), get_content_from_file(file), in_and_out_files_dict, language, False)
 
     # need to test ati_327/Main_67885, put it in PREVIOUS_ERRORS_TEST_DATA before running
     def test_codetracker_data(self):

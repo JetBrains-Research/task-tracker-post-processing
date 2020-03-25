@@ -10,7 +10,7 @@ from src.main.gum_tree_diff.gum_tree_diff import get_diffs_number
 from src.main.solution_space import consts as solution_space_consts
 from src.main.canonicalization.canonicalization import are_asts_equal
 from src.main.solution_space.data_classes import User, Code, CodeInfo
-from src.main.util.consts import LOGGER_NAME, TASK, LANGUAGE, DEFAULT_VALUES
+from src.main.util.consts import LOGGER_NAME, TASK, LANGUAGE, DEFAULT_VALUE
 from src.main.util.file_util import remove_directory, create_directory, does_exist
 from src.main.solution_space.consts import VERTEX_TYPE, GRAPH_FOLDER_PREFIX, FOLDER_WITH_CODE_FILES, FILE_PREFIX, \
     EMPTY_CODE_FILE
@@ -208,10 +208,10 @@ class SolutionGraph(collections.abc.Iterable):
         log.info(f'Not found any existing vertex for code: {str(code)}, creating a new one')
         return self.create_vertex(code, code_info)
 
-    def connect_to_start_vertex(self, vertex) -> None:
+    def connect_to_start_vertex(self, vertex: Vertex) -> None:
         self._start_vertex.add_child(vertex)
 
-    def connect_to_end_vertex(self, vertex) -> None:
+    def connect_to_end_vertex(self, vertex: Vertex) -> None:
         self._end_vertex.add_parent(vertex)
 
     def add_code_info_chain(self, code_info_chain: Optional[List[Tuple[Code, CodeInfo]]]) -> None:

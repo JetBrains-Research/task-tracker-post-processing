@@ -2,7 +2,7 @@
 
 import pandas as pd
 
-from src.main.util.consts import ISO_ENCODING, FILE_SYSTEM_ITEM
+from src.main.util.consts import ISO_ENCODING
 from src.main.util.file_util import ct_file_condition, get_all_file_system_items
 
 

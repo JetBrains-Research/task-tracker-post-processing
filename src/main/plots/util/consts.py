@@ -1,10 +1,11 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 from enum import Enum
+from typing import List
 
 import plotly.express as px
 
-from src.main.util.consts import TASK, TASK_STATUS
+from src.main.util.consts import TASK, TASK_STATUS, DEFAULT_VALUE
 
 
 class ATI_RUN_EVENT(Enum):
@@ -18,17 +19,21 @@ class ATI_RUN_EVENT(Enum):
     STEP_INTO = 'StepInto'
     COMPILE_DIRTY = 'CompileDirty'
 
+    @classmethod
+    def get_events(cls) -> List['ATI_RUN_EVENT']:
+        return [e for e in ATI_RUN_EVENT]
+
 
 ATI_RUN_EVENT_COLOR_DICT = {
-    ATI_RUN_EVENT.RUN.value: '#2EA031',
-    ATI_RUN_EVENT.RERUN.value: '#2EB167',
-    ATI_RUN_EVENT.RUN_CLASS.value: '#B0DF8C',
-    ATI_RUN_EVENT.DEBUG_CLASS.value: '#A7CEE3',
-    ATI_RUN_EVENT.DEBUG.value: '#A7CEE3',
-    ATI_RUN_EVENT.STOP.value: '#E31C19',
-    ATI_RUN_EVENT.RESUME.value: '#FE7F05',
-    ATI_RUN_EVENT.STEP_INTO.value: '#FCBF70',
-    ATI_RUN_EVENT.COMPILE_DIRTY.value: '#FB9A99'
+    ATI_RUN_EVENT.RUN: '#2EA031',
+    ATI_RUN_EVENT.RERUN: '#2EB167',
+    ATI_RUN_EVENT.RUN_CLASS: '#B0DF8C',
+    ATI_RUN_EVENT.DEBUG_CLASS: '#A7CEE3',
+    ATI_RUN_EVENT.DEBUG: '#A7CEE3',
+    ATI_RUN_EVENT.STOP: '#E31C19',
+    ATI_RUN_EVENT.RESUME: '#FE7F05',
+    ATI_RUN_EVENT.STEP_INTO: '#FCBF70',
+    ATI_RUN_EVENT.COMPILE_DIRTY: '#FB9A99'
 }
 
 
@@ -40,6 +45,10 @@ class ATI_EDITOR_EVENT(Enum):
     EDITOR_CUT = 'EditorCut'
     REFORMAT_CODE = 'ReformatCode'
     UNDO = '$Undo'
+
+    @classmethod
+    def get_events(cls) -> List['ATI_EDITOR_EVENT']:
+        return [e for e in ATI_EDITOR_EVENT]
 
 
 ATI_EDITOR_EVENT_COLOR_DICT = {
@@ -84,9 +93,11 @@ class STATISTICS_KEY(Enum):
     AGE = 'age'
     EXPERIENCE = 'experience'
 
-    @classmethod
-    def statistics_keys(cls):
-        return [cls.AGE.value, cls.EXPERIENCE.value]
+    def get_default(self) -> DEFAULT_VALUE:
+        if self == STATISTICS_KEY.AGE:
+            return DEFAULT_VALUE.AGE
+        elif self == STATISTICS_KEY.EXPERIENCE:
+            return DEFAULT_VALUE.EXPERIENCE
 
 
 STATISTICS_FREQ = 'freq'
@@ -111,7 +122,7 @@ class STATISTICS_COLORS(Enum):
 DEFAULT_BAR_CHART_COLOR = '#9B0B9B'
 
 
-class PLOT_TYPES(Enum):
+class PLOT_TYPE(Enum):
     PIE = 'pie'
     BAR = 'bar'
 
