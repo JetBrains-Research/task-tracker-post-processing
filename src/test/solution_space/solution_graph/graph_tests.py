@@ -8,7 +8,7 @@ from src.main.solution_space.data_classes import Code, User, CodeInfo
 from src.main.solution_space.solution_graph import Vertex, SolutionGraph
 from src.main.canonicalization.canonicalization import get_code_from_tree
 from src.main.solution_space.consts import FOLDER_WITH_CODE_FILES_FOR_TESTS
-from src.test.solution_space.solution_graph.util import create_code_from_source
+from src.test.solution_space.solution_graph.util import create_code_from_source, init_default_ids
 from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT, TEST_RESULT, LOGGER_NAME, TASK
 
 log = logging.getLogger(LOGGER_NAME)
@@ -118,6 +118,7 @@ class TestGraph(unittest.TestCase):
         logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
 
     def test_bfs_traversal(self) -> None:
+        init_default_ids()
         # A simple graph without any code just to check bfs
         sg = SolutionGraph(CURRENT_TASK)
         #          START_VERTEX
@@ -150,12 +151,14 @@ class TestGraph(unittest.TestCase):
         self.assertEqual(actual_traversal, expected_traversal)
 
     def test_finding_vertex(self) -> None:
+        init_default_ids()
         sg, vertices, sources = create_graph_with_code()
         for i, vertex in enumerate(vertices):
             found_vertex = find_or_create_vertex_with_code_info_and_rate_check(self, sg, sources[i])
             self.assertEqual(found_vertex, vertex)
 
     def test_creating_vertex(self) -> None:
+        init_default_ids()
         sg, vertices, sources = create_graph_with_code()
         source = 'while(True):\n    print(\'Hi\')'
         found_vertex = find_or_create_vertex_with_code_info_and_rate_check(self, sg, source,
@@ -163,11 +166,13 @@ class TestGraph(unittest.TestCase):
         self.assertTrue(found_vertex not in vertices)
 
     def test_finding_or_creating_vertex_with_none(self) -> None:
+        init_default_ids()
         sg, vertices, sources = create_graph_with_code()
         user = User()
         self.assertRaises(ValueError, sg.find_or_create_vertex, None, user)
 
     def test_adding_code_info_chain(self) -> None:
+        init_default_ids()
         sg, vertices, vertex_sources = create_graph_with_code()
 
         # Graph with code:

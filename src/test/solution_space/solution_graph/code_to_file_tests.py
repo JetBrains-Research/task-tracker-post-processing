@@ -8,11 +8,10 @@ from typing import List, Tuple
 from src.main.solution_space.data_classes import Code
 from src.main.util.language_util import get_extension_by_language
 from src.main.solution_space.solution_graph import Vertex, SolutionGraph
-from src.test.solution_space.solution_graph.util import create_code_from_source
+from src.test.solution_space.solution_graph.util import get_two_vertices, init_default_ids
 from src.main.util.file_util import get_all_file_system_items, all_items_condition, remove_directory
 from src.main.solution_space.consts import GRAPH_FOLDER_PREFIX, FOLDER_WITH_CODE_FILES_FOR_TESTS, FILE_PREFIX
-from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT, TEST_RESULT, LOGGER_NAME, TASK, FILE_SYSTEM_ITEM, \
-    LANGUAGE
+from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT, LOGGER_NAME, TASK, FILE_SYSTEM_ITEM, LANGUAGE
 
 log = logging.getLogger(LOGGER_NAME)
 
@@ -55,26 +54,6 @@ def get_file_name(graph_id: int, code_id: int, graph_prefix: str = GRAPH_FOLDER_
                         + str(get_extension_by_language(language).value))
 
 
-def __get_sources_and_rates() -> Tuple[List[str], List[int]]:
-    source_0 = 'while(True):\n    print(\'Hi\')'
-    source_1 = 'x = True\nif(x):\n    x = False'
-    sources = [source_0, source_1]
-    rates = [TEST_RESULT.CORRECT_CODE.value] * len(sources)
-    return sources, rates
-
-
-def get_vertices(sg: SolutionGraph) -> List[Vertex]:
-    sources, rates = __get_sources_and_rates()
-    return [Vertex(sg, code=create_code_from_source(s, rates[i])) for i, s in enumerate(sources)]
-
-
-# Reset graph, vertex and code last ids to avoid different ids in one-by-one test running and running them all at once
-def init_default_ids() -> None:
-    SolutionGraph._last_id = 0
-    Vertex._last_id = 0
-    Code._last_id = 0
-
-
 def delete_folder() -> None:
     remove_directory(get_test_folder_path())
 
@@ -96,7 +75,7 @@ class TestCodeToFile(unittest.TestCase):
     def test_folder_structure_with_default_files_names(self):
         init_default_ids()
         sg_0, _, _ = create_three_graphs()
-        vertices = get_vertices(sg_0)
+        vertices = get_two_vertices(sg_0)
         folder = GRAPH_FOLDER_PREFIX + str(sg_0.id)
         actual_files_names = get_actual_files_names(folder)
 
@@ -106,7 +85,7 @@ class TestCodeToFile(unittest.TestCase):
     def test_folder_structure_with_not_default_files_names(self):
         init_default_ids()
         _, sg_1, _ = create_three_graphs()
-        vertices = get_vertices(sg_1)
+        vertices = get_two_vertices(sg_1)
         folder = GRAPH_FOLDER_PREFIX + str(sg_1.id)
         actual_files_names = get_actual_files_names(folder)
 
@@ -117,7 +96,7 @@ class TestCodeToFile(unittest.TestCase):
     def test_folder_structure_with_all_not_default_names(self):
         init_default_ids()
         _, _, sg_2 = create_three_graphs()
-        vertices = get_vertices(sg_2)
+        vertices = get_two_vertices(sg_2)
         folder = os.path.join(get_test_folder_path(), NOT_DEFAULT_GRAPH_PREFIX + str(sg_2.id))
         actual_files_names = get_actual_files_names(folder)
 

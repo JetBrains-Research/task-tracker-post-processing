@@ -1,16 +1,19 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
+import os
 import logging
 import collections
-import os
 
-from typing import Optional, List, Tuple, Set
-from src.main.util.consts import LOGGER_NAME, TASK, LANGUAGE
+from typing import Optional, List, Tuple, Set, Any
+
+from src.main.gum_tree_diff.gum_tree_diff import get_diffs_number
 from src.main.solution_space import consts as solution_space_consts
 from src.main.canonicalization.canonicalization import are_asts_equal
 from src.main.solution_space.data_classes import User, Code, CodeInfo
+from src.main.util.consts import LOGGER_NAME, TASK, LANGUAGE, DEFAULT_VALUES
 from src.main.util.file_util import remove_directory, create_directory, does_exist
-from src.main.solution_space.consts import VERTEX_TYPE, GRAPH_FOLDER_PREFIX, FOLDER_WITH_CODE_FILES, FILE_PREFIX
+from src.main.solution_space.consts import VERTEX_TYPE, GRAPH_FOLDER_PREFIX, FOLDER_WITH_CODE_FILES, FILE_PREFIX, \
+    EMPTY_CODE_FILE
 
 log = logging.getLogger(LOGGER_NAME)
 
