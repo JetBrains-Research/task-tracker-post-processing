@@ -13,7 +13,7 @@ DF_FILE = path.join(TEST_DATA_FOLDER, 'df_to_split.csv')
 
 
 def get_expected_task_dfs(task: consts.TASK) -> List[pd.DataFrame]:
-    df_files = sorted(get_all_file_system_items(TEST_DATA_FOLDER, (lambda n: task.value in n), FILE_SYSTEM_ITEM.FILE.value))
+    df_files = sorted(get_all_file_system_items(TEST_DATA_FOLDER, (lambda n: task.value in n)))
     return [pd.read_csv(df_file, encoding=consts.ISO_ENCODING) for df_file in df_files]
 
 

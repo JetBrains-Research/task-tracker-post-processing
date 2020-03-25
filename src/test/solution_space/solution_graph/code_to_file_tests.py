@@ -41,12 +41,11 @@ def create_three_graphs() -> Tuple[SolutionGraph, SolutionGraph, SolutionGraph]:
 
 
 def get_actual_folders_names() -> List[str]:
-    return get_all_file_system_items(get_test_folder_path(), all_items_condition, FILE_SYSTEM_ITEM.SUBDIR.value)
+    return get_all_file_system_items(get_test_folder_path(), item_type=FILE_SYSTEM_ITEM.SUBDIR)
 
 
 def get_actual_files_names(folder: str) -> List[str]:
-    return get_all_file_system_items(os.path.join(get_test_folder_path(), folder), all_items_condition,
-                                     FILE_SYSTEM_ITEM.FILE.value)
+    return get_all_file_system_items(os.path.join(get_test_folder_path(), folder))
 
 
 def get_file_name(graph_id: int, code_id: int, graph_prefix: str = GRAPH_FOLDER_PREFIX, file_prefix: str = FILE_PREFIX,

@@ -6,12 +6,12 @@ import pandas as pd
 
 from src.main.util import consts
 from typing import Tuple, List, Union, Any
-from src.main.util.consts import EXPERIENCE, DEFAULT_VALUES, TASK, LANGUAGE
 from src.main.splitting.splitting import unpack_tests_results
 from src.main.solution_space.solution_graph import SolutionGraph
-from src.main.util.file_util import get_all_file_system_items, csv_file_condition
-from src.main.canonicalization.canonicalization import get_canonicalized_form, are_asts_equal
+from src.main.util.consts import EXPERIENCE, DEFAULT_VALUES, TASK, LANGUAGE
+from src.main.util.file_util import get_all_file_system_items, extension_file_condition
 from src.main.solution_space.data_classes import AtiItem, Profile, User, Code, CodeInfo
+from src.main.canonicalization.canonicalization import get_canonicalized_form, are_asts_equal
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -158,7 +158,7 @@ def __create_code_user_chain(file: str, task: TASK) -> List[Tuple[Code, CodeInfo
 
 
 def construct_solution_graph(path: str, task: TASK, language: LANGUAGE = LANGUAGE.PYTHON) -> SolutionGraph:
-    files = get_all_file_system_items(path, csv_file_condition, consts.FILE_SYSTEM_ITEM.FILE.value)
+    files = get_all_file_system_items(path, extension_file_condition(consts.EXTENSION.CSV))
     sg = SolutionGraph(task, language)
     log.info(f'Start creating of solution space')
     for file in files:

@@ -75,7 +75,7 @@ def __check_tasks_on_correct_fragments(data: pd.DataFrame, tasks: List[str],
 
 
 def filter_already_tested_files(files: List[str], result_folder_path: str) -> List[str]:
-    tested_files = get_all_file_system_items(result_folder_path, ct_file_condition, consts.FILE_SYSTEM_ITEM.FILE.value)
+    tested_files = get_all_file_system_items(result_folder_path, ct_file_condition)
     tested_folder_and_file_names = list(map(lambda f: get_file_and_parent_folder_names(f), tested_files))
     return list(filter(lambda f: get_file_and_parent_folder_names(f) not in tested_folder_and_file_names, files))
 
@@ -84,7 +84,7 @@ def run_tests(path: str) -> str:
     log.info(f'Start running tests on path {path}')
     result_folder = get_result_folder(path, consts.RUNNING_TESTS_RESULT_FOLDER)
 
-    files = get_all_file_system_items(path, ct_file_condition, consts.FILE_SYSTEM_ITEM.FILE.value)
+    files = get_all_file_system_items(path, ct_file_condition)
     str_len_files = str(len(files))
     log.info(f'Found {str_len_files} files to run tests on them')
 

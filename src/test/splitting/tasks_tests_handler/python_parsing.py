@@ -10,7 +10,7 @@ from subprocess import check_output, CalledProcessError
 from src.main.util import consts
 from src.main.util.consts import TEST_DATA_PATH, LOGGER_FORMAT
 from src.main.splitting.task_checker import check_call_safely
-from src.main.util.file_util import get_all_file_system_items, get_extension_from_file
+from src.main.util.file_util import get_all_file_system_items, get_extension_from_file, extension_file_condition
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -43,8 +43,7 @@ class TestPythonParsing(unittest.TestCase):
     def test_python_parsing(self):
         log.info('mypy and pylint testing:')
         # files contain 12 incorrect files, which have 'error' in their names, and 1 correct file, which hasn't
-        files = get_all_file_system_items(PARSING_TEST_DATA_PATH,
-                                          (lambda name: get_extension_from_file(name) == consts.EXTENSION.TXT))
+        files = get_all_file_system_items(PARSING_TEST_DATA_PATH, extension_file_condition(consts.EXTENSION.TXT))
         mypy_rate = 0
         pylint_rate = 0
         mypy_with_execution_rate = 0

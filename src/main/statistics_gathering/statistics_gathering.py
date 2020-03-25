@@ -94,11 +94,11 @@ def __write_results(result_folder: str, statistics: Dict[str, Dict[str, Any]]) -
 
 def get_profile_statistics(path: str) -> None:
     result_folder = get_result_folder(path, consts.STATISTICS_RESULT_FOLDER)
-    folders = get_all_file_system_items(path, data_subdirs_condition, consts.FILE_SYSTEM_ITEM.SUBDIR.value)
+    folders = get_all_file_system_items(path, data_subdirs_condition, consts.FILE_SYSTEM_ITEM.SUBDIR)
     statistics = __get_empty_statistics_dict()
     for folder in folders:
         log.info(f'Start handling the folder {folder}')
-        ct_files = get_all_file_system_items(folder, ct_file_condition, consts.FILE_SYSTEM_ITEM.FILE.value)
+        ct_files = get_all_file_system_items(folder, ct_file_condition)
         age, experience = __get_age_and_experience_of_one_user(list(map(__get_age_and_experience, ct_files)))
         log.info(f'Folder: {folder}, age is {age}, experience is {experience}')
         __add_values_in_statistics_dict(statistics, age, experience)
@@ -111,7 +111,7 @@ def get_tasks_statistics(path: str) -> Dict[str, Dict[str, Any]]:
     statistics = {}
     languages = [l.value for l in consts.LANGUAGE]
     language_folders = get_all_file_system_items(path, (lambda f: does_string_contain_any_of_substrings(f, languages)),
-                                                 consts.FILE_SYSTEM_ITEM.SUBDIR.value)
+                                                 consts.FILE_SYSTEM_ITEM.SUBDIR)
     for l_f in language_folders:
         language = consts.LANGUAGE(get_name_from_path(l_f, False)).value
         if not statistics.get(language.value):
@@ -119,9 +119,9 @@ def get_tasks_statistics(path: str) -> Dict[str, Dict[str, Any]]:
             raise ValueError(f'Duplicate language folder for {language}')
         statistics[language.value] = {}
         task_folders = get_all_file_system_items(l_f, (lambda f: does_string_contain_any_of_substrings(f, consts.TASK.tasks_values())),
-                                                 consts.FILE_SYSTEM_ITEM.SUBDIR.value)
+                                                 consts.FILE_SYSTEM_ITEM.SUBDIR)
         for t_f in task_folders:
-            files = get_all_file_system_items(t_f, (lambda f: True), consts.FILE_SYSTEM_ITEM.FILE.value)
+            files = get_all_file_system_items(t_f)
             task = consts.TASK(get_name_from_path(t_f, False))
             if not statistics.get(language.value).get(task):
                 log.error(f'Duplicate task for {task} in folder {l_f}')

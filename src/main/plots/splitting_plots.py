@@ -124,7 +124,7 @@ def create_comparative_filtering_plot(original_data_path: str, filtered_data_pat
 
 
 def create_splitting_plot_for_each_file(path: str) -> None:
-    files = get_all_file_system_items(path, ct_file_condition, FILE_SYSTEM_ITEM.FILE.value)
+    files = get_all_file_system_items(path, ct_file_condition)
     for file in files:
         fig, ax = plt.subplots(figsize=(20, 10))
         __create_splitting_plot(ax, pd.read_csv(file, encoding=ISO_ENCODING), 'splits')

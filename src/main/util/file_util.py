@@ -65,13 +65,20 @@ def get_extension_from_file(file: str) -> EXTENSION:
     return EXTENSION(os.path.splitext(file)[1])
 
 
+def add_dot_to_not_empty_extension(extension: EXTENSION) -> str:
+    new_extension = extension.value
+    if extension != EXTENSION.EMPTY and not extension.value.startswith('.'):
+        new_extension = '.' + new_extension
+    return new_extension
+
+
 # If need_to_rename, it works only for real files because os.rename is called
 def change_extension_to(file: str, new_extension: EXTENSION, need_to_rename: bool = False) -> str:
+    new_extension = add_dot_to_not_empty_extension(new_extension)
     base, _ = os.path.splitext(file)
-    base_with_extension = base + new_extension.value
     if need_to_rename:
-        os.rename(file, base_with_extension)
-    return base_with_extension
+        os.rename(file, base + new_extension)
+    return base + new_extension
 
 
 def get_parent_folder(path: str, to_add_slash: bool = False) -> str:
@@ -91,7 +98,8 @@ def get_original_file_name(hashed_file_name: str) -> str:
 
 
 def get_original_file_name_with_extension(hashed_file_name: str, extension: EXTENSION) -> str:
-    return get_original_file_name(hashed_file_name) + extension.value
+    extension = add_dot_to_not_empty_extension(extension)
+    return get_original_file_name(hashed_file_name) + extension
 
 
 def get_content_from_file(file: str) -> str:
@@ -112,7 +120,7 @@ def remove_file(file: str) -> None:
 
 
 def remove_all_png_files(root: str, condition: Callable) -> None:
-    files = get_all_file_system_items(root, condition, FILE_SYSTEM_ITEM.FILE.value)
+    files = get_all_file_system_items(root, condition)
     for file in files:
         remove_file(file)
 
@@ -135,33 +143,32 @@ def get_file_and_parent_folder_names(file: str) -> str:
     return os.path.join(get_parent_folder_name(file), get_name_from_path(file))
 
 
+def all_items_condition(name: str) -> bool:
+    return True
+
+
 # To get all files or subdirs (depends on the last parameter) from root that match item_condition
 # Can be used to get all codetracker files, all data folders, etc.
 # Note that all subdirs or files already contain the full path for them
-def get_all_file_system_items(root: str, item_condition: Callable, item_type=FILE_SYSTEM_ITEM.FILE.value) -> List[str]:
+def get_all_file_system_items(root: str, item_condition: Callable = all_items_condition,
+                              item_type: FILE_SYSTEM_ITEM = FILE_SYSTEM_ITEM.FILE) -> List[str]:
     items = []
     for fs_tuple in os.walk(root):
-        for item in fs_tuple[item_type]:
+        for item in fs_tuple[item_type.value]:
             if item_condition(item):
                 items.append(os.path.join(fs_tuple[FILE_SYSTEM_ITEM.PATH.value], item))
     return items
 
 
-def csv_file_condition(name: str) -> bool:
-    return get_extension_from_file(name) == EXTENSION.CSV
+def extension_file_condition(extension: EXTENSION) -> Callable:
+    def has_this_extension(name: str) -> bool:
+        return get_extension_from_file(name) == extension
+    return has_this_extension
 
 
 # To get all codetracker files
 def ct_file_condition(name: str) -> bool:
-    return ACTIVITY_TRACKER_FILE_NAME not in name and csv_file_condition(name)
-
-
-def png_file_condition(name: str) -> bool:
-    return get_extension_from_file(name) == EXTENSION.PNG
-
-
-def all_items_condition(name: str) -> bool:
-    return True
+    return ACTIVITY_TRACKER_FILE_NAME not in name and extension_file_condition(EXTENSION.CSV)(name)
 
 
 # To get all subdirs that contain ct and ati data

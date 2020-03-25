@@ -15,6 +15,6 @@ def print_all_unique_values_in_file(file: str, column: str) -> None:
 
 
 def print_all_unique_values_in_files(path: str, column: str) -> None:
-    files = get_all_file_system_items(path, ct_file_condition, FILE_SYSTEM_ITEM.FILE.value)
+    files = get_all_file_system_items(path, ct_file_condition)
     for file in files:
         print_all_unique_values_in_file(file, column)

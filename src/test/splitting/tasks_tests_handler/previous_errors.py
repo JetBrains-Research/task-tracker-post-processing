@@ -18,8 +18,7 @@ class TestPreviousErrors(unittest.TestCase):
         logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
 
     def test_fragments(self):
-        fragment_files = get_all_file_system_items(PREVIOUS_ERRORS_TEST_DATA, (lambda name: 'fragment' in name),
-                                                   FILE_SYSTEM_ITEM.FILE.value)
+        fragment_files = get_all_file_system_items(PREVIOUS_ERRORS_TEST_DATA, (lambda name: 'fragment' in name))
         tasks = [t.value for t in TASK]
         in_and_out_files_dict = create_in_and_out_dict(tasks)
 

@@ -71,7 +71,7 @@ def find_task_dfs(df: pd.DataFrame, task: consts.TASK) -> List[pd.DataFrame]:
 
 # 2.0 version with a different task_df extraction
 def split_tasks_into_separate_files(path: str, result_name_suffix: str = 'tasks_2') -> None:
-    files = get_all_file_system_items(path, ct_file_condition, consts.FILE_SYSTEM_ITEM.FILE.value)
+    files = get_all_file_system_items(path, ct_file_condition)
     result_folder = get_result_folder(path, result_name_suffix)
     for file in files:
         log.info(f'Start splitting file {file}')

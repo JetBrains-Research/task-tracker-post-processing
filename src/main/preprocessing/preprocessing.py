@@ -12,7 +12,7 @@ from src.main.preprocessing.code_tracker_handler import handle_ct_file
 from src.main.preprocessing.activity_tracker_handler import handle_ati_file, get_ct_name_from_ati_data, \
     get_files_from_ati
 from src.main.util.file_util import get_original_file_name, get_all_file_system_items, data_subdirs_condition, \
-    csv_file_condition, get_parent_folder_name, get_result_folder, write_result
+    get_parent_folder_name, get_result_folder, write_result, extension_file_condition
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -81,10 +81,10 @@ def handle_ct_and_at(ct_file: str, ct_df: pd.DataFrame, ati_file: str, ati_df: p
 
 def preprocess_data(path: str) -> str:
     result_folder = get_result_folder(path, consts.PREPROCESSING_RESULT_FOLDER)
-    folders = get_all_file_system_items(path, data_subdirs_condition, consts.FILE_SYSTEM_ITEM.SUBDIR.value)
+    folders = get_all_file_system_items(path, data_subdirs_condition, consts.FILE_SYSTEM_ITEM.SUBDIR)
     for folder in folders:
         log.info(f'Start handling the folder {folder}')
-        files = get_all_file_system_items(folder, csv_file_condition, consts.FILE_SYSTEM_ITEM.FILE.value)
+        files = get_all_file_system_items(folder, extension_file_condition(consts.EXTENSION.CSV))
         try:
             ct_files, ati_file = __separate_ati_and_other_files(files)
         # Drop the current folder
