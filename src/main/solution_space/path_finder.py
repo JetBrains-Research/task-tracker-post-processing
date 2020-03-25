@@ -77,8 +77,7 @@ class PathFinder:
 
     @staticmethod
     def __is_most_of_path_is_done(diffs_from_empty_to_goal: int, diffs_from_user_to_goal: int) -> bool:
-        return diffs_from_user_to_goal \
-               <= (diffs_from_empty_to_goal + diffs_from_user_to_goal) * DIFFS_PERCENT_TO_GO_DIRECTLY
+        return diffs_from_user_to_goal <= diffs_from_empty_to_goal * DIFFS_PERCENT_TO_GO_DIRECTLY
 
     # Choose the best way to go to the goal
     # For example, if we have a good way through the graph, we should advise it,
@@ -87,7 +86,8 @@ class PathFinder:
     def __go_through_graph(user_code: Code, graph_vertex: Vertex, goal: Vertex) -> bool:
         diffs_from_user_to_goal = get_diffs_number(user_code.file_with_code, goal.code.file_with_code)
         diffs_from_empty_to_user = get_diffs_number(EMPTY_CODE_FILE, user_code.file_with_code)
-        if PathFinder.__is_most_of_path_is_done(diffs_from_empty_to_user, diffs_from_user_to_goal):
+        if PathFinder.__is_most_of_path_is_done(diffs_from_empty_to_user + diffs_from_user_to_goal,
+                                                diffs_from_user_to_goal):
             return False
 
         diffs_from_user_to_graph_vertex = get_diffs_number(user_code.file_with_code, graph_vertex.code.file_with_code)
