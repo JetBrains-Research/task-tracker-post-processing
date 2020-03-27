@@ -1,13 +1,15 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import os
-import re
+# Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
+
 import logging
 
 from enum import Enum
 from typing import Callable
 
 from src.main.util.consts import LOGGER_NAME, ROOT_DIR
+from src.main.util.log_util import log_and_raise_error
 from src.main.util.file_util import get_all_file_system_items, pair_in_and_out_files, get_content_from_file, \
     match_condition
 
@@ -34,7 +36,7 @@ def get_test_in_and_out_files(test_type: CANONIZATION_TESTS_TYPES, task=None) ->
     in_files = get_all_file_system_items(root, match_condition(r'in_\d+.py'))
     out_files = get_all_file_system_items(root, match_condition(r'out_\d+.py'))
     if len(out_files) != len(in_files):
-        raise ValueError('Length of out files list does not equal in files list')
+        log_and_raise_error('Length of out files list does not equal in files list', log)
     return pair_in_and_out_files(in_files, out_files)
 
 

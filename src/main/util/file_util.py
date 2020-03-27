@@ -4,9 +4,11 @@ import os
 import re
 import pickle
 import shutil
+from typing import Callable, Any, List, Tuple
+
 import pandas as pd
 
-from typing import Callable, Any, List, Tuple
+from src.main.util.log_util import log_and_raise_error
 from src.main.util.strings_util import contains_any_of_substrings
 from src.main.util.consts import ACTIVITY_TRACKER_FILE_NAME, FILE_SYSTEM_ITEM, ATI_DATA_FOLDER, \
     DI_DATA_FOLDER, ISO_ENCODING, LANGUAGE, UTF_ENCODING, EXTENSION
@@ -57,7 +59,7 @@ def get_name_from_path(path: str, with_extension: bool = True) -> str:
     if not with_extension:
         file_name = os.path.splitext(file_name)[0]
     elif get_extension_from_file(file_name) == EXTENSION.EMPTY:
-        raise ValueError('Cannot get file name with extension, because the passed path does not contain it')
+        log_and_raise_error('Cannot get file name with extension, because the passed path does not contain it', log)
     return file_name
 
 

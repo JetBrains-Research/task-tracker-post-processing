@@ -3,8 +3,8 @@
 import os
 import logging
 import unittest
-
 from typing import Optional
+
 from src.main.util.file_util import get_content_from_file
 from src.main.solution_space.path_finder import PathFinder
 from src.main.solution_space.data_classes import Code, Profile, User

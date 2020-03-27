@@ -1,17 +1,17 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import logging
+from typing import Dict, Optional
+
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from src.main.plots.util.consts import TASK_COLOR_DICT, FRAGMENT_LENGTH_COL, TASK_STATUS_COLOR_DICT, LARGE_SIZE
 from src.main.util import consts
-from typing import Dict, Optional
+from src.main.util.consts import ISO_ENCODING
 from src.main.splitting.splitting import find_splits
-from src.main.plots.util import consts as plot_consts
 from src.main.plots.util.plots_common import get_short_name
-from src.main.util.consts import FILE_SYSTEM_ITEM, ISO_ENCODING
 from src.main.util.strings_util import convert_camel_case_to_snake_case
+from src.main.plots.util.consts import TASK_COLOR_DICT, FRAGMENT_LENGTH_COL, TASK_STATUS_COLOR_DICT, LARGE_SIZE
 from src.main.util.file_util import get_name_from_path, get_all_file_system_items, ct_file_condition, get_parent_folder
 from src.main.plots.util.pyplot_util import CHOSEN_TASK_COL, TIMESTAMP_COL, TASK_STATUS_COL, FRAGMENT_COL, \
     add_fragments_length_plot, save_and_show_if_needed, add_legend_to_the_right

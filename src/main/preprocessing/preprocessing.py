@@ -2,11 +2,12 @@
 
 import csv
 import logging
+from typing import List, Tuple, Optional
 
 import pandas as pd
 
 from src.main.util import consts
-from typing import List, Tuple, Optional
+from src.main.util.log_util import log_and_raise_error
 from src.main.preprocessing import activity_tracker_handler as ath
 from src.main.preprocessing.code_tracker_handler import handle_ct_file
 from src.main.preprocessing.activity_tracker_handler import handle_ati_file, get_ct_name_from_ati_data, \
@@ -36,8 +37,7 @@ def __get_real_ati_file_index(files: List[str]) -> int:
             count_ati += 1
             ati_index = i
             if count_ati >= 2:
-                log.error('The number of activity tracker files is more than 1')
-                raise ValueError('The number of activity tracker files is more than 1')
+                log_and_raise_error('The number of activity tracker files is more than 1', log)
     return ati_index
 
 

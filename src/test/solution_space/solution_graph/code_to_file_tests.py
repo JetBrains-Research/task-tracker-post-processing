@@ -3,13 +3,12 @@
 import os
 import logging
 import unittest
-
 from typing import List, Tuple
-from src.main.solution_space.data_classes import Code
+
 from src.main.util.language_util import get_extension_by_language
-from src.main.solution_space.solution_graph import Vertex, SolutionGraph
+from src.main.solution_space.solution_graph import SolutionGraph
+from src.main.util.file_util import get_all_file_system_items, remove_directory
 from src.test.solution_space.solution_graph.util import get_two_vertices, init_default_ids
-from src.main.util.file_util import get_all_file_system_items, all_items_condition, remove_directory
 from src.main.solution_space.consts import GRAPH_FOLDER_PREFIX, FOLDER_WITH_CODE_FILES_FOR_TESTS, FILE_PREFIX
 from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT, LOGGER_NAME, TASK, FILE_SYSTEM_ITEM, LANGUAGE
 

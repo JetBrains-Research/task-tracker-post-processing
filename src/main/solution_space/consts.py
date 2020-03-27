@@ -1,7 +1,6 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import os
-
 from enum import Enum
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))

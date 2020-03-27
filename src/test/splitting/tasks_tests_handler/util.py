@@ -2,7 +2,6 @@
 
 import os
 import logging
-
 from enum import Enum
 
 from src.main.util import consts

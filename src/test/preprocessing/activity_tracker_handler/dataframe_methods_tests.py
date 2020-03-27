@@ -1,8 +1,8 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
-# Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import os
 import unittest
+
 import pandas as pd
 
 from src.main.util import consts

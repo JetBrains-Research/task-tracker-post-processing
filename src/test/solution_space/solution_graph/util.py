@@ -1,3 +1,5 @@
+# Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
+
 import ast
 from typing import Tuple, List
 

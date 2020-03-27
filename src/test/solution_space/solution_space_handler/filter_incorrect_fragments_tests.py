@@ -2,10 +2,11 @@
 
 import logging
 import unittest
+
 import pandas as pd
 
 from src.main.solution_space.solution_space_handler import __filter_incorrect_fragments
-from src.main.util.consts import LOGGER_NAME, LOGGER_TEST_FILE, LOGGER_FORMAT, TASK, CODE_TRACKER_COLUMN
+from src.main.util.consts import LOGGER_NAME, LOGGER_TEST_FILE, LOGGER_FORMAT, CODE_TRACKER_COLUMN
 
 log = logging.getLogger(LOGGER_NAME)
 

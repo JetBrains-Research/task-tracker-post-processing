@@ -1,4 +1,5 @@
-import ast
+# Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
+
 import logging
 import unittest
 from enum import Enum

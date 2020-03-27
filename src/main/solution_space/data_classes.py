@@ -4,10 +4,11 @@ import os
 import ast
 import logging
 from datetime import datetime
+from typing import List, Union, Optional
 
 from src.main.util import consts
-from typing import List, Union, Optional
 from src.main.util.file_util import create_file
+from src.main.util.log_util import log_and_raise_error
 from src.main.util.language_util import get_extension_by_language
 from src.main.canonicalization.canonicalization import get_code_from_tree
 from src.main.util.consts import EXPERIENCE, DEFAULT_VALUE, ACTIVITY_TRACKER_EVENTS
@@ -148,8 +149,7 @@ class Code:
     def create_file_with_code(self, folder_to_write: str, name_prefix: str,
                               language: consts.LANGUAGE = consts.LANGUAGE.PYTHON) -> None:
         if not self._ast:
-            log.error(f'Ast in the code {self} is None')
-            raise ValueError(f'Ast in the code {self} is None')
+            log_and_raise_error(f'Ast in the code {self} is None', log)
 
         extension = get_extension_by_language(language)
         file_path = os.path.join(folder_to_write, name_prefix + str(self._id) + str(extension.value))

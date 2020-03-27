@@ -1,8 +1,10 @@
+# Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
+
 import logging
 import unittest
+from typing import List
 
 import pandas as pd
-from typing import List
 
 from src.main.util import consts
 from src.main.splitting.splitting import find_task_start_indices

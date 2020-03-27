@@ -5,8 +5,8 @@ import logging
 import unittest
 
 from src.main.util.language_util import get_language_by_extension
+from src.main.util.consts import LOGGER_FORMAT, LOGGER_TEST_FILE, TEST_DATA_PATH, TASK
 from src.main.splitting.tasks_tests_handler import create_in_and_out_dict, check_tasks, run_tests
-from src.main.util.consts import LOGGER_FORMAT, LOGGER_TEST_FILE, TEST_DATA_PATH, FILE_SYSTEM_ITEM, TASK
 from src.main.util.file_util import get_all_file_system_items, get_extension_from_file, get_content_from_file
 
 PREVIOUS_ERRORS_TEST_DATA = os.path.join(TEST_DATA_PATH, 'splitting/tasks_tests_handler/previous_errors')

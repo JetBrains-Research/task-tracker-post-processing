@@ -1,10 +1,10 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import logging
+from typing import List, Union, Dict
+
 import pandas as pd
 import matplotlib.pyplot as plt
-
-from typing import List, Union, Dict
 
 from src.main.util import consts
 from src.main.plots.util.plots_common import get_short_name

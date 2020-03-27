@@ -1,10 +1,12 @@
+# Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
+
 import unittest
 from os import path
-import pandas as pd
 from typing import List
 
+import pandas as pd
+
 from src.main.util import consts
-from src.main.util.consts import FILE_SYSTEM_ITEM
 from src.main.splitting.splitting import find_task_dfs
 from src.main.util.file_util import get_all_file_system_items
 

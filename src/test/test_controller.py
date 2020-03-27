@@ -10,7 +10,7 @@ from src.main.util.file_util import get_all_file_system_items, change_extension_
 log = logging.getLogger(consts.LOGGER_NAME)
 
 
-def get_module_from_file(file: str):
+def get_module_from_file(file: str) -> str:
     file = os.path.abspath(file)
     return change_extension_to(file[file.index('src/test'):], consts.EXTENSION.EMPTY).replace('/', '.')
 

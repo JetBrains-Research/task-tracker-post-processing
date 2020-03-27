@@ -1,15 +1,18 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
+
 import ast
 import enum
 import logging
+from typing import Tuple, List, Union, Any
+
 import pandas as pd
 
 from src.main.util import consts
-from typing import Tuple, List, Union, Any
+from src.main.util.data_util import Column
+from src.main.util.log_util import log_and_raise_error
 from src.main.splitting.splitting import unpack_tests_results
 from src.main.solution_space.solution_graph import SolutionGraph
 from src.main.util.consts import EXPERIENCE, DEFAULT_VALUE, TASK, LANGUAGE, EXTENSION
-from src.main.util.data_util import Column
 from src.main.util.file_util import get_all_file_system_items, extension_file_condition
 from src.main.solution_space.data_classes import AtiItem, Profile, User, Code, CodeInfo
 from src.main.canonicalization.canonicalization import get_canonicalized_form, are_asts_equal
@@ -28,8 +31,7 @@ def __get_column_unique_value(solutions: pd.DataFrame, column: Column, default: 
         log.info(f'Unique values not found')
         return default
     if len(unique_values) > 1:
-        log.error(f'There is more than 1 unique value in column {column}: {unique_values}')
-        raise ValueError(f'There is more than 1 unique value in column {column}: {unique_values}')
+        log_and_raise_error(f'There is more than 1 unique value in column {column}: {unique_values}', log)
     return unique_values[0]
 
 
@@ -103,8 +105,7 @@ def __is_correct_fragment(tests_results: str) -> bool:
     # It is an error, if a part of the tasks is incorrect, but another part is correct.
     # For example: [-1,1,0.5,0.5,-1,-1]
     if 0 < compiled_task_count < len(tasks):
-        log.error(f'A part of the tasks is incorrect, but another part is correct: {tests_results}')
-        raise ValueError(f'A part of the tasks is incorrect, but another part is correct: {tests_results}')
+        log_and_raise_error(f'A part of the tasks is incorrect, but another part is correct: {tests_results}', log)
     return compiled_task_count == len(tasks)
 
 
@@ -120,8 +121,7 @@ def __get_rate(tests_results: str, task_index: int) -> float:
     tasks = TASK.tasks()
     tests_results = unpack_tests_results(tests_results, tasks)
     if task_index >= len(tasks) or task_index >= len(tests_results):
-        log.error(f'Task index {task_index} is more than length of tasks list')
-        raise ValueError(f'Task index {task_index} is more than length of tasks list')
+        log_and_raise_error(f'Task index {task_index} is more than length of tasks list', log)
     return tests_results[task_index]
 
 

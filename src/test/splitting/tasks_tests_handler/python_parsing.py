@@ -4,7 +4,6 @@ import os
 import sys
 import logging
 import unittest
-
 from subprocess import check_output, CalledProcessError
 
 from src.main.util import consts

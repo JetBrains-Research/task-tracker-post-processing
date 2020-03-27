@@ -1,7 +1,6 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import re
-
 from typing import List
 
 

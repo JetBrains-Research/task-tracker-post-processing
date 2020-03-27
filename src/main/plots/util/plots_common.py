@@ -1,9 +1,10 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import os
+from typing import Optional
+
 import pandas as pd
 
-from typing import Optional
 from src.main.util.strings_util import crop_string
 from src.main.plots.util import consts as plot_consts
 from src.main.util.consts import EXTENSION, DEFAULT_VALUE, INVALID_FILE_FOR_PREPROCESSING
@@ -11,7 +12,7 @@ from src.main.util.file_util import get_parent_folder_name, get_name_from_path, 
     get_file_and_parent_folder_names, change_extension_to
 
 
-def get_result_file_name(name_prefix: str, data_path: str = None, extension: EXTENSION = EXTENSION.PNG) -> str:
+def get_result_file_name(name_prefix: str, data_path: Optional[str] = None, extension: EXTENSION = EXTENSION.PNG) -> str:
     if data_path:
         name_prefix += '_' + (get_file_and_parent_folder_names(data_path).replace('/', '_'))
     return change_extension_to(name_prefix, extension)

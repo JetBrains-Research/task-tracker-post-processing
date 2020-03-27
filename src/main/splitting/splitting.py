@@ -2,11 +2,13 @@
 
 import ast
 import logging
+from typing import List, Union
+
 import pandas as pd
 
-from typing import List, Union
 from src.main.util import consts
 from src.main.util.consts import TASK
+from src.main.util.log_util import log_and_raise_error
 from src.main.preprocessing.code_tracker_handler import get_ct_language
 from src.main.util.file_util import get_all_file_system_items, ct_file_condition, get_result_folder, \
     write_based_on_language, get_name_from_path, get_parent_folder_name, get_extension_from_file
@@ -21,8 +23,7 @@ TESTS_RESULTS = consts.CODE_TRACKER_COLUMN.TESTS_RESULTS.value
 def unpack_tests_results(tests_results: str, tasks: List[TASK]) -> List[float]:
     tests_results = ast.literal_eval(tests_results)
     if len(tests_results) != len(tasks):
-        log.error(f'Cannot identify tasks because of unexpected tests_results length: {len(tests_results)}')
-        raise ValueError(f'Cannot identify tasks because of unexpected tests_results length: {len(tests_results)}')
+        log_and_raise_error(f'Cannot identify tasks because of unexpected tests_results length: {len(tests_results)}', log)
     return tests_results
 
 
@@ -37,8 +38,7 @@ def get_solved_task(tests_results: str) -> Union[TASK, consts.DEFAULT_VALUE]:
         log.info(f'Found solved task {solved_tasks[0]}, tests results: {tests_results}')
         return solved_tasks[0]
     else:
-        log.error(f'Several tasks are solved: {solved_tasks}, tests results: {tests_results}')
-        raise ValueError(f'Several tasks are solved: {solved_tasks}, tests results: {tests_results}')
+        log_and_raise_error(f'Several tasks are solved: {solved_tasks}, tests results: {tests_results}', log)
 
 
 def find_splits(ct_df: pd.DataFrame) -> pd.DataFrame:

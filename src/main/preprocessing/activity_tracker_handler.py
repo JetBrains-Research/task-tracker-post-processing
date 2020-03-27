@@ -1,10 +1,13 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
-import datetime
+
 import logging
+import datetime
+from typing import Dict, List, Any, Tuple
+
 import pandas as pd
 
 from src.main.util import consts
-from typing import Dict, List, Any, Tuple
+from src.main.util.log_util import log_and_raise_error
 from src.main.util.time_util import get_datetime_by_format
 from src.main.util.file_util import get_name_from_path, get_original_file_name_with_extension, get_parent_folder
 from src.main.util.language_util import get_extension_by_language
@@ -77,8 +80,7 @@ def __are_same_files(code_tracker_file_name: str, activity_tracker_file_path: st
 # If we have row_number = 1 and row_value = B, the function returns the dataset with rows: A B C D
 def __insert_row(df: pd.DataFrame, row_number: int, row_value: list) -> pd.DataFrame:
     if row_number > df.index.max() + 1:
-        log.error('Invalid row_number in the method __insert_row')
-        raise ValueError('Invalid row_number in the method __insert_row')
+        log_and_raise_error('Invalid row_number in the method __insert_row', log)
     df1 = df[0:row_number]
     df2 = df[row_number:]
     df1.loc[row_number] = row_value
@@ -116,8 +118,7 @@ def __get_dict_lists_size(res: Dict[str, List[Any]]) -> int:
     size = 0
     for key in res.keys():
         if size != 0 and len(res[key]) != size:
-            log.error('Lists in the res dict have different sizes')
-            raise ValueError('Lists in the res dict have different sizes')
+            log_and_raise_error('Lists in the res dict have different sizes', log)
         size = len(res[key])
     return size
 
@@ -192,8 +193,7 @@ def get_files_from_ati(activity_tracker_data: pd.DataFrame) -> List[str]:
             paths_dict[file] = path
         else:
             if paths_dict[file] != path:
-                log.error('Activity tracker data contains several files with the same names')
-                raise ValueError('Activity tracker data contains several files with the same names')
+                log_and_raise_error('Activity tracker data contains several files with the same names', log)
     return list(paths_dict.keys())
 
 

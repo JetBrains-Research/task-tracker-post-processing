@@ -2,7 +2,6 @@
 
 import logging
 import unittest
-
 from enum import Enum
 
 from src.main.util.file_util import get_name_from_path

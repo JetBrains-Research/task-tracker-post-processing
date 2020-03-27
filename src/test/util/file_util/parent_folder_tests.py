@@ -2,7 +2,6 @@
 
 import logging
 import unittest
-
 from enum import Enum
 
 from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT

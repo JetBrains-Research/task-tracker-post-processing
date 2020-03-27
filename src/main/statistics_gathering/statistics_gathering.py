@@ -2,37 +2,20 @@
 
 import os
 import logging
-import pandas as pd
+from typing import Any, Set, List
 
-from typing import Any, Tuple, Set, List, Dict, Union
+import pandas as pd
 
 from src.main.util import consts
 from src.main.plots.util.consts import STATISTICS_KEY
-from src.main.preprocessing.code_tracker_handler import handle_ct_file
 from src.main.util.log_util import log_and_raise_error
+from src.main.preprocessing.code_tracker_handler import handle_ct_file
+from src.main.statistics_gathering.util import Profile, AgeAndExperience, InvalidProfile, InvalidAgeAndExperience, \
+    Statistics, InvalidAge, InvalidExperience, StatisticsValue, TaskStatistics
 from src.main.util.file_util import get_name_from_path, ct_file_condition, get_result_folder, change_extension_to,\
     serialize_data_and_write_to_file, data_subdirs_condition, get_all_file_system_items, contains_substrings_condition
 
 log = logging.getLogger(consts.LOGGER_NAME)
-
-Age = Union[int, consts.DEFAULT_VALUE]
-Experience = Union[str, consts.DEFAULT_VALUE]
-AgeAndExperience = Tuple[Age, Experience]
-Profile = Union[Age, Experience]
-
-# If file is invalid then consts.INVALID_FILE_FOR_PREPROCESSING is returned with type int
-InvalidAge = Union[int, Age]
-InvalidExperience = Union[int, Experience]
-InvalidAgeAndExperience = Tuple[InvalidAge, InvalidExperience]
-InvalidProfile = Union[int, Age, Experience]
-
-# For each STATISTIC_KEY we gather which values (casted to str) and how many we have
-StatisticsValue = Dict[str, int]
-Statistics = Dict[STATISTICS_KEY, StatisticsValue]
-
-# For each LANGUAGE and TASK we gather how many files we have
-TaskStatistics = Dict[consts.LANGUAGE, Dict[consts.TASK, int]]
-
 
 SUBDIR = consts.FILE_SYSTEM_ITEM.SUBDIR
 
@@ -41,7 +24,7 @@ def is_statistics_key_default_value(value: Any, column: STATISTICS_KEY) -> bool:
     return column.get_default().is_equal(value)
 
 
-# We must have one value in a profile column else it is an incorrect case
+# We must have one value in a profile column otherwise it is an incorrect case
 def __get_profile_info(ct_df: pd.DataFrame, column: STATISTICS_KEY) -> Profile:
     values = ct_df[column.value].unique()
     if len(values) == 1:
@@ -137,7 +120,7 @@ def get_tasks_statistics(path: str) -> TaskStatistics:
     language_folders = get_all_file_system_items(path, contains_substrings_condition(language_values), SUBDIR)
     for l_f in language_folders:
         language = consts.LANGUAGE(get_name_from_path(l_f, False))
-        if not statistics.get(language):
+        if statistics.get(language):
             log_and_raise_error(f'Duplicate language folder for {language.value}', log)
         statistics[language] = {}
         task_values = consts.TASK.tasks_values()
@@ -145,7 +128,7 @@ def get_tasks_statistics(path: str) -> TaskStatistics:
         for t_f in task_folders:
             files = get_all_file_system_items(t_f)
             task = consts.TASK(get_name_from_path(t_f, False))
-            if not statistics.get(language).get(task):
+            if statistics.get(language).get(task):
                 log_and_raise_error(f'Duplicate task for {task.value} in folder {l_f}', log)
             statistics.get(language)[task] = len(files)
 

@@ -1,6 +1,5 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
-from typing import Optional
 from src.main.util import consts
 
 

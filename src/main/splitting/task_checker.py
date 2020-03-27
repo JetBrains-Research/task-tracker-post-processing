@@ -2,13 +2,13 @@
 
 import os
 import logging
-
 from abc import ABCMeta, abstractmethod
 from typing import List, Tuple, Dict, Optional
+from subprocess import check_output, CalledProcessError, check_call, TimeoutExpired
 
 from src.main.util.language_util import get_extension_by_language
+from src.main.util.log_util import log_and_raise_error
 from src.main.util.strings_util import contains_any_of_substrings
-from subprocess import check_output, CalledProcessError, check_call, TimeoutExpired
 from src.main.util.consts import TASK, TIMEOUT, TASKS_TESTS, LOGGER_NAME, LANGUAGE, TEST_RESULT
 from src.main.util.file_util import get_content_from_file, remove_directory, create_directory, create_file
 
@@ -97,6 +97,9 @@ class ITaskChecker(object, metaclass=ABCMeta):
         create_file(source_code, source_code_file)
         return source_code_file
 
+    # We don't want to run tests if source file is incorrect, too small, or doesn't have any output, so here
+    # we check if any of these conditions are met
+    # Returns do we have to run tests (bool), current tests results (List[float]), and rate (float)
     def check_before_tests(self, source_file: str, source_code: str, tasks: List[TASK]) -> (bool, List[float], float):
         test_results = []
         need_to_run_tests = True
@@ -124,8 +127,7 @@ class ITaskChecker(object, metaclass=ABCMeta):
         log.info(f'Start checking task {task.value}')
         in_and_out_files = in_and_out_files_dict.get(task)
         if not in_and_out_files:
-            log.error(f'Task data for the {task.value} does not exist')
-            raise ValueError(f'Task data for the {task.value} does not exist')
+            log_and_raise_error(f'Task data for the {task.value} does not exist', log)
 
         counted_tests, passed_tests = len(in_and_out_files), 0
         for in_file, out_file in in_and_out_files:

@@ -2,9 +2,10 @@
 
 import logging
 import unittest
+from typing import Tuple, Callable
+
 import pandas as pd
 
-from typing import Tuple, Callable
 from src.main.util.consts import CODE_TRACKER_COLUMN
 from src.main.util.data_util import crop_data_by_timestamp
 from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT

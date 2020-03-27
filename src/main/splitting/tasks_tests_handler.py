@@ -3,12 +3,13 @@
 import os
 import re
 import logging
+from typing import List, Dict, Tuple
 
 import pandas as pd
 
 from src.main.util import consts
-from typing import List, Dict, Tuple
 from src.main.util.consts import LANGUAGE, TASK
+from src.main.util.log_util import log_and_raise_error
 from src.main.splitting.cpp_task_checker import CppTaskChecker
 from src.main.splitting.java_task_checker import JavaTaskChecker
 from src.main.splitting.kotlin_task_checker import KotlinTaskChecker
@@ -32,7 +33,7 @@ def create_in_and_out_dict(tasks: List[TASK]) -> FilesDict:
         in_files = get_all_file_system_items(root, match_condition(r'in_\d+.txt'))
         out_files = get_all_file_system_items(root, match_condition(r'out_\d+.txt'))
         if len(out_files) != len(in_files):
-            raise ValueError('Length of out files list does not equal in files list')
+            log_and_raise_error('Length of out files list does not equal in files list', log)
         in_and_out_files_dict[task] = pair_in_and_out_files(in_files, out_files)
     return in_and_out_files_dict
 

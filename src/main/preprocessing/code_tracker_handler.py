@@ -1,12 +1,12 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import logging
+from typing import Union, Any, Tuple
 
 import numpy as np
 import pandas as pd
 
 from src.main.util import consts
-from typing import Union, Any, Tuple
 from src.main.util.file_util import get_extension_from_file
 from src.main.util.language_util import get_language_by_extension
 from src.main.util.strings_util import convert_camel_case_to_snake_case
@@ -14,10 +14,11 @@ from src.main.util.strings_util import convert_camel_case_to_snake_case
 log = logging.getLogger(consts.LOGGER_NAME)
 
 
+# todo: add tests
 def fill_column(data: pd.DataFrame, column: consts.CODE_TRACKER_COLUMN,
                 default_value: consts.DEFAULT_VALUE) -> Union[Any, consts.DEFAULT_VALUE]:
-    values = data[column].unique()
-    index = np.argwhere((values == default_value) | pd.isnull(values))
+    values = data[column.value].unique()
+    index = np.argwhere((values == default_value.value) | pd.isnull(values))
     if (index.shape[0] == 0 and len(values) > 1) or len(values) > 2:
         log.error('Invalid value for column!')
         # It is an invalid file
@@ -52,8 +53,8 @@ def handle_ct_file(ct_file: str) -> Tuple[pd.DataFrame, consts.LANGUAGE]:
     ct_df[consts.CODE_TRACKER_COLUMN.LANGUAGE.value] = language.value
     ct_df[consts.CODE_TRACKER_COLUMN.AGE.value] = fill_column(ct_df,
                                                               consts.CODE_TRACKER_COLUMN.AGE,
-                                                              consts.DEFAULT_VALUE.AGE.value)
+                                                              consts.DEFAULT_VALUE.AGE)
     ct_df[consts.CODE_TRACKER_COLUMN.EXPERIENCE.value] = fill_column(ct_df,
                                                                      consts.CODE_TRACKER_COLUMN.EXPERIENCE,
-                                                                     consts.DEFAULT_VALUE.EXPERIENCE.value)
+                                                                     consts.DEFAULT_VALUE.EXPERIENCE)
     return ct_df, language

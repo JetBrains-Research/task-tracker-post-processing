@@ -2,10 +2,10 @@
 
 import sys
 import logging
+from typing import List
 
-from typing import List, Dict, Tuple
 from src.main.util import consts
-from src.main.util.consts import LANGUAGE, TASK
+from src.main.util.consts import LANGUAGE
 from src.main.splitting.task_checker import ITaskChecker, SOURCE_OBJECT_NAME, FilesDict
 
 log = logging.getLogger(consts.LOGGER_NAME)

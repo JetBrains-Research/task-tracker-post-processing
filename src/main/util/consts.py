@@ -1,10 +1,10 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import os
-
 from enum import Enum
-from pandas import isna
 from typing import List
+
+from pandas import isna
 from numpy import nan, datetime64, isnat, equal
 
 
@@ -38,7 +38,6 @@ class ACTIVITY_TRACKER_COLUMN(Enum):
     TASK = 'task',
     ATI_ID = 'atiId'
 
-    # Todo: is it okay we don't have ATI_ID there?
     @classmethod
     def activity_tracker_columns(cls) -> List[str]:
         return [cls.TIMESTAMP_ATI.value, cls.USERNAME.value, cls.EVENT_TYPE.value, cls.EVENT_DATA.value,

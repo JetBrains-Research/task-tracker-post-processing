@@ -3,17 +3,15 @@
 import os
 import logging
 import collections
+from typing import Optional, List, Tuple, Set
 
-from typing import Optional, List, Tuple, Set, Any
-
-from src.main.gum_tree_diff.gum_tree_diff import get_diffs_number
+from src.main.util.log_util import log_and_raise_error
+from src.main.util.consts import LOGGER_NAME, TASK, LANGUAGE
 from src.main.solution_space import consts as solution_space_consts
 from src.main.canonicalization.canonicalization import are_asts_equal
 from src.main.solution_space.data_classes import User, Code, CodeInfo
-from src.main.util.consts import LOGGER_NAME, TASK, LANGUAGE, DEFAULT_VALUE
 from src.main.util.file_util import remove_directory, create_directory, does_exist
-from src.main.solution_space.consts import VERTEX_TYPE, GRAPH_FOLDER_PREFIX, FOLDER_WITH_CODE_FILES, FILE_PREFIX, \
-    EMPTY_CODE_FILE
+from src.main.solution_space.consts import VERTEX_TYPE, GRAPH_FOLDER_PREFIX, FOLDER_WITH_CODE_FILES, FILE_PREFIX
 
 log = logging.getLogger(LOGGER_NAME)
 
@@ -29,10 +27,9 @@ class Vertex:
 
         if code:
             if not does_exist(graph.graph_directory):
-                log.error(f'The graph with id {graph.id} does not have directory for vertex code. Expected graph '
-                          f'folder prefix: {graph.graph_folder_prefix}{graph.id}')
-                raise OSError(f'The graph with id {graph.id} does not have directory for vertex code. Expected '
-                              f'graph folder prefix: {graph.graph_folder_prefix}{graph.id}')
+                msg = f'The graph with id {graph.id} does not have directory for vertex code. Expected graph ' \
+                          f'folder prefix: {graph.graph_folder_prefix}{graph.id}'
+                log_and_raise_error(msg, log, OSError)
 
             graph_folder_prefix = graph.graph_folder_prefix + str(graph.id) + '_' + graph.file_prefix
             code.create_file_with_code(graph.graph_directory, graph_folder_prefix, graph.language)
@@ -116,8 +113,7 @@ class SolutionGraph(collections.abc.Iterable):
     def __init__(self, task: TASK, language: LANGUAGE = LANGUAGE.PYTHON, to_delete_old_graph: bool = True,
                  graph_folder_prefix: str = GRAPH_FOLDER_PREFIX, file_prefix: str = FILE_PREFIX):
         if language == LANGUAGE.NOT_DEFINED:
-            log.error(f'Error during constructing a solution graph. Language is not defined')
-            raise ValueError(f'Error during constructing a solution graph. Language is not defined')
+            log_and_raise_error(f'Error during constructing a solution graph. Language is not defined', log)
         self._task = task
         self._language = language
 
@@ -199,8 +195,7 @@ class SolutionGraph(collections.abc.Iterable):
 
     def find_or_create_vertex(self, code: Optional[Code], code_info: CodeInfo) -> Vertex:
         if code is None:
-            log.error('Code should not be None')
-            raise ValueError('Code should not be None')
+            log_and_raise_error('Code should not be None', log)
         vertex = self.find_vertex(code)
         if vertex:
             vertex.add_code_info(code_info)
@@ -217,8 +212,7 @@ class SolutionGraph(collections.abc.Iterable):
     def add_code_info_chain(self, code_info_chain: Optional[List[Tuple[Code, CodeInfo]]]) -> None:
         log.info(f'Start adding code-user chain')
         if code_info_chain is None:
-            log.error(f'Code info chain should not be None')
-            raise ValueError(f'Code info chain should not be None')
+            log_and_raise_error(f'Code info chain should not be None', log)
         if code_info_chain:
             log.info(f'Connect the first vertex in a chain to the start vertex')
             code, code_info = code_info_chain[0]

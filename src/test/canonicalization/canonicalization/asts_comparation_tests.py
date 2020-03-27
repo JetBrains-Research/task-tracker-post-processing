@@ -1,3 +1,5 @@
+# Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
+
 import ast
 import logging
 import unittest
