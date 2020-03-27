@@ -1,9 +1,6 @@
 # Copyright (c) 2017 Kelly Rivers
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
-import ast
-import logging
-
 from src.main.canonicalization.transformations import *
 from src.main.canonicalization.display import printFunction
 from src.main.canonicalization.preprocessing_tree import runGiveIds
@@ -34,13 +31,13 @@ def get_code_from_tree(tree: ast.AST) -> str:
 
 
 # Return a new tree with anonymous names
-def get_anonymized_tree(cleaned_tree: ast.AST, given_names: Optional[List[str]] = None,
-                        imports: Optional[List[str]] = None) -> ast.AST:
+def get_anonymized_and_orig_tree(cleaned_tree: ast.AST, given_names: Optional[List[str]] = None,
+                                 imports: Optional[List[str]] = None) -> Tuple[ast.AST, ast.AST]:
     orig_tree = deepcopy(cleaned_tree)
     runGiveIds(orig_tree)
     anon_tree = deepcopy(orig_tree)
     anon_tree = anonymizeNames(anon_tree, given_names, imports)
-    return anon_tree
+    return anon_tree, orig_tree
 
 
 # It is the transformations from Kelly Rivers code
@@ -80,8 +77,9 @@ def get_imports(tree: ast.AST) -> List[str]:
     return getAllImportStatements(tree)
 
 
-def get_canonicalized_form(source: str, given_names: Optional[List[str]] = None,
-                           arg_types: Optional[dict] = None, imports: Optional[List[str]] = None) -> ast.AST:
+def get_canonicalized_and_orig_form(source: str, given_names: Optional[List[str]] = None,
+                                    arg_types: Optional[dict] = None,
+                                    imports: Optional[List[str]] = None) -> Tuple[ast.AST, ast.AST]:
     tree = get_ast(get_cleaned_code(source).rstrip('\n'))
 
     if not given_names:
@@ -95,7 +93,7 @@ def get_canonicalized_form(source: str, given_names: Optional[List[str]] = None,
 
     # Tree preprocessing from Kelly Rivers code
     tree = propogateMetadata(tree, arg_types, {}, [0])
-    tree = get_anonymized_tree(tree, given_names, imports)
+    tree, orig_tree = get_anonymized_and_orig_tree(tree, given_names, imports)
     tree = simplify(tree)
     # Todo: correct handler for global ID
     # runGiveIds(tree)
@@ -106,4 +104,4 @@ def get_canonicalized_form(source: str, given_names: Optional[List[str]] = None,
         helperFolding(tree, None, imports)
         for t in transformations:
             tree = t(tree)
-    return tree
+    return tree, orig_tree

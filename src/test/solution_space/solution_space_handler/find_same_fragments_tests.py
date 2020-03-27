@@ -7,7 +7,7 @@ import pandas as pd
 
 from typing import List, Tuple
 from src.main.solution_space.data_classes import AtiItem
-from src.main.canonicalization.canonicalization import get_canonicalized_form, are_asts_equal
+from src.main.canonicalization.canonicalization import get_canonicalized_and_orig_form, are_asts_equal
 from src.main.solution_space.solution_space_handler import __find_same_fragments, __get_ati_data, __get_column_value
 from src.main.util.consts import LOGGER_NAME, LOGGER_TEST_FILE, LOGGER_FORMAT, CODE_TRACKER_COLUMN, \
     ACTIVITY_TRACKER_COLUMN, ACTIVITY_TRACKER_EVENTS
@@ -64,10 +64,10 @@ def create_solutions() -> pd.DataFrame:
 def get_expected_out(solutions: pd.DataFrame, start_index: int, end_index: int) -> Tuple[int, List[AtiItem], ast.AST]:
     ati_elements = []
     fragment = __get_column_value(solutions, start_index, CODE_TRACKER_COLUMN.FRAGMENT)
-    tree = get_canonicalized_form(fragment)
+    anon_tree, _ = get_canonicalized_and_orig_form(fragment)
     for i in range(start_index, end_index):
         ati_elements.append(__get_ati_data(solutions, i))
-    return end_index, ati_elements, tree
+    return end_index, ati_elements, anon_tree
 
 
 def __are_equal_ati_items_lists(expected_ati_items: List[AtiItem], actual_ati_items: List[AtiItem]) -> bool:

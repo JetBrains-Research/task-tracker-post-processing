@@ -10,14 +10,14 @@ from src.main.solution_space.path_finder import PathFinder
 from src.main.solution_space.data_classes import Code, Profile, User
 from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 from src.test.solution_space.solution_graph.util import get_two_vertices
-from src.main.canonicalization.canonicalization import get_canonicalized_form
+from src.main.canonicalization.canonicalization import get_canonicalized_and_orig_form
 from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT, TEST_DATA_PATH, TASK
 
 USER_SOURCE_PATH = os.path.join(TEST_DATA_PATH, 'solution_space', 'choose_best_vertex', 'source.py')
 USER_SOURCE = get_content_from_file(USER_SOURCE_PATH)
-USER_AST = get_canonicalized_form(USER_SOURCE)
+USER_ANON_AST, _ = get_canonicalized_and_orig_form(USER_SOURCE)
 
-USER_CODE = Code(USER_AST, 1, USER_SOURCE_PATH)
+USER_CODE = Code(USER_ANON_AST, 1, USER_SOURCE_PATH)
 DEFAULT_PROFILE = Profile()
 DEFAULT_USER = User(DEFAULT_PROFILE)
 

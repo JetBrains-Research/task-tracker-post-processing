@@ -9,7 +9,7 @@ from src.main.util.consts import DEFAULT_VALUES
 from src.main.solution_space.data_classes import Code, User, Profile
 from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 from src.main.gum_tree_diff.gum_tree_diff import get_diffs_number, apply_diffs
-from src.main.canonicalization.canonicalization import are_asts_equal, get_canonicalized_form
+from src.main.canonicalization.canonicalization import are_asts_equal, get_canonicalized_and_orig_form
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -97,9 +97,9 @@ class PathFinder:
     @staticmethod
     def __apply_minimal_actions_number(user_code: Code, dst_code: Code) -> Code:
         str_code = apply_diffs(user_code.file_with_code, dst_code.file_with_code)
-        ast = get_canonicalized_form(str_code)
+        anon_ast, _ = get_canonicalized_and_orig_form(str_code)
         # Todo: get rate
-        return Code(ast)
+        return Code(anon_ast)
 
 
 class MeasuredVertex:
