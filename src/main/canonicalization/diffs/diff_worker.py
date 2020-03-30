@@ -35,8 +35,8 @@ class DiffWorker:
     def get_diffs(self, anon_dst_tree: ast.AST, canon_dst_tree: ast.AST) -> Tuple[List[ChangeVector], TREE_TYPE]:
         anon_edits = diffAsts(self._anon_source_tree, anon_dst_tree)
         canon_edits = diffAsts(self._canon_source_tree, canon_dst_tree)
-        log.info(f'Number of edits between anonymized trees is {anon_edits}\n'
-                 f'Number of edits between canonicalized trees is {canon_edits}')
+        log.info(f'Number of edits between anonymized trees is {len(anon_edits)}\n'
+                 f'Number of edits between canonicalized trees is {len(canon_edits)}')
 
         if len(anon_edits) <= len(canon_edits):
             log.info(f'Anonymized trees was selected')

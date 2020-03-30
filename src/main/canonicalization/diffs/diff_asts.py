@@ -1,9 +1,11 @@
 # Copyright (c) 2017 Kelly Rivers
 
-from src.main.canonicalization.ast_tools import *
+
 from src.main.util.namesets import astNames
-from src.main.canonicalization.diffs.change_vector import *
+from src.main.canonicalization.ast_tools import *
 from src.main.canonicalization.diffs.state import *
+from src.main.canonicalization.diffs.change_vector import *
+
 
 def getWeight(a, countTokens=True):
 	"""Get the size of the given tree"""
@@ -184,7 +186,7 @@ def getWeight(a, countTokens=True):
 						 ast.AugStore, ast.Param ]:
 			weight = 1
 		else:
-			log("diffAsts\tgetWeight\tMissing type in diffAsts: " + str(type(a)), "bug")
+			log.error("diffAsts\tgetWeight\tMissing type in diffAsts: " + str(type(a)))
 			return 1
 		setattr(a, "treeWeight", weight)
 		return weight
@@ -349,7 +351,7 @@ def findMoveVectors(mapSet, x, y, add, delete):
 	while -1 in endList:
 		endList.remove(-1)
 	if len(startList) != len(endList):
-		log("diffAsts\tfindMovedLines\tUnequal lists: " + str(len(startList)) + "," + str(len(endList)), "bug")
+		log.error("diffAsts\tfindMovedLines\tUnequal lists: " + str(len(startList)) + "," + str(len(endList)))
 		return []
 	moveActions = []
 	if startList != endList:
@@ -360,7 +362,7 @@ def findMoveVectors(mapSet, x, y, add, delete):
 			elif pair[0] == "swap":
 				moveActions.append(SwapVector([-1], pair[1], pair[2]))
 			else:
-				log("Missing movePair type: " + str(pair[0]), "bug")
+				log.error("Missing movePair type: " + str(pair[0]))
 	# We need to make sure the indicies start at the appropriate numbers, since they're referring to the original tree
 	if len(delete) > 0:
 		for action in moveActions:

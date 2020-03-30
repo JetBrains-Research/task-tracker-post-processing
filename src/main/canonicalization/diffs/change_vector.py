@@ -1,8 +1,12 @@
 # Copyright (c) 2017 Kelly Rivers
 
-import ast, copy
+import ast, copy, logging
+
+from src.main.util import consts
 from src.main.canonicalization.ast_tools import compareASTs, deepcopy
 from src.main.canonicalization.display import printFunction
+
+log = logging.getLogger(consts.LOGGER_NAME)
 
 class ChangeVector:
 	start = None
@@ -98,21 +102,21 @@ class ChangeVector:
 				if hasattr(treeSpot, move[0]):
 					treeSpot = getattr(treeSpot, move[0])
 				else:
-					log("Change Vector\ttraverseTree\t\tMissing attr: " + str(move[0]) + "\n" + printFunction(t), "bug")
+					log.error("Change Vector\ttraverseTree\t\tMissing attr: " + str(move[0]) + "\n" + printFunction(t))
 					return -99
 			elif type(move) == int:
 				if type(treeSpot) == list:
 					if move >= 0 and move < len(treeSpot):
 						treeSpot = treeSpot[move]
 					else:
-						log("Change Vector\ttraverseTree\t\tMissing position: " + str(move) + "," + str(treeSpot) + "\n" + printFunction(t), "bug")
+						log.error("Change Vector\ttraverseTree\t\tMissing position: " + str(move) + "," + str(treeSpot) + "\n" + printFunction(t))
 						return -99
 				else:
-					log("Change Vector\ttraverseTree\t\tNot a list: " + str(treeSpot) + "\n" + printFunction(t), "bug")
+					log.error("Change Vector\ttraverseTree\t\tNot a list: " + str(treeSpot) + "\n" + printFunction(t))
 					return -99
 
 			else: # wat?
-				log("Change Vector\ttraverseTree\t\tBad Path: " + str(move) + "\n" + printFunction(t), "bug")
+				log.error("Change Vector\ttraverseTree\t\tBad Path: " + str(move) + "\n" + printFunction(t))
 				return -99
 		return treeSpot
 
@@ -133,7 +137,7 @@ class ChangeVector:
 				if hasattr(oldSpot, "col_offset"):
 					self.newSubtree.col_offset = oldSpot.col_offset
 			if compareASTs(oldSpot, self.oldSubtree, checkEquality=True) != 0:
-				log("ChangeVector\tapplyChange\t" + str(caller) + "\t" + "Change old values don't match: " + str(self) + "\n" + str(printFunction(self.start)), "bug")
+				log.error("ChangeVector\tapplyChange\t" + str(caller) + "\t" + "Change old values don't match: " + str(self) + "\n" + str(printFunction(self.start)))
 			setattr(treeSpot, location[0], self.newSubtree)
 			# SPECIAL CASE. If we're changing the variable name, get rid of metadata
 			if type(treeSpot) == ast.Name and location[0] == "id":
@@ -159,9 +163,9 @@ class ChangeVector:
 					self.newSubtree.col_offset = treeSpot[location].col_offset
 				treeSpot[location] = self.newSubtree
 			else:
-				log("ChangeVector\tapplyChange\tDoesn't fit in list: " + str(location) + "\n" + printFunction(self.start), "bug")
+				log.error("ChangeVector\tapplyChange\tDoesn't fit in list: " + str(location) + "\n" + printFunction(self.start))
 		else:
-			log("ChangeVector\tapplyChange\t\tBroken at: " + str(location), "bug")
+			log.error("ChangeVector\tapplyChange\t\tBroken at: " + str(location))
 		return tree
 
 	def isReplaceVector(self):
@@ -244,7 +248,7 @@ class AddVector(ChangeVector):
 			# Add the new line
 			treeSpot.insert(location, self.newSubtree)
 		else:
-			log("AddVector\tapplyChange\t\tBroken at: " + str(location), "bug")
+			log.error("AddVector\tapplyChange\t\tBroken at: " + str(location))
 			return None
 		return tree
 
@@ -272,7 +276,7 @@ class AddVector(ChangeVector):
 						i += 1
 						location = i
 					else:
-						log("AddVector\tupdate\t\tMissing position: " + str(location) + "," + str(mapDict["pos"]), "bug")
+						log.error("AddVector\tupdate\t\tMissing position: " + str(location) + "," + str(mapDict["pos"]))
 						return
 		else: # if it IS equal to the length, put it in the back
 			location = len(mapDict["pos"])
@@ -314,13 +318,13 @@ class DeleteVector(ChangeVector):
 			# Remove the old line
 			if location < len(treeSpot):
 				if compareASTs(treeSpot[location], self.oldSubtree, checkEquality=True) != 0:
-					log("DeleteVector\tapplyChange\t" + str(caller) + "\t" + "Delete old values don't match: " + str(self) + "\n" + str(printFunction(self.start)), "bug")
+					log.error("DeleteVector\tapplyChange\t" + str(caller) + "\t" + "Delete old values don't match: " + str(self) + "\n" + str(printFunction(self.start)))
 				del treeSpot[location]
 			else:
-				log("DeleteVector\tapplyChange\t\tBad location: " + str(location) + "\t" + str(self.oldSubtree), "bug")
+				log.error("DeleteVector\tapplyChange\t\tBad location: " + str(location) + "\t" + str(self.oldSubtree))
 				return None
 		else:
-			log("DeleteVector\tapplyChange\t\tBroken at: " + str(location), "bug")
+			log.error("DeleteVector\tapplyChange\t\tBroken at: " + str(location))
 			return None
 		return tree
 
@@ -381,7 +385,7 @@ class SwapVector(ChangeVector):
 			   self.newSubtree < len(treeSpot):
 				(treeSpot[self.oldSubtree], treeSpot[self.newSubtree]) = (treeSpot[self.newSubtree], treeSpot[self.oldSubtree])
 			else:
-				log("SwapVector\tapplyChange\t\tBroken at: " + str(treeSpot), "bug")
+				log.error("SwapVector\tapplyChange\t\tBroken at: " + str(treeSpot))
 				return None
 		else:
 			oldTreeSpot = self.traverseTree(tree, path=self.oldPath)
@@ -450,7 +454,7 @@ class SwapVector(ChangeVector):
 				self.newSubtree < len(treeSpot):
 				return (treeSpot[self.oldSubtree], treeSpot[self.newSubtree])
 			else:
-				log("SwapVector\tgetSwapees\tBroken: \n" + printFunction(treeSpot, 0) + "," + printFunction(self.oldSubtree, 0) + "," + printFunction(self.newSubtree, 0) + "\n" + printFunction(self.start, 0), "bug")
+				log.error("SwapVector\tgetSwapees\tBroken: \n" + printFunction(treeSpot, 0) + "," + printFunction(self.oldSubtree, 0) + "," + printFunction(self.newSubtree, 0) + "\n" + printFunction(self.start, 0))
 		else:
 			oldTreeSpot = self.traverseTree(self.start, path=self.oldPath)
 			newTreeSpot = self.traverseTree(self.start, path=self.newPath)
@@ -459,7 +463,7 @@ class SwapVector(ChangeVector):
 			elif type(self.oldPath[0]) == tuple and hasattr(oldTreeSpot, self.oldPath[0][0]):
 				oldValue = getattr(oldTreeSpot, self.oldPath[0][0])
 			else:
-				log("SwapVector\tgetSwapees\tBroken oldValue")
+				log.info("SwapVector\tgetSwapees\tBroken oldValue")
 				oldValue = None
 
 			if type(self.newPath[0]) == int and type(newTreeSpot) == list and self.newPath[0] < len(newTreeSpot):
@@ -467,7 +471,7 @@ class SwapVector(ChangeVector):
 			elif type(self.newPath[0]) == tuple and hasattr(newTreeSpot, self.newPath[0][0]):
 				newValue = getattr(newTreeSpot, self.newPath[0][0])
 			else:
-				log("SwapVector\tgetSwapees\tBroken newValue")
+				log.info("SwapVector\tgetSwapees\tBroken newValue")
 				newValue = None
 
 			return (oldValue, newValue)
@@ -510,7 +514,7 @@ class MoveVector(ChangeVector):
 			item = treeSpot.pop(self.oldSubtree)
 			treeSpot.insert(self.newSubtree, item)
 		else:
-			log("MoveVector\tapplyChange\t\tBroken at: " + str(treeSpot), "bug")
+			log.error("MoveVector\tapplyChange\t\tBroken at: " + str(treeSpot))
 			return None
 		return tree
 
@@ -529,7 +533,7 @@ class MoveVector(ChangeVector):
 
 		# Update based on the original position.
 		if self.oldSubtree not in mapDict["pos"]:
-			log("MoveVector\tupdate\t\tCan't find old subtree: " + str(self.oldSubtree) + "," + str(mapDict["pos"]), "bug")
+			log.error("MoveVector\tupdate\t\tCan't find old subtree: " + str(self.oldSubtree) + "," + str(mapDict["pos"]))
 			return
 
 		if self.newSubtree in mapDict["moved"]:
@@ -537,7 +541,7 @@ class MoveVector(ChangeVector):
 			while (mapDict["len"] < nextPos) and (nextPos in mapDict["moved"] or nextPos not in mapDict["pos"]):
 				nextPos += 1
 			if nextPos >= mapDict["len"]:
-				log("ChangeVector\tMoveVector\tupdate\tBad Position!! " + str(self) + ";" + str(mapDict), "bug")
+				log.error("ChangeVector\tMoveVector\tupdate\tBad Position!! " + str(self) + ";" + str(mapDict))
 			else:
 				self.newSubtree = nextPos
 		else:

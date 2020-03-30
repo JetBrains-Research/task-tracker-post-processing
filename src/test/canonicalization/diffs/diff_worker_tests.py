@@ -37,7 +37,7 @@ class TestDiffWorker(unittest.TestCase):
         logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
 
     # Find and apply all edits
-    def test_diff_worker(self) -> None:
+    def test_diff_worker_with_all_edits(self) -> None:
         run_test(self, DIFF_WORKER_TEST_TYPES.DIFF_WORKER.value, apply_diffs,
                  additional_folder_name=DST_FOLDER,
-                 to_clear_out = True)
+                 to_clear_out=True)

@@ -1,14 +1,21 @@
 # Copyright (c) 2017 Kelly Rivers
 
+import logging
 import ast, copy
+
+from src.main.util import consts
+from src.main.util.namesets import astNames
+from src.main.canonicalization.diffs.change_vector import *
+from src.main.canonicalization.diffs.change_vector import *
+from src.main.canonicalization.diffs.diff_asts import getChanges
+from src.main.canonicalization.transformations import simplify_multicomp
+from src.main.canonicalization.diffs.generate_next_states import updateChangeVectors
 from src.main.canonicalization.ast_tools import negate, num_negate, isAnonVariable, removePropertyFromAll, \
 	transferMetaData, isStatement, deepcopy
-from src.main.canonicalization.diffs.change_vector import *
-from src.main.util.namesets import astNames
-from src.main.canonicalization.diffs.diff_asts import getChanges
-from src.main.canonicalization.diffs.change_vector import *
-from src.main.canonicalization.diffs.generate_next_states import updateChangeVectors
-from src.main.canonicalization.transformations import simplify_multicomp
+
+
+log = logging.getLogger(consts.LOGGER_NAME)
+
 
 def generatePathToId(a, id, globalId=None):
 	if not isinstance(a, ast.AST):
@@ -67,7 +74,7 @@ def undoReverse(a):
 # Applies special functions if they're included as metadata OR if they're specified by ID
 def specialFunctions(cv, old, new):
 	if type(old) == type(new) == list:
-		log("individualize\tspecialFunctions\tWhy are we comparing lists?: " + str(cv) + ";" + printFunction(old) + ";" + printFunction(new), "bug")
+		log.error("individualize\tspecialFunctions\tWhy are we comparing lists?: " + str(cv) + ";" + printFunction(old) + ";" + printFunction(new))
 		return cv
 	rev = neg = False
 	if (hasattr(old, "reversed") and old.reversed and (not hasattr(old, "multCompFixed"))):
@@ -104,7 +111,7 @@ def specialFunctions(cv, old, new):
 				cvCopy = orderedBinOpSpecialFunction(cvCopy) # just in case
 				return cvCopy
 			else:
-				log("individualize\tspecialFunctions\tWhere are we? " + str(type(parentSpot)), "bug")
+				log.error("individualize\tspecialFunctions\tWhere are we? " + str(type(parentSpot)))
 
 	#if (hasattr(old, "inverted") and old.inverted):
 	#	(old, new) = (invert(old), invert(new))
@@ -289,21 +296,20 @@ def propagatedVariableSpecialFunction(cv, replacedVariables):
 			oldSpot = deepcopy(cvCopy.traverseTree(cvCopy.start))
 			newSpot = deepcopy(cvCopy.traverseTree(newTree))
 
-        # Todo (AB) break it for print
 		if hasattr(oldSpot, "loadedVariable") and oldSpot.variableGlobalId not in replacedVariables:
 			return ChangeVector(cvCopy.path[1:], oldSpot, newSpot, start=cvCopy.start)
 		elif hasattr(oldSpot, "loadedVariable"):
 			pass
 		else:
-			log("Individualize\tCouldn't move up to a ChangeVector: " + printFunction(oldSpot, 0) + " - " + printFunction(newSpot, 0), "bug")
+			log.error("Individualize\tCouldn't move up to a ChangeVector: " + printFunction(oldSpot, 0) + " - " + printFunction(newSpot, 0))
 	return cv
 
 def helperFoldingSpecialFunction(cv, edit, orig):
 	if hasattr(cv.oldSubtree, "helperVar") or hasattr(cv.oldSubtree, "helperReturnVal") or \
 		hasattr(cv.oldSubtree, "helperParamAssign") or hasattr(cv.oldSubtree, "helperReturnAssn"):
-		log("Oh no! helper function!" + "\n" + str(cv) + "\n" + str(edit) + "\n" + \
+		log.error("Oh no! helper function!" + "\n" + str(cv) + "\n" + str(edit) + "\n" + \
 					printFunction(cv.start, 0) + "\n" + \
-					printFunction(orig, 0), "bug")
+					printFunction(orig, 0))
 	return cv
 
 def noneSpecialFunction(cv):
@@ -331,7 +337,7 @@ def noneSpecialFunction(cv):
 				cv.newSubtree.step = tmpNew
 			cv.path = cv.path[1:] # get rid of None and the val
 		else:
-			log("Individualize\tmapEdit\tMissing option in None special case 1: " + str(cv.path[0]), "bug")
+			log.error("Individualize\tmapEdit\tMissing option in None special case 1: " + str(cv.path[0]))
 	elif cv.oldSubtree == "None":
 		cv.path = cv.path[1:] # get rid of None and the id
 		cvCopy = cv.deepcopy()
@@ -339,7 +345,7 @@ def noneSpecialFunction(cv):
 		if cv.path[0] == ('value', 'Return'):
 			cv.newSubtree = ast.Return(ast.Name(cv.newSubtree, ast.Load()))
 		else:
-			log("Individualize\tmapEdit\tMissing option in None special case 2: " + str(cv.path[0]), "bug")
+			log.error("Individualize\tmapEdit\tMissing option in None special case 2: " + str(cv.path[0]))
 		cv.path = cv.path[1:]
 	return cv
 
@@ -377,8 +383,8 @@ def multiCompSpecialFunction(cv, orig, canon, edit):
 			newCv.path = generatePathToId(orig, oldSpot.global_id)[1:]
 			newCv.oldSubtree = deepcopy(newCv.traverseTree(orig))
 			newCv.path = newCv.path[1:]
-			log("individualize\tmultiCompSpecialFunction\tUpdated CV: " + \
-				str(cv) + "\n" + str(newCv) + "\n" + printFunction(cv.start) + "\n" + printFunction(orig), "bug")
+			log.error("individualize\tmultiCompSpecialFunction\tUpdated CV: " + \
+				str(cv) + "\n" + str(newCv) + "\n" + printFunction(cv.start) + "\n" + printFunction(orig))
 			return newCv
 		if cvCopy.path != None:
 			cvCopy.path = [-1] + cvCopy.path # The None,None is to force the traversal to go all the way to the node we want, instead of its parent
@@ -408,8 +414,8 @@ def multiCompSpecialFunction(cv, orig, canon, edit):
 						cv.path[0] = len(oldSpot.comparators) - 1 - cv.path[0]
 						return cv
 			else:
-				log("individualize\tmultiComp\tUnexpected type: " + str(type(oldSpot)) + "," +
-						  str(type(newSpot)), "bug")
+				log.error("individualize\tmultiComp\tUnexpected type: " + str(type(oldSpot)) + "," +
+						  str(type(newSpot)))
 			# Otherwise, we need to put back in the boolean operation
 			cv = SubVector(cvCopy.path, newSpot, ast.BoolOp(ast.And(), [newSpot, cv.newSubtree], newly_added=True), cv.start)
 			return cv
@@ -445,11 +451,11 @@ def multiCompSpecialFunction(cv, orig, canon, edit):
 						newResult = ast.BoolOp(ast.And(), [leftCompare, rightCompare], newly_added=True)
 						return ChangeVector(parentPath, origSpot, newResult, start=orig)
 				else:
-					log("individualize\tmultiComp\tWhere's the op path: " + str(newPath), "bug")
+					log.error("individualize\tmultiComp\tWhere's the op path: " + str(newPath))
 			else:
-				log("individualize\tmultiComp\tNon-bool op: \n" + printFunction(cv.start) + "\n" + str(type(origSpot)) + ": " + printFunction(origSpot), "bug")
+				log.error("individualize\tmultiComp\tNon-bool op: \n" + printFunction(cv.start) + "\n" + str(type(origSpot)) + ": " + printFunction(origSpot))
 		else:
-			log("individualize\tmultiComp\tWhere's the parent path: " + str(parentPath), "bug")
+			log.error("individualize\tmultiComp\tWhere's the parent path: " + str(parentPath))
 	# Catch other multi-comp problems
 	if hasattr(cv.oldSubtree, "multiCompOp") and cv.oldSubtree.multiCompOp:
 		# Changing the operator
@@ -536,14 +542,14 @@ def movedLineAfterSpecialFunction(cv, startingTree, startingPath, orig):
 				if hasattr(lineToMove, "global_id"):
 					path = generatePathToId(orig, lineToMove.global_id)
 				else:
-					log("Individualize\tmovedLineAfterSpecialFunction\tWhere is the global id? " + printFunction(lineToMove), "bug")
+					log.error("Individualize\tmovedLineAfterSpecialFunction\tWhere is the global id? " + printFunction(lineToMove))
 				firstEdit = DeleteVector(path, lineToMove, None, start=orig)
 				# Then, add the line back in, but in the correct position
 				newPath = [cv.newSubtree] + cv.path[1:]
 				secondEdit = AddVector(newPath, None, lineToMove, start=cv.start)
 				return [firstEdit, secondEdit]
 			else:
-				log("Individualize\tmapEdit\tMissing option in Move Vector special case: " + str(type(parentSpot)), "bug")
+				log.error("Individualize\tmapEdit\tMissing option in Move Vector special case: " + str(type(parentSpot)))
 	return cv
 
 def augAssignSpecialFunction(cv, orig):
@@ -588,7 +594,7 @@ def augAssignSpecialFunction(cv, orig):
 					elif compareASTs(newSpot.value, spot.value, checkEquality=True) == 0:
 						return cv
 					else:
-						log("Assign", "bug")
+						log.error("Assign")
 				elif type(newSpot) == ast.AugAssign:
 					diffCount = 0
 					if compareASTs(newSpot.op, spot.op, checkEquality=True) != 0:
@@ -600,9 +606,9 @@ def augAssignSpecialFunction(cv, orig):
 					if diffCount == 1:
 						return cv
 					else:
-						log("AugAssign: " + str(diffCount), "bug")
+						log.error("AugAssign: " + str(diffCount))
 			else:
-				log("Mismatched types: " + str(type(newSpot)) + "," + str(type(spot)), "bug")
+				log.error("Mismatched types: " + str(type(newSpot)) + "," + str(type(spot)))
 			return ChangeVector(newCv.path, spot, newSpot, start=newCv.start)
 	return cv
 
@@ -633,7 +639,7 @@ def conditionalSpecialFunction(cv, orig):
 					newCv.wasMoveVector = True
 					return newCv
 				else:
-					log("Individualize\tconditionalSpecialFunction\tCouldn't find Ifs in move: " + str(cv), "bug")
+					log.error("Individualize\tconditionalSpecialFunction\tCouldn't find Ifs in move: " + str(cv))
 	elif isinstance(cv, DeleteVector):
 		# check to see if you're deleting values that used to be in conditionals on their own
 		cvCopy = cv.deepcopy()
@@ -650,9 +656,9 @@ def conditionalSpecialFunction(cv, orig):
 						newCv = ChangeVector(cv.path[1:], origParentSpot, origParentSpot.body[0], start=orig)
 						return newCv
 					else:
-						log("Individualize\tconditionalSpecialFunction\tUnexpected multiline: " + str(cv), "bug")
+						log.error("Individualize\tconditionalSpecialFunction\tUnexpected multiline: " + str(cv))
 				else:
-					log("Individualize\tconditionalSpecialFunction\tUnexpected else: " + str(cv), "bug")
+					log.error("Individualize\tconditionalSpecialFunction\tUnexpected else: " + str(cv))
 	elif isinstance(cv, AddVector):
 		# check to see if you're adding a new value to a comparison operation that doesn't exist yet
 		cvCopy = cv.deepcopy()
@@ -674,7 +680,7 @@ def conditionalSpecialFunction(cv, orig):
 				newCv = SubVector(cv.path[2:], origSpot, ast.BoolOp(newOp, values, newly_added=True), start=orig)
 				return newCv
 			else:
-				log("combinedConditional\tOLD SPOT: " + str(printFunction(oldSpot)), "bug")
+				log.error("combinedConditional\tOLD SPOT: " + str(printFunction(oldSpot)))
 				return cv
 	if hasattr(cv.oldSubtree, "combinedConditionalOp"):
 		# We need to move up higher in the tree
@@ -691,12 +697,12 @@ def conditionalSpecialFunction(cv, orig):
 				if type(newSpot.test) == ast.BoolOp:
 					newSpot.test.op = cv.newSubtree
 				else:
-					log("Individualize\tconditionalSpecialFunction\tUnexpected Conditional Spot: " + repr(newSpot.test), filename="bug")
+					log.error("Individualize\tconditionalSpecialFunction\tUnexpected Conditional Spot: " + repr(newSpot.test))
 			else:
-				log("Individualize\tconditionalSpecialFunction\tUnexpected Spot: " + repr(newSpot), filename="bug")
+				log.error("Individualize\tconditionalSpecialFunction\tUnexpected Spot: " + repr(newSpot))
 			cv.oldSubtree, cv.newSubtree = oldSpot, newSpot
 		else:
-			log("Individualize\tconditionalSpecialFunction\tUnexpected types: " + str(type(cv.oldSubtree)) + "," + str(type(cv.newSubtree)), "bug")
+			log.error("Individualize\tconditionalSpecialFunction\tUnexpected types: " + str(type(cv.oldSubtree)) + "," + str(type(cv.newSubtree)))
 	elif hasattr(cv.oldSubtree, "moved_line") and not hasattr(cv.oldSubtree, "already_moved"):
 		if isinstance(cv, DeleteVector):
 			# replace this with a ChangeVector, replacing the if statement with the return/assign
@@ -718,7 +724,7 @@ def conditionalSpecialFunction(cv, orig):
 			cv.oldSubtree.already_moved = True
 			return [cv, newCv]
 		else:
-			log("individualize\tconditionalSpecialFunctions\tMoved return line: " + str(cv), "bug")
+			log.error("individualize\tconditionalSpecialFunctions\tMoved return line: " + str(cv))
 	elif hasattr(cv.oldSubtree, "combinedConditional"):
 		# First - can we just change the whole conditional?
 		if cv.path[0] == ('test', 'If'):
@@ -731,7 +737,7 @@ def conditionalSpecialFunction(cv, orig):
 				newCv = ChangeVector(cv.path[1:], oldWholeConditional, newWholeConditional, start=cv.start)
 				return newCv
 			else:
-				log("individualize\tcombinedConditional\tWeird type?\t" + str(type(newWholeConditional)), "bug")
+				log.error("individualize\tcombinedConditional\tWeird type?\t" + str(type(newWholeConditional)))
 
 		# tree must be a boolean operation combining multiple conditionals
 		treeTests = cv.oldSubtree.values
@@ -761,10 +767,10 @@ def conditionalSpecialFunction(cv, orig):
 				tmp = DeleteVector(generatePathToId(orig, treeStmts[i].global_id), treeStmts[i], None, start=orig)
 				newCV.append(tmp)
 		else:
-			log("individualize\tconditionalSpecialFunctions\t\n" + str(cv), "bug")
-			log("individualize\tconditionalSpecialFunctions\t\n" + printFunction(cv.start) + "\n" + printFunction(orig), "bug")
+			log.error("individualize\tconditionalSpecialFunctions\t\n" + str(cv))
+			log.error("individualize\tconditionalSpecialFunctions\t\n" + printFunction(cv.start) + "\n" + printFunction(orig))
 			for stmt in treeStmts:
-				log("individualize\tconditionalSpecialFunctions\tWeird combined conditional: " + printFunction(stmt), "bug")
+				log.error("individualize\tconditionalSpecialFunctions\tWeird combined conditional: " + printFunction(stmt))
 		if len(newCV) == 1:
 			return newCV[0]
 		else:
@@ -782,7 +788,7 @@ def orderedBinOpSpecialFunction(cv):
 			cvCopy.path = cvCopy.path[1:]
 			oldSpot = cvCopy.traverseTree(cv.start)
 		if not hasattr(oldSpot, "global_id"):
-			log("individualize\torderedBinOpSpecialFunction\tCan't find the global id: " + str(cv), "bug")
+			log.error("individualize\torderedBinOpSpecialFunction\tCan't find the global id: " + str(cv))
 		else:
 			newSpot = cvCopy.traverseTree(newTree)
 			return ChangeVector(cvCopy.path, oldSpot, newSpot, start=cv.start)
@@ -839,7 +845,7 @@ def mapEdit(canon, orig, edit, nameMap=None):
 		if isinstance(cv, SubVector): # for subvectors, we can grab the new tree from the old
 			context = getSubtreeContext(cv.newSubtree, cv.oldSubtree)
 			if context == None:
-				log("individualize\tgetSubtreeContext\tNone context: " + str(cv) + "\n" + printFunction(cv.start), "bug")
+				log.error("individualize\tgetSubtreeContext\tNone context: " + str(cv) + "\n" + printFunction(cv.start))
 			else:
 				(parent, pos, partialNew) = context
 				# Since they're exactly equal, see if we can do a clean copy
@@ -852,8 +858,8 @@ def mapEdit(canon, orig, edit, nameMap=None):
 						else:
 							setattr(parent, pos, deepcopy(cv.oldSubtree))
 					else:
-						log("individualize\tmapEdit\tMissing SubVector globalId: " + str(cv) + "\n" + \
-							printFunction(updatedOrig) + "\n" + printFunction(orig), "bug")
+						log.error("individualize\tmapEdit\tMissing SubVector globalId: " + str(cv) + "\n" + \
+							printFunction(updatedOrig) + "\n" + printFunction(orig))
 				# Otherwise, apply special functions by hand
 				else:
 					prev_new_subtree = cv.newSubtree
@@ -879,8 +885,8 @@ def mapEdit(canon, orig, edit, nameMap=None):
 					if hasattr(cv.newSubtree, "variableGlobalId"):
 						delattr(cv.newSubtree, "variableGlobalId")
 			else:
-				log("Individualize\tcouldn't find variable in original: " + str(cv) + "\n" + str(edit) + "\n" + \
-						  "\n" + printFunction(cv.start) + "\n" + printFunction(updatedOrig) + "\n" + printFunction(orig), "bug")
+				log.error("Individualize\tcouldn't find variable in original: " + str(cv) + "\n" + str(edit) + "\n" + \
+						  "\n" + printFunction(cv.start) + "\n" + printFunction(updatedOrig) + "\n" + printFunction(orig))
 
 		if hasattr(cv.oldSubtree, "second_global_id"):
 			# If we're changing a boolop, delete the second conditional.
@@ -912,12 +918,12 @@ def mapEdit(canon, orig, edit, nameMap=None):
 				cv.path = tmpPath
 			else:
 				extra_s = "varGlobalId" if hasattr(cv.oldSubtree, "variableGlobalId") else "globalId"
-				log("Individualize\tno path 1\t" + extra_s + "\t" + str(cv) + "\n" +
+				log.error("Individualize\tno path 1\t" + extra_s + "\t" + str(cv) + "\n" +
 							"EDIT: " + str(edit) + "\n" + \
 							"ORIGINAL EDIT: " + str(originalEdit) + "\n" + \
 							"CANON START: " + printFunction(oldStart) + "\n" + \
 							"ORIG START: " + printFunction(cv.start) + "\n" + \
-							"ORIG ORIG: " + printFunction(orig), "bug")
+							"ORIG ORIG: " + printFunction(orig))
 		else:
 			# Otherwise, move up the path 'til you find a global id to use
 			origPath = cv.path[:]
@@ -937,12 +943,12 @@ def mapEdit(canon, orig, edit, nameMap=None):
 				else:
 					path = generatePathToId(updatedOrig, spot.global_id) # get the REAL path to this point
 				if path == None:
-					log("Individualize\tno path 1.5\t" + str(cv) + "\n" +
+					log.error("Individualize\tno path 1.5\t" + str(cv) + "\n" +
 								"EDIT: " + str(edit) + "\n" + \
 								"ORIGINAL EDIT: " + str(originalEdit) + "\n" + \
 								"CANON START: " + printFunction(cv.start) + "\n" + \
 								"ORIG START: " + printFunction(updatedOrig) + "\n" + \
-								"ORIG ORIG: " + printFunction(orig), "bug")
+								"ORIG ORIG: " + printFunction(orig))
 					#log("Individualize\tno path 1.5\t" + str(cv) + "\t" + str(origPath) + "\n" + printFunction(spot) + "\n" + printFunction(cv.start), "bug")
 				else:
 					# Don't change addvectors!
@@ -959,7 +965,7 @@ def mapEdit(canon, orig, edit, nameMap=None):
 						cv.start = updatedOrig
 						cv.path = startPath + path
 			else:
-				log("Individualize\tno path 2\t" + str(cv) + "\t" + printFunction(cv.start, 0), "bug")
+				log.error("Individualize\tno path 2\t" + str(cv) + "\t" + printFunction(cv.start, 0))
 
 		if isinstance(cv, DeleteVector):
 			while len(cv.path) > 0 and type(cv.path[0]) != int: # we can only remove things from lists
@@ -968,7 +974,7 @@ def mapEdit(canon, orig, edit, nameMap=None):
 				spot = deepcopy(cvCopy.traverseTree(updatedOrig))
 				cv.oldSubtree = spot
 			if len(cv.path) == 0:
-				log("Individualize\tdelete vector couldn't find path" + str(cv), "bug")
+				log.error("Individualize\tdelete vector couldn't find path" + str(cv))
 			if cv.path[1] not in [('orelse', 'If'), ('orelse', 'For'), ('orelse', 'While'),
 								  ('elts', 'List'), ('args', 'Arguments'), ('args', 'Call'),
 								  ('keywords', 'Call')]:
@@ -978,7 +984,7 @@ def mapEdit(canon, orig, edit, nameMap=None):
 					if cv.path[1] in [('body', 'If'), ('body', 'For'), ('body', 'While')]:
 						cv = ChangeVector(cv.path, cv.oldSubtree, ast.Pass(), start=cv.start)
 					else:
-						log("individualize\tmapEdit\tDelete CV: " + str(cv), "bug")
+						log.error("individualize\tmapEdit\tDelete CV: " + str(cv))
 
 		# Catch any ordering changes that won't need to be propogated to the edit in the old tree
 		if hasattr(cv.oldSubtree, "global_id"):
@@ -986,19 +992,19 @@ def mapEdit(canon, orig, edit, nameMap=None):
 			if newOldTree != None:
 				cv.oldSubtree = newOldTree
 			else:
-				log("individualize\tmapEdit\tCouldn't find globalId: " + str(cv) + "\n" + \
-					printFunction(updatedOrig) + "\n" + printFunction(orig), "bug")
+				log.error("individualize\tmapEdit\tCouldn't find globalId: " + str(cv) + "\n" + \
+					printFunction(updatedOrig) + "\n" + printFunction(orig))
 		elif cv.oldSubtree != None and not isinstance(cv, MoveVector) and not isinstance(cv, SwapVector):
 			if cv.path[0] in [('name', 'Function Definition'), ('attr', 'Attribute')]:
 				pass
 			else:
 				if isinstance(cv.oldSubtree, ast.AST):
-					log("individualize\tmapEdit\tDict: " + str(cv.oldSubtree.__dict__), "bug")
-				log("individualize\tmapEdit\tMissing global_id\nOriginal CV: " + str(orig_cv) + "\nNew CV: " + \
+					log.error("individualize\tmapEdit\tDict: " + str(cv.oldSubtree.__dict__))
+				log.error("individualize\tmapEdit\tMissing global_id\nOriginal CV: " + str(orig_cv) + "\nNew CV: " + \
 					str(cv) + "\nFull Edit: " + str(edit) + "\nUpdated function:\n" + printFunction(cv.start) + \
-					"\nOriginal function:\n" + printFunction(orig), "bug")
+					"\nOriginal function:\n" + printFunction(orig))
 				if hasattr(orig_cv.oldSubtree, "global_id"):
-					log("individualize\tmapEdit\tGlobal ID existed before", "bug")
+					log.error("individualize\tmapEdit\tGlobal ID existed before")
 
 		# Finally, check some things that may get broken by inidividualization
 		cv = movedLineAfterSpecialFunction(cv, startingTree, startingPath, updatedOrig)
@@ -1042,7 +1048,7 @@ def mapEdit(canon, orig, edit, nameMap=None):
 			alreadyEdited.append(cv.oldSubtree.global_id)
 		updatedOrig = edit[count].applyChange(caller="mapEdit 2")
 		if updatedOrig == None:
-			log("DELETING EDIT:" + str(edit[count]), "bug")
+			log.error("DELETING EDIT:" + str(edit[count]))
 			del edit[count]
 			continue
 		count += 1

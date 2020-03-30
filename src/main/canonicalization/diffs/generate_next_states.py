@@ -1,7 +1,13 @@
 # Copyright (c) 2017 Kelly Rivers
 
+import logging
+
+from src.main.util import consts
 from src.main.canonicalization.diffs.diff_asts import *
 from src.main.canonicalization.diffs.change_vector import *
+
+
+log = logging.getLogger(consts.LOGGER_NAME)
 
 
 def getNextId(states, idStart):
@@ -97,7 +103,7 @@ def quickDeepCopy(cv):
     elif isinstance(cv, ChangeVector):
         return ChangeVector(path, old, new)
     else:
-        log("generateNextSteps\tquickDeepCopy\tMissing type: " + str(type(cv)), "bug")
+        log.error("generateNextSteps\tquickDeepCopy\tMissing type: " + str(type(cv)))
         return cv
 
 
@@ -248,11 +254,11 @@ def generateHelperDistributions(s, g, goals, states):
             tmpG.treeWeight = g.treeWeight
             tmpG = codetest(tmpG)
             if tmpG.score != 1:
-                log("generateNextStates\tgenerateHelperDistributions\tBad helper remapping: " + str(map), "bug")
-                log(s.code, "bug")
-                log(printFunction(s.orig_tree), "bug")
-                log(g.code, "bug")
-                log(tmpCode, "bug")
+                log.error("generateNextStates\tgenerateHelperDistributions\tBad helper remapping: " + str(map))
+                log.error(s.code)
+                log.error(printFunction(s.orig_tree))
+                log.error(g.code)
+                log.error(tmpCode)
             allFuns.append(tmpG)
             goals.append(tmpG)
             states.append(tmpG)
@@ -370,11 +376,11 @@ def generateVariableDistributions(s, g, goals, states):
             tmpG.treeWeight = g.treeWeight
             tmpG = codetest(tmpG)
             if tmpG.score != 1:
-                log("generateNextStates\tgenerateVariablesDistributions\tBad variable remapping: " + str(map), "bug")
-                log(s.code, "bug")
-                log(printFunction(s.orig_tree), "bug")
-                log(g.code, "bug")
-                log(tmpCode, "bug")
+                log.error("generateNextStates\tgenerateVariablesDistributions\tBad variable remapping: " + str(map))
+                log.error(s.code)
+                log.error(printFunction(s.orig_tree))
+                log.error(g.code)
+                log.error(tmpCode)
             allFuns.append(tmpG)
             goals.append(tmpG)
             states.append(tmpG)
@@ -422,7 +428,7 @@ def optimizeGoal(s, changes, states, goals):
                 # Check to see that the state exists and that it isn't too far away
                 newState = applyChangeVectors(s, newChanges, states, goals)
                 if newState == None:  # shouldn't happen
-                    log("generateNextStates\toptimizeGoal\tBroken edit: " + str(newChanges), "bug")
+                    log.error("generateNextStates\toptimizeGoal\tBroken edit: " + str(newChanges))
                     continue
                 newDistance, _ = distance(s, newState, givenChanges=newChanges)
 
@@ -509,13 +515,13 @@ def generateStatesInPath(s, goals, states, validCombinations):
                 bestScore, bestState = score, (c, n)
 
         if bestState == None:
-            log("Path Construction\tgetNextState\t" + str(s.id) + " could not find best next out of " + str(
-                len(validCombinations)) + " combinations", "bug")
+            log.error("Path Construction\tgetNextState\t" + str(s.id) + " could not find best next out of " + str(
+                len(validCombinations)) + " combinations")
             if s != originalS:
                 getNextState(s, goals,
                              states)  # start over with the broken state- resetting the diff will probably help
             else:
-                log("Path Construction\tgetNextState\tPermanently stuck", "bug")
+                log.error("Path Construction\tgetNextState\tPermanently stuck")
             break
         (s.edit, s.next) = bestState
         if s.next.score != 1:
@@ -537,7 +543,7 @@ def getNextState(s, goals, states, given_goal=None):
     """Generate the best next state for s, so that it will produce a desirable hint"""
     s.goal = chooseGoal(s, goals, states) if given_goal == None else given_goal
     if s.goal == None:
-        log("Path Construction\tgetNextState\tno goal found\t" + s.problem.name, "bug")
+        log.error("Path Construction\tgetNextState\tno goal found\t" + s.problem.name)
         return
     (s.goalDist, changes) = distance(s, s.goal)  # now get the actual changes
 
@@ -571,8 +577,7 @@ def getNextState(s, goals, states, given_goal=None):
 
     if len(validCombinations) == 0:
         # No possible changes can be made
-        log("Path Construction\tgetNextState\t" + str(s.code) + "\t" + str(s.goal.code) + " no valid combinations",
-            "bug")
+        log.error("Path Construction\tgetNextState\t" + str(s.code) + "\t" + str(s.goal.code) + " no valid combinations")
         s.next = None
         return
 
