@@ -13,20 +13,19 @@ from src.main.util.strings_util import convert_camel_case_to_snake_case
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
-
-# todo: add tests
+# todo: find out a proper way to check for default values
 def fill_column(data: pd.DataFrame, column: consts.CODE_TRACKER_COLUMN,
-                default_value: consts.DEFAULT_VALUE) -> Union[Any, consts.DEFAULT_VALUE]:
+                default_value: consts.DEFAULT_VALUE) -> Any:
     values = data[column.value].unique()
-    index = np.argwhere((values == default_value.value) | pd.isnull(values))
-    if (index.shape[0] == 0 and len(values) > 1) or len(values) > 2:
-        log.error('Invalid value for column!')
-        # It is an invalid file
-        return consts.INVALID_FILE_FOR_PREPROCESSING
+    index = np.argwhere(default_value.is_equal(values))
     values = np.delete(values, index)
+    if len(values) > 1:
+        # It is an invalid file
+        log.error('Invalid value for column!')
+        return consts.INVALID_FILE_FOR_PREPROCESSING
     if len(values) == 1:
         return values[0]
-    return default_value
+    return default_value.value
 
 
 # If we have a few languages, we return NOT_DEFINED, else we return the language.

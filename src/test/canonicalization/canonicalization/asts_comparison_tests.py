@@ -110,7 +110,7 @@ def get_asts_from_sources(sources):
     return [ast.parse(source) for source in sources]
 
 
-class TestASTsComparation(LoggedTest):
+class TestASTsComparison(LoggedTest):
 
     def test_same_ast(self) -> None:
         asts = get_asts_from_sources(sources_with_empty)
