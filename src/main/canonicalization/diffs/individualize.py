@@ -1,9 +1,12 @@
 # Copyright (c) 2017 Kelly Rivers
 
-from src.main.canonicalization.ast_tools import negate, num_negate, isAnonVariable, removePropertyFromAll, transferMetaData, isStatement
+import ast, copy
+from src.main.canonicalization.ast_tools import negate, num_negate, isAnonVariable, removePropertyFromAll, \
+	transferMetaData, isStatement, deepcopy
 from src.main.canonicalization.diffs.change_vector import *
 from src.main.util.namesets import astNames
 from src.main.canonicalization.diffs.diff_asts import getChanges
+from src.main.canonicalization.diffs.change_vector import *
 from src.main.canonicalization.diffs.generate_next_states import updateChangeVectors
 from src.main.canonicalization.transformations import simplify_multicomp
 

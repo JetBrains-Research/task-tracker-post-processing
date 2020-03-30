@@ -470,20 +470,20 @@ def distance(s, t, givenChanges=None, forceReweight=False, ignoreVariables=False
 		0 (identical solutions) and 1 (completely different)"""
 	# First weigh the trees, to propogate metadata
 	if s == None or t == None:
-		return 1 # can't compare to a None state
-	if forceReweight:
-		baseWeight = max(getWeight(s), getWeight(t))
-	else:
-		if not hasattr(s, "treeWeight"):
-			s.treeWeight = getWeight(s)
-		if not hasattr(t, "treeWeight"):
-			t.treeWeight = getWeight(t)
-		baseWeight = max(s.treeWeight, t.treeWeight)
+		return 1, [] # can't compare to a None state
+	# if forceReweight:
+	# 	baseWeight = max(getWeight(s), getWeight(t))
+	# else:
+	# 	if not hasattr(s, "treeWeight"):
+	# 		s.treeWeight = getWeight(s)
+	# 	if not hasattr(t, "treeWeight"):
+	# 		t.treeWeight = getWeight(t)
+	# 	baseWeight = max(s.treeWeight, t.treeWeight)
 
 	if givenChanges != None:
 		changes = givenChanges
 	else:
 		changes = getChanges(s, t, ignoreVariables=ignoreVariables)
 
-	changeWeight = getChangesWeight(changes)
-	return (1.0 * changeWeight / baseWeight, changes)
+	# changeWeight = getChangesWeight(changes)
+	return 1, changes

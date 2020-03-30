@@ -1,14 +1,35 @@
 # Copyright (c) 2017 Kelly Rivers
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
+import ast
+
+from typing import List
 from src.main.canonicalization.diffs.individualize import mapEdit
 from src.main.canonicalization.diffs.generate_next_states import updateChangeVectors
 from src.main.canonicalization.canonicalization import get_canonicalized_and_orig_form
-from src.main.canonicalization.diffs.diff_asts import distance, diffAsts, printFunction
+from src.main.canonicalization.diffs.diff_asts import distance, diffAsts, printFunction, ChangeVector
 
 
-source_1 = 'a = int(input())\nb = int(input())\nn = int(input())\nres = (a * 100 * n + b * n)\nmy(str(res) + " " + str((a * 100 * n + b * n) % 100))'
-source_2 = 'a = int(input())\nb = int(input())\nn = int(input())\nres = (a * 100 * n + b * n) // 100\nmy(str(res) + " " + str((a * 100 * n + b * n) % 100))'
+# source_1 = 'a = int(input())\nb = int(input())\nn = int(input())\nres = (a * 100 * n + b * n)\nprint(str(res) + " " + str((a * 100 * n + b * n) % 100))'
+# source_2 = 'a = int(input())\nb = int(input())\nn = int(input())\nres = (a * 100 * n + b * n) // 100\nprint(str(res) + " " + str((a * 100 * n + b * n) % 100))'
+
+
+def get_edits(source_tree: ast.AST, dest_tree: ast.AST) -> List[ChangeVector]:
+    edits = diffAsts(source_tree, dest_tree)
+    edits, _ = updateChangeVectors(edits, source_tree, source_tree)
+    return edits
+
+
+def apply_diffs(source_tree: ast.AST, source_orig_tree: ast.AST, edits: List[ChangeVector]) -> ast.AST:
+    edits = mapEdit(source_tree, source_orig_tree, edits)
+    for e in edits:
+        e.start = source_orig_tree
+        source_orig_tree = e.applyChange()
+    return source_orig_tree
+
+
+source_1 = 'a = int(input())\nb = int(input())\nn = int(input())\nres = a * 100 + b * n\nprint(str(res) + " " + str((a * 100 * n + b * n) % 100))'
+source_2 = 'a = int(input())\nb = int(input())\nn = int(input())\nres = (a * 100 * n + b * n) // 100\nprint(str(res) + " " + str((a * 100 * n + b * n) % 100))'
 
 print("SOURCE 1")
 print(source_1)
@@ -17,26 +38,12 @@ print("SOURCE 2")
 print(source_2)
 print("______")
 
-tree_1, orig_tree_1 = get_canonicalized_and_orig_form(source_1)
-tree_2, orig_tree_2 = get_canonicalized_and_orig_form(source_2)
+source_tree, source_orig_tree = get_canonicalized_and_orig_form(source_1)
+dest_source_tree, dest_source_orig_tree = get_canonicalized_and_orig_form(source_2)
 
-dist, changes = distance(tree_1, tree_2)
+edits, _ = get_edits(source_tree, dest_source_tree)
 
-print(dist, len(changes))
-
-edit = diffAsts(tree_1, tree_2)
-edit, _ = updateChangeVectors(edit, tree_1, tree_1)
-
-print(changes)
-print(edit)
-
-edit = mapEdit(tree_1, orig_tree_1, edit)
-
-print(edit)
-
-for e in edit:
-    e.start = orig_tree_1
-    orig_tree_1 = e.applyChange()
+orig_tree_1 = apply_diffs(source_tree, source_orig_tree, edits)
 
 print("RESULT")
-print(printFunction(orig_tree_1))
+print(printFunction(source_orig_tree))
