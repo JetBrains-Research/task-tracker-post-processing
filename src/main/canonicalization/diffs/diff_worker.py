@@ -27,9 +27,15 @@ def get_edits(source_tree: ast.AST, dest_tree: ast.AST) -> List[ChangeVector]:
 
 def apply_diffs(source_tree: ast.AST, source_orig_tree: ast.AST, edits: List[ChangeVector]) -> ast.AST:
     edits = mapEdit(source_tree, source_orig_tree, edits)
+    print("source_orig: ")
+    print(printFunction(source_orig_tree))
     for e in edits:
         e.start = source_orig_tree
         source_orig_tree = e.applyChange()
+        print("CHANGE: " + str(e.path))
+        print("old: " + str(printFunction(e.oldSubtree)))
+        print("new: " + str(printFunction(e.newSubtree)))
+        print(printFunction(source_orig_tree))
     return source_orig_tree
 
 
@@ -49,7 +55,7 @@ def main():
 
     edits = get_edits(source_tree, dest_source_tree)
 
-    orig_tree_1 = apply_diffs(source_tree, source_orig_tree, edits)
+    source_orig_tree = apply_diffs(source_tree, source_orig_tree, edits)
 
     print("RESULT")
     print(printFunction(source_orig_tree))
