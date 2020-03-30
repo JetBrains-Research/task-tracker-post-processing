@@ -23,7 +23,8 @@ TESTS_RESULTS = consts.CODE_TRACKER_COLUMN.TESTS_RESULTS.value
 def unpack_tests_results(tests_results: str, tasks: List[TASK]) -> List[float]:
     tests_results = ast.literal_eval(tests_results)
     if len(tests_results) != len(tasks):
-        log_and_raise_error(f'Cannot identify tasks because of unexpected tests_results length: {len(tests_results)}', log)
+        log_and_raise_error(f'Cannot identify tasks because of'
+                            f' unexpected tests_results length: {len(tests_results)}', log)
     return tests_results
 
 

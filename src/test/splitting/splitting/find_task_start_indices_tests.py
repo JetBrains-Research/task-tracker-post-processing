@@ -1,14 +1,12 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
-import logging
-import unittest
 from typing import List
 
 import pandas as pd
 
 from src.main.util import consts
+from src.test.test_util import LoggedTest
 from src.main.splitting.splitting import find_task_start_indices
-from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT
 
 PIES_COUNT_1 = 2
 PIES_COUNT_2 = 3
@@ -39,9 +37,7 @@ def crop_last_pies(df: pd.DataFrame, n: int = PIES_COUNT_3) -> pd.DataFrame:
     return df[:-n]
 
 
-class TestStartIndexFinding(unittest.TestCase):
-    def setUp(self) -> None:
-        logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
+class TestStartIndexFinding(LoggedTest):
 
     def find_and_check_start_indices(self, df: pd.DataFrame, expected_indices: List[int]) -> None:
         actual_indices = find_task_start_indices(df, consts.TASK.PIES)

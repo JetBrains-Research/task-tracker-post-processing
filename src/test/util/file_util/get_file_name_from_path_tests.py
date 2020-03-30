@@ -1,11 +1,9 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
-import logging
-import unittest
 from enum import Enum
 
+from src.test.test_util import LoggedTest
 from src.main.util.file_util import get_name_from_path
-from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT
 
 
 class PATHS_TEST_DATA(Enum):
@@ -67,10 +65,7 @@ def test_paths_data(self, paths_data_dict: dict):
         self.assertTrue(file_name == paths_data_dict[PATHS_TEST_DATA.FILE_NAME.value][EXTENSION.WITH.value])
 
 
-class TestGettingFileNameFromPath(unittest.TestCase):
-
-    def setUp(self) -> None:
-        logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
+class TestGettingFileNameFromPath(LoggedTest):
 
     def test_path(self):
         test_paths_data(self, get_file_name_from_path_data)

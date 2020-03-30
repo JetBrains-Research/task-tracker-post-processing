@@ -1,10 +1,7 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
-import logging
-import unittest
-
+from src.test.test_util import LoggedTest
 from src.main.util.file_util import add_slash, remove_slash
-from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT
 
 path_with_slash = 'home/data/src/'
 path_without_slash = 'home/data/src'
@@ -12,9 +9,7 @@ empty_path_without_slash = ''
 empty_path_with_slash = '/'
 
 
-class TestAddAndRemoveSlash(unittest.TestCase):
-    def setUp(self) -> None:
-        logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
+class TestAddAndRemoveSlash(LoggedTest):
 
     def test_add_not_existing_slash(self):
         path_with_added_slash = add_slash(path_without_slash)

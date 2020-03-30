@@ -1,11 +1,9 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
-import logging
-import unittest
 from enum import Enum
 
-from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT
 from src.main.util.file_util import get_parent_folder_name, get_parent_folder
+from src.test.test_util import LoggedTest
 
 
 class PARENT_FOLDER_TEST_DATA(Enum):
@@ -52,10 +50,7 @@ def test_parent_folder(self, dict_data: dict):
         self.assertEqual(dict_data[PARENT_FOLDER_TEST_DATA.PARENT_FOLDER_WITH_SLASH.value], get_parent_folder(path, True))
 
 
-class TestParentFolder(unittest.TestCase):
-
-    def setUp(self) -> None:
-        logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
+class TestParentFolder(LoggedTest):
 
     def test_empty_path(self):
         test_parent_folder(self, empty_path_data)
@@ -68,4 +63,3 @@ class TestParentFolder(unittest.TestCase):
 
     def test_path_with_leading_slash(self):
         test_parent_folder(self, path_with_leading_slash_data)
-

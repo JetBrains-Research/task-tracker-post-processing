@@ -1,12 +1,12 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
-import unittest
 from os import path
 from typing import List
 
 import pandas as pd
 
 from src.main.util import consts
+from src.test.test_util import LoggedTest
 from src.main.splitting.splitting import find_task_dfs
 from src.main.util.file_util import get_all_file_system_items
 
@@ -19,7 +19,7 @@ def get_expected_task_dfs(task: consts.TASK) -> List[pd.DataFrame]:
     return [pd.read_csv(df_file, encoding=consts.ISO_ENCODING) for df_file in df_files]
 
 
-class TestFindingTaskDfs(unittest.TestCase):
+class TestFindingTaskDfs(LoggedTest):
 
     def testFindingTaskDfs(self):
         df = pd.read_csv(DF_FILE, encoding=consts.ISO_ENCODING)

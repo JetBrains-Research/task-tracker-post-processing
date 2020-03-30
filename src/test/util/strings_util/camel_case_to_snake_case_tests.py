@@ -1,10 +1,7 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
-import logging
-import unittest
-
-from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT
 from src.main.util.strings_util import convert_camel_case_to_snake_case
+from src.test.test_util import LoggedTest
 
 data = [['considerMeAsOneWhoLovedPoetryAndPersimmons', 'consider_me_as_one_who_loved_poetry_and_persimmons'],
         ['ResponseHTTP23', 'response_http_23'],
@@ -16,10 +13,7 @@ data = [['considerMeAsOneWhoLovedPoetryAndPersimmons', 'consider_me_as_one_who_l
         ['', '']]
 
 
-class TestConversionToSnakeCase(unittest.TestCase):
-
-    def setUp(self) -> None:
-        logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
+class TestConversionToSnakeCase(LoggedTest):
 
     def testUpperLetters(self):
         for d in data:

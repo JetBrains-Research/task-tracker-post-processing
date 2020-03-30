@@ -3,12 +3,12 @@
 import os
 import sys
 import logging
-import unittest
 from subprocess import check_output, CalledProcessError
 
 from src.main.util import consts
+from src.test.test_util import LoggedTest
+from src.main.util.consts import TEST_DATA_PATH
 from src.main.splitting.task_checker import check_call_safely
-from src.main.util.consts import TEST_DATA_PATH, LOGGER_FORMAT
 from src.main.util.file_util import get_all_file_system_items, extension_file_condition
 
 log = logging.getLogger(consts.LOGGER_NAME)
@@ -34,12 +34,9 @@ def check_file_by_mypy_and_execution(file_name: str):
     return check_call_safely(['mypy', file_name]) and check_call_safely([sys.executable, file_name])
 
 
-class TestPythonParsing(unittest.TestCase):
+class TestPythonParsing(LoggedTest):
 
-    def setUp(self) -> None:
-        logging.basicConfig(filename=consts.LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
-
-    def test_python_parsing(self):
+   def test_python_parsing(self):
         log.info('mypy and pylint testing:')
         # Files contain 12 incorrect files, which have 'error' in their names, and 1 correct file, which hasn't
         files = get_all_file_system_items(PARSING_TEST_DATA_PATH, extension_file_condition(consts.EXTENSION.TXT))

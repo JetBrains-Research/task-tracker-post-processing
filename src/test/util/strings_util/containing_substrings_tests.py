@@ -1,8 +1,8 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import logging
-import unittest
 
+from src.test.test_util import LoggedTest
 from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT
 from src.main.util.strings_util import contains_any_of_substrings
 
@@ -12,10 +12,7 @@ partly_contained_substrings = ['mint', 'candy', 'sugar']
 not_contained_substrings = ['parsley', 'sun']
 
 
-class TestContainingSubstrings(unittest.TestCase):
-
-    def setUp(self) -> None:
-        logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
+class TestContainingSubstrings(LoggedTest):
 
     def test_contained_substrings(self):
         self.assertTrue(contains_any_of_substrings(string, contained_substrings))

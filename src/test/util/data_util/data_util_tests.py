@@ -1,15 +1,12 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
-import logging
-import unittest
 from typing import Tuple, Callable
 
 import pandas as pd
 
+from src.test.test_util import LoggedTest
 from src.main.util.consts import CODE_TRACKER_COLUMN
 from src.main.util.data_util import crop_data_by_timestamp
-from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT
-
 
 END_INDEX = 100
 COLUMN = CODE_TRACKER_COLUMN.TIMESTAMP
@@ -52,14 +49,10 @@ def run_test(get_data_for_test: Callable) -> bool:
     return are_equal(actual_data, expected_crop_data)
 
 
-class TestDataUtilMethods(unittest.TestCase):
-
-    def setUp(self) -> None:
-        logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
+class TestDataUtilMethods(LoggedTest):
 
     def test_crop_data_by_start_and_end(self):
         self.assertTrue(run_test(get_data_with_deleted_by_start_and_end))
 
     def test_crop_data_by_start(self):
         self.assertTrue(run_test(get_data_with_deleted_by_start))
-

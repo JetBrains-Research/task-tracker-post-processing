@@ -1,14 +1,14 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import os
-import logging
-import unittest
 
-from src.main.util.consts import LOGGER_TEST_FILE, TEST_DATA_PATH, LOGGER_FORMAT, EXTENSION
+from src.main.util.consts import TEST_DATA_PATH, EXTENSION
 from src.main.util.file_util import get_extension_from_file, change_extension_to, create_file, remove_file, \
     remove_directory, create_directory
 
 # Assuming there cannot be any slashes at the end of the file, because path 'home/data/file.txt/ is incorrect
+from src.test.test_util import LoggedTest
+
 file_with_txt_extension = os.path.join(TEST_DATA_PATH, 'util/file_util/extension_tests/file.txt')
 file_with_csv_extension = os.path.join(TEST_DATA_PATH, 'util/file_util/extension_tests/file.csv')
 file_without_extension = os.path.join(TEST_DATA_PATH, 'util/file_util/extension_tests/file')
@@ -23,10 +23,7 @@ def clear_folder(folder):
     create_directory(folder)
 
 
-class TestExtensionMethods(unittest.TestCase):
-
-    def setUp(self) -> None:
-        logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
+class TestExtensionMethods(LoggedTest):
 
     def test_getting_txt_extension(self):
         self.assertTrue(EXTENSION.TXT == get_extension_from_file(file_with_txt_extension))
