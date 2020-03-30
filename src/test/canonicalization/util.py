@@ -38,11 +38,8 @@ def get_test_in_and_out_files(test_type: Union[CANONIZATION_TESTS_TYPES, DIFF_WO
         root = os.path.join(root, str(task))
     in_files = get_all_file_system_items(root, (lambda filename: re.fullmatch(r'in_\d+.py', filename)))
     out_files = get_all_file_system_items(root, (lambda filename: re.fullmatch(r'out_\d+.py', filename)))
-    additional_in_files = [name for name in in_files if additional_folder_name in name]
-    in_files = [name for name in in_files if name not in additional_in_files]
     if len(out_files) != len(in_files):
         raise ValueError('Length of out files list does not equal in files list')
-    # Todo: handle in files and in additional folder
     return pair_in_and_out_files(in_files, out_files)
 
 

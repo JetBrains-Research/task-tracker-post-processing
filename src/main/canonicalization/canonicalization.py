@@ -79,10 +79,11 @@ def get_imports(tree: ast.AST) -> List[str]:
 
 def get_canonicalized_form(tree: ast.AST, imports: Optional[List[str]] = None) -> ast.AST:
     transformations = __get_canonical_transformations()
+    tree = deepcopy(tree)
 
     if not imports:
         imports = get_imports(tree)
-    old_tree = deepcopy(tree)
+    old_tree = None
     while compareASTs(old_tree, tree, checkEquality=True) != 0:
         old_tree = deepcopy(tree)
         helperFolding(tree, None, imports)

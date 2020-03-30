@@ -1,5 +1,6 @@
 import os
 import logging
+import re
 import unittest
 
 from src.main.canonicalization.canonicalization import get_code_from_tree, get_canonicalized_and_orig_form, \
@@ -21,7 +22,7 @@ def get_dst_source_code(source_file: str) -> str:
 
 def apply_diffs(source_file: str) -> str:
     source = get_content_from_file(source_file)
-    dst_source = get_dst_source_code(source_file)
+    dst_source = get_content_from_file(re.sub(r'in(?=[^in]*$)', 'out', source_file))
 
     anon_dst_tree, orig_dst_tree = get_canonicalized_and_orig_form(dst_source, only_anon=True)
     canon_dst_tree = get_canonicalized_form(anon_dst_tree)
