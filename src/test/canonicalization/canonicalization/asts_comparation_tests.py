@@ -1,12 +1,9 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import ast
-import logging
-import unittest
 
-from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT
+from src.test.test_util import LoggedTest
 from src.main.canonicalization.canonicalization import are_asts_equal, get_code_from_tree
-
 
 empty_source = ''
 
@@ -113,9 +110,7 @@ def get_asts_from_sources(sources):
     return [ast.parse(source) for source in sources]
 
 
-class TestASTsComparation(unittest.TestCase):
-    def setUp(self) -> None:
-        logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
+class TestASTsComparation(LoggedTest):
 
     def test_same_ast(self) -> None:
         asts = get_asts_from_sources(sources_with_empty)

@@ -5,12 +5,13 @@ import unittest
 from enum import Enum
 from typing import List, Tuple
 
+from src.test.test_util import LoggedTest
+from src.main.util.consts import TEST_RESULT, LOGGER_NAME, TASK
 from src.main.solution_space.data_classes import Code, User, CodeInfo
 from src.main.solution_space.solution_graph import Vertex, SolutionGraph
 from src.main.canonicalization.canonicalization import get_code_from_tree
 from src.main.solution_space.consts import FOLDER_WITH_CODE_FILES_FOR_TESTS
 from src.test.solution_space.solution_graph.util import create_code_from_source, init_default_ids
-from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT, TEST_RESULT, LOGGER_NAME, TASK
 
 log = logging.getLogger(LOGGER_NAME)
 
@@ -114,9 +115,7 @@ def check_adjacent_vertices_structure(self: unittest.TestCase, adjacent_vertex_t
     self.assertTrue(not adjacent_vertices_structure)
 
 
-class TestGraph(unittest.TestCase):
-    def setUp(self) -> None:
-        logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
+class TestGraph(LoggedTest):
 
     def test_bfs_traversal(self) -> None:
         init_default_ids()

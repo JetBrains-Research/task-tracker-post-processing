@@ -2,15 +2,15 @@
 
 import os
 import logging
-import unittest
 from typing import List, Tuple
 
-from src.main.util.language_util import get_extension_by_language
+from src.test.test_util import LoggedTest
 from src.main.solution_space.solution_graph import SolutionGraph
+from src.main.util.language_util import get_extension_by_language
+from src.main.util.consts import LOGGER_NAME, TASK, FILE_SYSTEM_ITEM, LANGUAGE
 from src.main.util.file_util import get_all_file_system_items, remove_directory
 from src.test.solution_space.solution_graph.util import get_two_vertices, init_default_ids
 from src.main.solution_space.consts import GRAPH_FOLDER_PREFIX, FOLDER_WITH_CODE_FILES_FOR_TESTS, FILE_PREFIX
-from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT, LOGGER_NAME, TASK, FILE_SYSTEM_ITEM, LANGUAGE
 
 log = logging.getLogger(LOGGER_NAME)
 
@@ -56,9 +56,7 @@ def delete_folder() -> None:
     remove_directory(get_test_folder_path())
 
 
-class TestCodeToFile(unittest.TestCase):
-    def setUp(self) -> None:
-        logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
+class TestCodeToFile(LoggedTest):
 
     # Create three graphs and check all folders names which were created for each graph
     def test_folders_names(self):

@@ -1,11 +1,10 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import logging
-import unittest
 from enum import Enum
 
 from src.main.util import consts
-from src.main.util.consts import LOGGER_FORMAT
+from src.test.test_util import LoggedTest
 from src.main.preprocessing.preprocessing import __separate_ati_and_other_files
 
 log = logging.getLogger(consts.LOGGER_NAME)
@@ -65,10 +64,7 @@ def run_test(case: dict):
     return are_pairs_equal(case[TEST_DATA.RESULT.value], (ct_files, at_file))
 
 
-class TestFilterFiles(unittest.TestCase):
-
-    def setUp(self) -> None:
-        logging.basicConfig(filename=consts.LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
+class TestFilterFiles(LoggedTest):
 
     def test_two_ati_case(self):
         self.assertTrue(run_test(two_ati_case))

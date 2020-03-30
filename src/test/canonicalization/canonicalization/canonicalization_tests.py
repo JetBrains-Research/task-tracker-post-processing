@@ -1,10 +1,10 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import logging
-import unittest
 
+from src.test.test_util import LoggedTest
+from src.main.util.consts import LOGGER_NAME, TASK
 from src.main.util.file_util import get_content_from_file
-from src.main.util.consts import LOGGER_FORMAT, LOGGER_NAME, LOGGER_TEST_FILE, TASK
 from src.test.canonicalization.canonicalization.util import run_test, CANONIZATION_TESTS_TYPES
 from src.main.canonicalization.canonicalization import get_cleaned_code, anonymize_names, get_ast, get_code_from_tree,\
     get_canonicalized_form
@@ -29,10 +29,7 @@ def get_canonicalized_code(file: str) -> str:
     return get_code_from_tree(get_canonicalized_form(source)).rstrip('\n')
 
 
-class TestCanonicalizationTool(unittest.TestCase):
-
-    def setUp(self) -> None:
-        logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
+class TestCanonicalizationTool(LoggedTest):
 
     def test_cleaned_code(self) -> None:
         run_test(self, CANONIZATION_TESTS_TYPES.CLEANED_CODE.value, get_cleaned_code_from_file)

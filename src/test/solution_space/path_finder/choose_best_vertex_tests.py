@@ -1,17 +1,16 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import os
-import logging
-import unittest
 from typing import Optional
 
+from src.test.test_util import LoggedTest
+from src.main.util.consts import TEST_DATA_PATH, TASK
 from src.main.util.file_util import get_content_from_file
 from src.main.solution_space.path_finder import PathFinder
 from src.main.solution_space.data_classes import Code, Profile, User
 from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 from src.test.solution_space.solution_graph.util import get_two_vertices
 from src.main.canonicalization.canonicalization import get_canonicalized_form
-from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT, TEST_DATA_PATH, TASK
 
 USER_SOURCE_PATH = os.path.join(TEST_DATA_PATH, 'solution_space', 'choose_best_vertex', 'source.py')
 USER_SOURCE = get_content_from_file(USER_SOURCE_PATH)
@@ -42,10 +41,7 @@ def get_best_vertex_from_empty_list() -> Optional[Vertex]:
     return PF._PathFinder__choose_best_vertex(USER_CODE, DEFAULT_USER, [])
 
 
-class TestChooseBestVertexMethod(unittest.TestCase):
-
-    def setUp(self) -> None:
-        logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
+class TestChooseBestVertexMethod(LoggedTest):
 
     def test_empty_list(self):
         self.assertEqual(get_best_vertex_from_empty_list(), None)

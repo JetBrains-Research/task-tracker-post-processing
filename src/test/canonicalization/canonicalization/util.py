@@ -8,8 +8,8 @@ import logging
 from enum import Enum
 from typing import Callable
 
-from src.main.util.consts import LOGGER_NAME, ROOT_DIR
 from src.main.util.log_util import log_and_raise_error
+from src.main.util.consts import LOGGER_NAME, ROOT_DIR
 from src.main.util.file_util import get_all_file_system_items, pair_in_and_out_files, get_content_from_file, \
     match_condition
 

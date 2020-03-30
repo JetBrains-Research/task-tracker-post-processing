@@ -1,12 +1,12 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import logging
-import unittest
 
 import pandas as pd
 
 from src.main.solution_space.solution_space_handler import __filter_incorrect_fragments
-from src.main.util.consts import LOGGER_NAME, LOGGER_TEST_FILE, LOGGER_FORMAT, CODE_TRACKER_COLUMN
+from src.main.util.consts import LOGGER_NAME, CODE_TRACKER_COLUMN
+from src.test.test_util import LoggedTest
 
 log = logging.getLogger(LOGGER_NAME)
 
@@ -56,10 +56,7 @@ def clear_df(df: pd.DataFrame) -> pd.DataFrame:
     return df.iloc[0:0]
 
 
-class TestFilterIncorrectFragments(unittest.TestCase):
-
-    def setUp(self) -> None:
-        logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
+class TestFilterIncorrectFragments(LoggedTest):
 
     def test_all_correct(self) -> None:
         before_filter_df = pd.DataFrame(ALL_CORRECT)

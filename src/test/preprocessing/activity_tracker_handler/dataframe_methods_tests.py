@@ -1,11 +1,11 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import os
-import unittest
 
 import pandas as pd
 
 from src.main.util import consts
+from src.test.test_util import LoggedTest
 from src.main.preprocessing import activity_tracker_handler as ath
 
 ath_test_folder = os.path.join(consts.TEST_DATA_PATH, 'preprocessing/activity_tracker_handler')
@@ -136,7 +136,7 @@ def is_equals(df_1: pd.DataFrame, df_2: pd.DataFrame):
     return df_1.equals(df_2)
 
 
-class TestDataFrameMethods(unittest.TestCase):
+class TestDataFrameMethods(LoggedTest):
 
     def test_insert_by_index(self):
         res_test_df, res_right_df = get_data_for_insert_by_index_test()

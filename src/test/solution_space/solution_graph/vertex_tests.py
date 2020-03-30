@@ -1,21 +1,16 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
-import logging
-import unittest
-
+from src.main.util.consts import TASK
+from src.test.test_util import LoggedTest
 from src.main.solution_space.data_classes import User, CodeInfo
-from src.main.util.consts import LOGGER_FORMAT, LOGGER_TEST_FILE, TASK
 from src.main.solution_space.solution_graph import Vertex, SolutionGraph
 from src.main.solution_space.consts import FOLDER_WITH_CODE_FILES_FOR_TESTS
-
 
 CURRENT_TASK = TASK.PIES
 SolutionGraph.folder_with_code_files = FOLDER_WITH_CODE_FILES_FOR_TESTS
 
 
-class TestVertex(unittest.TestCase):
-    def setUp(self) -> None:
-        logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
+class TestVertex(LoggedTest):
 
     def test_adding_parent(self) -> None:
         sg = SolutionGraph(CURRENT_TASK)
@@ -63,4 +58,3 @@ class TestVertex(unittest.TestCase):
 
         # In result set will be only two users form three because the second one has 0 code_info
         self.assertEqual(vertex.get_unique_users(), {users[0], users[2]})
-
