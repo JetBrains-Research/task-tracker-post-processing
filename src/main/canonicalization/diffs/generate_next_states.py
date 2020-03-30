@@ -152,7 +152,7 @@ def chooseGoal(s, goals, states):
     # First, find the program whose structure best matches the state
     for g in goals:
         (tempD, tempChanges) = distance(s, g, ignoreVariables=True)
-        # prefer more common goals over less common ones
+        # prefer more common destinations over less common ones
         if (tempD < goalDist) or (tempD == goalDist and g.count > goal.count):
             (goal, goalDist, changes) = (g, tempD, tempChanges)
     # Then do variable matching between the two programs
@@ -164,7 +164,7 @@ def chooseGoal(s, goals, states):
             origGoal = goal
             for modG in helperDistributions:
                 (tempD, tempChanges) = distance(s, modG)
-                # prefer more common goals over less common ones
+                # prefer more common destinations over less common ones
                 if (tempD < goalDist) or (tempD == goalDist and modG.count > goal.count):
                     (goal, goalDist, changes) = (modG, tempD, tempChanges)
 
@@ -173,7 +173,7 @@ def chooseGoal(s, goals, states):
         allDistributions = generateVariableDistributions(s, goal, goals, states)
         for modG in allDistributions:
             (tempD, tempChanges) = distance(s, modG)
-            # prefer more common goals over less common ones
+            # prefer more common destinations over less common ones
             if (tempD < goalDist) or (tempD == goalDist and modG.count > goal.count):
                 (goal, goalDist, changes) = (modG, tempD, tempChanges)
     return goal
