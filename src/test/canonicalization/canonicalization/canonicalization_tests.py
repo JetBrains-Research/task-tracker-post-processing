@@ -6,7 +6,7 @@ from src.test.test_util import LoggedTest
 from src.main.util.consts import LOGGER_NAME, TASK
 from src.main.util.file_util import get_content_from_file
 from src.test.canonicalization.canonicalization.util import run_test, CANONIZATION_TESTS_TYPES
-from src.main.canonicalization.canonicalization import get_cleaned_code, anonymize_names, get_ast, get_code_from_tree,\
+from src.main.canonicalization.canonicalization import get_cleaned_code, get_anonymized_tree, get_ast, get_code_from_tree,\
     get_canonicalized_form
 
 log = logging.getLogger(LOGGER_NAME)
@@ -20,7 +20,7 @@ def get_cleaned_code_from_file(file: str) -> str:
 def get_code_with_anonymous_names(file: str) -> str:
     source = get_cleaned_code_from_file(file)
     tree = get_ast(source)
-    actual_code = get_code_from_tree(anonymize_names(tree)).rstrip('\n')
+    actual_code = get_code_from_tree(get_anonymized_tree(tree)).rstrip('\n')
     return actual_code
 
 
