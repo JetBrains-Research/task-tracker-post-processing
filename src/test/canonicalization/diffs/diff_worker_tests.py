@@ -1,17 +1,16 @@
-import itertools
 import os
-import logging
 import re
+import logging
 import unittest
-from typing import List, Any, Optional
+import itertools
 
-from src.main.canonicalization.canonicalization import get_code_from_tree, get_canonicalized_and_orig_form, \
-    get_canonicalized_form, get_cleaned_code
+from typing import List, Any, Optional
 from src.main.canonicalization.diffs.diff_worker import DiffWorker
 from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT, LOGGER_NAME, TASK
-from src.main.util.file_util import get_content_from_file, get_parent_folder, get_name_from_path, \
-    get_all_file_system_items
+from src.main.util.file_util import get_content_from_file, get_all_file_system_items
 from src.test.canonicalization.util import run_test, DIFF_WORKER_TEST_TYPES, CANONIZATION_TESTS
+from src.main.canonicalization.canonicalization import get_code_from_tree, get_canonicalized_and_orig_form, \
+    get_canonicalized_form
 
 log = logging.getLogger(LOGGER_NAME)
 

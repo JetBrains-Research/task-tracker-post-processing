@@ -6,10 +6,10 @@ import logging
 
 from typing import List, Tuple
 
-from src.main.canonicalization.diffs.generate_next_states import updateChangeVectors
 from src.main.util import consts
 from src.main.canonicalization.consts import TREE_TYPE
 from src.main.canonicalization.diffs.individualize import mapEdit
+from src.main.canonicalization.diffs.generate_next_states import updateChangeVectors
 from src.main.canonicalization.diffs.diff_asts import diffAsts, printFunction, ChangeVector, deepcopy
 from src.main.canonicalization.canonicalization import get_canonicalized_and_orig_form, get_canonicalized_form
 
