@@ -5,6 +5,8 @@ import ast
 import logging
 
 from typing import List, Tuple
+
+from src.main.canonicalization.diffs.generate_next_states import updateChangeVectors
 from src.main.util import consts
 from src.main.canonicalization.consts import TREE_TYPE
 from src.main.canonicalization.diffs.individualize import mapEdit
@@ -40,8 +42,10 @@ class DiffWorker:
 
         if len(anon_edits) <= len(canon_edits):
             log.info(f'Anonymized trees was selected')
+            anon_edits, _ = updateChangeVectors(anon_edits, self._anon_source_tree, self._anon_source_tree)
             return anon_edits, TREE_TYPE.ANON
         log.info(f'Canonicalized trees was selected')
+        canon_edits, _ = updateChangeVectors(canon_edits, self._canon_source_tree, self._canon_source_tree)
         return canon_edits, TREE_TYPE.CANON
 
     def apply_diffs(self, edits: List[ChangeVector], tree_type: TREE_TYPE = TREE_TYPE.CANON) -> ast.AST:

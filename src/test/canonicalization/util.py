@@ -28,12 +28,13 @@ class CANONIZATION_TESTS_TYPES(Enum):
 
 
 class DIFF_WORKER_TEST_TYPES(Enum):
-    DIFF_WORKER = 'diff_worker'
+    DIFF_WORKER_TEST = 'tests'
+    STUDENTS_CODE = 'students_code'
 
 
 def get_test_in_and_out_files(test_type: Union[CANONIZATION_TESTS_TYPES, DIFF_WORKER_TEST_TYPES],
                               task=None, additional_folder_name: str = '') -> list:
-    root = os.path.join(CANONIZATION_TESTS.TASKS_TESTS_PATH.value, str(test_type))
+    root = os.path.join(CANONIZATION_TESTS.TASKS_TESTS_PATH.value, additional_folder_name, test_type.value)
     if task is not None:
         root = os.path.join(root, str(task))
     in_files = get_all_file_system_items(root, (lambda filename: re.fullmatch(r'in_\d+.py', filename)))
