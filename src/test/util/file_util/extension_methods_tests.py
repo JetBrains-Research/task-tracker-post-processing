@@ -18,38 +18,38 @@ extension_with_dot = EXTENSION.TXT
 empty_extension = EXTENSION.EMPTY
 
 
-def clear_folder(folder):
+def clear_folder(folder) -> None:
     remove_directory(folder)
     create_directory(folder)
 
 
 class TestExtensionMethods(LoggedTest):
 
-    def test_getting_txt_extension(self):
+    def test_getting_txt_extension(self) -> None:
         self.assertTrue(EXTENSION.TXT == get_extension_from_file(file_with_txt_extension))
 
-    def test_getting_empty_extension(self):
+    def test_getting_empty_extension(self) -> None:
         self.assertTrue(EXTENSION.EMPTY == get_extension_from_file(file_without_extension))
 
-    def test_getting_exception_from_folder(self):
+    def test_getting_exception_from_folder(self) -> None:
         self.assertTrue(EXTENSION.EMPTY == get_extension_from_file(folder_with_slash))
 
     # for testing extension change we should use real files
-    def test_changing_extension(self):
+    def test_changing_extension(self) -> None:
         clear_folder(folder_with_slash)
         create_file("", file_with_csv_extension)
         change_extension_to(file_with_csv_extension, EXTENSION.TXT, True)
         self.assertTrue(os.path.isfile(file_with_txt_extension))
         remove_file(file_with_txt_extension)
 
-    def test_changing_to_empty_extension(self):
+    def test_changing_to_empty_extension(self) -> None:
         clear_folder(folder_with_slash)
         create_file("", file_with_csv_extension)
         change_extension_to(file_with_csv_extension, EXTENSION.EMPTY, True)
         self.assertTrue(os.path.isfile(file_without_extension))
         remove_file(file_without_extension)
 
-    def test_changing_empty_extension(self):
+    def test_changing_empty_extension(self) -> None:
         clear_folder(folder_with_slash)
         create_file("", file_without_extension)
         change_extension_to(file_without_extension, EXTENSION.TXT, True)

@@ -116,7 +116,7 @@ class TestStartIndexFinding(LoggedTest):
     #   chosenTask
     # 0     pies
     # 1     pies
-    def test_finding_start_indices_in_full_df(self):
+    def test_finding_start_indices_in_full_df(self) -> None:
         self.find_and_check_start_indices(crop_last_pies(get_df(), -PIES_COUNT_1), [START_INDEX_1])
 
     # Finding start indices in:
@@ -126,5 +126,5 @@ class TestStartIndexFinding(LoggedTest):
     # 8     is_zero
     # 9     is_zero
     # 10    is_zero
-    def test_finding_start_indices_in_empty_df(self):
+    def test_finding_start_indices_in_empty_df(self) -> None:
         self.find_and_check_start_indices(crop_last_pies(crop_first_pies(get_df(), PIES_COUNT_1 + IS_ZERO_COUNT_1 + PIES_COUNT_2)), [])

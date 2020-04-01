@@ -8,8 +8,8 @@ from typing import List, Tuple
 from src.test.test_util import LoggedTest
 from src.main.solution_space.data_classes import AtiItem
 from src.main.canonicalization.canonicalization import get_canonicalized_form, are_asts_equal
-from src.main.solution_space.solution_space_handler import __find_same_fragments, __get_ati_data, __get_column_value
 from src.main.util.consts import LOGGER_NAME, CODE_TRACKER_COLUMN, ACTIVITY_TRACKER_COLUMN, ACTIVITY_TRACKER_EVENTS
+from src.main.solution_space.solution_space_handler import __find_same_fragments, __get_ati_data, __get_column_value
 
 log = logging.getLogger(LOGGER_NAME)
 

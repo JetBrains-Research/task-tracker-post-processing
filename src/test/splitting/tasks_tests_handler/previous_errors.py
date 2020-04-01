@@ -14,7 +14,7 @@ PREVIOUS_ERRORS_TEST_DATA = os.path.join(TEST_DATA_PATH, 'splitting/tasks_tests_
 # just to be sure it won't raise any errors again
 class TestPreviousErrors(LoggedTest):
 
-    def test_fragments(self):
+    def test_fragments(self) -> None:
         fragment_files = get_all_file_system_items(PREVIOUS_ERRORS_TEST_DATA, (lambda name: 'fragment' in name))
         in_and_out_files_dict = create_in_and_out_dict(TASK.tasks())
 
@@ -23,5 +23,5 @@ class TestPreviousErrors(LoggedTest):
             check_tasks(TASK.tasks(), get_content_from_file(file), in_and_out_files_dict, language, False)
 
     # need to test ati_327/Main_67885, put it in PREVIOUS_ERRORS_TEST_DATA before running
-    def test_codetracker_data(self):
+    def test_codetracker_data(self) -> None:
         run_tests(PREVIOUS_ERRORS_TEST_DATA)

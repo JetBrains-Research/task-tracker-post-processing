@@ -51,8 +51,8 @@ def run_test(get_data_for_test: Callable) -> bool:
 
 class TestDataUtilMethods(LoggedTest):
 
-    def test_crop_data_by_start_and_end(self):
+    def test_crop_data_by_start_and_end(self) -> None:
         self.assertTrue(run_test(get_data_with_deleted_by_start_and_end))
 
-    def test_crop_data_by_start(self):
+    def test_crop_data_by_start(self) -> None:
         self.assertTrue(run_test(get_data_with_deleted_by_start))

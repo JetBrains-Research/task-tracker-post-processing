@@ -9,8 +9,8 @@ import pandas as pd
 from src.main.util import consts
 from src.main.util.log_util import log_and_raise_error
 from src.main.util.time_util import get_datetime_by_format
-from src.main.util.file_util import get_name_from_path, get_original_file_name_with_extension, get_parent_folder
 from src.main.util.language_util import get_extension_by_language
+from src.main.util.file_util import get_name_from_path, get_original_file_name_with_extension, get_parent_folder
 
 log = logging.getLogger(consts.LOGGER_NAME)
 

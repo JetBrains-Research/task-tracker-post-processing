@@ -85,7 +85,7 @@ def __update_statistics_dict_column(statistics: Statistics, column: STATISTICS_K
 
 def __add_values_in_statistics_dict(statistics: Statistics, age: InvalidAge, experience: InvalidExperience) -> None:
     __update_statistics_dict_column(statistics, STATISTICS_KEY.AGE, age)
-    __update_statistics_dict_column(statistics, STATISTICS_KEY.EXPERIENCE.value, experience)
+    __update_statistics_dict_column(statistics, STATISTICS_KEY.EXPERIENCE, experience)
 
 
 def __write_key_result(statistics_value: StatisticsValue, result_folder: str, file_name: str) -> None:
@@ -98,7 +98,7 @@ def __write_results(result_folder: str, statistics: Statistics) -> None:
         __write_key_result(statistics[key], result_folder, key.value)
 
 
-def get_profile_statistics(path: str) -> None:
+def get_profile_statistics(path: str) -> str:
     result_folder = get_result_folder(path, consts.STATISTICS_RESULT_FOLDER)
     folders = get_all_file_system_items(path, data_subdirs_condition, consts.FILE_SYSTEM_ITEM.SUBDIR)
     statistics = __get_empty_statistics_dict()
@@ -110,6 +110,7 @@ def get_profile_statistics(path: str) -> None:
         __add_values_in_statistics_dict(statistics, age, experience)
 
     __write_results(result_folder, statistics)
+    return result_folder
 
 
 # Run after 'split_tasks_into_separate_files' to return simple statistics dictionary

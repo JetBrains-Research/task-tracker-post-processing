@@ -1,15 +1,13 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import os
-# Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
-
 import logging
 
 from enum import Enum
-from typing import Callable
+from typing import Callable, Optional
 
 from src.main.util.log_util import log_and_raise_error
-from src.main.util.consts import LOGGER_NAME, ROOT_DIR
+from src.main.util.consts import LOGGER_NAME, ROOT_DIR, TASK
 from src.main.util.file_util import get_all_file_system_items, pair_in_and_out_files, get_content_from_file, \
     match_condition
 
@@ -29,10 +27,10 @@ class CANONIZATION_TESTS_TYPES(Enum):
     STUDENT_CODE = 'student_code'
 
 
-def get_test_in_and_out_files(test_type: CANONIZATION_TESTS_TYPES, task=None) -> list:
-    root = os.path.join(CANONIZATION_TESTS.TASKS_TESTS_PATH.value, str(test_type))
-    if task is not None:
-        root = os.path.join(root, str(task))
+def get_test_in_and_out_files(test_type: CANONIZATION_TESTS_TYPES, task: Optional[TASK] = None) -> list:
+    root = os.path.join(CANONIZATION_TESTS.TASKS_TESTS_PATH.value, test_type.value)
+    if task:
+        root = os.path.join(root, task.value)
     in_files = get_all_file_system_items(root, match_condition(r'in_\d+.py'))
     out_files = get_all_file_system_items(root, match_condition(r'out_\d+.py'))
     if len(out_files) != len(in_files):
@@ -40,7 +38,7 @@ def get_test_in_and_out_files(test_type: CANONIZATION_TESTS_TYPES, task=None) ->
     return pair_in_and_out_files(in_files, out_files)
 
 
-def run_test(self, test_type: CANONIZATION_TESTS_TYPES, get_code: Callable, task=None) -> None:
+def run_test(self, test_type: CANONIZATION_TESTS_TYPES, get_code: Callable, task: Optional[TASK] = None) -> None:
     files = get_test_in_and_out_files(test_type, task)
     count_tests = 1
     for source_code, expected_code_path in files:

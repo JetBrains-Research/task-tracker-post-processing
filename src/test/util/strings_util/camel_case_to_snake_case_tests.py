@@ -1,7 +1,7 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
-from src.main.util.strings_util import convert_camel_case_to_snake_case
 from src.test.test_util import LoggedTest
+from src.main.util.strings_util import convert_camel_case_to_snake_case
 
 data = [['considerMeAsOneWhoLovedPoetryAndPersimmons', 'consider_me_as_one_who_loved_poetry_and_persimmons'],
         ['ResponseHTTP23', 'response_http_23'],
@@ -15,7 +15,7 @@ data = [['considerMeAsOneWhoLovedPoetryAndPersimmons', 'consider_me_as_one_who_l
 
 class TestConversionToSnakeCase(LoggedTest):
 
-    def testUpperLetters(self):
+    def testUpperLetters(self) -> None:
         for d in data:
             camel_case = d[0]
             snake_case = d[1]

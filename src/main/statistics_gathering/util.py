@@ -1,7 +1,7 @@
 from typing import Union, Tuple, Dict
 
-from src.main.plots.util.consts import STATISTICS_KEY
 from src.main.util import consts
+from src.main.plots.util.consts import STATISTICS_KEY
 
 Age = Union[int, consts.DEFAULT_VALUE]
 Experience = Union[str, consts.DEFAULT_VALUE]

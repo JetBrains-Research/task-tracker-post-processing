@@ -36,14 +36,14 @@ cpp_actual_pairs = {
 class TestPiesTests(LoggedTest):
     task = TASK.PIES
 
-    def test_python(self):
+    def test_python(self) -> None:
         test_task(self, python_actual_pairs, LANGUAGE.PYTHON)
 
-    def test_java(self):
+    def test_java(self) -> None:
         test_task(self, java_actual_pairs, LANGUAGE.JAVA)
 
-    def test_kotlin(self):
+    def test_kotlin(self) -> None:
         test_task(self, kotlin_actual_pairs, LANGUAGE.KOTLIN)
 
-    def test_cpp(self):
+    def test_cpp(self) -> None:
         test_task(self, cpp_actual_pairs, LANGUAGE.CPP)

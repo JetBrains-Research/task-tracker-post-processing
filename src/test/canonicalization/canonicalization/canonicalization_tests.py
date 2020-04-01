@@ -32,28 +32,28 @@ def get_canonicalized_code(file: str) -> str:
 class TestCanonicalizationTool(LoggedTest):
 
     def test_cleaned_code(self) -> None:
-        run_test(self, CANONIZATION_TESTS_TYPES.CLEANED_CODE.value, get_cleaned_code_from_file)
+        run_test(self, CANONIZATION_TESTS_TYPES.CLEANED_CODE, get_cleaned_code_from_file)
 
     def test_anonymize_names(self) -> None:
-        run_test(self, CANONIZATION_TESTS_TYPES.ANONYMIZE_NAMES.value, get_code_with_anonymous_names)
+        run_test(self, CANONIZATION_TESTS_TYPES.ANONYMIZE_NAMES, get_code_with_anonymous_names)
 
     def test_canonical_form(self) -> None:
-        run_test(self, CANONIZATION_TESTS_TYPES.CANONICAL_FORM.value, get_canonicalized_code)
+        run_test(self, CANONIZATION_TESTS_TYPES.CANONICAL_FORM, get_canonicalized_code)
 
     def test_student_code_pies(self) -> None:
-        run_test(self, CANONIZATION_TESTS_TYPES.STUDENT_CODE.value, get_canonicalized_code, TASK.PIES.value)
+        run_test(self, CANONIZATION_TESTS_TYPES.STUDENT_CODE, get_canonicalized_code, TASK.PIES)
 
     def test_student_code_max_3(self) -> None:
-        run_test(self, CANONIZATION_TESTS_TYPES.STUDENT_CODE.value, get_canonicalized_code, TASK.MAX_3.value)
+        run_test(self, CANONIZATION_TESTS_TYPES.STUDENT_CODE, get_canonicalized_code, TASK.MAX_3)
 
     def test_student_code_is_zero(self) -> None:
-        run_test(self, CANONIZATION_TESTS_TYPES.STUDENT_CODE.value, get_canonicalized_code, TASK.ZERO.value)
+        run_test(self, CANONIZATION_TESTS_TYPES.STUDENT_CODE, get_canonicalized_code, TASK.ZERO)
 
     def test_student_code_max_digit(self) -> None:
-        run_test(self, CANONIZATION_TESTS_TYPES.STUDENT_CODE.value, get_canonicalized_code, TASK.MAX_DIGIT.value)
+        run_test(self, CANONIZATION_TESTS_TYPES.STUDENT_CODE, get_canonicalized_code, TASK.MAX_DIGIT)
 
     def test_student_code_election(self) -> None:
-        run_test(self, CANONIZATION_TESTS_TYPES.STUDENT_CODE.value, get_canonicalized_code, TASK.ELECTION.value)
+        run_test(self, CANONIZATION_TESTS_TYPES.STUDENT_CODE, get_canonicalized_code, TASK.ELECTION)
 
     def test_student_code_brackets(self) -> None:
-        run_test(self, CANONIZATION_TESTS_TYPES.STUDENT_CODE.value, get_canonicalized_code, TASK.BRACKETS.value)
+        run_test(self, CANONIZATION_TESTS_TYPES.STUDENT_CODE, get_canonicalized_code, TASK.BRACKETS)

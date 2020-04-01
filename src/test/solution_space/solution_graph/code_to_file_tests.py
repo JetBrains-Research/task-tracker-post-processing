@@ -59,7 +59,7 @@ def delete_folder() -> None:
 class TestCodeToFile(LoggedTest):
 
     # Create three graphs and check all folders names which were created for each graph
-    def test_folders_names(self):
+    def test_folders_names(self) -> None:
         delete_folder()
         init_default_ids()
         sg_0, sg_1, sg_2 = create_three_graphs()
@@ -68,7 +68,7 @@ class TestCodeToFile(LoggedTest):
                                                  NOT_DEFAULT_GRAPH_PREFIX + '2'])
         self.assertCountEqual(expected_folders_names, get_actual_folders_names())
 
-    def test_folder_structure_with_default_files_names(self):
+    def test_folder_structure_with_default_files_names(self) -> None:
         init_default_ids()
         sg_0, _, _ = create_three_graphs()
         vertices = get_two_vertices(sg_0)
@@ -78,7 +78,7 @@ class TestCodeToFile(LoggedTest):
         expected_files_names = get_full_paths([get_file_name(sg_0.id, 0), get_file_name(sg_0.id, 1)])
         self.assertCountEqual(expected_files_names, actual_files_names)
 
-    def test_folder_structure_with_not_default_files_names(self):
+    def test_folder_structure_with_not_default_files_names(self) -> None:
         init_default_ids()
         _, sg_1, _ = create_three_graphs()
         vertices = get_two_vertices(sg_1)
@@ -89,7 +89,7 @@ class TestCodeToFile(LoggedTest):
                                                get_file_name(sg_1.id, 1, file_prefix=NOT_DEFAULT_FILE_PREFIX)])
         self.assertCountEqual(expected_files_names, actual_files_names)
 
-    def test_folder_structure_with_all_not_default_names(self):
+    def test_folder_structure_with_all_not_default_names(self) -> None:
         init_default_ids()
         _, _, sg_2 = create_three_graphs()
         vertices = get_two_vertices(sg_2)

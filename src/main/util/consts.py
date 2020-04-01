@@ -2,10 +2,11 @@
 
 import os
 from enum import Enum
-from typing import List
+from contextlib import suppress
+from typing import List, Dict, Any
 
 from pandas import isna
-from numpy import nan, datetime64, isnat, equal
+from numpy import nan, datetime64, isnat
 
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -22,6 +23,15 @@ class CODE_TRACKER_COLUMN(Enum):
     CHOSEN_TASK = 'chosenTask'
     TASK_STATUS = 'taskStatus'
     TESTS_RESULTS = 'testsResults'
+
+    def fits_restrictions(self, value: Any) -> bool:
+        if self is CODE_TRACKER_COLUMN.AGE:
+            return isinstance(value, float)
+        elif self is CODE_TRACKER_COLUMN.EXPERIENCE:
+            return str(value) in EXPERIENCE.values()
+        # Todo: implement restrictions for other columns
+        else:
+            raise NotImplementedError(f"Cannot find any restrictions for {self}")
 
 
 class ACTIVITY_TRACKER_COLUMN(Enum):
@@ -65,12 +75,15 @@ class DEFAULT_VALUE(Enum):
     EVENT_TYPE = nan
     EVENT_DATA = nan
 
+    # todo: add tests
     def is_equal(self, value) -> bool:
-        if isna(self.value):
-            return isna(value)
-        if isnat(self.value):
-            return isnat(value)
-        return equal(self.value, value)
+        # TypeError can be raised, for example, if 'int' value is passed to isnat()
+        with suppress(TypeError):
+            if self.value is nan:
+                return isinstance(value, float) and isna(value)
+            if isnat(self.value):
+                return isnat(value)
+        return self.value == value
 
 
 class EXPERIENCE(Enum):
@@ -80,6 +93,10 @@ class EXPERIENCE(Enum):
     FROM_TWO_TO_FOUR_YEARS = 'FROM_TWO_TO_FOUR_YEARS'
     FROM_FOUR_TO_SIX_YEARS = 'FROM_FOUR_TO_SIX_YEARS'
     MORE_THAN_SIX = 'MORE_THAN_SIX'
+
+    @classmethod
+    def values(cls) -> List[str]:
+        return [member.value for _, member in EXPERIENCE.__members__.items()]
 
 
 class TASK(Enum):
@@ -153,7 +170,7 @@ class EXTENSION(Enum):
     CPP = '.cpp'
 
 
-EXTENSION_TO_LANGUAGE_DICT = {
+EXTENSION_TO_LANGUAGE_DICT: Dict[EXTENSION, LANGUAGE] = {
     EXTENSION.PY: LANGUAGE.PYTHON,
     EXTENSION.JAVA: LANGUAGE.JAVA,
     EXTENSION.KT: LANGUAGE.KOTLIN,
@@ -162,7 +179,7 @@ EXTENSION_TO_LANGUAGE_DICT = {
 }
 
 
-class SPLIT_DICT(Enum):
+class SPLIT(Enum):
     INDEX = 'index'
     RATE = 'rate'
     TASKS = 'tasks'
@@ -199,4 +216,3 @@ RUNNING_TESTS_RESULT_FOLDER = 'running_tests_result_3'
 MAX_DIFF_SYMBOLS = 30
 
 TIMEOUT = 5
-

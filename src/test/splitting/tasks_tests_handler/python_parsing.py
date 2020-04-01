@@ -16,12 +16,12 @@ log = logging.getLogger(consts.LOGGER_NAME)
 PARSING_TEST_DATA_PATH = os.path.join(TEST_DATA_PATH, "splitting/tasks_tests_handler/python_parsing/")
 
 
-def check_python_file_by_mypy(file_name: str):
+def check_python_file_by_mypy(file_name: str) -> bool:
     call_args = ['mypy', file_name]
     return check_call_safely(call_args)
 
 
-def check_python_file_by_pylint(file_name: str):
+def check_python_file_by_pylint(file_name: str) -> bool:
     call_args = ['pylint', '-E', file_name]
     try:
         actual_out = check_output(call_args, universal_newlines=True)
@@ -30,13 +30,13 @@ def check_python_file_by_pylint(file_name: str):
         return False
 
 
-def check_file_by_mypy_and_execution(file_name: str):
+def check_file_by_mypy_and_execution(file_name: str) -> bool:
     return check_call_safely(['mypy', file_name]) and check_call_safely([sys.executable, file_name])
 
 
 class TestPythonParsing(LoggedTest):
 
-   def test_python_parsing(self):
+   def test_python_parsing(self) -> None:
         log.info('mypy and pylint testing:')
         # Files contain 12 incorrect files, which have 'error' in their names, and 1 correct file, which hasn't
         files = get_all_file_system_items(PARSING_TEST_DATA_PATH, extension_file_condition(consts.EXTENSION.TXT))

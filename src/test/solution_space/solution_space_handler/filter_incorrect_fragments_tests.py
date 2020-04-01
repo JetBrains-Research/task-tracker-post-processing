@@ -4,9 +4,9 @@ import logging
 
 import pandas as pd
 
-from src.main.solution_space.solution_space_handler import __filter_incorrect_fragments
-from src.main.util.consts import LOGGER_NAME, CODE_TRACKER_COLUMN
 from src.test.test_util import LoggedTest
+from src.main.util.consts import LOGGER_NAME, CODE_TRACKER_COLUMN
+from src.main.solution_space.solution_space_handler import __filter_incorrect_fragments
 
 log = logging.getLogger(LOGGER_NAME)
 

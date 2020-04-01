@@ -43,7 +43,7 @@ def get_best_vertex_from_empty_list() -> Optional[Vertex]:
 
 class TestChooseBestVertexMethod(LoggedTest):
 
-    def test_empty_list(self):
+    def test_empty_list(self) -> None:
         self.assertEqual(get_best_vertex_from_empty_list(), None)
 
     # Todo: add tests

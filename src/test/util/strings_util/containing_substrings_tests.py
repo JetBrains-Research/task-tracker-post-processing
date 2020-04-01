@@ -1,9 +1,6 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
-import logging
-
 from src.test.test_util import LoggedTest
-from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT
 from src.main.util.strings_util import contains_any_of_substrings
 
 string = 'Roses are red, violets are blue, sugar is sweet, and so are you'
@@ -14,12 +11,12 @@ not_contained_substrings = ['parsley', 'sun']
 
 class TestContainingSubstrings(LoggedTest):
 
-    def test_contained_substrings(self):
+    def test_contained_substrings(self) -> None:
         self.assertTrue(contains_any_of_substrings(string, contained_substrings))
 
-    def test_partly_contained_substrings(self):
+    def test_partly_contained_substrings(self) -> None:
         self.assertTrue(contains_any_of_substrings(string, partly_contained_substrings))
 
-    def test_not_contained_substrings(self):
+    def test_not_contained_substrings(self) -> None:
         self.assertFalse(contains_any_of_substrings(string, not_contained_substrings))
 

@@ -21,7 +21,7 @@ def get_expected_task_dfs(task: consts.TASK) -> List[pd.DataFrame]:
 
 class TestFindingTaskDfs(LoggedTest):
 
-    def testFindingTaskDfs(self):
+    def testFindingTaskDfs(self) -> None:
         df = pd.read_csv(DF_FILE, encoding=consts.ISO_ENCODING)
         for task in consts.TASK:
             actual_task_dfs = list(map(lambda task_df: task_df.sort_index(inplace=True), find_task_dfs(df, task)))

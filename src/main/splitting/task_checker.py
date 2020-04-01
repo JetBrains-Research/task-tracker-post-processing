@@ -6,8 +6,8 @@ from abc import ABCMeta, abstractmethod
 from typing import List, Tuple, Dict, Optional
 from subprocess import check_output, CalledProcessError, check_call, TimeoutExpired
 
-from src.main.util.language_util import get_extension_by_language
 from src.main.util.log_util import log_and_raise_error
+from src.main.util.language_util import get_extension_by_language
 from src.main.util.strings_util import contains_any_of_substrings
 from src.main.util.consts import TASK, TIMEOUT, TASKS_TESTS, LOGGER_NAME, LANGUAGE, TEST_RESULT
 from src.main.util.file_util import get_content_from_file, remove_directory, create_directory, create_file

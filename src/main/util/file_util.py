@@ -28,11 +28,13 @@ If extension is passed without any dots, a dot will be added (for example, see c
 
 ItemCondition = Callable[[str], bool]
 
+
 def remove_slash(path: str) -> str:
     return path.rstrip('/')
 
 
 def serialize_data_and_write_to_file(path: str, data: Any) -> None:
+    create_directory(get_parent_folder(path))
     with open(path, 'wb') as f:
         pickle.dump(data, f)
 
