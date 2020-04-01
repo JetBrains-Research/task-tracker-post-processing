@@ -2,9 +2,9 @@
 
 import os
 
-from src.main.plots.ati_data_plots import create_ati_data_plot
-from src.main.util.consts import TEST_DATA_PATH
 from src.test.test_util import LoggedTest
+from src.main.util.consts import TEST_DATA_PATH
+from src.main.plots.ati_data_plots import create_ati_data_plot
 
 DATA = os.path.join(TEST_DATA_PATH, 'plots/data.csv')
 

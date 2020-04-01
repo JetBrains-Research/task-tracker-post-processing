@@ -12,7 +12,7 @@ def contains_any_of_substrings(string: str, substrings: List[str]) -> bool:
 
 
 def convert_camel_case_to_snake_case(string: str) -> str:
-    words = re.findall(r'[A-Z]?[a-z]+|[A-Z]{2,}(?=[A-Z][a-z]|\d|\W|$|_)|\d+', string)
+    words = re.findall(r'[A-Z]?[a-z]+|[A-Z]{1,}(?=[A-Z][a-z]|\d|\W|$|_)|\d+\.\d+|\d+', string)
     return '_'.join(map(str.lower, words))
 
 

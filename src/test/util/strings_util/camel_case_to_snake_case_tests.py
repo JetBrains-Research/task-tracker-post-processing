@@ -10,7 +10,10 @@ data = [['considerMeAsOneWhoLovedPoetryAndPersimmons', 'consider_me_as_one_who_l
         ['already_snake_case', 'already_snake_case'],
         ['pies', 'pies'],
         ['WRITE_TASK', 'write_task'],
-        ['', '']]
+        ['', ''],
+        ['13.0', '13.0'],
+        ['IAm11.0YearsOld', 'i_am_11.0_years_old'],
+        ['aB', 'a_b']]
 
 
 class TestConversionToSnakeCase(LoggedTest):
@@ -20,4 +23,4 @@ class TestConversionToSnakeCase(LoggedTest):
             camel_case = d[0]
             snake_case = d[1]
             converted_snake_case = convert_camel_case_to_snake_case(camel_case)
-            self.assertEqual(converted_snake_case, snake_case, msg=f'{converted_snake_case} is not equal {snake_case}')
+            self.assertEqual(snake_case, converted_snake_case, msg=f'{converted_snake_case} is not equal {snake_case}')
