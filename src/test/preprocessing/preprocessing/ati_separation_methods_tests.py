@@ -1,11 +1,11 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import logging
-import unittest
 from enum import Enum
+from typing import List, Tuple, Union, Optional
 
 from src.main.util import consts
-from src.main.util.consts import LOGGER_FORMAT
+from src.test.test_util import LoggedTest
 from src.main.preprocessing.preprocessing import __separate_ati_and_other_files
 
 log = logging.getLogger(consts.LOGGER_NAME)
@@ -48,7 +48,7 @@ without_ati_case = {
 }
 
 
-def separate_files(files: list):
+def separate_files(files: List[str]) -> Tuple[Union[List[str], str], Optional[List[str]]]:
     try:
         ct_files, at_file = __separate_ati_and_other_files(files)
     except ValueError:
@@ -56,28 +56,25 @@ def separate_files(files: list):
     return ct_files, at_file
 
 
-def are_pairs_equal(first_pair: tuple, second_pair: tuple):
+def are_pairs_equal(first_pair: tuple, second_pair: tuple) -> bool:
     return first_pair[0] == second_pair[0] and first_pair[1] == second_pair[1]
 
 
-def run_test(case: dict):
+def run_test(case: dict) -> bool:
     ct_files, at_file = separate_files(case[TEST_DATA.FILES.value])
     return are_pairs_equal(case[TEST_DATA.RESULT.value], (ct_files, at_file))
 
 
-class TestFilterFiles(unittest.TestCase):
+class TestFilterFiles(LoggedTest):
 
-    def setUp(self) -> None:
-        logging.basicConfig(filename=consts.LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
-
-    def test_two_ati_case(self):
+    def test_two_ati_case(self) -> None:
         self.assertTrue(run_test(two_ati_case))
 
-    def test_two_same_files_case(self):
+    def test_two_same_files_case(self) -> None:
         self.assertTrue(run_test(two_same_files_case))
 
-    def test_normal_case(self):
+    def test_normal_case(self) -> None:
         self.assertTrue(run_test(normal_case))
 
-    def test_without_ati_case(self):
+    def test_without_ati_case(self) -> None:
         self.assertTrue(run_test(without_ati_case))

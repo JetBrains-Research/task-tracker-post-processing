@@ -2,12 +2,11 @@
 
 import sys
 import logging
-
 from typing import List
+
 from src.main.util import consts
 from src.main.util.consts import LANGUAGE
-from src.main.splitting.task_checker import ITaskChecker, SOURCE_OBJECT_NAME
-
+from src.main.splitting.task_checker import ITaskChecker, SOURCE_OBJECT_NAME, FilesDict
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -35,7 +34,7 @@ class NotDefinedTaskChecker(ITaskChecker):
     def run_test(self, input: str, expected_output: str, source_file: str) -> bool:
         return False
 
-    def check_tasks(self, tasks: list, source_code: str, in_and_out_files_dict: dict,
+    def check_tasks(self, tasks: list, source_code: str, in_and_out_files_dict: FilesDict,
                     stop_after_first_false: bool = True) -> List[int]:
         rate = consts.TEST_RESULT.INCORRECT_CODE.value
         return [rate] * len(tasks)

@@ -2,16 +2,14 @@
 
 import ast
 import logging
-import unittest
 import pandas as pd
 
 from typing import List, Tuple
+from src.test.test_util import LoggedTest
 from src.main.solution_space.data_classes import AtiItem
 from src.main.canonicalization.canonicalization import get_canonicalized_form, are_asts_equal
+from src.main.util.consts import LOGGER_NAME, CODE_TRACKER_COLUMN, ACTIVITY_TRACKER_COLUMN, ACTIVITY_TRACKER_EVENTS
 from src.main.solution_space.solution_space_handler import __find_same_fragments, __get_ati_data, __get_column_value
-from src.main.util.consts import LOGGER_NAME, LOGGER_TEST_FILE, LOGGER_FORMAT, CODE_TRACKER_COLUMN, \
-    ACTIVITY_TRACKER_COLUMN, ACTIVITY_TRACKER_EVENTS
-
 
 log = logging.getLogger(LOGGER_NAME)
 
@@ -93,10 +91,7 @@ def get_actual_out(solutions: pd.DataFrame, index: int) -> Tuple[int, List[AtiIt
     return i, ati_elements, current_tree
 
 
-class TestFindSomeFragments(unittest.TestCase):
-
-    def setUp(self) -> None:
-        logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
+class TestFindSomeFragments(LoggedTest):
 
     def test_first_index(self) -> None:
         solutions = create_solutions()
