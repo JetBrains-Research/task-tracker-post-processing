@@ -1,17 +1,18 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import os
-import pandas as pd
-
 from typing import Any, Union
+
+import pandas as pd
 
 from src.main.plots.splitting_plots import create_comparative_filtering_plot
 from src.main.util.consts import CODE_TRACKER_COLUMN, ACTIVITY_TRACKER_COLUMN, ISO_ENCODING
 from src.main.util.file_util import get_name_from_path, get_parent_folder, create_folder_and_write_df_to_file
 
+Column = Union[CODE_TRACKER_COLUMN, ACTIVITY_TRACKER_COLUMN]
 
-def crop_data_by_timestamp(data: pd.DataFrame, column: Union[CODE_TRACKER_COLUMN, ACTIVITY_TRACKER_COLUMN],
-                           start_value: Any, end_value: Any = None) -> pd.DataFrame:
+
+def crop_data_by_timestamp(data: pd.DataFrame, column: Column, start_value: Any, end_value: Any = None) -> pd.DataFrame:
     column = column.value
     rows = data.shape[0]
     # If end_value not defined we take data to the end from the dataframe
@@ -21,9 +22,9 @@ def crop_data_by_timestamp(data: pd.DataFrame, column: Union[CODE_TRACKER_COLUMN
     return data.loc[mask]
 
 
-def crop_data_and_save(original_data_path: str, column: Union[CODE_TRACKER_COLUMN, ACTIVITY_TRACKER_COLUMN],
-                       start_value: Any, end_value: Any = None, file_name_prefix: str = 'crop_',
-                       folder_name_prefix: str = 'cropped_data', create_sub_folder: bool = True) -> str:
+def crop_data_and_save(original_data_path: str, column: Column, start_value: Any, end_value: Any = None,
+                       file_name_prefix: str = 'crop_', folder_name_prefix: str = 'cropped_data',
+                       create_sub_folder: bool = True) -> str:
     original_data = pd.read_csv(original_data_path, encoding=ISO_ENCODING)
     cropped_data = crop_data_by_timestamp(original_data, column, start_value, end_value)
     cropped_data_name = file_name_prefix + get_name_from_path(original_data_path)
@@ -35,9 +36,9 @@ def crop_data_and_save(original_data_path: str, column: Union[CODE_TRACKER_COLUM
     return cropped_data_result_path
 
 
-def crop_data_and_create_plots(original_data_path: str, column: Union[CODE_TRACKER_COLUMN, ACTIVITY_TRACKER_COLUMN],
-                               start_value: Any, end_value: Any = None, file_name_prefix: str = 'crop_',
-                               folder_name_prefix: str = 'cropped_data', create_sub_folder: bool = True) -> None:
+def crop_data_and_create_plots(original_data_path: str, column: Column, start_value: Any, end_value: Any = None,
+                               file_name_prefix: str = 'crop_', folder_name_prefix: str = 'cropped_data',
+                               create_sub_folder: bool = True) -> None:
     cropped_data_result_path = crop_data_and_save(original_data_path, column, start_value, end_value, file_name_prefix,
                                                   folder_name_prefix, create_sub_folder)
     create_comparative_filtering_plot(original_data_path, cropped_data_result_path,

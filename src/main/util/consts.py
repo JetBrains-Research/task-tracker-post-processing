@@ -1,11 +1,13 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import os
-
-from numpy import nan, datetime64, isnat, equal
 from enum import Enum
+from contextlib import suppress
+from typing import List, Dict, Any
 
 from pandas import isna
+from numpy import nan, datetime64, isnat
+
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -21,6 +23,15 @@ class CODE_TRACKER_COLUMN(Enum):
     CHOSEN_TASK = 'chosenTask'
     TASK_STATUS = 'taskStatus'
     TESTS_RESULTS = 'testsResults'
+
+    def fits_restrictions(self, value: Any) -> bool:
+        if self is CODE_TRACKER_COLUMN.AGE:
+            return isinstance(value, float)
+        elif self is CODE_TRACKER_COLUMN.EXPERIENCE:
+            return str(value) in EXPERIENCE.values()
+        # Todo: implement restrictions for other columns
+        else:
+            raise NotImplementedError(f"Cannot find any restrictions for {self}")
 
 
 class ACTIVITY_TRACKER_COLUMN(Enum):
@@ -38,7 +49,7 @@ class ACTIVITY_TRACKER_COLUMN(Enum):
     ATI_ID = 'atiId'
 
     @classmethod
-    def activity_tracker_columns(cls):
+    def activity_tracker_columns(cls) -> List[str]:
         return [cls.TIMESTAMP_ATI.value, cls.USERNAME.value, cls.EVENT_TYPE.value, cls.EVENT_DATA.value,
                 cls.PROJECT_NAME.value, cls.FOCUSED_COMPONENT.value, cls.CURRENT_FILE.value, cls.PSI_PATH.value,
                 cls.EDITOR_LINE.value, cls.EDITOR_COLUMN.value, cls.TASK.value]
@@ -49,13 +60,13 @@ class ACTIVITY_TRACKER_EVENTS(Enum):
     COMPILATION_FINISHED = 'CompilationFinished'
 
     @classmethod
-    def action_events(cls):
+    def action_events(cls) -> List[str]:
         return ['Run', 'Rerun', 'RunClass', 'DebugClass', 'ToggleLineBreakpoint', 'Debugger.AddToWatch', 'Debug',
                 'Stop', 'Resume', 'StepInto', 'CompileDirty', 'EditorCopy', 'EditorPaste', 'EditorCut', 'ReformatCode',
                 '$Undo', '$Paste', '$Copy', 'ChooseRunConfiguration', 'CopyElement', 'PasteElement', 'CutElement']
 
 
-class DEFAULT_VALUES(Enum):
+class DEFAULT_VALUE(Enum):
     AGE = 0
     EXPERIENCE = nan
     TASK = nan
@@ -64,13 +75,15 @@ class DEFAULT_VALUES(Enum):
     EVENT_TYPE = nan
     EVENT_DATA = nan
 
+    # todo: add tests
     def is_equal(self, value) -> bool:
-        if isna(self.value):
-            return isna(value)
-        if isnat(self.value):
-            return isnat(value)
-        return equal(self.value, value)
-
+        # TypeError can be raised, for example, if 'int' value is passed to isnat()
+        with suppress(TypeError):
+            if self.value is nan:
+                return isinstance(value, float) and isna(value)
+            if isnat(self.value):
+                return isnat(value)
+        return self.value == value
 
 
 class EXPERIENCE(Enum):
@@ -81,6 +94,9 @@ class EXPERIENCE(Enum):
     FROM_FOUR_TO_SIX_YEARS = 'FROM_FOUR_TO_SIX_YEARS'
     MORE_THAN_SIX = 'MORE_THAN_SIX'
 
+    @classmethod
+    def values(cls) -> List[str]:
+        return [member.value for _, member in EXPERIENCE.__members__.items()]
 
 
 class TASK(Enum):
@@ -92,7 +108,11 @@ class TASK(Enum):
     MAX_DIGIT = 'max_digit'
 
     @classmethod
-    def tasks_values(cls):
+    def tasks(cls) -> List['TASK']:
+        return [task for task in TASK]
+
+    @classmethod
+    def tasks_values(cls) -> List[str]:
         return [member.value for _, member in TASK.__members__.items()]
 
 
@@ -133,6 +153,8 @@ class FILE_SYSTEM_ITEM(Enum):
 INVALID_FILE_FOR_PREPROCESSING = -1
 
 
+# Make sure all extensions (except an empty one) have a dot
+# to be consistent with extensions getting in 'os.path' module
 class EXTENSION(Enum):
     EMPTY = ''
     CSV = '.csv'
@@ -146,12 +168,9 @@ class EXTENSION(Enum):
     JAVA = '.java'
     KT = '.kt'
     CPP = '.cpp'
-    # Todo: find a better way
-    TXT_WITHOUT_DOT = 'txt'
 
 
-# add the dot to extensions to be consistent with extensions getting in 'os.path' module
-EXTENSION_TO_LANGUAGE_DICT = {
+EXTENSION_TO_LANGUAGE_DICT: Dict[EXTENSION, LANGUAGE] = {
     EXTENSION.PY: LANGUAGE.PYTHON,
     EXTENSION.JAVA: LANGUAGE.JAVA,
     EXTENSION.KT: LANGUAGE.KOTLIN,
@@ -160,7 +179,7 @@ EXTENSION_TO_LANGUAGE_DICT = {
 }
 
 
-class SPLIT_DICT(Enum):
+class SPLIT(Enum):
     INDEX = 'index'
     RATE = 'rate'
     TASKS = 'tasks'
@@ -196,5 +215,4 @@ RUNNING_TESTS_RESULT_FOLDER = 'running_tests_result_3'
 
 MAX_DIFF_SYMBOLS = 30
 
-SUBPROCESS_TIMEOUT = 5
-
+TIMEOUT = 5

@@ -1,8 +1,8 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import logging
-
 from typing import List
+
 from src.main.util import consts
 from src.main.util.consts import LANGUAGE, EXTENSION
 from src.main.util.file_util import change_extension_to

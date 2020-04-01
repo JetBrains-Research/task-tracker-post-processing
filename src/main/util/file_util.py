@@ -4,9 +4,11 @@ import os
 import re
 import pickle
 import shutil
+from typing import Callable, Any, List, Tuple
+
 import pandas as pd
 
-from typing import Callable, Any, List, Tuple, Union
+from src.main.util.strings_util import contains_any_of_substrings
 from src.main.util.consts import ACTIVITY_TRACKER_FILE_NAME, FILE_SYSTEM_ITEM, ATI_DATA_FOLDER, \
     DI_DATA_FOLDER, ISO_ENCODING, LANGUAGE, UTF_ENCODING, EXTENSION
 
@@ -24,12 +26,15 @@ If extension is passed without any dots, a dot will be added (for example, see c
 >>> EXAMPLE: parent_folder for both 'path/data/file' and 'path/data/file/' is 'path/data'
 '''
 
+ItemCondition = Callable[[str], bool]
+
 
 def remove_slash(path: str) -> str:
     return path.rstrip('/')
 
 
-def serialize_data_and_write_to_file(path: str, data: any) -> None:
+def serialize_data_and_write_to_file(path: str, data: Any) -> None:
+    create_directory(get_parent_folder(path))
     with open(path, 'wb') as f:
         pickle.dump(data, f)
 
@@ -120,7 +125,7 @@ def remove_file(file: str) -> None:
 
 
 def remove_all_png_files(root: str, condition: Callable) -> None:
-    files = get_all_file_system_items(root, condition, FILE_SYSTEM_ITEM.FILE.value)
+    files = get_all_file_system_items(root, condition)
     for file in files:
         remove_file(file)
 
@@ -143,33 +148,44 @@ def get_file_and_parent_folder_names(file: str) -> str:
     return os.path.join(get_parent_folder_name(file), get_name_from_path(file))
 
 
+def all_items_condition(name: str) -> bool:
+    return True
+
+
 # To get all files or subdirs (depends on the last parameter) from root that match item_condition
 # Can be used to get all codetracker files, all data folders, etc.
 # Note that all subdirs or files already contain the full path for them
-def get_all_file_system_items(root: str, item_condition: Callable, item_type=FILE_SYSTEM_ITEM.FILE.value) -> List[str]:
+def get_all_file_system_items(root: str, item_condition: ItemCondition = all_items_condition,
+                              item_type: FILE_SYSTEM_ITEM = FILE_SYSTEM_ITEM.FILE) -> List[str]:
     items = []
     for fs_tuple in os.walk(root):
-        for item in fs_tuple[item_type]:
+        for item in fs_tuple[item_type.value]:
             if item_condition(item):
                 items.append(os.path.join(fs_tuple[FILE_SYSTEM_ITEM.PATH.value], item))
     return items
 
 
-def csv_file_condition(name: str) -> bool:
-    return get_extension_from_file(name) == EXTENSION.CSV
+def extension_file_condition(extension: EXTENSION) -> ItemCondition:
+    def has_this_extension(name: str) -> bool:
+        return get_extension_from_file(name) == extension
+    return has_this_extension
 
 
 # To get all codetracker files
 def ct_file_condition(name: str) -> bool:
-    return ACTIVITY_TRACKER_FILE_NAME not in name and csv_file_condition(name)
+    return ACTIVITY_TRACKER_FILE_NAME not in name and extension_file_condition(EXTENSION.CSV)(name)
 
 
-def png_file_condition(name: str) -> bool:
-    return get_extension_from_file(name) == EXTENSION.PNG
+def contains_substrings_condition(substrings: List[str]) -> ItemCondition:
+    def contains_these_substrings(name: str) -> bool:
+        return contains_any_of_substrings(name, substrings)
+    return contains_these_substrings
 
 
-def all_items_condition(name: str) -> bool:
-    return True
+def match_condition(regex: str) -> ItemCondition:
+    def does_name_match(name: str) -> bool:
+        return re.fullmatch(regex, name) is not None
+    return does_name_match
 
 
 # To get all subdirs that contain ct and ati data
@@ -212,8 +228,9 @@ def write_result(result_folder: str, path: str, file: str, df: pd.DataFrame) -> 
 # To write a dataframe to the result_folder based on the language and remaining only the parent folder structure
 # For example, for file path/folder1/folder2/ati_566/file.csv and python language the dataframe will be
 # written to result_folder/python/ati_566/file.csv
-def write_based_on_language(result_folder: str, file: str, df: pd.DataFrame, language=LANGUAGE.PYTHON.value) -> None:
-    folder_to_write = os.path.join(result_folder, language, get_parent_folder_name(file))
+def write_based_on_language(result_folder: str, file: str, df: pd.DataFrame,
+                            language: LANGUAGE = LANGUAGE.PYTHON.value) -> None:
+    folder_to_write = os.path.join(result_folder, language.value, get_parent_folder_name(file))
     file_to_write = os.path.join(folder_to_write, get_name_from_path(file))
     create_folder_and_write_df_to_file(folder_to_write, file_to_write, df)
 

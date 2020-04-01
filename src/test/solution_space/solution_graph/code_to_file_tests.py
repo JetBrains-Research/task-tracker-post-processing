@@ -2,16 +2,15 @@
 
 import os
 import logging
-import unittest
-
 from typing import List, Tuple
-from src.main.solution_space.data_classes import Code
+
+from src.test.test_util import LoggedTest
+from src.main.solution_space.solution_graph import SolutionGraph
 from src.main.util.language_util import get_extension_by_language
-from src.main.solution_space.solution_graph import Vertex, SolutionGraph
+from src.main.util.consts import LOGGER_NAME, TASK, FILE_SYSTEM_ITEM, LANGUAGE
+from src.main.util.file_util import get_all_file_system_items, remove_directory
 from src.test.solution_space.solution_graph.util import get_two_vertices, init_default_ids
-from src.main.util.file_util import get_all_file_system_items, all_items_condition, remove_directory
 from src.main.solution_space.consts import GRAPH_FOLDER_PREFIX, FOLDER_WITH_CODE_FILES_FOR_TESTS, FILE_PREFIX
-from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT, LOGGER_NAME, TASK, FILE_SYSTEM_ITEM, LANGUAGE
 
 log = logging.getLogger(LOGGER_NAME)
 
@@ -40,12 +39,11 @@ def create_three_graphs() -> Tuple[SolutionGraph, SolutionGraph, SolutionGraph]:
 
 
 def get_actual_folders_names() -> List[str]:
-    return get_all_file_system_items(get_test_folder_path(), all_items_condition, FILE_SYSTEM_ITEM.SUBDIR.value)
+    return get_all_file_system_items(get_test_folder_path(), item_type=FILE_SYSTEM_ITEM.SUBDIR)
 
 
 def get_actual_files_names(folder: str) -> List[str]:
-    return get_all_file_system_items(os.path.join(get_test_folder_path(), folder), all_items_condition,
-                                     FILE_SYSTEM_ITEM.FILE.value)
+    return get_all_file_system_items(os.path.join(get_test_folder_path(), folder))
 
 
 def get_file_name(graph_id: int, code_id: int, graph_prefix: str = GRAPH_FOLDER_PREFIX, file_prefix: str = FILE_PREFIX,
@@ -58,12 +56,10 @@ def delete_folder() -> None:
     remove_directory(get_test_folder_path())
 
 
-class TestCodeToFile(unittest.TestCase):
-    def setUp(self) -> None:
-        logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
+class TestCodeToFile(LoggedTest):
 
     # Create three graphs and check all folders names which were created for each graph
-    def test_folders_names(self):
+    def test_folders_names(self) -> None:
         delete_folder()
         init_default_ids()
         sg_0, sg_1, sg_2 = create_three_graphs()
@@ -72,7 +68,7 @@ class TestCodeToFile(unittest.TestCase):
                                                  NOT_DEFAULT_GRAPH_PREFIX + '2'])
         self.assertCountEqual(expected_folders_names, get_actual_folders_names())
 
-    def test_folder_structure_with_default_files_names(self):
+    def test_folder_structure_with_default_files_names(self) -> None:
         init_default_ids()
         sg_0, _, _ = create_three_graphs()
         vertices = get_two_vertices(sg_0)
@@ -82,7 +78,7 @@ class TestCodeToFile(unittest.TestCase):
         expected_files_names = get_full_paths([get_file_name(sg_0.id, 0), get_file_name(sg_0.id, 1)])
         self.assertCountEqual(expected_files_names, actual_files_names)
 
-    def test_folder_structure_with_not_default_files_names(self):
+    def test_folder_structure_with_not_default_files_names(self) -> None:
         init_default_ids()
         _, sg_1, _ = create_three_graphs()
         vertices = get_two_vertices(sg_1)
@@ -93,7 +89,7 @@ class TestCodeToFile(unittest.TestCase):
                                                get_file_name(sg_1.id, 1, file_prefix=NOT_DEFAULT_FILE_PREFIX)])
         self.assertCountEqual(expected_files_names, actual_files_names)
 
-    def test_folder_structure_with_all_not_default_names(self):
+    def test_folder_structure_with_all_not_default_names(self) -> None:
         init_default_ids()
         _, _, sg_2 = create_three_graphs()
         vertices = get_two_vertices(sg_2)

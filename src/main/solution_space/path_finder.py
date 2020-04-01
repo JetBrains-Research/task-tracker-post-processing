@@ -1,15 +1,16 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import logging
+from typing import List, Optional
 
-from src.main.solution_space.consts import DIFFS_PERCENT_TO_GO_DIRECTLY, EMPTY_CODE_FILE, DISTANCE_TO_GRAPH_THRESHOLD
 from src.main.util import consts
-from typing import List, Optional, Any
-from src.main.util.consts import DEFAULT_VALUES
+from src.main.util.log_util import log_and_raise_error
 from src.main.solution_space.data_classes import Code, User, Profile
 from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 from src.main.gum_tree_diff.gum_tree_diff import get_diffs_number, apply_diffs
 from src.main.canonicalization.canonicalization import are_asts_equal, get_canonicalized_and_orig_form
+from src.main.canonicalization.canonicalization import are_asts_equal, get_canonicalized_form
+from src.main.solution_space.consts import DIFFS_PERCENT_TO_GO_DIRECTLY, EMPTY_CODE_FILE, DISTANCE_TO_GRAPH_THRESHOLD
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -143,8 +144,7 @@ class MeasuredVertex:
 
     def __lt__(self, o: object):
         if not isinstance(o, MeasuredVertex):
-            log.error(f'The object {o} is not {self.__class__} class')
-            raise ValueError(f'The object {o} is not {self.__class__} class')
+            log_and_raise_error(f'The object {o} is not {self.__class__} class', log)
         if self._distance < o.distance:
             return True
         # Todo: use profile info

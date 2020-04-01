@@ -1,3 +1,5 @@
+# Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
+
 import ast
 from typing import Tuple, List
 
@@ -6,7 +8,7 @@ from src.main.solution_space.data_classes import Code, User
 from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 
 
-def create_code_from_source(source: str, rate: int = TEST_RESULT.CORRECT_CODE.value) -> Code:
+def create_code_from_source(source: str, rate: float = TEST_RESULT.CORRECT_CODE.value) -> Code:
     return Code(ast.parse(source), rate)
 
 

@@ -1,8 +1,8 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import re
-
 from datetime import datetime
+
 from src.main.util import consts
 
 

@@ -1,16 +1,17 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import logging
+from typing import Dict, Optional
+
 import pandas as pd
 import matplotlib.pyplot as plt
 
 from src.main.util import consts
-from typing import Dict, Optional
+from src.main.util.consts import ISO_ENCODING
 from src.main.splitting.splitting import find_splits
-from src.main.plots.util import consts as plot_consts
 from src.main.plots.util.plots_common import get_short_name
-from src.main.util.consts import FILE_SYSTEM_ITEM, ISO_ENCODING
 from src.main.util.strings_util import convert_camel_case_to_snake_case
+from src.main.plots.util.consts import TASK_COLOR_DICT, FRAGMENT_LENGTH_COL, TASK_STATUS_COLOR_DICT, LARGE_SIZE
 from src.main.util.file_util import get_name_from_path, get_all_file_system_items, ct_file_condition, get_parent_folder
 from src.main.plots.util.pyplot_util import CHOSEN_TASK_COL, TIMESTAMP_COL, TASK_STATUS_COL, FRAGMENT_COL, \
     add_fragments_length_plot, save_and_show_if_needed, add_legend_to_the_right
@@ -41,11 +42,9 @@ def __add_tasks_colored_background(ax: plt.axes, data: pd.DataFrame,
                                    task_split_x_dict: Dict[consts.TASK, pd.Series] = None) -> None:
     if not task_split_x_dict:
         task_split_x_dict = __create_task_split_x_dict(data)
-    max_length = data[plot_consts.FRAGMENT_LENGTH_COL].max()
+    max_length = data[FRAGMENT_LENGTH_COL].max()
     for task in consts.TASK:
-        ax.fill_between(task_split_x_dict[task], 0, max_length,
-                        color=plot_consts.TASK_COLOR_DICT[task],
-                        label=task.value)
+        ax.fill_between(task_split_x_dict[task], 0, max_length, color=TASK_COLOR_DICT[task], label=task.value)
 
 
 def __add_task_status_to_plot(ax: plt.axes, data: pd.DataFrame,
@@ -54,17 +53,17 @@ def __add_task_status_to_plot(ax: plt.axes, data: pd.DataFrame,
         status_x_dict = __create_status_x_dict(data)
     for status in consts.TASK_STATUS:
         ax.scatter(status_x_dict[status],
-                   data.loc[data.index.isin(status_x_dict[status].index)][plot_consts.FRAGMENT_LENGTH_COL],
-                   color=plot_consts.TASK_STATUS_COLOR_DICT[status],
+                   data.loc[data.index.isin(status_x_dict[status].index)][FRAGMENT_LENGTH_COL],
+                   color=TASK_STATUS_COLOR_DICT[status],
                    label=status.value.lower(),
-                   s=plot_consts.LARGE_SIZE)
+                   s=LARGE_SIZE)
 
 
 def __create_splitting_plot(ax: plt.axes, data: pd.DataFrame, title: str,
                             task_split_x_dict: Optional[Dict[consts.TASK, pd.Series]] = None,
                             status_x_dict: Optional[Dict[consts.TASK_STATUS, pd.Series]] = None,
                             to_snake_case: bool = True) -> None:
-    data[plot_consts.FRAGMENT_LENGTH_COL] = data[FRAGMENT_COL].fillna('').str.len()
+    data[FRAGMENT_LENGTH_COL] = data[FRAGMENT_COL].fillna('').str.len()
     if to_snake_case:
         data[CHOSEN_TASK_COL] = data[CHOSEN_TASK_COL].fillna('').apply(lambda t: convert_camel_case_to_snake_case(t))
 
@@ -79,7 +78,7 @@ def __create_splitting_plot(ax: plt.axes, data: pd.DataFrame, title: str,
 
     add_legend_to_the_right(ax)
     ax.set_xlabel(TIMESTAMP_COL)
-    ax.set_ylabel(plot_consts.FRAGMENT_LENGTH_COL)
+    ax.set_ylabel(FRAGMENT_LENGTH_COL)
     ax.set_title(title)
 
 
@@ -124,7 +123,7 @@ def create_comparative_filtering_plot(original_data_path: str, filtered_data_pat
 
 
 def create_splitting_plot_for_each_file(path: str) -> None:
-    files = get_all_file_system_items(path, ct_file_condition, FILE_SYSTEM_ITEM.FILE.value)
+    files = get_all_file_system_items(path, ct_file_condition)
     for file in files:
         fig, ax = plt.subplots(figsize=(20, 10))
         __create_splitting_plot(ax, pd.read_csv(file, encoding=ISO_ENCODING), 'splits')

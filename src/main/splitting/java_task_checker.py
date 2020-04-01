@@ -1,12 +1,12 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import logging
-import javalang
+from typing import List
 
+import javalang
 from javalang.tokenizer import LexerError
 from javalang.parser import JavaSyntaxError, JavaParserError
 
-from typing import List
 from src.main.util import consts
 from src.main.util.consts import LANGUAGE
 from src.main.util.file_util import get_name_from_path
