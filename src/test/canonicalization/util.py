@@ -1,17 +1,14 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import os
+import re
 import logging
 
 from enum import Enum
 from typing import Callable, Union
-from typing import Callable, Optional
 
-from src.main.canonicalization.canonicalization import get_cleaned_code
 from src.main.util.consts import LOGGER_NAME, ROOT_DIR
-from src.main.util.file_util import get_all_file_system_items, pair_in_and_out_files, get_content_from_file
-from src.main.util.log_util import log_and_raise_error
-from src.main.util.consts import LOGGER_NAME, ROOT_DIR, TASK
+from src.main.canonicalization.canonicalization import get_cleaned_code
 from src.main.util.file_util import get_all_file_system_items, pair_in_and_out_files, get_content_from_file, \
     match_condition
 
@@ -41,11 +38,12 @@ def get_test_in_and_out_files(test_type: Union[CANONIZATION_TESTS_TYPES, DIFF_WO
     root = os.path.join(CANONIZATION_TESTS.TASKS_TESTS_PATH.value, additional_folder_name, test_type.value)
     if task is not None:
         root = os.path.join(root, str(task))
-    in_files = get_all_file_system_items(root, (lambda filename: re.fullmatch(r'in_\d+.py', filename)))
-    out_files = get_all_file_system_items(root, (lambda filename: re.fullmatch(r'out_\d+.py', filename)))
+    in_files = get_all_file_system_items(root, match_condition(r'in_\d+.py'))
+    out_files = get_all_file_system_items(root, match_condition(r'out_\d+.py'))
     if len(out_files) != len(in_files):
         raise ValueError('Length of out files list does not equal in files list')
     return pair_in_and_out_files(in_files, out_files)
+
 
 def run_test(self, test_type:  Union[CANONIZATION_TESTS_TYPES, DIFF_WORKER_TEST_TYPES],
              get_code: Callable, task=None, additional_folder_name: str = '',

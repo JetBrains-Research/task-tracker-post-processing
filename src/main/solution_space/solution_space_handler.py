@@ -12,13 +12,11 @@ from src.main.util.data_util import Column
 from src.main.util.log_util import log_and_raise_error
 from src.main.splitting.splitting import unpack_tests_results
 from src.main.solution_space.solution_graph import SolutionGraph
-from src.main.util.consts import EXPERIENCE, DEFAULT_VALUES, TASK, LANGUAGE
-from src.main.util.file_util import get_all_file_system_items, csv_file_condition
-from src.main.canonicalization.canonicalization import get_canonicalized_and_orig_form, are_asts_equal
+from src.main.canonicalization.canonicalization import are_asts_equal
 from src.main.util.consts import EXPERIENCE, DEFAULT_VALUE, TASK, LANGUAGE, EXTENSION
+from src.main.canonicalization.canonicalization import get_canonicalized_and_orig_form
 from src.main.util.file_util import get_all_file_system_items, extension_file_condition
 from src.main.solution_space.data_classes import AtiItem, Profile, User, Code, CodeInfo
-from src.main.canonicalization.canonicalization import get_canonicalized_form, are_asts_equal
 
 log = logging.getLogger(consts.LOGGER_NAME)
 

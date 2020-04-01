@@ -7,7 +7,7 @@ import itertools
 from typing import List, Any, Optional, Tuple
 from src.main.canonicalization.diffs.diff_worker import DiffWorker
 from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT, LOGGER_NAME, TASK
-from src.main.util.file_util import get_content_from_file, get_all_file_system_items
+from src.main.util.file_util import get_content_from_file, get_all_file_system_items, match_condition
 from src.test.canonicalization.util import run_test, DIFF_WORKER_TEST_TYPES, CANONIZATION_TESTS
 from src.main.canonicalization.canonicalization import get_code_from_tree, get_canonicalized_and_orig_form, \
     get_canonicalized_form
@@ -43,7 +43,7 @@ def get_all_pairs(obj_list: List[Any]) -> List[Tuple[Any, Any]]:
 
 def get_in_and_out_files(test_type: DIFF_WORKER_TEST_TYPES, task: TASK) -> List[Tuple[Any, Any]]:
     root = os.path.join(CANONIZATION_TESTS.TASKS_TESTS_PATH.value, DST_FOLDER, test_type.value, task.value)
-    in_files = get_all_file_system_items(root, (lambda filename: re.fullmatch(r'in_\d+.py', filename)))
+    in_files = get_all_file_system_items(root, match_condition(r'in_\d+.py'))
     return get_all_pairs(in_files)
 
 

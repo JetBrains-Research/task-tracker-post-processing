@@ -6,12 +6,8 @@ from src.test.test_util import LoggedTest
 from src.main.util.consts import LOGGER_NAME, TASK
 from src.main.util.file_util import get_content_from_file
 from src.test.canonicalization.util import run_test, CANONIZATION_TESTS_TYPES
-from src.main.util.consts import LOGGER_FORMAT, LOGGER_NAME, LOGGER_TEST_FILE, TASK
-from src.main.canonicalization.canonicalization import get_cleaned_code, get_anonymized_and_orig_tree, get_ast, get_code_from_tree,\
-    get_canonicalized_and_orig_form
-from src.test.canonicalization.canonicalization.util import run_test, CANONIZATION_TESTS_TYPES
-from src.main.canonicalization.canonicalization import get_cleaned_code, anonymize_names, get_ast, get_code_from_tree,\
-    get_canonicalized_form
+from src.main.canonicalization.canonicalization import get_cleaned_code, get_anonymized_and_orig_tree, get_ast, \
+    get_code_from_tree, get_canonicalized_and_orig_form
 
 log = logging.getLogger(LOGGER_NAME)
 
