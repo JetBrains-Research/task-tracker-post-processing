@@ -15,7 +15,7 @@ log = logging.getLogger(LOGGER_NAME)
 
 
 class CANONIZATION_TESTS(Enum):
-    TASKS_TESTS_PATH = ROOT_DIR + '/../../resources'
+    TASKS_TESTS_PATH = ROOT_DIR + '/../../resources/test_data/canonicalization/canonicalization'
     INPUT_FILE_NAME = 'in'
     OUTPUT_FILE_NAME = 'out'
 
