@@ -1,0 +1,4820 @@
+timestamp,fragment,chosenTask,writtenTask,age,programExperience,taskStatus,testsResults,language,timestampAti,eventType,eventData,atiId
+0,,pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+33,"
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+39,"
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+45,"
+
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+50,"
+
+
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+55,"
+
+
+
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+60,"
+
+
+
+
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+65,"
+
+
+
+
+
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+70,"
+
+
+
+
+
+
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+75,"
+
+
+
+
+
+
+
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+80,"
+
+
+
+
+
+
+
+
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+85,"
+
+
+
+
+
+
+
+
+
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+90,"
+
+
+
+
+
+
+
+
+
+
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+95,"
+
+
+
+
+
+
+
+
+
+
+
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+100,"
+
+
+
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+105,"
+
+
+
+
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+110,"
+
+
+
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+115,"
+
+
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+120,"
+
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+125,"
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+132,"a
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+161,"a 
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+168,"a +
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+175,"a 
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+182,"a =
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+189,"a = 
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+194,"a = i
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+210,"a = in
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+223,"a = int
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+236,"a = int(
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+237,"a = int()
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+243,"a = int(i)
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+257,"a = int(in)
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+266,"a = int(int)
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+275,"a = int(intp)
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+280,"a = int(intpu)
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+292,"a = int(intput)
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+304,"a = int(input)
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+309,"a = int(input()
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+310,"a = int(input())
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,2019-12-09T16:56:12.379+03:00,Action,$Copy,207
+310,"a = int(input())
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,2019-12-09T16:56:14.162+03:00,Action,$Paste,207
+315,"a = int(input())
+
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+320,"a = int(input())
+a = int(input())
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+330,"a = int(input())
+ = int(input())
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+347,"a = int(input())
+b = int(input())
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+377,"a = int(input())
+b = int(input())
+
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,2019-12-09T16:56:21.172+03:00,Action,$Paste,207
+382,"a = int(input())
+b = int(input())
+a = int(input())
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+392,"a = int(input())
+b = int(input())
+ = int(input())
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+409,"a = int(input())
+b = int(input())
+n = int(input())
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+439,"a = int(input())
+b = int(input())
+n = int(input())
+s
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+462,"a = int(input())
+b = int(input())
+n = int(input())
+s=
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+467,"a = int(input())
+b = int(input())
+n = int(input())
+s=0
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+472,"a = int(input())
+b = int(input())
+n = int(input())
+s =0
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+477,"a = int(input())
+b = int(input())
+n = int(input())
+s = 0
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+482,"a = int(input())
+b = int(input())
+n = int(input())
+s = 0",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+487,"a = int(input())
+b = int(input())
+n = int(input())
+s = ",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+494,"a = int(input())
+b = int(input())
+n = int(input())
+s = 0",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+501,"a = int(input())
+b = int(input())
+n = int(input())
+s = 0
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+506,"a = int(input())
+b = int(input())
+n = int(input())
+s = 0
+h",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+533,"a = int(input())
+b = int(input())
+n = int(input())
+s = 0
+h ",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+538,"a = int(input())
+b = int(input())
+n = int(input())
+s = 0
+h =",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+543,"a = int(input())
+b = int(input())
+n = int(input())
+s = 0
+h =0",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+548,"a = int(input())
+b = int(input())
+n = int(input())
+s = 0
+h =",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+553,"a = int(input())
+b = int(input())
+n = int(input())
+s = 0
+h = ",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+558,"a = int(input())
+b = int(input())
+n = int(input())
+s = 0
+h = 0",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+565,"a = int(input())
+b = int(input())
+n = int(input())
+s = 0
+h = 0
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+570,"a = int(input())
+b = int(input())
+n = int(input())
+s = 0
+h = 0
+f",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+586,"a = int(input())
+b = int(input())
+n = int(input())
+s = 0
+h = 0
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+591,"a = int(input())
+b = int(input())
+n = int(input())
+s = 0
+h = 0
+a",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+603,"a = int(input())
+b = int(input())
+n = int(input())
+s = 0
+h = 0
+a8",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+608,"a = int(input())
+b = int(input())
+n = int(input())
+s = 0
+h = 0
+a",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+613,"a = int(input())
+b = int(input())
+n = int(input())
+s = 0
+h = 0
+a*",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+618,"a = int(input())
+b = int(input())
+n = int(input())
+s = 0
+h = 0
+a*1",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+623,"a = int(input())
+b = int(input())
+n = int(input())
+s = 0
+h = 0
+a*10",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+628,"a = int(input())
+b = int(input())
+n = int(input())
+s = 0
+h = 0
+a*100",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,2019-12-09T16:59:16.277+03:00,Action,$Copy,207
+633,"a = int(input())
+b = int(input())
+n = int(input())
+s = 
+h = 0
+a*100",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+642,"a = int(input())
+b = int(input())
+n = int(input())
+s = 
+h = 0
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,2019-12-09T16:59:22.582+03:00,Action,$Paste,207
+647,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100
+h = 0
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+657,"a = int(input())
+b = int(input())
+n = int(input())
+s= a*100
+h = 0
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+662,"a = int(input())
+b = int(input())
+n = int(input())
+= a*100
+h = 0
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+673,"a = int(input())
+b = int(input())
+n = int(input())
+b= a*100
+h = 0
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+700,"a = int(input())
+b = int(input())
+n = int(input())
+b = a*100
+h = 0
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+705,"a = int(input())
+b = int(input())
+n = int(input())
+ = a*100
+h = 0
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+722,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100
+h = 0
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+748,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+
+h = 0
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+757,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = 0
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+783,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = 
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+792,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h =
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+797,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h 
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+804,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+809,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+818,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+847,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h 
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+852,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h +
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+859,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h 
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+866,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h =
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+873,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = 
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+878,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+894,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+899,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%1
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+904,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%10
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+909,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+914,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+930,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c=",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+935,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+940,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c ",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+945,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c +",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+952,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c ",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+959,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c =",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+964,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = ",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+969,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+983,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s|",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+988,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s||",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+993,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s|",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+998,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+1003,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s\",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+1012,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s\\",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1019,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s\",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+1026,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+1035,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s/",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1040,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s//",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1045,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s//1",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+1050,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s//10",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+1055,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s//100",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+1060,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s//100
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+1065,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s//100
+r",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1083,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s//100
+ri",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1088,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s//100
+rin",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1093,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s//100
+rint",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1103,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s//100
+print",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]",python,,,,
+1121,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s//100
+print ",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]",python,,,,
+1126,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s//100
+print )",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1137,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s//100
+print ",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]",python,,,,
+1148,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s//100
+print (",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1149,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s//100
+print ()",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]",python,,,,
+1154,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s//100
+print (H)",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1170,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s//100
+print ()",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]",python,,,,
+1175,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s//100
+print (h)",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.125, 0.0, 0.0, 0.0, 0.0]",python,,,,
+1186,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s//100
+print ()",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]",python,,,,
+1191,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s//100
+print (c)",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.125, 0.0, 0.0, 0.0, 0.0]",python,,,,
+1203,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s//100
+print (c?)",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1216,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s//100
+print (c)",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.125, 0.0, 0.0, 0.0, 0.0]",python,,,,
+1229,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s//100
+print (c/)",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1234,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s//100
+print (c)",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.125, 0.0, 0.0, 0.0, 0.0]",python,,,,
+1239,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s//100
+print (c,)",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.125, 0.0, 0.0, 0.0, 0.0]",python,,,,
+1244,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s//100
+print (c, )",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.125, 0.0, 0.0, 0.0, 0.0]",python,2019-12-09T17:03:54.322+03:00,Action,ChooseRunConfiguration,207
+1244,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s//100
+print (c, )",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.125, 0.0, 0.0, 0.0, 0.0]",python,2019-12-09T17:04:38.314+03:00,Action,Stop,207
+1244,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s//100
+print (c, )",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.125, 0.0, 0.0, 0.0, 0.0]",python,2019-12-09T17:04:39.564+03:00,Action,Rerun,207
+1244,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s//100
+print (c, )",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.125, 0.0, 0.0, 0.0, 0.0]",python,2019-12-09T17:04:39.877+03:00,Action,Run,207
+1249,"a = int(input())
+b = int(input())
+n = int(input())
+s = a*100+b
+h = s%100
+c = s//100
+print (c, h)",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.125, 0.0, 0.0, 0.0, 0.0, 0.0]",python,,,,
+1298,"a = int(input())
+b = int(input())
+n = int(input())
+s = (a*100+b
+h = s%100
+c = s//100
+print (c, h)",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1309,"a = int(input())
+b = int(input())
+n = int(input())
+s = (a*100+b)
+h = s%100
+c = s//100
+print (c, h)",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.125, 0.0, 0.0, 0.0, 0.0, 0.0]",python,,,,
+1318,"a = int(input())
+b = int(input())
+n = int(input())
+s = (a*100+b)*
+h = s%100
+c = s//100
+print (c, h)",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,2019-12-09T17:05:08.760+03:00,Action,Stop,207
+1318,"a = int(input())
+b = int(input())
+n = int(input())
+s = (a*100+b)*
+h = s%100
+c = s//100
+print (c, h)",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,2019-12-09T17:05:12.558+03:00,Action,Rerun,207
+1318,"a = int(input())
+b = int(input())
+n = int(input())
+s = (a*100+b)*
+h = s%100
+c = s//100
+print (c, h)",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,2019-12-09T17:05:31.861+03:00,Action,Rerun,207
+1318,"a = int(input())
+b = int(input())
+n = int(input())
+s = (a*100+b)*
+h = s%100
+c = s//100
+print (c, h)",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,2019-12-09T17:05:31.970+03:00,Action,Run,207
+1318,"a = int(input())
+b = int(input())
+n = int(input())
+s = (a*100+b)*
+h = s%100
+c = s//100
+print (c, h)",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,2019-12-09T17:05:32.970+03:00,Action,Run,207
+1323,"a = int(input())
+b = int(input())
+n = int(input())
+s = (a*100+b)*n
+h = s%100
+c = s//100
+print (c, h)",pies,,-1,FROM_HALF_TO_ONE_YEAR,SOLVED,"[1.0, 0.0, 0.0, 0.0, 0.0, 0.0]",python,,,,
+1323,"a = int(input())
+b = int(input())
+n = int(input())
+s = (a*100+b)*n
+h = s%100
+c = s//100
+print (c, h)",,,-1,FROM_HALF_TO_ONE_YEAR,,"[1.0, 0.0, 0.0, 0.0, 0.0, 0.0]",python,,,,
+1323,"a = int(input())
+b = int(input())
+n = int(input())
+s = (a*100+b)*n
+h = s%100
+c = s//100
+print (c, h)",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[1.0, 0.0, 0.0, 0.0, 0.0, 0.0]",python,,,,
+1323,"a = int(input())
+b = int(input())
+n = int(input())
+s = (a*100+b)*n
+h = s%100
+c = s//100
+print (c, h)",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[1.0, 0.0, 0.0, 0.0, 0.0, 0.0]",python,,,,
+1323,"a = int(input())
+b = int(input())
+n = int(input())
+s = (a*100+b)*n
+h = s%100
+c = s//100
+print (c, h)",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[1.0, 0.0, 0.0, 0.0, 0.0, 0.0]",python,,,,
+1371,"a = int(input())
+b = int(input())
+n = int(input())
+",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+1390,"a = int(input())
+b = int(input())
+n = int(input())
+i",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1404,"a = int(input())
+b = int(input())
+n = int(input())
+if",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1409,"a = int(input())
+b = int(input())
+n = int(input())
+if ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1414,"a = int(input())
+b = int(input())
+n = int(input())
+if a",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1430,"a = int(input())
+b = int(input())
+n = int(input())
+if a",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1431,"a = int(input())
+b = int(input())
+n = int(input())
+if 9a",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1440,"a = int(input())
+b = int(input())
+n = int(input())
+if a",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1449,"a = int(input())
+b = int(input())
+n = int(input())
+if (a",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1456,"a = int(input())
+b = int(input())
+n = int(input())
+if (a>",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1463,"a = int(input())
+b = int(input())
+n = int(input())
+if (a>b",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1479,"a = int(input())
+b = int(input())
+n = int(input())
+if (a>b)",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1486,"a = int(input())
+b = int(input())
+n = int(input())
+if (a>b)
+",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1491,"a = int(input())
+b = int(input())
+n = int(input())
+if (a>b)
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1496,"a = int(input())
+b = int(input())
+n = int(input())
+if (a>b)
+    i",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1516,"a = int(input())
+b = int(input())
+n = int(input())
+
+if (a>b)
+    i",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1521,"a = int(input())
+b = int(input())
+n = int(input())
+I
+if (a>b)
+    i",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1543,"a = int(input())
+b = int(input())
+n = int(input())
+I=
+if (a>b)
+    i",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1548,"a = int(input())
+b = int(input())
+n = int(input())
+I=0
+if (a>b)
+    i",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1553,"a = int(input())
+b = int(input())
+n = int(input())
+=0
+if (a>b)
+    i",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1562,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b)
+    i",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1580,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b)
+    i+",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1585,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b)
+    i",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1590,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b)
+    i=",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1595,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b)
+    i=a",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1610,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+1615,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+1620,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+   ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+1621,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+1626,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+I",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1648,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+1653,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+i",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+1665,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1677,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1682,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1683,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if ()",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1692,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (a)",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1704,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if ()",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1709,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (B)",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1721,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (B>)",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1726,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (B)",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1731,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if ()",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1736,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b)",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1748,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>)",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1753,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>a)",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1765,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>a);",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1772,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>a)",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1779,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>a):",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1784,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>a):
+",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1789,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>a):
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1794,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>a):
+    I",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1814,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>a):
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1819,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>a):
+    i",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+1831,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>a):
+    i+",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1836,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>a):
+    i",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+1841,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>a):
+    i=",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1846,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>+a):
+    i=",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1851,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>a):
+    i=",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1856,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1861,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+1875,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+1880,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+   ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+1881,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+1886,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+I",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1904,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+1909,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+i",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+1921,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1933,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1938,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if 9",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1947,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1956,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1957,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if ()",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1966,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (N)",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1978,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if ()",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+1983,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n)",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2002,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n )",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2007,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n)",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2012,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n=)",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2023,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=)",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2036,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=I)",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2048,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=)",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2053,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i)",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2065,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2070,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2075,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2080,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2085,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+S
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2111,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2120,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2136,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s+
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2141,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2146,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2151,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2156,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2161,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2166,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    i
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+2188,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    i+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2193,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    i
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+2198,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    i=
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2203,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    i
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+2208,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2217,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    s
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+2233,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    s=
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2238,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    s=n
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+2250,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    s=n
+    
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+2255,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    s=n
+   
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+2256,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    s=n
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+2261,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    s=n
+    
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+2266,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    s=n
+    p
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2288,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    s=n
+    pr
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2293,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    s=n
+    pri
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2298,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    s=n
+    prin
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2303,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    s=n
+    print
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]",python,,,,
+2315,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    s=n
+    print 
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]",python,,,,
+2320,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    s=n
+    print S
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2336,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+   
+    print S
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2345,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+  
+    print S
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2346,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+
+    print S
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2351,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print S
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2356,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print 
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]",python,,,,
+2365,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print n
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2400,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print n
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2401,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print n
+    
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2406,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print n
+   
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2407,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print n
+
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2412,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print n
+i
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2432,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print n
+if
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2439,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print n
+if(
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2440,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print n
+if()
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2447,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print n
+if(n)
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2461,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print n
+if(n,)
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2466,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print n
+if(n)
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2471,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print n
+if(n<)
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2476,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print n
+if(n<i)
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2488,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print n
+if(n<i);
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2495,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print n
+if(n<i)
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2502,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print n
+if(n<i):
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2507,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print n
+if(n<i):
+
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2512,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print n
+if(n<i):
+    
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2517,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print n
+if(n<i):
+    p
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2543,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print n
+if(n<i):
+    pr
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2548,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print n
+if(n<i):
+    pri
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2553,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print n
+if(n<i):
+    prin
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2558,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print n
+if(n<i):
+    print
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2570,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print n
+if(n<i):
+    print 
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2575,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print )n
+if(n<i):
+    print 
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2600,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print n
+if(n<i):
+    print 
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2625,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print 9n
+if(n<i):
+    print 
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2634,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print 9n0
+if(n<i):
+    print 
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2639,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print 9n
+if(n<i):
+    print 
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2644,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print 9n)
+if(n<i):
+    print 
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2663,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print n)
+if(n<i):
+    print 
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2670,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print (n)
+if(n<i):
+    print 
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.25, 0.0, 0.0, 0.0, 0.0]",python,,,,
+2691,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print (n)
+if(n<i):
+    print (
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2692,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print (n)
+if(n<i):
+    print ()
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.25, 0.0, 0.0, 0.0, 0.0]",python,2019-12-09T17:21:11.090+03:00,Action,Run,207
+2701,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print (n)
+if(n<i):
+    print (i)
+
+    ",max_3,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 1.0, 0.0, 0.0, 0.0, 0.0]",python,,,,
+2719,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print (n)
+if(n<i):
+    print (i)
+
+",max_3,,-1,FROM_HALF_TO_ONE_YEAR,SOLVED,"[0.0, 1.0, 0.0, 0.0, 0.0, 0.0]",python,,,,
+2719,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print (n)
+if(n<i):
+    print (i)
+
+",,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 1.0, 0.0, 0.0, 0.0, 0.0]",python,,,,
+2719,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print (n)
+if(n<i):
+    print (i)
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 1.0, 0.0, 0.0, 0.0, 0.0]",python,,,,
+2719,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print (n)
+if(n<i):
+    print (i)
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 1.0, 0.0, 0.0, 0.0, 0.0]",python,,,,
+2719,"a = int(input())
+b = int(input())
+n = int(input())
+i=0
+s=0
+if (a>b):
+    i=a
+if (b>=a):
+    i=b
+if (n>=i):
+    print (n)
+if(n<i):
+    print (i)
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 1.0, 0.0, 0.0, 0.0, 0.0]",python,,,,
+2741,"a = int(input())
+b = int(input())
+n = int(input())
+
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+2770,"
+n = int(input())
+
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+2779,"n = int(input())
+
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+2786,"n = int(input())
+f
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2804,"n = int(input())
+fo
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2809,"n = int(input())
+for
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2825,"n = int(input())
+for 
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2832,"n = int(input())
+for I
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2861,"n = int(input())
+for I 
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2866,"n = int(input())
+for I
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2871,"n = int(input())
+for 
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2884,"n = int(input())
+for i
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2911,"n = int(input())
+for i 
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2916,"n = int(input())
+for i i
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2940,"n = int(input())
+for i in
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2960,"n = int(input())
+for i in 
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2965,"n = int(input())
+for i in r
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2991,"n = int(input())
+for i in ra
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+2996,"n = int(input())
+for i in ran
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3001,"n = int(input())
+for i in rang
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3006,"n = int(input())
+for i in range
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3011,"n = int(input())
+for i in range 
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3016,"n = int(input())
+for i in range (
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3017,"n = int(input())
+for i in range ()
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3024,"n = int(input())
+for i in range (n)
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3038,"n = int(input())
+for i in range (n):
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3043,"n = int(input())
+for i in range (n):
+
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3048,"n = int(input())
+for i in range (n):
+    
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3053,"n = int(input())
+for i in range (n):
+    i
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+3079,"n = int(input())
+for i in range (n):
+    if
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3084,"n = int(input())
+for i in range (n):
+    if 
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3089,"n = int(input())
+for i in range (n):
+    if i
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3107,"n = int(input())
+for i in range (n):
+    if 9i
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3116,"n = int(input())
+for i in range (n):
+    if i
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3125,"n = int(input())
+for i in range (n):
+    if (i
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3134,"n = int(input())
+for i in range (n):
+    if (i=
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3141,"n = int(input())
+for i in range (n):
+    if (i=0
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3146,"n = int(input())
+for i in range (n):
+    if (i=0)
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3153,"n = int(input())
+for i in range (n):
+    if (i=0)
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3158,"n = int(input())
+for i in range (n):
+    if (i=0)
+    p
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3188,"n = int(input())
+for i in range (n):
+    if (i=0)
+    pr
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3193,"n = int(input())
+for i in range (n):
+    if (i=0)
+    pri
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3198,"n = int(input())
+for i in range (n):
+    if (i=0)
+    prin
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3203,"n = int(input())
+for i in range (n):
+    if (i=0)
+    print
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3215,"n = int(input())
+for i in range (n):
+    if (i=0)
+    print 
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3220,"n = int(input())
+for i in range (n):
+    if (i=0)
+    print (
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3221,"n = int(input())
+for i in range (n):
+    if (i=0)
+    print ()
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3230,"n = int(input())
+for i in range (n):
+    if (i=0)
+    print (i)
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3244,"n = int(input())
+for i in range (n):
+    if (i=0)
+    print (i)c
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3266,"n = int(input())
+for i in range (n):
+    if (i=0)
+    print (i)ck
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3271,"n = int(input())
+for i in range (n):
+    if (i=0)
+    print (i)ckj
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3283,"n = int(input())
+for i in range (n):
+    if (i=0)
+    print (i)ckj;
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3288,"n = int(input())
+for i in range (n):
+    if (i=0)
+    print (i)ckj;y
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3304,"n = int(input())
+for i in range (n):
+    if (i=0)
+    print (i)ckj;yf
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3309,"n = int(input())
+for i in range (n):
+    if (i=0)
+    print (i)ckj;y
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3314,"n = int(input())
+for i in range (n):
+    if (i=0)
+    print (i)ckj;
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3319,"n = int(input())
+for i in range (n):
+    if (i=0)
+    print (i)ckj
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3324,"n = int(input())
+for i in range (n):
+    if (i=0)
+    print (i)ck
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3329,"n = int(input())
+for i in range (n):
+    if (i=0)
+    print (i)c
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3334,"n = int(input())
+for i in range (n):
+    if (i=0)
+    print (i)
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3341,"n = int(input())
+for i in range (n):
+    if (i=0)
+    print (i)ñ
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3358,"n = int(input())
+for i in range (n):
+    if (i=0)
+    print (i)ñë
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3369,"n = int(input())
+for i in range (n):
+    if (i=0)
+    print (i)ñëî
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3380,"n = int(input())
+for i in range (n):
+    if (i=0)
+    print (i)ñëîæ
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3392,"n = int(input())
+for i in range (n):
+    if (i=0)
+    print (i)ñëîæí
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3404,"n = int(input())
+for i in range (n):
+    if (i=0)
+    print (i)ñëîæíà
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3416,"n = int(input())
+for i in range (n):
+    if (i=0)
+    print (i)ñëîæí
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3421,"n = int(input())
+for i in range (n):
+    if (i=0)
+    print (i)ñëîæ
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3426,"n = int(input())
+for i in range (n):
+    if (i=0)
+    print (i)ñëî
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3431,"n = int(input())
+for i in range (n):
+    if (i=0)
+    print (i)ñë
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3436,"n = int(input())
+for i in range (n):
+    if (i=0)
+    print (i)ñ
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3441,"n = int(input())
+for i in range (n):
+    if (i=0)
+    print (i)
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3450,"n = int(input())
+for i in range (n):
+    if (i=0)
+    print ()
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3457,"n = int(input())
+for i in range (n):
+    if (i=0)
+    print (Y)
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3477,"n = int(input())
+for i in range (n):
+    if (i=0)
+    print (Ye)
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,2019-12-09T17:29:32.328+03:00,Action,Run,207
+3477,"n = int(input())
+for i in range (n):
+    if (i=0)
+    print (Ye)
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,2019-12-09T17:29:34.484+03:00,Action,Rerun,207
+3482,"n = int(input())
+for i in range (n):
+    if (i=0)
+    print (Yes)
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3493,"n = int(input())
+for i in range (n):
+    if (i=0):
+    print (Yes)
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,2019-12-09T17:29:45.607+03:00,Action,Run,207
+3502,"n = int(input())
+for i in range (n):
+    if (i=0):
+        print (Yes)
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3514,"n = int(input())
+for i in range (n):
+    if (i =0):
+        print (Yes)
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3521,"n = int(input())
+for i in range (n):
+    if (i = 0):
+        print (Yes)
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3526,"n = int(input())
+for i in range (n):
+    if (i == 0):
+        print (Yes)
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3537,"n = int(input())
+for i in range (n):
+    if (i == 0):
+        print (Yes)
+        
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3542,"n = int(input())
+for i in range (n):
+    if (i == 0):
+        print (Yes)
+       
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3543,"n = int(input())
+for i in range (n):
+    if (i == 0):
+        print (Yes)
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3548,"n = int(input())
+for i in range (n):
+    if (i == 0):
+        print (Yes)
+    e
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3578,"n = int(input())
+for i in range (n):
+    if (i == 0):
+        print (Yes)
+    el
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3583,"n = int(input())
+for i in range (n):
+    if (i == 0):
+        print (Yes)
+    els
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3588,"n = int(input())
+for i in range (n):
+    if (i == 0):
+        print (Yes)
+    else
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3599,"n = int(input())
+for i in range (n):
+    if (i == 0):
+        print (Yes)
+    else 
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3604,"n = int(input())
+for i in range (n):
+    if (i == 0):
+        print (Yes)
+    else
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3609,"n = int(input())
+for i in range (n):
+    if (i == 0):
+        print (Yes)
+    els
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3620,"n = int(input())
+for i in range (n):
+    if (i == 0):
+        print (Yes)
+    el
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3625,"n = int(input())
+for i in range (n):
+    if (i == 0):
+        print (Yes)
+    e
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3630,"n = int(input())
+for i in range (n):
+    if (i == 0):
+        print (Yes)
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3639,"n = int(input())
+for i in range (n):
+    if (i == 0):
+        print (Yes)
+    
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3644,"n = int(input())
+for i in range (n):
+    if (i == 0):
+        print (Yes)
+    
+   
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3645,"n = int(input())
+for i in range (n):
+    if (i == 0):
+        print (Yes)
+    
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,2019-12-09T17:31:23.712+03:00,Action,Rerun,207
+3650,"n = int(input())
+for i in range (n):
+    if (i == 0):
+        print (Yes)
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3660,"n = int(input())
+for i in range (n):
+    if (i == 0):
+        print (@Yes)
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3679,"n = int(input())
+for i in range (n):
+    if (i == 0):
+        print (Yes)
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3696,"n = int(input())
+for i in range (n):
+    if (i == 0):
+        print (?Yes)
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3719,"n = int(input())
+for i in range (n):
+    if (i == 0):
+        print (??Yes)
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3726,"n = int(input())
+for i in range (n):
+    if (i == 0):
+        print (?Yes)
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3733,"n = int(input())
+for i in range (n):
+    if (i == 0):
+        print (?""Yes)
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3748,"n = int(input())
+for i in range (n):
+    if (i == 0):
+        print (?Yes)
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3763,"n = int(input())
+for i in range (n):
+    if (i == 0):
+        print (Yes)
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3786,"n = int(input())
+for i in range (n):
+    if (i == 0):
+        print (""Yes)
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3797,"n = int(input())
+for i in range (n):
+    if (i == 0):
+        print (""Yes"")
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]",python,,,,
+3808,"n = int(input())
+for i in range (n):
+    if (i == 0):
+        print (""Yes"")
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]",python,,,,
+3813,"n = int(input())
+for i in range (n):
+    if (i == 0):
+        print (""Yes"")
+       
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]",python,,,,
+3814,"n = int(input())
+for i in range (n):
+    if (i == 0):
+        print (""Yes"")
+    
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]",python,,,,
+3819,"n = int(input())
+for i in range (n):
+    if (i == 0):
+        print (""Yes"")
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]",python,,,,
+3824,"n = int(input())
+for i in range (n):
+    if (i == 0):
+       
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3833,"n = int(input())
+for i in range (n):
+    if (i == 0):
+       s
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3858,"n = int(input())
+for i in range (n):
+    if (i == 0):
+       s 
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3863,"n = int(input())
+for i in range (n):
+    if (i == 0):
+       s +
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3870,"n = int(input())
+for i in range (n):
+    if (i == 0):
+       s ++
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3875,"n = int(input())
+for i in range (n):
+    if (i == 0):
+       s +
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3880,"n = int(input())
+for i in range (n):
+    if (i == 0):
+       s +=
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3885,"n = int(input())
+for i in range (n):
+    if (i == 0):
+       s +
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3890,"n = int(input())
+for i in range (n):
+    if (i == 0):
+       s 
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3897,"n = int(input())
+for i in range (n):
+    if (i == 0):
+       s =
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3904,"n = int(input())
+for i in range (n):
+    if (i == 0):
+       s ==
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3909,"n = int(input())
+for i in range (n):
+    if (i == 0):
+       s == 
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3914,"n = int(input())
+for i in range (n):
+    if (i == 0):
+       s == 1
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3923,"n = int(input())
+for i in range (n):
+    if (i == 0):
+       s == 1
+       
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3928,"n = int(input())
+for i in range (n):
+    if (i == 0):
+       s = 1
+       
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+3933,"n = int(input())
+for i in range (n):
+    if (i == 0):
+       s = 1
+      
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+3934,"n = int(input())
+for i in range (n):
+    if (i == 0):
+       s = 1
+    
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+3939,"n = int(input())
+for i in range (n):
+    if (i == 0):
+       s = 1
+   
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+3940,"n = int(input())
+for i in range (n):
+    if (i == 0):
+       s = 1
+
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+3945,"n = int(input())
+for i in range (n):
+    if (i == 0):
+       s = 1
+i
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+3965,"n = int(input())
+for i in range (n):
+    if (i == 0):
+       s = 1
+if
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3972,"n = int(input())
+for i in range (n):
+    if (i == 0):
+       s = 1
+if 
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3977,"n = int(input())
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3978,"n = int(input())
+for i in range (n):
+    if (i == 0):
+       s = 1
+if ()
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+3991,"n = int(input())
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (i)
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4005,"n = int(input())
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (i+)
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4010,"n = int(input())
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (i++)
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4015,"n = int(input())
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (i+)
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4020,"n = int(input())
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (i)
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4025,"n = int(input())
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (i=)
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4036,"n = int(input())
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (i==)
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4049,"n = int(input())
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (==)
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4060,"n = int(input())
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==)
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4080,"n = int(input())
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4085,"n = int(input())
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4090,"n = int(input())
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4095,"n = int(input())
+
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4100,"n = int(input())
+s
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4126,"n = int(input())
+s+
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4131,"n = int(input())
+s
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4136,"n = int(input())
+s=
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4141,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4146,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+
+    
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,2019-12-09T17:34:13.776+03:00,Action,$Paste,207
+4151,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    
+    
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4156,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+
+    
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4158,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+    
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4168,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+    
+    
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4173,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+    
+   
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4174,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+    
+
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4179,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+    
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4184,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+   
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4185,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4190,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+e
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4218,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+el
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4223,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+else
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4237,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+else:
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4243,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+else
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4248,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+else 
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4253,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+else
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4258,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+else:
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4263,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+else:
+
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4268,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+else:
+    
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4273,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+else:
+    p
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4295,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+else:
+    pr
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4300,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+else:
+    pri
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4305,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+else:
+    prin
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4310,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+else:
+    print
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4322,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+else:
+    print 
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4327,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+else:
+    print (
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4328,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+else:
+    print ()
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4337,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+else:
+    print ("")
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4338,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+else:
+    print ("""")
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4343,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+else:
+    print (""n"")
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4357,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+else:
+    print (""no"")
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4369,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+else:
+    print (""n"")
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4374,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+else:
+    print ("""")
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4379,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+else:
+    print (""N"")
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,2019-12-09T17:34:46.151+03:00,Action,Run,207
+4391,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+else:
+    print (""No"")
+        
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4403,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+else:
+    print (""No"")
+
+    
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,2019-12-09T17:34:48.807+03:00,Action,Run,207
+4405,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+else:
+    print (""No"")
+
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,2019-12-09T17:34:58.025+03:00,Action,Run,207
+4405,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+else:
+    print (""No"")
+
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,2019-12-09T17:35:05.947+03:00,Action,Rerun,207
+4405,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+else:
+    print (""No"")
+
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,2019-12-09T17:35:23.525+03:00,Action,Rerun,207
+4405,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+else:
+    print (""No"")
+
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,2019-12-09T17:35:23.884+03:00,Action,Run,207
+4405,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+else:
+    print (""No"")
+
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,2019-12-09T17:35:24.900+03:00,Action,Run,207
+4405,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+else:
+    print (""No"")
+
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,2019-12-09T17:35:33.634+03:00,Action,Rerun,207
+4405,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1)
+    print (""Yes"")
+else:
+    print (""No"")
+
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,2019-12-09T17:35:33.915+03:00,Action,Run,207
+4419,"n = int(input())
+s=0
+for i in range (n):
+    if (i == 0):
+       s = 1
+if (s==1):
+    print (""Yes"")
+else:
+    print (""No"")
+
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]",python,,,,
+4444,"n = int(input())
+s=0
+for i in range (n):
+    
+    if (i == 0):
+       s = 1
+if (s==1):
+    print (""Yes"")
+else:
+    print (""No"")
+
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]",python,,,,
+4451,"n = int(input())
+s=0
+for i in range (n):
+    è
+    if (i == 0):
+       s = 1
+if (s==1):
+    print (""Yes"")
+else:
+    print (""No"")
+
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4469,"n = int(input())
+s=0
+for i in range (n):
+    è 
+    if (i == 0):
+       s = 1
+if (s==1):
+    print (""Yes"")
+else:
+    print (""No"")
+
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4474,"n = int(input())
+s=0
+for i in range (n):
+    è
+    if (i == 0):
+       s = 1
+if (s==1):
+    print (""Yes"")
+else:
+    print (""No"")
+
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4479,"n = int(input())
+s=0
+for i in range (n):
+    
+    if (i == 0):
+       s = 1
+if (s==1):
+    print (""Yes"")
+else:
+    print (""No"")
+
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]",python,,,,
+4488,"n = int(input())
+s=0
+for i in range (n):
+    b
+    if (i == 0):
+       s = 1
+if (s==1):
+    print (""Yes"")
+else:
+    print (""No"")
+
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4511,"n = int(input())
+s=0
+for i in range (n):
+    b 
+    if (i == 0):
+       s = 1
+if (s==1):
+    print (""Yes"")
+else:
+    print (""No"")
+
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4516,"n = int(input())
+s=0
+for i in range (n):
+    b =
+    if (i == 0):
+       s = 1
+if (s==1):
+    print (""Yes"")
+else:
+    print (""No"")
+
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,2019-12-09T17:36:58.397+03:00,Action,$Copy,207
+4516,"n = int(input())
+s=0
+for i in range (n):
+    b =
+    if (i == 0):
+       s = 1
+if (s==1):
+    print (""Yes"")
+else:
+    print (""No"")
+
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,2019-12-09T17:37:00.741+03:00,Action,$Paste,207
+4523,"n = int(input())
+s=0
+for i in range (n):
+    b = 
+    if (i == 0):
+       s = 1
+if (s==1):
+    print (""Yes"")
+else:
+    print (""No"")
+
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4528,"n = int(input())
+s=0
+for i in range (n):
+    b = int(input())
+    if (i == 0):
+       s = 1
+if (s==1):
+    print (""Yes"")
+else:
+    print (""No"")
+
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]",python,,,,
+4538,"n = int(input())
+s=0
+for i in range (n):
+    b = int(input())
+    if ( == 0):
+       s = 1
+if (s==1):
+    print (""Yes"")
+else:
+    print (""No"")
+
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,2019-12-09T17:37:21.131+03:00,Action,Rerun,207
+4545,"n = int(input())
+s=0
+for i in range (n):
+    b = int(input())
+    if (b == 0):
+       s = 1
+if (s==1):
+    print (""Yes"")
+else:
+    print (""No"")
+
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]",python,,,,
+4567,"n = int(input())
+s=0
+for i in range (n):
+    b = int(input())
+    if (b == 0):
+       s = 1
+if (s==1):
+    print (""Ye"")
+else:
+    print (""No"")
+
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]",python,,,,
+4572,"n = int(input())
+s=0
+for i in range (n):
+    b = int(input())
+    if (b == 0):
+       s = 1
+if (s==1):
+    print (""Y"")
+else:
+    print (""No"")
+
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]",python,,,,
+4579,"n = int(input())
+s=0
+for i in range (n):
+    b = int(input())
+    if (b == 0):
+       s = 1
+if (s==1):
+    print (""YE"")
+else:
+    print (""No"")
+
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]",python,,,,
+4595,"n = int(input())
+s=0
+for i in range (n):
+    b = int(input())
+    if (b == 0):
+       s = 1
+if (s==1):
+    print (""YES"")
+else:
+    print (""No"")
+
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]",python,,,,
+4607,"n = int(input())
+s=0
+for i in range (n):
+    b = int(input())
+    if (b == 0):
+       s = 1
+if (s==1):
+    print (""YES"")
+else:
+    print (""N"")
+
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]",python,2019-12-09T17:37:46.771+03:00,Action,Stop,207
+4607,"n = int(input())
+s=0
+for i in range (n):
+    b = int(input())
+    if (b == 0):
+       s = 1
+if (s==1):
+    print (""YES"")
+else:
+    print (""N"")
+
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]",python,2019-12-09T17:37:47.630+03:00,Action,Rerun,207
+4607,"n = int(input())
+s=0
+for i in range (n):
+    b = int(input())
+    if (b == 0):
+       s = 1
+if (s==1):
+    print (""YES"")
+else:
+    print (""N"")
+
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]",python,2019-12-09T17:37:48.115+03:00,Action,Run,207
+4607,"n = int(input())
+s=0
+for i in range (n):
+    b = int(input())
+    if (b == 0):
+       s = 1
+if (s==1):
+    print (""YES"")
+else:
+    print (""N"")
+
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]",python,2019-12-09T17:37:49.130+03:00,Action,Run,207
+4607,"n = int(input())
+s=0
+for i in range (n):
+    b = int(input())
+    if (b == 0):
+       s = 1
+if (s==1):
+    print (""YES"")
+else:
+    print (""N"")
+
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]",python,2019-12-09T17:37:50.130+03:00,Action,Run,207
+4607,"n = int(input())
+s=0
+for i in range (n):
+    b = int(input())
+    if (b == 0):
+       s = 1
+if (s==1):
+    print (""YES"")
+else:
+    print (""N"")
+
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]",python,2019-12-09T17:37:51.130+03:00,Action,Run,207
+4607,"n = int(input())
+s=0
+for i in range (n):
+    b = int(input())
+    if (b == 0):
+       s = 1
+if (s==1):
+    print (""YES"")
+else:
+    print (""N"")
+
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]",python,2019-12-09T17:37:52.130+03:00,Action,Run,207
+4607,"n = int(input())
+s=0
+for i in range (n):
+    b = int(input())
+    if (b == 0):
+       s = 1
+if (s==1):
+    print (""YES"")
+else:
+    print (""N"")
+
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]",python,2019-12-09T17:38:06.317+03:00,Action,Rerun,207
+4612,"n = int(input())
+s=0
+for i in range (n):
+    b = int(input())
+    if (b == 0):
+       s = 1
+if (s==1):
+    print (""YES"")
+else:
+    print (""NO"")
+
+
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 1.0, 0.0, 0.0, 0.0]",python,,,,
+4662,"n = int(input())
+s=0
+for i in range (n)",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4681,"n = int(input())
+s=0
+for i in range (n",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4688,"n = int(input())
+s=0
+for i in range (",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4695,"n = int(input())
+s=0
+for i in range ",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4704,"n = int(input())
+s=0
+for i in range",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4711,"n = int(input())
+s=0
+for i in rang",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4716,"n = int(input())
+s=0
+for i in ran",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4721,"n = int(input())
+s=0
+for i in ra",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4726,"n = int(input())
+s=0
+for i in r",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4731,"n = int(input())
+s=0
+for i in ",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4740,"n = int(input())
+s=0
+for i in",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4745,"n = int(input())
+s=0
+for i i",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4754,"n = int(input())
+s=0
+for i ",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4761,"n = int(input())
+s=0
+for i",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4766,"n = int(input())
+s=0
+for ",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4775,"n = int(input())
+s=0
+for",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4780,"n = int(input())
+s=0
+fo",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4785,"n = int(input())
+s=0
+f",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4790,"n = int(input())
+s=0
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+4795,"n = int(input())
+s=0",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+4800,"n = int(input())
+s=",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4805,"n = int(input())
+s",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4810,"n = int(input())
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+4815,n = int(input()),is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,2019-12-09T17:42:50.654+03:00,Action,$Copy,207
+4820,"n = int(input())
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,2019-12-09T17:42:52.279+03:00,Action,$Paste,207
+4830,"n = int(input())
+n = int(input())
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,2019-12-09T17:42:53.982+03:00,Action,$Paste,207
+4840,"n = int(input())
+n = int(input())
+n = int(input())
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+4848,"n = int(input())
+n= int(input())
+n = int(input())
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+4853,"n = int(input())
+= int(input())
+n = int(input())
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4864,"n = int(input())
+a= int(input())
+n = int(input())
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+4891,"n = int(input())
+a = int(input())
+n = int(input())
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+4896,"n = int(input())
+a = int(input())
+ = int(input())
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4913,"n = int(input())
+a = int(input())
+b = int(input())
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+4943,"n = int(input())
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+4956," = int(input())
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+4973,"a = int(input())
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+5010,"a, = int(input())
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5015,"a,  = int(input())
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5020,"a, b = int(input())
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5043,"a, b  = int(input())
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5048,"a, b , = int(input())
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5057,"a, b ,c = int(input())
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5082,"a, b ,c  = int(input())
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5087,"a, b,c  = int(input())
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5092,"a, b, c  = int(input())
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5097,"a, b, c  = (int(input())
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5106,"a, b, c  = (int(input()))
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5115,"a, b, c  = (intinput()))
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5128,"a, b, c  = (intinput())
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5191,"a, b, c  = (int,input())
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5196,"a, b, c  = (int, input())
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5201,"a, b, c  = (int,  input())
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5206,"a, b, c  = (int, input())
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5211,"a, b, c  = (int, input(),)
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5216,"a, b, c  = (int, input())
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5221,"a, b, c  = (int, input().)
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5238,"a, b, c  = (int, input().s)
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5243,"a, b, c  = (int, input().sp)
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5258,"a, b, c  = (int, input().spl)
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5273,"a, b, c  = (int, input().spli)
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5288,"a, b, c  = m(int, input().spli)
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5300,"a, b, c  = ma(int, input().spli)
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5305,"a, b, c  = map(int, input().spli)
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5317,"a, b, c  = map (int, input().spli)
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5376,"a, b, c  = map (int, input().split)
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5452,"a, b, c  = map (int, input().split()
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5453,"a, b, c  = map (int, input().split())
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+5458,"a, b, c  = map (int, input().split())
+s",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5474,"a, b, c  = map (int, input().split())
+s+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5533,"a, b, c  = map (int, input().split())
+s",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5592,"a, b, c  = map (int, input().split())
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+5597,"a, b, c  = map (int, input().split())
+i",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5609,"a, b, c  = map (int, input().split())
+if",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5614,"a, b, c  = map (int, input().split())
+if ",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5619,"a, b, c  = map (int, input().split())
+if a",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5634,"a, b, c  = map (int, input().split())
+if a+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5707,"a, b, c  = map (int, input().split())
+if a+b",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5733,"a, b, c  = map (int, input().split())
+if a+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5740,"a, b, c  = map (int, input().split())
+if a",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5747,"a, b, c  = map (int, input().split())
+if a_",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5813,"a, b, c  = map (int, input().split())
+if a",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5818,"a, b, c  = map (int, input().split())
+if a-",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5903,"a, b, c  = map (int, input().split())
+if a-b",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+5929,"a, b, c  = map (int, input().split())
+if a-b-",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+6022,"a, b, c  = map (int, input().split())
+if a-b-c",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+6062,"a, b, c  = map (int, input().split())
+if a-b-c>",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+6171,"a, b, c  = map (int, input().split())
+if a-b-c>2",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+6202,"a, b, c  = map (int, input().split())
+if a-b-c)>2",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+6245,"a, b, c  = map (int, input().split())
+if a-b-c>2",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+6294,"a, b, c  = map (int, input().split())
+if a-b-c>2
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+6299,"a, b, c  = map (int, input().split())
+if a-b-c>2
+    ",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+6340,"a, b, c  = map (int, input().split())
+if a-b-c>2
+    p",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+6368,"a, b, c  = map (int, input().split())
+if a-b-c>2
+    pr",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+6373,"a, b, c  = map (int, input().split())
+if a-b-c>2
+    pri",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+6378,"a, b, c  = map (int, input().split())
+if a-b-c>2
+    prin",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+6383,"a, b, c  = map (int, input().split())
+if a-b-c>2
+    print",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+6406,"a, b, c  = map (int, input().split())
+if a-b-c>2
+    print ",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+6447,"a, b, c  = map (int, input().split())
+if a-b-c>2
+    print (",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+6448,"a, b, c  = map (int, input().split())
+if a-b-c>2
+    print ()",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+6489,"a, b, c  = map (int, input().split())
+if a-b-c>2
+    print (0)",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+6512,"a, b, c  = map (int, input().split())
+if a-b-c>2
+    print (0)
+    ",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+6535,"a, b, c  = map (int, input().split())
+if a-b-c>2
+    print (0)
+   ",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+6536,"a, b, c  = map (int, input().split())
+if a-b-c>2
+    print (0)
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+6541,"a, b, c  = map (int, input().split())
+if a-b-c>2
+    print (0)
+e",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+6557,"a, b, c  = map (int, input().split())
+if a-b-c>2
+    print (0)
+el",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+6562,"a, b, c  = map (int, input().split())
+if a-b-c>2
+    print (0)
+els",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+6567,"a, b, c  = map (int, input().split())
+if a-b-c>2
+    print (0)
+else",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+6614,"a, b, c  = map (int, input().split())
+if a-b-c>2
+    print (0)
+else:",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+6637,"a, b, c  = map (int, input().split())
+if a-b-c>2
+    print (0)
+else:
+",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+6642,"a, b, c  = map (int, input().split())
+if a-b-c>2
+    print (0)
+else:
+    ",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+6683,"a, b, c  = map (int, input().split())
+if a-b-c>2
+    print (0)
+else:
+    p",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+6701,"a, b, c  = map (int, input().split())
+if a-b-c>2
+    print (0)
+else:
+    pr",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+6706,"a, b, c  = map (int, input().split())
+if a-b-c>2
+    print (0)
+else:
+    pri",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+6711,"a, b, c  = map (int, input().split())
+if a-b-c>2
+    print (0)
+else:
+    prin",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+6716,"a, b, c  = map (int, input().split())
+if a-b-c>2
+    print (0)
+else:
+    print",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+6728,"a, b, c  = map (int, input().split())
+if a-b-c>2
+    print (0)
+else:
+    print ",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+6751,"a, b, c  = map (int, input().split())
+if a-b-c>2
+    print (0)
+else:
+    print (",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+6752,"a, b, c  = map (int, input().split())
+if a-b-c>2
+    print (0)
+else:
+    print ()",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,2019-12-09T17:46:44.823+03:00,Action,Rerun,207
+6775,"a, b, c  = map (int, input().split())
+if a-b-c>2
+    print (0)
+else:
+    print (1)",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+6813,"a, b, c  = map (int, input().split())
+if 9a-b-c>2
+    print (0)
+else:
+    print (1)",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+6918,"a, b, c  = map (int, input().split())
+if a-b-c>2
+    print (0)
+else:
+    print (1)",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+7057,"a, b, c  = map (int, input().split())
+if (a-b-c>2
+    print (0)
+else:
+    print (1)",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,,,,
+7178,"a, b, c  = map (int, input().split())
+if (a-b-c)>2
+    print (0)
+else:
+    print (1)",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,2019-12-09T17:47:02.102+03:00,Action,Rerun,207
+7233,"a, b, c  = map (int, input().split())
+if (a-b-c)>2:
+    print (0)
+else:
+    print (1)",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 0.125, 0.0, 0.0]",python,,,,
+7271,"a, b, c  = map (int, input().split())
+if (a-b-c>2:
+    print (0)
+else:
+    print (1)",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[-1, -1, -1, -1, -1, -1]",python,2019-12-09T17:47:30.270+03:00,Action,Rerun,207
+7356,"a, b, c  = map (int, input().split())
+if a-b-c>2:
+    print (0)
+else:
+    print (1)",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 0.125, 0.0, 0.0]",python,,,,
+7478,"a, b, c  = map (int, input().split())
+if a-b-c>-2:
+    print (0)
+else:
+    print (1)",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]",python,2019-12-09T17:47:59.812+03:00,Action,Rerun,207
+7569,"a, b, c  = map (int, input().split())
+if -a-b-c>-2:
+    print (0)
+else:
+    print (1)",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,SOLVED,"[0.0, 0.0, 0.0, 1.0, 0.0, 0.0]",python,,,,
+7569,"a, b, c  = map (int, input().split())
+if -a-b-c>-2:
+    print (0)
+else:
+    print (1)",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,SOLVED,"[0.0, 0.0, 0.0, 1.0, 0.0, 0.0]",python,,,,
+7569,"a, b, c  = map (int, input().split())
+if -a-b-c>-2:
+    print (0)
+else:
+    print (1)",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,SOLVED,"[0.0, 0.0, 0.0, 1.0, 0.0, 0.0]",python,,,,
+7569,"a, b, c  = map (int, input().split())
+if -a-b-c>-2:
+    print (0)
+else:
+    print (1)",,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 1.0, 0.0, 0.0]",python,,,,
+7569,"a, b, c  = map (int, input().split())
+if -a-b-c>-2:
+    print (0)
+else:
+    print (1)",,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 1.0, 0.0, 0.0]",python,,,,
+7569,"a, b, c  = map (int, input().split())
+if -a-b-c>-2:
+    print (0)
+else:
+    print (1)",,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 1.0, 0.0, 0.0]",python,,,,
+7569,"a, b, c  = map (int, input().split())
+if -a-b-c>-2:
+    print (0)
+else:
+    print (1)",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 1.0, 0.0, 0.0]",python,,,,
+7569,"a, b, c  = map (int, input().split())
+if -a-b-c>-2:
+    print (0)
+else:
+    print (1)",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 1.0, 0.0, 0.0]",python,,,,
+7569,"a, b, c  = map (int, input().split())
+if -a-b-c>-2:
+    print (0)
+else:
+    print (1)",is_zero,,-1,FROM_HALF_TO_ONE_YEAR,SOLVED,"[0.0, 0.0, 0.0, 1.0, 0.0, 0.0]",python,,,,
+7569,"a, b, c  = map (int, input().split())
+if -a-b-c>-2:
+    print (0)
+else:
+    print (1)",,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 1.0, 0.0, 0.0]",python,,,,
+7569,"a, b, c  = map (int, input().split())
+if -a-b-c>-2:
+    print (0)
+else:
+    print (1)",election,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 1.0, 0.0, 0.0]",python,,,,
+7569,"a, b, c  = map (int, input().split())
+if -a-b-c>-2:
+    print (0)
+else:
+    print (1)",election,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 1.0, 0.0, 0.0]",python,,,,
+7569,"a, b, c  = map (int, input().split())
+if -a-b-c>-2:
+    print (0)
+else:
+    print (1)",election,,-1,FROM_HALF_TO_ONE_YEAR,SOLVED,"[0.0, 0.0, 0.0, 1.0, 0.0, 0.0]",python,,,,
+7569,"a, b, c  = map (int, input().split())
+if -a-b-c>-2:
+    print (0)
+else:
+    print (1)",,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 1.0, 0.0, 0.0]",python,,,,
+7569,"a, b, c  = map (int, input().split())
+if -a-b-c>-2:
+    print (0)
+else:
+    print (1)",election,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 1.0, 0.0, 0.0]",python,,,,
+7569,"a, b, c  = map (int, input().split())
+if -a-b-c>-2:
+    print (0)
+else:
+    print (1)",election,,-1,FROM_HALF_TO_ONE_YEAR,,"[0.0, 0.0, 0.0, 1.0, 0.0, 0.0]",python,,,,
+7569,"a, b, c  = map (int, input().split())
+if -a-b-c>-2:
+    print (0)
+else:
+    print (1)",election,,-1,FROM_HALF_TO_ONE_YEAR,SOLVED,"[0.0, 0.0, 0.0, 1.0, 0.0, 0.0]",python,,,,
+7569,"a, b, c  = map (int, input().split())
+if -a-b-c>-2:
+    print (0)
+else:
+    print (1)",election,,-1,FROM_HALF_TO_ONE_YEAR,SOLVED,"[0.0, 0.0, 0.0, 1.0, 0.0, 0.0]",python,,,,
+7569,"a, b, c  = map (int, input().split())
+if -a-b-c>-2:
+    print (0)
+else:
+    print (1)",election,,-1,FROM_HALF_TO_ONE_YEAR,SOLVED,"[0.0, 0.0, 0.0, 1.0, 0.0, 0.0]",python,,,,

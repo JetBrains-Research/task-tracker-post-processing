@@ -4,11 +4,12 @@ import logging
 import plotly.graph_objects as go
 
 from src.main.util import consts
-from typing import Dict, Tuple, List, Any
+from typing import Dict, Tuple, List
 from src.main.plots.util import consts as plot_consts
 from src.main.plots.util.plotly_util import save_plot
-from src.main.statistics_gathering.statistics_gathering import get_tasks_statistics
 from src.main.plots.util.plots_common import get_readable_key
+from src.main.statistics_gathering.util import TaskStatistics
+from src.main.statistics_gathering.statistics_gathering import get_tasks_statistics
 
 
 log = logging.getLogger(consts.LOGGER_NAME)
@@ -23,7 +24,7 @@ def __get_tasks_with_freq(language_dict: Dict[consts.TASK, int]) -> Tuple[List[s
     return tasks, freq
 
 
-def __get_bars_for_plot(statistics_dict: Dict[consts.LANGUAGE, Any]) -> List[go.Bar]:
+def __get_bars_for_plot(statistics_dict: TaskStatistics) -> List[go.Bar]:
     bars = []
     languages = statistics_dict.keys()
     for language in languages:
@@ -39,9 +40,8 @@ def __get_colors() -> List[str]:
     return colors
 
 
-def __plot_bar_chart(bars: list, path: str, plot_name: str = 'bar_plot',
-                     format: consts.EXTENSION = consts.EXTENSION.HTML,
-                     auto_open: bool = False) -> None:
+def __plot_bar_chart(bars: List[go.Bar], path: str, plot_name: str = 'bar_plot',
+                     format: consts.EXTENSION = consts.EXTENSION.HTML, auto_open: bool = False) -> None:
     fig = go.Figure(data=bars)
     fig.update_layout(
         barmode='group',
@@ -55,7 +55,7 @@ def __plot_bar_chart(bars: list, path: str, plot_name: str = 'bar_plot',
         ),
         colorway=__get_colors()
     )
-    save_plot(fig, path, plot_consts.PLOT_TYPES.BAR.value, plot_name, format, auto_open)
+    save_plot(fig, path, plot_consts.PLOT_TYPE.BAR, plot_name, format, auto_open)
 
 
 def plot_tasks_statistics(path: str, plot_name: str = 'task_plot', format: consts.EXTENSION = consts.EXTENSION.HTML,

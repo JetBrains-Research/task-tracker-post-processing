@@ -1,9 +1,6 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
-import logging
-import unittest
-
-from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT
+from src.test.test_util import LoggedTest
 from src.main.util.strings_util import convert_camel_case_to_snake_case
 
 data = [['considerMeAsOneWhoLovedPoetryAndPersimmons', 'consider_me_as_one_who_loved_poetry_and_persimmons'],
@@ -13,17 +10,17 @@ data = [['considerMeAsOneWhoLovedPoetryAndPersimmons', 'consider_me_as_one_who_l
         ['already_snake_case', 'already_snake_case'],
         ['pies', 'pies'],
         ['WRITE_TASK', 'write_task'],
-        ['', '']]
+        ['', ''],
+        ['13.0', '13.0'],
+        ['IAm11.0YearsOld', 'i_am_11.0_years_old'],
+        ['aB', 'a_b']]
 
 
-class TestConversionToSnakeCase(unittest.TestCase):
+class TestConversionToSnakeCase(LoggedTest):
 
-    def setUp(self) -> None:
-        logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
-
-    def testUpperLetters(self):
+    def testUpperLetters(self) -> None:
         for d in data:
             camel_case = d[0]
             snake_case = d[1]
             converted_snake_case = convert_camel_case_to_snake_case(camel_case)
-            self.assertEqual(converted_snake_case, snake_case, msg=f'{converted_snake_case} is not equal {snake_case}')
+            self.assertEqual(snake_case, converted_snake_case, msg=f'{converted_snake_case} is not equal {snake_case}')

@@ -1,14 +1,11 @@
-import logging
-import unittest
+# Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
+from src.test.test_util import LoggedTest
 from src.main.solution_space.data_classes import User
-from src.main.util.consts import LOGGER_TEST_FILE, LOGGER_FORMAT
 from src.test.solution_space.solution_graph.util import init_default_ids
 
 
-class TestUser(unittest.TestCase):
-    def setUp(self) -> None:
-        logging.basicConfig(filename=LOGGER_TEST_FILE, format=LOGGER_FORMAT, level=logging.INFO)
+class TestUser(LoggedTest):
 
     def test_user_id(self) -> None:
         init_default_ids()

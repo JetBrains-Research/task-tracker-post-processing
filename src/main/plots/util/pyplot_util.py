@@ -2,11 +2,11 @@
 
 import os
 import logging
+from typing import Optional
 
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from typing import Optional
 from src.main.util import consts
 from src.main.plots.util import consts as plot_consts
 from src.main.plots.util.plots_common import get_result_file_name

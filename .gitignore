@@ -139,3 +139,8 @@ src/resources/tasks_tests/**/*.py
 
 # data
 data/
+
+# generated during tests
+src/resources/test_data/plots/profile_statistics_plots_statistics_result/
+src/resources/test_data/plots/statistics/
+src/resources/test_data/solution_space/pies/
