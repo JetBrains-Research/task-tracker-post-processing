@@ -794,6 +794,7 @@ def orderedBinOpSpecialFunction(cv):
 			return ChangeVector(cvCopy.path, oldSpot, newSpot, start=cv.start)
 	return cv
 
+# (EL) edit is a list
 def mapEdit(canon, orig, edit, nameMap=None):
 	if edit == None:
 		return
