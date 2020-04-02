@@ -24,7 +24,9 @@ DOES_NOT_WORK_FOR_RUN_STUDENTS_SOLUTION_TEST = {
     TASK.BRACKETS: ['out_2_4.py', 'out_1_4.py'],
     TASK.ZERO: ['out_2_4.py'],
     TASK.PIES: ['out_3_1.py', 'out_2_3.py', 'out_2_1.py', 'out_2_3.py', 'out_2_4.py',
-                'out_1_4.py', 'out_4_1.py']
+                'out_1_4.py', 'out_4_1.py'],
+    TASK.ELECTION: ['out_1_3.py', 'out_1_2.py', 'out_1_5.py', 'out_1_4.py'],
+    TASK.MAX_3: ['out_5_7.py', 'out_5_3.py', 'out_5_6.py', 'out_5_4.py'],
 }
 
 
@@ -155,5 +157,8 @@ class TestDiffWorker(unittest.TestCase):
     def test_pies_students_solution(self) -> None:
         run_students_solution_test(self, DIFF_WORKER_TEST_TYPES.STUDENTS_CODE, TASK.PIES)
 
-    # def test_election_students_solution(self) -> None:
-    #     run_students_solution_test(self, DIFF_WORKER_TEST_TYPES.STUDENTS_CODE, TASK.ELECTION)
+    def test_election_students_solution(self) -> None:
+        run_students_solution_test(self, DIFF_WORKER_TEST_TYPES.STUDENTS_CODE, TASK.ELECTION)
+
+    def test_max_3_students_solution(self) -> None:
+        run_students_solution_test(self, DIFF_WORKER_TEST_TYPES.STUDENTS_CODE, TASK.MAX_3)
