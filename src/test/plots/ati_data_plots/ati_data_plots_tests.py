@@ -3,6 +3,7 @@
 import os
 
 from src.test.test_util import LoggedTest
+from src.test.plots.util import TO_OPEN_PLOTS
 from src.main.util.consts import TEST_DATA_PATH
 from src.main.plots.ati_data_plots import create_ati_data_plot
 
@@ -13,4 +14,4 @@ DATA = os.path.join(TEST_DATA_PATH, 'plots/data.csv')
 class TestAtiDataPlots(LoggedTest):
 
     def test_plot_creation(self) -> None:
-        create_ati_data_plot(DATA, to_show=True)
+        create_ati_data_plot(DATA, to_show=TO_OPEN_PLOTS)
