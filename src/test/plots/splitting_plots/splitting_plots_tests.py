@@ -3,6 +3,7 @@
 import os
 
 from src.test.test_util import LoggedTest
+from src.test.plots.util import TO_OPEN_PLOTS
 from src.main.util.consts import TEST_DATA_PATH
 from src.main.plots.splitting_plots import create_comparative_splitting_plot
 
@@ -13,4 +14,4 @@ DATA = os.path.join(TEST_DATA_PATH, 'plots/data.csv')
 class TestSplittingPlots(LoggedTest):
 
     def test_plot_creation(self) -> None:
-        create_comparative_splitting_plot(DATA, to_show=True)
+        create_comparative_splitting_plot(DATA, to_show=TO_OPEN_PLOTS)
