@@ -193,7 +193,9 @@ def printFunction(a: ast.AST, indent=0):
 		s += printFunction(a.operand, indent) + ")"
 	elif t == ast.Lambda:
 		s += "lambda "
-		s += printFunction(a.arguments, indent) + ": "
+		# (EL) change arguments to args, because lamda doesn't have arguments (only args)
+		# s += printFunction(a.arguments, indent) + ": "
+		s += printFunction(a.args, indent) + ": "
 		s += printFunction(a.body, indent)
 	elif t == ast.IfExp:
 		s += "(" + printFunction(a.body, indent)

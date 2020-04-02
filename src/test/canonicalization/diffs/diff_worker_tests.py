@@ -13,6 +13,8 @@ from src.test.canonicalization.util import run_test, DIFF_WORKER_TEST_TYPES, CAN
 from src.main.canonicalization.canonicalization import get_code_from_tree, get_canonicalized_and_orig_form, \
     get_canonicalized_form, get_cleaned_code
 
+# Todo: move file to diff_worker folder to be consistent with 'main' structure
+
 log = logging.getLogger(LOGGER_NAME)
 
 
