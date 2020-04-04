@@ -1,13 +1,12 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import os
-import re
 import logging
 
 from enum import Enum
-from typing import Callable, Union
+from typing import Callable, Union, Tuple, List
 
-from src.main.util.consts import LOGGER_NAME, ROOT_DIR
+from src.main.util.consts import LOGGER_NAME, ROOT_DIR, TASK
 from src.main.canonicalization.canonicalization import get_cleaned_code
 from src.main.util.file_util import get_all_file_system_items, pair_in_and_out_files, get_content_from_file, \
     match_condition
@@ -34,7 +33,7 @@ class DIFF_WORKER_TEST_TYPES(Enum):
 
 
 def get_test_in_and_out_files(test_type: Union[CANONIZATION_TESTS_TYPES, DIFF_WORKER_TEST_TYPES],
-                              task=None, additional_folder_name: str = '') -> list:
+                              task: TASK = None, additional_folder_name: str = '') -> List[Tuple[str, str]]:
     root = os.path.join(CANONIZATION_TESTS.TASKS_TESTS_PATH.value, additional_folder_name, test_type.value)
     if task is not None:
         root = os.path.join(root, str(task))
@@ -46,12 +45,12 @@ def get_test_in_and_out_files(test_type: Union[CANONIZATION_TESTS_TYPES, DIFF_WO
 
 
 def run_test(self, test_type:  Union[CANONIZATION_TESTS_TYPES, DIFF_WORKER_TEST_TYPES],
-             get_code: Callable, task=None, additional_folder_name: str = '',
+             get_code: Callable[[str], str], task: TASK = None, additional_folder_name: str = '',
              to_clear_out: bool = False) -> None:
     files = get_test_in_and_out_files(test_type, task, additional_folder_name=additional_folder_name)
     count_tests = 1
     for source_code, expected_code_path in files:
-        log.info(f'Test number is {count_tests}\nSource code is: {source_code}\n')
+        log.info(f'Test number {count_tests}\nSource code is: {source_code}\n')
         actual_code = get_code(source_code)
         expected_code = get_content_from_file(expected_code_path)
         if to_clear_out:

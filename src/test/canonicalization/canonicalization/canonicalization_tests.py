@@ -4,10 +4,10 @@ import logging
 
 from src.test.test_util import LoggedTest
 from src.main.util.consts import LOGGER_NAME, TASK
+from src.main.canonicalization.consts import TREE_TYPE
 from src.main.util.file_util import get_content_from_file
 from src.test.canonicalization.util import run_test, CANONIZATION_TESTS_TYPES
-from src.main.canonicalization.canonicalization import get_cleaned_code, get_anonymized_and_orig_tree, get_ast, \
-    get_code_from_tree, get_canonicalized_and_orig_form
+from src.main.canonicalization.canonicalization import get_cleaned_code, get_code_from_tree, get_trees
 
 log = logging.getLogger(LOGGER_NAME)
 
@@ -17,16 +17,13 @@ def get_cleaned_code_from_file(file: str) -> str:
     return get_cleaned_code(source).rstrip('\n')
 
 
-def get_code_with_anonymous_names(file: str) -> str:
-    source = get_cleaned_code_from_file(file)
-    tree = get_ast(source)
-    actual_code = get_code_from_tree(get_anonymized_and_orig_tree(tree)[0]).rstrip('\n')
-    return actual_code
+def get_anonymized_code_from_file(file: str) -> str:
+    anon_tree, = get_trees(get_content_from_file(file), {TREE_TYPE.ANON}, False)
+    return get_code_from_tree(anon_tree).rstrip('\n')
 
 
-def get_canonicalized_code(file: str) -> str:
-    source = get_content_from_file(file)
-    canon_tree, _ = get_canonicalized_and_orig_form(source)
+def get_canonicalized_code_from_file(file: str) -> str:
+    canon_tree, = get_trees(get_content_from_file(file), {TREE_TYPE.CANON})
     return get_code_from_tree(canon_tree).rstrip('\n')
 
 
@@ -36,25 +33,25 @@ class TestCanonicalizationTool(LoggedTest):
         run_test(self, CANONIZATION_TESTS_TYPES.CLEANED_CODE, get_cleaned_code_from_file)
 
     def test_anonymize_names(self) -> None:
-        run_test(self, CANONIZATION_TESTS_TYPES.ANONYMIZE_NAMES, get_code_with_anonymous_names)
+        run_test(self, CANONIZATION_TESTS_TYPES.ANONYMIZE_NAMES, get_anonymized_code_from_file)
 
     def test_canonical_form(self) -> None:
-        run_test(self, CANONIZATION_TESTS_TYPES.CANONICAL_FORM, get_canonicalized_code)
+        run_test(self, CANONIZATION_TESTS_TYPES.CANONICAL_FORM, get_canonicalized_code_from_file)
 
     def test_student_code_pies(self) -> None:
-        run_test(self, CANONIZATION_TESTS_TYPES.STUDENT_CODE, get_canonicalized_code, TASK.PIES)
+        run_test(self, CANONIZATION_TESTS_TYPES.STUDENT_CODE, get_canonicalized_code_from_file, TASK.PIES)
 
     def test_student_code_max_3(self) -> None:
-        run_test(self, CANONIZATION_TESTS_TYPES.STUDENT_CODE, get_canonicalized_code, TASK.MAX_3)
+        run_test(self, CANONIZATION_TESTS_TYPES.STUDENT_CODE, get_canonicalized_code_from_file, TASK.MAX_3)
 
     def test_student_code_is_zero(self) -> None:
-        run_test(self, CANONIZATION_TESTS_TYPES.STUDENT_CODE, get_canonicalized_code, TASK.ZERO)
+        run_test(self, CANONIZATION_TESTS_TYPES.STUDENT_CODE, get_canonicalized_code_from_file, TASK.ZERO)
 
     def test_student_code_max_digit(self) -> None:
-        run_test(self, CANONIZATION_TESTS_TYPES.STUDENT_CODE, get_canonicalized_code, TASK.MAX_DIGIT)
+        run_test(self, CANONIZATION_TESTS_TYPES.STUDENT_CODE, get_canonicalized_code_from_file, TASK.MAX_DIGIT)
 
     def test_student_code_election(self) -> None:
-        run_test(self, CANONIZATION_TESTS_TYPES.STUDENT_CODE, get_canonicalized_code, TASK.ELECTION)
+        run_test(self, CANONIZATION_TESTS_TYPES.STUDENT_CODE, get_canonicalized_code_from_file, TASK.ELECTION)
 
     def test_student_code_brackets(self) -> None:
-        run_test(self, CANONIZATION_TESTS_TYPES.STUDENT_CODE, get_canonicalized_code, TASK.BRACKETS)
+        run_test(self, CANONIZATION_TESTS_TYPES.STUDENT_CODE, get_canonicalized_code_from_file, TASK.BRACKETS)

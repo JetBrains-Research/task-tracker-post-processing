@@ -8,8 +8,8 @@ from src.main.util.log_util import log_and_raise_error
 from src.main.solution_space.data_classes import Code, User, Profile
 from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 from src.main.gum_tree_diff.gum_tree_diff import get_diffs_number, apply_diffs
-from src.main.canonicalization.canonicalization import are_asts_equal, get_canonicalized_and_orig_form
-from src.main.canonicalization.canonicalization import are_asts_equal, get_canonicalized_form
+from src.main.canonicalization.canonicalization import are_asts_equal, get_anon_and_orig_trees
+from src.main.canonicalization.canonicalization import are_asts_equal, get_canonicalized_tree
 from src.main.solution_space.consts import DIFFS_PERCENT_TO_GO_DIRECTLY, EMPTY_CODE_FILE, DISTANCE_TO_GRAPH_THRESHOLD
 
 log = logging.getLogger(consts.LOGGER_NAME)
@@ -98,9 +98,11 @@ class PathFinder:
     @staticmethod
     def __apply_minimal_actions_number(user_code: Code, dst_code: Code) -> Code:
         str_code = apply_diffs(user_code.file_with_code, dst_code.file_with_code)
-        anon_ast, _ = get_canonicalized_and_orig_form(str_code)
+        # (REVIEW): only_anon arg is False, why it is called anon_ast?
+        anon_tree, _ = get_anon_and_orig_trees(str_code)
+        canon_tree = get_canonicalized_tree(anon_tree)
         # Todo: get rate
-        return Code(anon_ast)
+        return Code(canon_tree)
 
 
 class MeasuredVertex:
