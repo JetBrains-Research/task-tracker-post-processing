@@ -14,7 +14,6 @@ from src.main.util.file_util import get_content_from_file, get_all_file_system_i
 from src.test.canonicalization.util import run_test, DIFF_WORKER_TEST_TYPES, CANONIZATION_TESTS
 from src.main.canonicalization.canonicalization import get_code_from_tree, get_cleaned_code, get_trees
 
-# Todo: move file to diff_worker folder to be consistent with 'main' structure
 
 log = logging.getLogger(LOGGER_NAME)
 
@@ -33,90 +32,53 @@ DOES_NOT_WORK_FOR_RUN_STUDENTS_SOLUTION_TEST = {
 }
 
 
-def apply_diffs(source_file: str, dst_source_file: Optional[str] = None) -> str:
-    source = get_content_from_file(source_file)
-    if not dst_source_file:
-        dst_source_file = re.sub(r'in(?=[^in]*$)', 'out', source_file)
-
-    dst_source = get_content_from_file(dst_source_file)
-
-    anon_dst_tree, canon_dst_tree, = get_trees(dst_source, {TREE_TYPE.ANON, TREE_TYPE.CANON})
-
-    diff_worker = DiffHandler(source)
-    edits, tree_type = diff_worker.get_diffs(anon_dst_tree, canon_dst_tree)
-    res_tree = diff_worker.apply_diffs(edits, tree_type)
+def apply_diffs(src_file: str, dst_file: str) -> str:
+    src_diff_handler = DiffHandler(get_content_from_file(src_file))
+    dst_diff_handler = DiffHandler(get_content_from_file(dst_file))
+    diffs, tree_type = src_diff_handler.get_diffs_from_diff_handler(dst_diff_handler)
+    res_tree = src_diff_handler.apply_diffs(diffs, tree_type)
     return get_code_from_tree(res_tree).rstrip('\n')
 
 
-def get_all_pairs(obj_list: List[Any]) -> List[Tuple[Any, Any]]:
-    pairs = []
-    for pair in itertools.product(obj_list, repeat=2):
-        pairs.append(pair)
-    return pairs
-
-
-def __get_files_by_reg_expr(test_type: DIFF_WORKER_TEST_TYPES, task: TASK, reg_expr: str) -> List[str]:
+def get_files_by_reg_expr(test_type: DIFF_WORKER_TEST_TYPES, task: TASK, reg_expr: str) -> List[str]:
     root = os.path.join(CANONIZATION_TESTS.TASKS_TESTS_PATH.value, DST_FOLDER, test_type.value, task.value)
     return get_all_file_system_items(root, match_condition(reg_expr))
 
 
-def get_in_and_out_files(test_type: DIFF_WORKER_TEST_TYPES, task: TASK) -> List[Tuple[Any, Any]]:
-    in_files = __get_files_by_reg_expr(test_type, task, r'in_\d+.py')
-    return get_all_pairs(in_files)
+def get_src_and_dst_files(test_type: DIFF_WORKER_TEST_TYPES, task: TASK) -> List[Tuple[str, str]]:
+    files = get_files_by_reg_expr(test_type, task, r'\d+.py')
+    return list(itertools.product(files, repeat=2))
 
 
-# Todo: rename it
-# Test if the functions get edits and apply diffs work
-def run_students_solution_apply_diffs_test(self, test_type: DIFF_WORKER_TEST_TYPES, task: TASK) -> None:
-    in_and_out_files = get_in_and_out_files(test_type, task)
-    count_tests = 1
-    for source_file, dst_file in in_and_out_files:
-        log.info(f'Test number is {count_tests}\nSource file is: {source_file}\nGoal file is: {dst_file}\n')
-        actual_out = apply_diffs(source_file, dst_file)
-        log.info(f'Actual code is:\n{actual_out}\nExpected code is:\n{actual_out}\n')
-        self.assertTrue(True)
-        count_tests += 1
+def get_in_and_out_files(test_type: DIFF_WORKER_TEST_TYPES, task: TASK) -> List[Tuple[str, str, str]]:
+    src_and_dst_files = get_src_and_dst_files(test_type, task)
+    in_and_out_files = []
+    for src_file, dst_file in src_and_dst_files:
+        src_file_number = get_name_from_path(src_file, with_extension=False)
+        dst_file_number = get_name_from_path(dst_file, with_extension=False)
+        out_file = os.path.join(get_parent_folder(src_file), f'out_{src_file_number}_{dst_file_number}.py')
 
-
-def __init_out_dict(test_type: DIFF_WORKER_TEST_TYPES, task: TASK) -> None:
-    OUT_FOR_RUN_STUDENTS_SOLUTION_TEST[task] = __get_files_by_reg_expr(test_type, task, r'out_\d+_\d+.py')
-
-
-def __is_contain_out_for_run_students_solution_test(task: TASK, out_file: str) -> bool:
-    return out_file in OUT_FOR_RUN_STUDENTS_SOLUTION_TEST.get(task, [])
-
-
-# Todo: rename it
-def __get_out_file(source_file: str, dst_file: str) -> str:
-    source_file_name = change_extension_to(get_name_from_path(source_file), EXTENSION.EMPTY)
-    dst_file_name = get_name_from_path(dst_file)
-    source_number = re.sub(r'in(?=[^in]*$)', '', source_file_name)
-    dst_number_with_extenstion = re.sub(r'in(?=[^in]*$)', '', dst_file_name)
-    return os.path.join(get_parent_folder(source_file), 'out' + source_number + dst_number_with_extenstion)
-
-
-# Todo: rename it and thinking about it
-def run_students_solution_test(self, test_type: DIFF_WORKER_TEST_TYPES, task: TASK) -> None:
-    in_and_out_files = get_in_and_out_files(test_type, task)
-    count_tests = 1
-    __init_out_dict(test_type, task)
-    for source_file, dst_file in in_and_out_files:
-        log.info(f'Test number is {count_tests}\nSource file is: {source_file}\nGoal file is: {dst_file}\n')
-        actual_out = apply_diffs(source_file, dst_file)
-
-        out_file_name = __get_out_file(source_file, dst_file)
-        # Todo: delete it
-        if get_name_from_path(out_file_name) in DOES_NOT_WORK_FOR_RUN_STUDENTS_SOLUTION_TEST.get(task, []):
+        if get_name_from_path(out_file) in DOES_NOT_WORK_FOR_RUN_STUDENTS_SOLUTION_TEST.get(task, []):
             continue
 
-        if __is_contain_out_for_run_students_solution_test(task, out_file_name):
-            out_file = os.path.join(get_parent_folder(source_file), out_file_name)
-            expected_out = get_cleaned_code(get_content_from_file(out_file)).rstrip('\n')
-        else:
-            expected_out = get_cleaned_code(get_content_from_file(dst_file)).rstrip('\n')
-        log.info(f'Actual code is:\n{actual_out}\nExpected code is:\n{expected_out}\n')
-        self.assertEqual(expected_out, actual_out)
-        count_tests += 1
+        # If there is no such out_file, it means that out code is the same as dst code from dst_file
+        if not os.path.isfile(out_file):
+            out_file = dst_file
+
+        if get_name_from_path(out_file) in DOES_NOT_WORK_FOR_RUN_STUDENTS_SOLUTION_TEST.get(task, []):
+            continue
+
+        in_and_out_files.append((src_file, dst_file, out_file))
+        # in_and_out_files.append((get_name_from_path(src_file), get_name_from_path(dst_file), get_name_from_path(out_file)))
+    return in_and_out_files
+
+
+
+# Todo: rename it
+def get_out_file(source_file: str, dst_file: str) -> str:
+    src_file_number = get_name_from_path(source_file, with_extension=False)
+    dst_file_number = get_name_from_path(dst_file, with_extension=False)
+    return os.path.join(get_parent_folder(source_file), f'out_{src_file_number}_{dst_file_number}.py')
 
 
 class TestDiffWorker(unittest.TestCase):
@@ -125,11 +87,11 @@ class TestDiffWorker(unittest.TestCase):
 
     # def test_rename(self):
     #     files = get_all_file_system_items('/home/elena/workspaces/python/codetracker-data/src/resources/test_data/canonicalization/canonicalization/diff_handler/students_code/',
-    #                                       match_condition(r'\d+.py'))
+    #                                       match_condition(r'in_\d+.py'))
     #     for file in files:
     #         path = get_parent_folder(file, True)
     #         name = get_name_from_path(file)
-    #         new_name = 'in_' + name
+    #         new_name = name[3:]
     #         os.rename(file, path + new_name)
     #
     #         print(file)
@@ -140,39 +102,31 @@ class TestDiffWorker(unittest.TestCase):
                  additional_folder_name=DST_FOLDER,
                  to_clear_out=True)
 
+    def test_no_exceptions_raised_applying_diffs_to_students_code(self) -> None:
+        for task in TASK:
+            srs_and_dst_files = get_src_and_dst_files(DIFF_WORKER_TEST_TYPES.STUDENTS_CODE, task)
+            tests_count = 1
+            for src_file, dst_file in srs_and_dst_files:
+                test_info = f'Task {task.value}\nTest number {tests_count}\nSrc file is: {src_file}\nDst file is: {dst_file}\n'
+                log.info(test_info)
+                with self.subTest():
+                    try:
+                        apply_diffs(src_file, dst_file)
+                    except Exception as e:
+                        self.fail(f'Exception {e} was raised\n{test_info}')
+                tests_count += 1
 
-    def test_running_brackets_students_solution(self) -> None:
-        run_students_solution_apply_diffs_test(self, DIFF_WORKER_TEST_TYPES.STUDENTS_CODE, TASK.BRACKETS)
+    def test_result_of_applying_diffs_to_students_code(self) -> None:
+        for task in TASK:
+            tests_count = 1
+            in_and_out_files = get_in_and_out_files(DIFF_WORKER_TEST_TYPES.STUDENTS_CODE, task)
+            for src_file, dst_file, out_file in in_and_out_files:
+                test_info = f'Task {task.value}\nTest number {tests_count}\nSrc file is: {src_file}\nDst file is: {dst_file}\n'
+                log.info(test_info)
+                with self.subTest():
+                    actual_out = apply_diffs(src_file, dst_file)
+                    expected_out = get_cleaned_code(get_content_from_file(out_file)).rstrip('\n')
+                    log.info(f'Actual code is:\n{actual_out}\nExpected code is:\n{expected_out}\n')
+                    self.assertEqual(expected_out, actual_out, test_info)
+                tests_count += 1
 
-    def test_running_is_zero_students_solution(self) -> None:
-        run_students_solution_apply_diffs_test(self, DIFF_WORKER_TEST_TYPES.STUDENTS_CODE, TASK.ZERO)
-
-    def test_running_max_digit_students_solution(self) -> None:
-        run_students_solution_apply_diffs_test(self, DIFF_WORKER_TEST_TYPES.STUDENTS_CODE, TASK.MAX_DIGIT)
-
-    def test_running_pies_students_solution(self) -> None:
-        run_students_solution_apply_diffs_test(self, DIFF_WORKER_TEST_TYPES.STUDENTS_CODE, TASK.PIES)
-
-    def test_running_election_students_solution(self) -> None:
-        run_students_solution_apply_diffs_test(self, DIFF_WORKER_TEST_TYPES.STUDENTS_CODE, TASK.ELECTION)
-
-    def test_running_max_3_students_solution(self) -> None:
-        run_students_solution_apply_diffs_test(self, DIFF_WORKER_TEST_TYPES.STUDENTS_CODE, TASK.MAX_3)
-
-    def test_brackets_students_solution(self) -> None:
-        run_students_solution_test(self, DIFF_WORKER_TEST_TYPES.STUDENTS_CODE, TASK.BRACKETS)
-
-    def test_is_zero_students_solution(self) -> None:
-        run_students_solution_test(self, DIFF_WORKER_TEST_TYPES.STUDENTS_CODE, TASK.ZERO)
-
-    def test_max_digit_students_solution(self) -> None:
-        run_students_solution_test(self, DIFF_WORKER_TEST_TYPES.STUDENTS_CODE, TASK.MAX_DIGIT)
-
-    def test_pies_students_solution(self) -> None:
-        run_students_solution_test(self, DIFF_WORKER_TEST_TYPES.STUDENTS_CODE, TASK.PIES)
-
-    def test_election_students_solution(self) -> None:
-        run_students_solution_test(self, DIFF_WORKER_TEST_TYPES.STUDENTS_CODE, TASK.ELECTION)
-
-    def test_max_3_students_solution(self) -> None:
-        run_students_solution_test(self, DIFF_WORKER_TEST_TYPES.STUDENTS_CODE, TASK.MAX_3)
