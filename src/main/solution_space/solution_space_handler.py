@@ -9,12 +9,12 @@ import pandas as pd
 
 from src.main.util import consts
 from src.main.util.data_util import Column
+from src.main.canonicalization.consts import TREE_TYPE
 from src.main.util.log_util import log_and_raise_error
 from src.main.splitting.splitting import unpack_tests_results
 from src.main.solution_space.solution_graph import SolutionGraph
-from src.main.canonicalization.canonicalization import are_asts_equal, get_canonicalized_tree
+from src.main.canonicalization.canonicalization import are_asts_equal, get_trees
 from src.main.util.consts import EXPERIENCE, DEFAULT_VALUE, TASK, LANGUAGE, EXTENSION
-from src.main.canonicalization.canonicalization import get_anon_and_orig_trees
 from src.main.util.file_util import get_all_file_system_items, extension_file_condition
 from src.main.solution_space.data_classes import AtiItem, Profile, User, Code, CodeInfo
 
@@ -51,8 +51,7 @@ def __get_ati_data(solutions: pd.DataFrame, index: int) -> AtiItem:
 
 def __are_same_fragments(current_tree: ast.AST, solutions: pd.DataFrame, next_index: int) -> bool:
     fragment = __get_column_value(solutions, next_index, consts.CODE_TRACKER_COLUMN.FRAGMENT)
-    anon_tree, _ = get_anon_and_orig_trees(fragment)
-    next_canon_tree = get_canonicalized_tree(anon_tree)
+    next_canon_tree, = get_trees(fragment, {TREE_TYPE.CANON})
     return are_asts_equal(current_tree, next_canon_tree)
 
 
@@ -69,9 +68,7 @@ def __find_same_fragments(solutions: pd.DataFrame, start_index: int) -> Tuple[in
     i, ati_elements = start_index + 1, []
     __handle_current_ati(ati_elements, solutions, start_index)
     current_fragment = __get_column_value(solutions, start_index, consts.CODE_TRACKER_COLUMN.FRAGMENT)
-    # (REVIEW): only_anon arg is False, why it is called anon_ast?
-    anon_tree, _ = get_anon_and_orig_trees(current_fragment)
-    current_canon_tree = get_canonicalized_tree(anon_tree)
+    current_canon_tree, = get_trees(current_fragment, {TREE_TYPE.CANON})
 
     while i < solutions.shape[0] and __are_same_fragments(current_canon_tree, solutions, i):
         __handle_current_ati(ati_elements, solutions, i)

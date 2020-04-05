@@ -68,41 +68,6 @@ def get_imports(tree: ast.AST) -> List[str]:
     return getAllImportStatements(tree)
 
 
-def get_canonicalized_tree(anonymized_tree: ast.AST, imports: Optional[List[str]] = None) -> ast.AST:
-    transformations = __get_canonical_transformations()
-    anonymized_tree = deepcopy(anonymized_tree)
-
-    if not imports:
-        imports = get_imports(anonymized_tree)
-    old_tree = None
-    while compareASTs(old_tree, anonymized_tree, checkEquality=True) != 0:
-        old_tree = deepcopy(anonymized_tree)
-        helperFolding(anonymized_tree, None, imports)
-        for t in transformations:
-            anonymized_tree = t(anonymized_tree)
-    return anonymized_tree
-
-
-def get_anon_and_orig_trees(source: str, to_simplify: bool = True) -> Tuple[ast.AST, ast.AST]:
-    tree = get_ast(get_cleaned_code(source).rstrip('\n'))
-
-    given_names = get_given_names(tree)
-    arg_types = get_arg_types()
-    imports = get_imports(tree)
-
-    tree = propogateMetadata(tree, arg_types, {}, [0])
-    orig_tree = deepcopy(tree)
-    runGiveIds(orig_tree)
-    tree = deepcopy(orig_tree)
-    tree = anonymizeNames(tree, given_names, imports)
-
-    if to_simplify:
-        tree = simplify(tree)
-
-    return tree, orig_tree
-
-    # return get_canonicalized_form(tree, imports), orig_tree
-
 def __get_orig_tree_from_source(source: str) -> ast.AST:
     tree = get_ast(get_cleaned_code(source).rstrip('\n'))
     arg_types = get_arg_types()
@@ -132,7 +97,7 @@ def __get_canon_tree_from_anon_tree(anon_tree: ast.AST, imports: List[str]) -> a
 
 
 # Checks if the new tree has type that we want to get
-# Returns 'True' if we should continue getting trees, and False otherwise, together with updated gotten_tree
+# Returns 'True' if we should continue getting trees, and False otherwise, together with updated gotten_trees
 def __update_gotten_trees(new_tree: ast.AST, new_tree_type: TREE_TYPE, gotten_trees: Tuple[ast.AST, ...],
                           tree_types_to_get: Set[TREE_TYPE]) -> Tuple[bool, Tuple[ast.AST, ...]]:
     if new_tree_type in tree_types_to_get:
@@ -141,7 +106,8 @@ def __update_gotten_trees(new_tree: ast.AST, new_tree_type: TREE_TYPE, gotten_tr
     return bool(tree_types_to_get), gotten_trees
 
 
-# Gets all trees which types are in tree_types_to_get. It stops after getting all needed trees.
+# Use it to get orig_tree, anon_tree, canon_tree, or any combination of them by passing their types as tree_types_to_get
+# It stops after getting all needed trees
 def get_trees(source: str, tree_types_to_get: Set[TREE_TYPE], to_simplify: bool = True) -> Tuple[ast.AST, ...]:
     gotten_trees = ()
     # We shouldn't start getting trees if there is no tree types to get

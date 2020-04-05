@@ -3,7 +3,6 @@
 
 import ast
 import logging
-
 from typing import List, Tuple
 
 from src.main.util import consts
@@ -19,7 +18,7 @@ log = logging.getLogger(consts.LOGGER_NAME)
 
 class DiffHandler:
     def __init__(self, source_code: str):
-        self._orig_tree, self._anon_tree, self._canon_tree, = get_trees(source_code, TREE_TYPE.get_all_types_set())
+        self._orig_tree, self._anon_tree, self._canon_tree = get_trees(source_code, TREE_TYPE.get_all_types_set())
 
     @property
     def orig_tree(self) -> ast.AST:
@@ -47,7 +46,6 @@ class DiffHandler:
         canon_diffs, _ = updateChangeVectors(canon_diffs, self._canon_tree, self._canon_tree)
         return canon_diffs, TREE_TYPE.CANON
 
-    # Maybe useful?
     def get_diffs_from_diff_handler(self, diff_handler: 'DiffHandler') -> Tuple[List[ChangeVector], TREE_TYPE]:
         return self.get_diffs(diff_handler.anon_tree, diff_handler.canon_tree)
 

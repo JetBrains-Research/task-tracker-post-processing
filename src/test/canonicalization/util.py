@@ -2,7 +2,6 @@
 
 import os
 import logging
-
 from enum import Enum
 from typing import Callable, Union, Tuple, List
 
@@ -14,27 +13,27 @@ from src.main.util.file_util import get_all_file_system_items, pair_in_and_out_f
 log = logging.getLogger(LOGGER_NAME)
 
 
-class CANONIZATION_TESTS(Enum):
-    TASKS_TESTS_PATH = ROOT_DIR + '/../../resources/test_data/canonicalization/canonicalization'
+class CANONICALIZATION_TESTS(Enum):
+    DATA_PATH = ROOT_DIR + '/../../resources/test_data/canonicalization'
     INPUT_FILE_NAME = 'in'
     OUTPUT_FILE_NAME = 'out'
 
 
-class CANONIZATION_TESTS_TYPES(Enum):
+class CANONICALIZATION_TESTS_TYPES(Enum):
     CLEANED_CODE = 'cleaned_code'
     ANONYMIZE_NAMES = 'anonymize_names'
     CANONICAL_FORM = 'canonical_form'
     STUDENT_CODE = 'student_code'
 
 
-class DIFF_WORKER_TEST_TYPES(Enum):
-    DIFF_WORKER_TEST = 'tests'
+class DIFF_HANDLER_TEST_TYPES(Enum):
+    DIFF_HANDLER_TEST = 'tests'
     STUDENTS_CODE = 'students_code'
 
 
-def get_test_in_and_out_files(test_type: Union[CANONIZATION_TESTS_TYPES, DIFF_WORKER_TEST_TYPES],
+def get_test_in_and_out_files(test_type: Union[CANONICALIZATION_TESTS_TYPES, DIFF_HANDLER_TEST_TYPES],
                               task: TASK = None, additional_folder_name: str = '') -> List[Tuple[str, str]]:
-    root = os.path.join(CANONIZATION_TESTS.TASKS_TESTS_PATH.value, additional_folder_name, test_type.value)
+    root = os.path.join(CANONICALIZATION_TESTS.DATA_PATH.value, additional_folder_name, test_type.value)
     if task is not None:
         root = os.path.join(root, str(task))
     in_files = get_all_file_system_items(root, match_condition(r'in_\d+.py'))
@@ -44,7 +43,7 @@ def get_test_in_and_out_files(test_type: Union[CANONIZATION_TESTS_TYPES, DIFF_WO
     return pair_in_and_out_files(in_files, out_files)
 
 
-def run_test(self, test_type:  Union[CANONIZATION_TESTS_TYPES, DIFF_WORKER_TEST_TYPES],
+def run_test(self, test_type:  Union[CANONICALIZATION_TESTS_TYPES, DIFF_HANDLER_TEST_TYPES],
              get_code: Callable[[str], str], task: TASK = None, additional_folder_name: str = '',
              to_clear_out: bool = False) -> None:
     files = get_test_in_and_out_files(test_type, task, additional_folder_name=additional_folder_name)
