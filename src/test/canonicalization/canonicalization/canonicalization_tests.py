@@ -35,7 +35,6 @@ class TestCanonicalizationTool(LoggedTest):
         run_test(self, CANONICALIZATION_TESTS_TYPES.CLEANED_CODE, get_cleaned_code_from_file,
                  additional_folder_name=ADDITIONAL_FOLDER)
 
-    # Todo: there are no files for this test, is it ok?
     def test_anonymize_names(self) -> None:
         run_test(self, CANONICALIZATION_TESTS_TYPES.ANONYMIZE_NAMES, get_anonymized_code_from_file,
                  additional_folder_name=ADDITIONAL_FOLDER)
@@ -44,32 +43,26 @@ class TestCanonicalizationTool(LoggedTest):
         run_test(self, CANONICALIZATION_TESTS_TYPES.CANONICAL_FORM, get_canonicalized_code_from_file,
                  additional_folder_name=ADDITIONAL_FOLDER)
 
-    # Todo: there are no files for this test, is it ok?
     def test_student_code_pies(self) -> None:
         run_test(self, CANONICALIZATION_TESTS_TYPES.STUDENT_CODE, get_canonicalized_code_from_file, TASK.PIES,
                  additional_folder_name=ADDITIONAL_FOLDER)
 
-    # Todo: there are no files for this test, is it ok?
     def test_student_code_max_3(self) -> None:
         run_test(self, CANONICALIZATION_TESTS_TYPES.STUDENT_CODE, get_canonicalized_code_from_file, TASK.MAX_3,
                  additional_folder_name=ADDITIONAL_FOLDER)
 
-    # Todo: there are no files for this test, is it ok?
     def test_student_code_is_zero(self) -> None:
         run_test(self, CANONICALIZATION_TESTS_TYPES.STUDENT_CODE, get_canonicalized_code_from_file, TASK.ZERO,
                  additional_folder_name=ADDITIONAL_FOLDER)
 
-    # Todo: there are no files for this test, is it ok?
     def test_student_code_max_digit(self) -> None:
         run_test(self, CANONICALIZATION_TESTS_TYPES.STUDENT_CODE, get_canonicalized_code_from_file, TASK.MAX_DIGIT,
                  additional_folder_name=ADDITIONAL_FOLDER)
 
-    # Todo: there are no files for this test, is it ok?
     def test_student_code_election(self) -> None:
         run_test(self, CANONICALIZATION_TESTS_TYPES.STUDENT_CODE, get_canonicalized_code_from_file, TASK.ELECTION,
                  additional_folder_name=ADDITIONAL_FOLDER)
 
-    # Todo: there are no files for this test, is it ok?
     def test_student_code_brackets(self) -> None:
         run_test(self, CANONICALIZATION_TESTS_TYPES.STUDENT_CODE, get_canonicalized_code_from_file, TASK.BRACKETS,
                  additional_folder_name=ADDITIONAL_FOLDER)

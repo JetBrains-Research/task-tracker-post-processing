@@ -77,10 +77,12 @@ def __get_orig_tree_from_source(source: str) -> ast.AST:
     return orig_tree
 
 
-def __get_anon_tree_from_orig_tree(orig_tree: ast.AST, imports: List[str]) -> ast.AST:
+def __get_anon_tree_from_orig_tree(orig_tree: ast.AST, imports: List[str], to_simplify: bool = True) -> ast.AST:
     given_names = get_given_names(orig_tree)
     anon_tree = deepcopy(orig_tree)
     anon_tree = anonymizeNames(anon_tree, given_names, imports)
+    if to_simplify:
+        anon_tree = simplify(anon_tree)
     return anon_tree
 
 
@@ -97,13 +99,13 @@ def __get_canon_tree_from_anon_tree(anon_tree: ast.AST, imports: List[str]) -> a
 
 
 # Checks if the new tree has type that we want to get
-# Returns 'True' if we should continue getting trees, and False otherwise, together with updated gotten_trees
+# Returns updated gotten_trees
 def __update_gotten_trees(new_tree: ast.AST, new_tree_type: TREE_TYPE, gotten_trees: Tuple[ast.AST, ...],
-                          tree_types_to_get: Set[TREE_TYPE]) -> Tuple[bool, Tuple[ast.AST, ...]]:
+                          tree_types_to_get: Set[TREE_TYPE]) -> Tuple[ast.AST, ...]:
     if new_tree_type in tree_types_to_get:
         gotten_trees += (new_tree,)
         tree_types_to_get.remove(new_tree_type)
-    return bool(tree_types_to_get), gotten_trees
+    return gotten_trees
 
 
 # Use it to get orig_tree, anon_tree, canon_tree, or any combination of them by passing their types as tree_types_to_get
@@ -117,25 +119,23 @@ def get_trees(source: str, tree_types_to_get: Set[TREE_TYPE], to_simplify: bool 
     orig_tree = __get_orig_tree_from_source(source)
 
     # After getting the first tree (orig tree), we should check if we need to continue getting trees
-    to_continue, gotten_trees = __update_gotten_trees(orig_tree, TREE_TYPE.ORIG, gotten_trees, tree_types_to_get)
-    if not to_continue:
+    gotten_trees = __update_gotten_trees(orig_tree, TREE_TYPE.ORIG, gotten_trees, tree_types_to_get)
+    if not bool(tree_types_to_get):
         return gotten_trees
 
     imports = get_imports(orig_tree)
-    anon_tree = __get_anon_tree_from_orig_tree(orig_tree, imports)
-    if to_simplify:
-        anon_tree = simplify(anon_tree)
+    anon_tree = __get_anon_tree_from_orig_tree(orig_tree, imports, to_simplify=to_simplify)
 
     # After getting the second tree (anon tree), we should check if we need to continue getting trees
-    to_continue, gotten_trees = __update_gotten_trees(anon_tree, TREE_TYPE.ANON, gotten_trees, tree_types_to_get)
-    if not to_continue:
+    gotten_trees = __update_gotten_trees(anon_tree, TREE_TYPE.ANON, gotten_trees, tree_types_to_get)
+    if not bool(tree_types_to_get):
         return gotten_trees
 
     canon_tree = __get_canon_tree_from_anon_tree(anon_tree, imports)
 
     # After getting the third tree (canon tree), we should raise an error if there are still tree types to get
-    to_continue, gotten_trees = __update_gotten_trees(canon_tree, TREE_TYPE.CANON, gotten_trees, tree_types_to_get)
-    if not to_continue:
+    gotten_trees = __update_gotten_trees(canon_tree, TREE_TYPE.CANON, gotten_trees, tree_types_to_get)
+    if not bool(tree_types_to_get):
         return gotten_trees
     else:
         log_and_raise_error(f'There are still tree types to get {tree_types_to_get}, but trees getting is finished', log)
