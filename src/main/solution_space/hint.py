@@ -11,7 +11,7 @@ class Hint:
         self._recommended_code = recommended_code
 
     @property
-    def recomennded_code(self) -> str:
+    def recommended_code(self) -> str:
         return self._recommended_code
 
 

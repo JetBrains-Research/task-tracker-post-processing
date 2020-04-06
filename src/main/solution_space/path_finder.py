@@ -27,8 +27,9 @@ class PathFinder:
     # Find a next canonicalized code state
     def find_next_vertex(self, user_diff_handler: DiffHandler, user: User) -> Vertex:
         # Todo: check if user_code is not valid
-        # Todo: add methof for getting source_code to DiffHandler?
-        log.info(f'Start finding the next code state for the user code: {get_code_from_tree(user_diff_handler.orig_tree)} and the user: {user}')
+        # Todo: add method for getting source_code to DiffHandler?
+        log.info(f'Start finding the next code state for the user code: '
+                 f'{get_code_from_tree(user_diff_handler.orig_tree)} and the user: {user}')
         # Todo: what to do if goal is None?
         goal = self.__find_closest_goal(user_diff_handler, user)
         graph_vertex = self.__find_closest_vertex_with_path(user_diff_handler, user, goal)

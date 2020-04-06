@@ -95,11 +95,12 @@ def create_code_info_chain() -> (List[Tuple[Code, CodeInfo]], List[str]):
                      (source_4, TEST_RESULT.FULL_SOLUTION.value)]
     # User is the same for all chain elements
     user = User()
-    # anon_trees = [get_trees(s, {TREE_TYPE.ANON})[0] for s, r in rated_sources]
+    anon_and_canon_trees = [get_trees(s, {TREE_TYPE.ANON, TREE_TYPE.CANON}) for s, _ in rated_sources]
 
-    chain = [(create_code_from_source(rs[0], rs[1]), CodeInfo(user)) for rs in rated_sources]
-    sources = [rs[0] for rs in rated_sources]
-    return chain, sources
+    chain = [(create_code_from_source(rs[0], rs[1]), CodeInfo(user, anon_tree=anon_and_canon_trees[i][1]))
+             for i, rs in enumerate(rated_sources)]
+    canon_sources = [get_code_from_tree(c_t).rstrip('\n') for _, c_t in anon_and_canon_trees]
+    return chain, canon_sources
 
 
 def get_vertex_structure(vertex: Vertex) -> VertexStructure:
