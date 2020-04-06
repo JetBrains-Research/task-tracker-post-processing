@@ -49,6 +49,7 @@ def main() -> None:
 
     graph = construct_solution_graph(path, TASK.PIES)
     goals = graph.end_vertex.parents
+    # no goals are find
     print(f'goals are {goals}')
 
     # hint_getter = HintGetter(graph)

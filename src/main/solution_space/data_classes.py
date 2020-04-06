@@ -92,8 +92,8 @@ class User:
 
 
 class CodeInfo:
-    def __init__(self, user: User, anon_tree: ast.AST, timestamp: int = 0, date: datetime = DEFAULT_VALUE.DATE.value,
-                 ati_actions: List[AtiItem] = None):
+    def __init__(self, user: User, anon_tree: Optional[ast.AST] = None, timestamp: int = 0,
+                 date: datetime = DEFAULT_VALUE.DATE.value, ati_actions: Optional[List[AtiItem]] = None):
         self._user = user
         self._anon_tree = anon_tree
         self._ati_actions = ati_actions if ati_actions else []

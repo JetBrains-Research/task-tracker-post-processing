@@ -5,11 +5,12 @@ import unittest
 from enum import Enum
 from typing import List, Tuple, Dict, Union
 
+from src.main.canonicalization.consts import TREE_TYPE
 from src.test.test_util import LoggedTest
 from src.main.util.consts import TEST_RESULT, LOGGER_NAME, TASK
 from src.main.solution_space.data_classes import Code, User, CodeInfo
 from src.main.solution_space.solution_graph import Vertex, SolutionGraph
-from src.main.canonicalization.canonicalization import get_code_from_tree
+from src.main.canonicalization.canonicalization import get_code_from_tree, get_trees
 from src.main.solution_space.consts import FOLDER_WITH_CODE_FILES_FOR_TESTS
 from src.test.solution_space.solution_graph.util import create_code_from_source, init_default_ids
 
@@ -36,8 +37,8 @@ VertexStructure = Dict[VERTEX_STRUCTURE, Union[str, int]]
 def create_graph_with_code() -> (SolutionGraph, List[Vertex], List[str]):
     source_0 = ''
     source_1 = 'print(\'Hello\')'
-    source_2 = 'a = 5'
-    source_3 = 'x = True\nif(x):\n    x = False'
+    source_2 = 'a = int(input())\nprint(a)'
+    source_3 = 'x = 5\nif(x > 4):\n    print(x)'
 
     sources = [source_0, source_1, source_2, source_3]
 
@@ -84,16 +85,18 @@ def find_or_create_vertex_with_code_info_and_rate_check(self: unittest.TestCase,
 
 
 def create_code_info_chain() -> (List[Tuple[Code, CodeInfo]], List[str]):
-    source_1 = 'a = 3'
-    source_2 = 'a = 5'
-    source_3 = 'a = 5\nb = 3'
-    source_4 = 'a = 5\nb = 3\nc = 4'
+    source_1 = 'a = 3\nprint(a)'
+    source_2 = 'a = int(input())\nprint(a)'
+    source_3 = 'a = 5\nb = 3\nprint(a - b)'
+    source_4 = 'a = 5\nb = 3\nc = 4\nprint(a - b - c)'
     rated_sources = [(source_1, TEST_RESULT.CORRECT_CODE.value),
                      (source_2, TEST_RESULT.CORRECT_CODE.value),
                      (source_3, TEST_RESULT.CORRECT_CODE.value),
                      (source_4, TEST_RESULT.FULL_SOLUTION.value)]
     # User is the same for all chain elements
     user = User()
+    # anon_trees = [get_trees(s, {TREE_TYPE.ANON})[0] for s, r in rated_sources]
+
     chain = [(create_code_from_source(rs[0], rs[1]), CodeInfo(user)) for rs in rated_sources]
     sources = [rs[0] for rs in rated_sources]
     return chain, sources
