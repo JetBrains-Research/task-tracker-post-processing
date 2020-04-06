@@ -168,6 +168,7 @@ class EXTENSION(Enum):
     JAVA = '.java'
     KT = '.kt'
     CPP = '.cpp'
+    DOT = '.dot'
 
 
 EXTENSION_TO_LANGUAGE_DICT: Dict[EXTENSION, LANGUAGE] = {
@@ -205,6 +206,8 @@ MAX_DIF_SEC = 0.5
 
 TEST_DATA_PATH = ROOT_DIR + '/../../resources/test_data'
 TEST_PATH = ROOT_DIR + '/../../test'
+
+GRAPH_REPRESENTATION_PATH = ROOT_DIR + '/../../resources/graph_representation'
 
 PREPROCESSING_RESULT_FOLDER = 'preprocessing_result'
 STATISTICS_RESULT_FOLDER = 'statistics_result'

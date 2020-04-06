@@ -3,7 +3,7 @@
 import os
 import logging
 import collections
-from typing import Optional, List, Tuple, Set
+from typing import Optional, List, Tuple, Set, Dict
 
 from src.main.util.log_util import log_and_raise_error
 from src.main.util.consts import LOGGER_NAME, TASK, LANGUAGE
@@ -17,6 +17,8 @@ log = logging.getLogger(LOGGER_NAME)
 
 
 class Vertex:
+    _last_id = 0
+
     def __init__(self, graph: 'SolutionGraph', code: Code = None,
                  vertex_type: solution_space_consts.VERTEX_TYPE = solution_space_consts.VERTEX_TYPE.INTERMEDIATE):
         self._parents = []
@@ -24,6 +26,9 @@ class Vertex:
         self._code_info_list = []
         self._code = code
         self._vertex_type = vertex_type
+
+        self._id = self._last_id
+        self.__class__._last_id += 1
 
         if code:
             if not does_exist(graph.graph_directory):
@@ -33,6 +38,10 @@ class Vertex:
 
             graph_folder_prefix = graph.graph_folder_prefix + str(graph.id) + '_' + graph.file_prefix
             code.create_file_with_code(graph.graph_directory, graph_folder_prefix, graph.language)
+
+    @property
+    def id(self) -> int:
+        return self._id
 
     @property
     def parents(self) -> List['Vertex']:
@@ -225,3 +234,14 @@ class SolutionGraph(collections.abc.Iterable):
                 prev_vertex.add_child(next_vertex)
                 prev_vertex = next_vertex
         log.info(f'Finish adding code-user chain')
+
+    def get_adj_list_with_ids(self) -> Dict[int, Set[int]]:
+        adj_list = {}
+        vertices = self.get_traversal()
+        vertices.remove(self.start_vertex)
+        for vertex in vertices:
+            adj_vertices = adj_list.get(vertex.id, set())
+            for c in vertex.children:
+                adj_vertices.add(c.id)
+            adj_list[vertex.id] = adj_vertices
+        return adj_list

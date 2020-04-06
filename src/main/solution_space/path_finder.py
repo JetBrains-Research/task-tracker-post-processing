@@ -3,10 +3,10 @@
 import logging
 from typing import List, Optional
 
-from src.main.canonicalization.diffs.diff_handler import DiffHandler
 from src.main.util import consts
 from src.main.util.log_util import log_and_raise_error
 from src.main.canonicalization.consts import TREE_TYPE
+from src.main.canonicalization.diffs.diff_handler import DiffHandler
 from src.main.solution_space.data_classes import Code, User, Profile
 from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 from src.main.gum_tree_diff.gum_tree_diff import get_diffs_number, apply_diffs
@@ -47,14 +47,15 @@ class PathFinder:
         if len(vertices) == 0:
             return None
         candidates = list(map(lambda vertex: MeasuredVertex(user_diff_handler, vertex, user), vertices))
-        print(f'candidates are {candidates}')
         candidates.sort()
+        log.info(f'Candidates ids are {([c.vertex.id for c in candidates])}')
+        log.info(f'The best vertex id is {candidates[-1].vertex.id}')
         return candidates[-1].vertex
 
     # Use '__choose_best_vertex' for choosing the best goal from all ones
     # Note: A goal is a vertex, which has the rate equals 1 and it connects to the end vertex
     def __find_closest_goal(self, user_diff_handler: DiffHandler, user: User) -> Vertex:
-        print(f'goals are {self._graph.end_vertex.parents}')
+        log.info(f'Goals ids are {[p.id for p in self._graph.end_vertex.parents]}')
         return self.__choose_best_vertex(user_diff_handler, user, self._graph.end_vertex.parents)
 
     # Calculate a set of vertices, which contains all vertices
@@ -63,7 +64,6 @@ class PathFinder:
     # Note: we have to remove the 'user_code' from the set
     def __find_closest_vertex_with_path(self, user_diff_handler: DiffHandler, user: User, goal: Vertex) -> Optional[Vertex]:
         # Todo: move somewhere as a separate method
-        print(f'Goal is {goal}')
         user_diffs_to_goal = min(len(user_diff_handler.get_diffs(code_info.anon_tree, goal.code.canon_tree)) for code_info in goal.code_info_list)
         candidates = []
         vertices = self._graph.get_traversal()

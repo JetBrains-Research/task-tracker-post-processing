@@ -9,6 +9,7 @@ import pandas as pd
 from src.main.solution_space.data_classes import User
 from src.main.solution_space.hint import HintGetter
 from src.main.solution_space.solution_space_handler import construct_solution_graph
+from src.main.solution_space.solution_space_visualizer import SolutionSpaceVisualizer
 from src.main.util import consts
 from src.main.util.file_util import add_slash, serialize_data_and_write_to_file, deserialize_data_from_file
 from src.main.util.consts import PATH_CMD_ARG, LOGGER_FORMAT, TASK
@@ -48,14 +49,14 @@ def main() -> None:
     # serialize_data_and_write_to_file(f'/home/elena/workspaces/python/codetracker-data/data/pies_solution_graph{consts.EXTENSION.PICKLE.value}', graph)
 
     graph = construct_solution_graph(path, TASK.PIES)
-    goals = graph.end_vertex.parents
-    # no goals are find
-    print(f'goals are {goals}')
 
-    # hint_getter = HintGetter(graph)
-    # hint = hint_getter.get_hint(source, user)
-    # print(hint.recomennded_code)
+    gv = SolutionSpaceVisualizer(graph)
+    graph_representation_path = gv.create_graph_representation()
+    print(graph_representation_path)
 
+    hint_getter = HintGetter(graph)
+    hint = hint_getter.get_hint(source, user)
+    print(hint.recommended_code)
 
 
 if __name__ == '__main__':
