@@ -35,7 +35,7 @@ def get_test_in_and_out_files(test_type: Union[CANONICALIZATION_TESTS_TYPES, DIF
                               task: TASK = None, additional_folder_name: str = '') -> List[Tuple[str, str]]:
     root = os.path.join(CANONICALIZATION_TESTS.DATA_PATH.value, additional_folder_name, test_type.value)
     if task is not None:
-        root = os.path.join(root, str(task))
+        root = os.path.join(root, task.value)
     in_files = get_all_file_system_items(root, match_condition(r'in_\d+.py'))
     out_files = get_all_file_system_items(root, match_condition(r'out_\d+.py'))
     if len(out_files) != len(in_files):
