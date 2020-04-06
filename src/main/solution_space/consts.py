@@ -3,6 +3,8 @@
 import os
 from enum import Enum
 
+from src.main.canonicalization.diffs.diff_handler import DiffHandler
+
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -20,3 +22,5 @@ FILE_PREFIX = 'code_'
 
 DIFFS_PERCENT_TO_GO_DIRECTLY = 0.2
 DISTANCE_TO_GRAPH_THRESHOLD = 2
+
+EMPTY_DIFF_HANDLER = DiffHandler('')

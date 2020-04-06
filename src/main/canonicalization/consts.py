@@ -2,6 +2,7 @@
 
 from enum import Enum
 
+
 class TREE_TYPE(Enum):
     ORIG = 'original',
     ANON = 'anonymized'

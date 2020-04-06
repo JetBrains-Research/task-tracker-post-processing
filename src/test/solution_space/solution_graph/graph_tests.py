@@ -100,7 +100,7 @@ def create_code_info_chain() -> (List[Tuple[Code, CodeInfo]], List[str]):
 
 
 def get_vertex_structure(vertex: Vertex) -> VertexStructure:
-    source = get_code_from_tree(vertex.code.ast).strip('\n') if vertex.code else None
+    source = get_code_from_tree(vertex.code.canon_tree).strip('\n') if vertex.code else None
     return {VERTEX_STRUCTURE.SOURCE: source, VERTEX_STRUCTURE.CODE_INFO_LIST_LEN: len(vertex.code_info_list)}
 
 

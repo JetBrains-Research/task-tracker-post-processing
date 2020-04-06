@@ -64,16 +64,17 @@ def __handle_current_ati(ati_elements: List[AtiItem], solutions: pd.DataFrame, i
 
 
 # Find the same code fragments in data and construct list of ati items for this fragment
-def __find_same_fragments(solutions: pd.DataFrame, start_index: int) -> Tuple[int, List[AtiItem], ast.AST]:
+# Todo: return DiffHandler instead two trees?
+def __find_same_fragments(solutions: pd.DataFrame, start_index: int) -> Tuple[int, List[AtiItem], ast.AST, ast.AST]:
     i, ati_elements = start_index + 1, []
     __handle_current_ati(ati_elements, solutions, start_index)
     current_fragment = __get_column_value(solutions, start_index, consts.CODE_TRACKER_COLUMN.FRAGMENT)
-    current_canon_tree, = get_trees(current_fragment, {TREE_TYPE.CANON})
+    current_anon_tree, current_canon_tree = get_trees(current_fragment, {TREE_TYPE.ANON, TREE_TYPE.CANON})
 
     while i < solutions.shape[0] and __are_same_fragments(current_canon_tree, solutions, i):
         __handle_current_ati(ati_elements, solutions, i)
         i += 1
-    return i, ati_elements, current_canon_tree
+    return i, ati_elements, current_anon_tree, current_canon_tree
 
 
 def __get_profile(solutions: pd.DataFrame) -> Profile:
@@ -89,10 +90,11 @@ def __get_user(solutions: pd.DataFrame) -> User:
     return User(__get_profile(solutions))
 
 
-def __get_code_info(solutions: pd.DataFrame, user: User, index: int, ati_actions: List[AtiItem]) -> CodeInfo:
+def __get_code_info(solutions: pd.DataFrame, user: User, anon_tree: ast.AST, index: int,
+                    ati_actions: List[AtiItem]) -> CodeInfo:
     date = __get_column_value(solutions, index, consts.CODE_TRACKER_COLUMN.DATE)
     timestamp = __get_column_value(solutions, index, consts.CODE_TRACKER_COLUMN.TIMESTAMP)
-    return CodeInfo(user, timestamp, date, ati_actions)
+    return CodeInfo(user, anon_tree, timestamp, date, ati_actions)
 
 
 def __is_compiled(test_result: float) -> bool:
@@ -115,7 +117,7 @@ def __filter_incorrect_fragments(solutions: pd.DataFrame) -> pd.DataFrame:
 
 
 def __get_task_index(task: TASK) -> int:
-    return consts.TASK.index(task)
+    return consts.TASK.tasks().index(task)
 
 
 def __get_rate(tests_results: str, task_index: int) -> float:
@@ -126,11 +128,11 @@ def __get_rate(tests_results: str, task_index: int) -> float:
     return tests_results[task_index]
 
 
-def __get_code(solutions: pd.DataFrame, index: int, task_index: int, tree: ast.AST) -> Code:
+def __get_code(solutions: pd.DataFrame, index: int, task_index: int, canon_tree: ast.AST) -> Code:
     tests_results = __get_column_value(solutions, index, consts.CODE_TRACKER_COLUMN.TESTS_RESULTS)
     rate = __get_rate(tests_results, task_index)
     log.info(f'Task index is :{task_index}, rate is: {rate}')
-    return Code(ast=tree, rate=rate)
+    return Code(canon_tree=canon_tree, rate=rate)
 
 
 def __convert_to_datetime(df: pd.DataFrame) -> None:
@@ -138,7 +140,7 @@ def __convert_to_datetime(df: pd.DataFrame) -> None:
         df[column.value] = pd.to_datetime(df[column.value], errors='ignore')
 
 
-def __create_code_user_chain(file: str, task: TASK) -> List[Tuple[Code, CodeInfo]]:
+def __create_code_info_chain(file: str, task: TASK) -> List[Tuple[Code, CodeInfo]]:
     log.info(f'Start solution space creating for file {file} for task {task}')
     data = pd.read_csv(file, encoding=consts.ISO_ENCODING)
     __convert_to_datetime(data)
@@ -149,22 +151,21 @@ def __create_code_user_chain(file: str, task: TASK) -> List[Tuple[Code, CodeInfo
     user = __get_user(solutions)
     while i < solutions.shape[0]:
         old_index = i
-        i, ati_actions, tree = __find_same_fragments(solutions, i)
-        code = __get_code(solutions, old_index, task_index, tree)
-        code_info = __get_code_info(solutions, user, old_index, ati_actions)
+        i, ati_actions, anon_tree, canon_tree = __find_same_fragments(solutions, i)
+        code = __get_code(solutions, old_index, task_index, canon_tree)
+        code_info = __get_code_info(solutions, user, anon_tree, old_index, ati_actions)
         code_info_chain.append((code, code_info))
     log.info(f'Finish solution space creating for file {file} for task {task}')
     return code_info_chain
 
 
 def construct_solution_graph(path: str, task: TASK, language: LANGUAGE = LANGUAGE.PYTHON) -> SolutionGraph:
-    files = get_all_file_system_items(path, extension_file_condition(EXTENSION.CSV),
-                                      consts.FILE_SYSTEM_ITEM.FILE)
+    files = get_all_file_system_items(path, extension_file_condition(EXTENSION.CSV))
     sg = SolutionGraph(task, language)
     log.info(f'Start creating of solution space')
     for file in files:
         log.info(f'Start handling file {file}')
-        code_info_chain = __create_code_user_chain(file, task)
+        code_info_chain = __create_code_info_chain(file, task)
         sg.add_code_info_chain(code_info_chain)
     log.info(f'Finish creating of solution space')
     return sg

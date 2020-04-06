@@ -21,7 +21,7 @@ class Vertex:
                  vertex_type: solution_space_consts.VERTEX_TYPE = solution_space_consts.VERTEX_TYPE.INTERMEDIATE):
         self._parents = []
         self._children = []
-        self._code_info_ist = []
+        self._code_info_list = []
         self._code = code
         self._vertex_type = vertex_type
 
@@ -44,7 +44,7 @@ class Vertex:
 
     @property
     def code_info_list(self) -> List[CodeInfo]:
-        return self._code_info_ist
+        return self._code_info_list
 
     @property
     def code(self) -> Code:
@@ -71,10 +71,10 @@ class Vertex:
         parent.__add_child_to_list(self)
 
     def add_code_info(self, code_info: CodeInfo) -> None:
-        self._code_info_ist.append(code_info)
+        self._code_info_list.append(code_info)
 
     def get_unique_users(self) -> Set[User]:
-        users = [code_info.user for code_info in self._code_info_ist]
+        users = [code_info.user for code_info in self._code_info_list]
         return set(users)
 
 
@@ -188,7 +188,7 @@ class SolutionGraph(collections.abc.Iterable):
         vertices = self.get_traversal()
         vertices.remove(self.start_vertex)
         for vertex in vertices:
-            if are_asts_equal(vertex.code.ast, code.ast):
+            if are_asts_equal(vertex.code.canon_tree, code.canon_tree):
                 log.info(f'Found an existing vertex for code: {str(code)}')
                 return vertex
         return None

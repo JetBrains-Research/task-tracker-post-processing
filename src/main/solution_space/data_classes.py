@@ -36,6 +36,7 @@ class AtiItem:
     def event_data(self) -> str:
         return self._event_data
 
+    # Todo: add tests
     def is_empty(self) -> bool:
         return DEFAULT_VALUE.DATE.is_equal(self._timestamp) and DEFAULT_VALUE.EVENT_DATA.is_equal(
             self._event_type.value) \
@@ -91,9 +92,10 @@ class User:
 
 
 class CodeInfo:
-    def __init__(self, user: User, timestamp: int = 0, date: datetime = DEFAULT_VALUE.DATE.value,
+    def __init__(self, user: User, anon_tree: ast.AST, timestamp: int = 0, date: datetime = DEFAULT_VALUE.DATE.value,
                  ati_actions: List[AtiItem] = None):
         self._user = user
+        self._anon_tree = anon_tree
         self._ati_actions = ati_actions if ati_actions else []
         self._timestamp = timestamp
         self._date = date
@@ -101,6 +103,10 @@ class CodeInfo:
     @property
     def user(self) -> User:
         return self._user
+
+    @property
+    def anon_tree(self) -> ast.AST:
+        return self._anon_tree
 
     @property
     def ati_actions(self) -> List[AtiItem]:
@@ -115,15 +121,16 @@ class CodeInfo:
         return self._date
 
     def __str__(self) -> str:
-        return f'User: {self._user}, timestamp: {self._timestamp}, date: {self._date}. Length of ' \
-               f'ati actions is {len(self._ati_actions)}'
+        return f'User: {self._user}, anon_tree: {get_code_from_tree(self._anon_tree)}, timestamp: {self._timestamp},' \
+               f' date: {self._date}. Length of ati actions is {len(self._ati_actions)}'
 
 
+# Todo: rename because it's about a canon tree, but it's called 'Code'?
 class Code:
     _last_id = 0
 
-    def __init__(self, ast: ast.AST = None, rate: float = 0.0, file_with_code: Optional[str] = None):
-        self._ast = ast
+    def __init__(self, canon_tree: ast.AST = None, rate: float = 0.0, file_with_code: Optional[str] = None):
+        self._canon_tree = canon_tree
         self._file_with_code = file_with_code
         self._rate = rate
 
@@ -131,8 +138,8 @@ class Code:
         self.__class__._last_id += 1
 
     @property
-    def ast(self) -> ast.AST:
-        return self._ast
+    def canon_tree(self) -> ast.AST:
+        return self._canon_tree
 
     @property
     def rate(self) -> float:
@@ -148,17 +155,17 @@ class Code:
 
     def create_file_with_code(self, folder_to_write: str, name_prefix: str,
                               language: consts.LANGUAGE = consts.LANGUAGE.PYTHON) -> None:
-        if not self._ast:
-            log_and_raise_error(f'Ast in the code {self} is None', log)
+        if not self._canon_tree:
+            log_and_raise_error(f'Canon tree in the code {self} is None', log)
 
         extension = get_extension_by_language(language)
         file_path = os.path.join(folder_to_write, name_prefix + str(self._id) + str(extension.value))
-        code = get_code_from_tree(self._ast)
+        code = get_code_from_tree(self._canon_tree)
         create_file(code, file_path)
         self._file_with_code = file_path
 
     def __str__(self) -> str:
-        return f'Id: {self._id}, rate: {self._rate}\nCode:\n{get_code_from_tree(self._ast)}\n'
+        return f'Id: {self._id}, rate: {self._rate}\nCode:\n{get_code_from_tree(self._canon_tree)}\n'
 
     def is_full(self) -> bool:
         return self._rate == consts.TEST_RESULT.FULL_SOLUTION.value
