@@ -5,10 +5,11 @@ from typing import List, Optional
 
 from src.main.util import consts
 from src.main.util.log_util import log_and_raise_error
+from src.main.canonicalization.consts import TREE_TYPE
 from src.main.solution_space.data_classes import Code, User, Profile
 from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 from src.main.gum_tree_diff.gum_tree_diff import get_diffs_number, apply_diffs
-from src.main.canonicalization.canonicalization import are_asts_equal, get_canonicalized_form
+from src.main.canonicalization.canonicalization import are_asts_equal, get_trees
 from src.main.solution_space.consts import DIFFS_PERCENT_TO_GO_DIRECTLY, EMPTY_CODE_FILE, DISTANCE_TO_GRAPH_THRESHOLD
 
 log = logging.getLogger(consts.LOGGER_NAME)
@@ -97,9 +98,9 @@ class PathFinder:
     @staticmethod
     def __apply_minimal_actions_number(user_code: Code, dst_code: Code) -> Code:
         str_code = apply_diffs(user_code.file_with_code, dst_code.file_with_code)
-        ast = get_canonicalized_form(str_code)
+        canon_tree, = get_trees(str_code, {TREE_TYPE.CANON})
         # Todo: get rate
-        return Code(ast)
+        return Code(canon_tree)
 
 
 class MeasuredVertex:

@@ -71,7 +71,7 @@ staticBuiltInFunctions = {
 	"ord" : { (str,) : int },
 	"pow" : { (int, int) : int, (int, float) : float,
 			  (float, int) : float, (float, float) : float },
-	"print" : None, 
+	"print" : None,
 	"range" : { (int,) : list, (int, int) : list, (int, int, int) : list }, 
 	"repr" : {(object,) : str },
 	"round" : { (int,) : float, (float,) : float, (int, int) : float, (float, int) : float },
