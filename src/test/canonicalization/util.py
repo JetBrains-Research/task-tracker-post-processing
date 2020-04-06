@@ -9,6 +9,7 @@ from src.main.util.consts import LOGGER_NAME, ROOT_DIR, TASK
 from src.main.canonicalization.canonicalization import get_cleaned_code
 from src.main.util.file_util import get_all_file_system_items, pair_in_and_out_files, get_content_from_file, \
     match_condition
+from src.main.util.log_util import log_and_raise_error
 
 log = logging.getLogger(LOGGER_NAME)
 
@@ -39,7 +40,9 @@ def get_test_in_and_out_files(test_type: Union[CANONICALIZATION_TESTS_TYPES, DIF
     in_files = get_all_file_system_items(root, match_condition(r'in_\d+.py'))
     out_files = get_all_file_system_items(root, match_condition(r'out_\d+.py'))
     if len(out_files) != len(in_files):
-        raise ValueError('Length of out files list does not equal in files list')
+        log_and_raise_error('Length of out files list does not equal in files list', log)
+    if len(in_files) == 0:
+        log_and_raise_error(f'Number of test files is zero! Root for files is {root}', log)
     return pair_in_and_out_files(in_files, out_files)
 
 

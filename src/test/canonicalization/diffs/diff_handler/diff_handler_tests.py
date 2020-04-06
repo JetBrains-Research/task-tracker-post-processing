@@ -6,6 +6,7 @@ import logging
 import itertools
 from typing import List, Optional, Tuple
 
+from src.main.util.log_util import log_and_raise_error
 from src.test.test_util import LoggedTest
 from src.main.util.consts import LOGGER_NAME, TASK
 from src.main.canonicalization.diffs.diff_handler import DiffHandler
@@ -41,6 +42,8 @@ def apply_diffs(src_file: str, dst_file: Optional[str] = None) -> str:
 def get_src_and_dst_files(test_type: DIFF_HANDLER_TEST_TYPES, task: TASK) -> List[Tuple[str, str]]:
     root = os.path.join(CANONICALIZATION_TESTS.DATA_PATH.value, ADDITIONAL_FOLDER, test_type.value, task.value)
     files = get_all_file_system_items(root, match_condition(r'\d+.py'))
+    if len(files) == 0:
+        log_and_raise_error(f'Number of test files is zero! Root for files is {root}', log)
     return list(itertools.product(files, repeat=2))
 
 

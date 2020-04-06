@@ -35,7 +35,6 @@ class TestCanonicalizationTool(LoggedTest):
         run_test(self, CANONICALIZATION_TESTS_TYPES.CLEANED_CODE, get_cleaned_code_from_file,
                  additional_folder_name=ADDITIONAL_FOLDER)
 
-    # Todo: there are no files for this test, is it ok?
     def test_anonymize_names(self) -> None:
         run_test(self, CANONICALIZATION_TESTS_TYPES.ANONYMIZE_NAMES, get_anonymized_code_from_file,
                  additional_folder_name=ADDITIONAL_FOLDER)
