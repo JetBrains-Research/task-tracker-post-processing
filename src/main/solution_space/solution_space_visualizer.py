@@ -20,7 +20,7 @@ class SolutionSpaceVisualizer:
         info = ''
         info += f'Canon code:\n{get_code_from_tree(vertex.code.canon_tree)}\n\n'
         for i, c_i in enumerate(vertex.code_info_list):
-            info += f'Anon code {i}:\n{get_code_from_tree(c_i.anon_tree)}\n'
+            info += f'Anon code {i} from file {c_i.codetracker_filename}:\n{get_code_from_tree(c_i.anon_tree)}\n'
         return info
 
     def __get_labels(self) -> str:

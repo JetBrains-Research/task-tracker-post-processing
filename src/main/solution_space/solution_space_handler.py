@@ -15,7 +15,7 @@ from src.main.splitting.splitting import unpack_tests_results
 from src.main.solution_space.solution_graph import SolutionGraph
 from src.main.canonicalization.canonicalization import are_asts_equal, get_trees
 from src.main.util.consts import EXPERIENCE, DEFAULT_VALUE, TASK, LANGUAGE, EXTENSION
-from src.main.util.file_util import get_all_file_system_items, extension_file_condition
+from src.main.util.file_util import get_all_file_system_items, extension_file_condition, get_name_from_path
 from src.main.solution_space.data_classes import AtiItem, Profile, User, Code, CodeInfo
 
 log = logging.getLogger(consts.LOGGER_NAME)
@@ -91,10 +91,11 @@ def __get_user(solutions: pd.DataFrame) -> User:
 
 
 def __get_code_info(solutions: pd.DataFrame, user: User, anon_tree: ast.AST, index: int,
-                    ati_actions: List[AtiItem]) -> CodeInfo:
+                    ati_actions: List[AtiItem], file: str) -> CodeInfo:
     date = __get_column_value(solutions, index, consts.CODE_TRACKER_COLUMN.DATE)
     timestamp = __get_column_value(solutions, index, consts.CODE_TRACKER_COLUMN.TIMESTAMP)
-    return CodeInfo(user, anon_tree, timestamp, date, ati_actions)
+    filename = get_name_from_path(file)
+    return CodeInfo(user, anon_tree, timestamp, date, ati_actions, filename)
 
 
 def __is_compiled(test_result: float) -> bool:
@@ -153,7 +154,7 @@ def __create_code_info_chain(file: str, task: TASK) -> List[Tuple[Code, CodeInfo
         old_index = i
         i, ati_actions, anon_tree, canon_tree = __find_same_fragments(solutions, i)
         code = __get_code(solutions, old_index, task_index, canon_tree)
-        code_info = __get_code_info(solutions, user, anon_tree, old_index, ati_actions)
+        code_info = __get_code_info(solutions, user, anon_tree, old_index, ati_actions, file)
         code_info_chain.append((code, code_info))
     log.info(f'Finish solution space creating for file {file} for task {task}')
     return code_info_chain

@@ -93,12 +93,14 @@ class User:
 
 class CodeInfo:
     def __init__(self, user: User, anon_tree: Optional[ast.AST] = None, timestamp: int = 0,
-                 date: datetime = DEFAULT_VALUE.DATE.value, ati_actions: Optional[List[AtiItem]] = None):
+                 date: datetime = DEFAULT_VALUE.DATE.value, ati_actions: Optional[List[AtiItem]] = None,
+                 codetracker_filename: str = None):
         self._user = user
         self._anon_tree = anon_tree
         self._ati_actions = ati_actions if ati_actions else []
         self._timestamp = timestamp
         self._date = date
+        self._codetracker_filename = codetracker_filename
 
     @property
     def user(self) -> User:
@@ -119,6 +121,10 @@ class CodeInfo:
     @property
     def date(self) -> timestamp:
         return self._date
+
+    @property
+    def codetracker_filename(self):
+        return self._codetracker_filename
 
     def __str__(self) -> str:
         return f'User: {self._user}, anon_tree: {get_code_from_tree(self._anon_tree)}, timestamp: {self._timestamp},' \
