@@ -74,6 +74,7 @@ class DEFAULT_VALUE(Enum):
     DATE = datetime64('NaT')
     EVENT_TYPE = nan
     EVENT_DATA = nan
+    FRAGMENT = nan
 
     # todo: add tests
     def is_equal(self, value) -> bool:
