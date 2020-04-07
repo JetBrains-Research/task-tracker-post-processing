@@ -206,6 +206,7 @@ MAX_DIF_SEC = 0.5
 
 TEST_DATA_PATH = ROOT_DIR + '/../../resources/test_data'
 TEST_PATH = ROOT_DIR + '/../../test'
+RESOURCES_PATH = ROOT_DIR + '/../../resources'
 
 PREPROCESSING_RESULT_FOLDER = 'preprocessing_result'
 STATISTICS_RESULT_FOLDER = 'statistics_result'

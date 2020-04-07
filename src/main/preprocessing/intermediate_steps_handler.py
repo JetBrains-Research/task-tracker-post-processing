@@ -3,9 +3,11 @@
 import logging
 import pandas as pd
 
+from src.main.preprocessing.util import handle_folder
 from src.main.util import consts
 from src.main.util.consts import LOGGER_NAME, ISO_ENCODING
-from src.main.util.file_util import get_all_file_system_items, extension_file_condition, get_result_folder, write_result
+from src.main.util.file_util import get_all_file_system_items, extension_file_condition, get_result_folder, \
+    write_result
 
 log = logging.getLogger(LOGGER_NAME)
 
@@ -54,10 +56,4 @@ def __handle_df(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def remove_intermediate_steps(path: str, result_folder_prefix: str = 'remove_inter_steps') -> str:
-    result_folder = get_result_folder(path, result_folder_prefix)
-    files = get_all_file_system_items(path, extension_file_condition(consts.EXTENSION.CSV))
-    for file in files:
-        df = pd.read_csv(file, encoding=ISO_ENCODING)
-        df = __handle_df(df)
-        write_result(result_folder, path, file, df)
-    return result_folder
+    return handle_folder(path, result_folder_prefix, __handle_df)

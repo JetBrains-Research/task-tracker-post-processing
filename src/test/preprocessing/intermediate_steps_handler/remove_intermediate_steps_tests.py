@@ -22,7 +22,7 @@ def run_test(input_df: pd.DataFrame, expected_df: pd.DataFrame) -> bool:
     return input_df.equals(expected_df)
 
 
-class TestExperienceColumnFilling(LoggedTest):
+class TestRemoveIntermediateSteps(LoggedTest):
 
     def test_no_diffs(self) -> None:
 
