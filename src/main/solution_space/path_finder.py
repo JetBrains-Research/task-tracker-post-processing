@@ -9,7 +9,6 @@ from src.main.canonicalization.consts import TREE_TYPE
 from src.main.canonicalization.diffs.diff_handler import DiffHandler
 from src.main.solution_space.data_classes import Code, User, Profile
 from src.main.solution_space.solution_graph import SolutionGraph, Vertex
-from src.main.gum_tree_diff.gum_tree_diff import get_diffs_number, apply_diffs
 from src.main.canonicalization.canonicalization import are_asts_equal, get_trees, get_code_from_tree
 from src.main.solution_space.consts import DIFFS_PERCENT_TO_GO_DIRECTLY, DISTANCE_TO_GRAPH_THRESHOLD, EMPTY_DIFF_HANDLER
 
@@ -72,7 +71,6 @@ class PathFinder:
             # We don't want to add to result the same vertex
             if are_asts_equal(user_diff_handler.canon_tree, vertex.code.canon_tree):
                 continue
-            # Todo: do we want to compare diffs between vertex and goal?
             diffs = min(len(user_diff_handler.get_diffs(code_info.anon_tree, vertex.code.canon_tree)) for code_info in vertex.code_info_list)
             if diffs <= user_diffs_to_goal:
                 candidates.append(vertex)
@@ -102,14 +100,6 @@ class PathFinder:
         diffs_from_user_to_graph_vertex = min(len(user_diff_handler.get_diffs(code_info.anon_tree, graph_vertex.code.canon_tree)) for code_info in
             graph_vertex.code_info_list)
         return not PathFinder.__is_far_from_graph(diffs_from_user_to_goal, diffs_from_user_to_graph_vertex)
-
-    # Call gumTreeDiff methods
-    @staticmethod
-    def __apply_minimal_actions_number(user_code: Code, dst_code: Code) -> Code:
-        str_code = apply_diffs(user_code.file_with_code, dst_code.file_with_code)
-        canon_tree, = get_trees(str_code, {TREE_TYPE.CANON})
-        # Todo: get rate
-        return Code(canon_tree)
 
 
 class MeasuredVertex:

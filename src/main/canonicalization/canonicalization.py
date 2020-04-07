@@ -52,7 +52,7 @@ def __get_canonical_transformations() -> List[Callable]:
         deMorganize,
         orderCommutativeOperations,
 
-        deadCodeRemoval
+        # deadCodeRemoval
     ]
 
 

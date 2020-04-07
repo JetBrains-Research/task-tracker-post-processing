@@ -51,7 +51,7 @@ def main() -> None:
     graph = construct_solution_graph(path, TASK.PIES)
 
     gv = SolutionSpaceVisualizer(graph)
-    graph_representation_path = gv.create_graph_representation()
+    graph_representation_path = gv.create_graph_representation(name_prefix='graph_all_apace_without_dead_code_2')
     print(graph_representation_path)
 
     hint_getter = HintGetter(graph)
