@@ -61,6 +61,3 @@ def remove_intermediate_steps(path: str, result_folder_prefix: str = 'remove_int
         df = __handle_df(df)
         write_result(result_folder, path, file, df)
     return result_folder
-
-
-remove_intermediate_steps('/Users/macbook/PycharmProjects/codetracker-data/1_test_sg/pies')
