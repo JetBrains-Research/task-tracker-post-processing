@@ -32,7 +32,7 @@ class HintGetter:
         return self._graph
 
     def get_hint(self, source_code: str, user: User) -> Hint:
-        diff_handler = DiffHandler(source_code)
+        diff_handler = DiffHandler(source_code=source_code)
         next_vertex = self._path_finder.find_next_vertex(diff_handler, user)
         log.info(f'Next vertex id is {next_vertex.id}')
         diffs_and_types_list = [diff_handler.get_diffs(code_info.anon_tree, next_vertex.code.canon_tree) for code_info in

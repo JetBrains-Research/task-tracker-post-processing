@@ -32,8 +32,8 @@ FAILED_APPLYING_DIFFS_TO_STUDENTS_CODE_TEST = {
 def apply_diffs(src_file: str, dst_file: Optional[str] = None) -> str:
     if not dst_file:
         dst_file = re.sub(r'in(?=[^in]*$)', 'out', src_file)
-    src_diff_handler = DiffHandler(get_content_from_file(src_file))
-    dst_diff_handler = DiffHandler(get_content_from_file(dst_file))
+    src_diff_handler = DiffHandler(source_code=get_content_from_file(src_file))
+    dst_diff_handler = DiffHandler(source_code=get_content_from_file(dst_file))
     diffs, tree_type = src_diff_handler.get_diffs_from_diff_handler(dst_diff_handler)
     res_tree = src_diff_handler.apply_diffs(diffs, tree_type)
     return get_code_from_tree(res_tree).rstrip('\n')

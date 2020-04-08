@@ -63,15 +63,19 @@ class PathFinder:
     # Note: we have to remove the 'user_code' from the set
     def __find_closest_vertex_with_path(self, user_diff_handler: DiffHandler, user: User, goal: Vertex) -> Optional[Vertex]:
         # Todo: move somewhere as a separate method
-        user_diffs_to_goal = min(len(user_diff_handler.get_diffs(code_info.anon_tree, goal.code.canon_tree)) for code_info in goal.code_info_list)
+
+        user_diffs_to_goal = min(len(user_diff_handler.get_diffs(code_info.anon_tree, goal.code.canon_tree)[0]) for code_info in goal.code_info_list)
         candidates = []
-        vertices = self._graph.get_traversal()
-        vertices.remove(self._graph.start_vertex)
+        vertices = SolutionGraph.get_vertexes_with_path(goal)
+        log.info(f'Vertexes with path are {([v.id for v in vertices])}')
         for vertex in vertices:
             # We don't want to add to result the same vertex
             if are_asts_equal(user_diff_handler.canon_tree, vertex.code.canon_tree):
                 continue
-            diffs = min(len(user_diff_handler.get_diffs(code_info.anon_tree, vertex.code.canon_tree)) for code_info in vertex.code_info_list)
+            # Todo: we have not one anon tree, but we need only one for calculating diffs vertex -> goal
+            anon_tree = vertex.code.canon_tree if len(vertex.code_info_list) == 0 else vertex.code_info_list[0].anon_tree
+            dh = DiffHandler(anon_tree=anon_tree, canon_tree=vertex.code.canon_tree)
+            diffs = min(len(dh.get_diffs(code_info.anon_tree, vertex.code.canon_tree)[0]) for code_info in goal.code_info_list)
             if diffs <= user_diffs_to_goal:
                 candidates.append(vertex)
         return self.__choose_best_vertex(user_diff_handler, user, candidates)
@@ -90,14 +94,14 @@ class PathFinder:
     @staticmethod
     def __go_through_graph(user_diff_handler: DiffHandler, graph_vertex: Vertex, goal: Vertex) -> bool:
 
-        diffs_from_user_to_goal = min(len(user_diff_handler.get_diffs(code_info.anon_tree, goal.code.canon_tree)) for code_info in
+        diffs_from_user_to_goal = min(len(user_diff_handler.get_diffs(code_info.anon_tree, goal.code.canon_tree)[0]) for code_info in
             goal.code_info_list)
-        diffs_from_empty_to_user = len(user_diff_handler.get_diffs_from_diff_handler(EMPTY_DIFF_HANDLER))
+        diffs_from_empty_to_user = len(user_diff_handler.get_diffs_from_diff_handler(EMPTY_DIFF_HANDLER)[0])
         if PathFinder.__is_most_of_path_is_done(diffs_from_empty_to_user + diffs_from_user_to_goal,
                                                 diffs_from_user_to_goal):
             return False
 
-        diffs_from_user_to_graph_vertex = min(len(user_diff_handler.get_diffs(code_info.anon_tree, graph_vertex.code.canon_tree)) for code_info in
+        diffs_from_user_to_graph_vertex = min(len(user_diff_handler.get_diffs(code_info.anon_tree, graph_vertex.code.canon_tree)[0]) for code_info in
             graph_vertex.code_info_list)
         return not PathFinder.__is_far_from_graph(diffs_from_user_to_goal, diffs_from_user_to_graph_vertex)
 
@@ -106,7 +110,7 @@ class MeasuredVertex:
     def __init__(self, user_diff_handler: DiffHandler, vertex: Vertex, user: User, distance: Optional[int] = None):
         self._vertex = vertex
         self._distance = distance if distance \
-            else min(len(user_diff_handler.get_diffs(code_info.anon_tree, vertex.code.canon_tree)) for code_info in vertex.code_info_list)
+            else min(len(user_diff_handler.get_diffs(code_info.anon_tree, vertex.code.canon_tree)[0]) for code_info in vertex.code_info_list)
         # Todo: get actual vertex profile
         self._profile = self.__init_profile(user)
         self._users_count = len(vertex.get_unique_users())

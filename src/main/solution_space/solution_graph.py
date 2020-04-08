@@ -185,6 +185,23 @@ class SolutionGraph(collections.abc.Iterable):
     def get_traversal(self) -> List[Vertex]:
         return self.__iter__().traversal
 
+    # Todo: add tests
+    @staticmethod
+    def get_vertexes_with_path(goal: Vertex) -> List[Vertex]:
+        visited = [goal]
+        vertices_queue = collections.deque(visited)
+        while vertices_queue:
+            vertex = vertices_queue.popleft()
+            for parent in vertex.parents:
+                # Todo: move to the foo
+                if parent not in visited \
+                        and parent.vertex_type == VERTEX_TYPE.INTERMEDIATE \
+                        and not parent.code.is_full():
+                    vertices_queue.append(parent)
+                    visited.append(parent)
+        # Remove goal
+        return visited[1:]
+
     def create_vertex(self, code: Code, code_info: CodeInfo) -> Vertex:
         vertex = Vertex(self, code=code)
         vertex.add_code_info(code_info)

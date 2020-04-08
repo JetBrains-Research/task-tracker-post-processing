@@ -3,7 +3,7 @@
 
 import ast
 import logging
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 
 from src.main.util import consts
 from src.main.canonicalization.consts import TREE_TYPE
@@ -17,8 +17,13 @@ log = logging.getLogger(consts.LOGGER_NAME)
 
 
 class DiffHandler:
-    def __init__(self, source_code: str):
-        self._orig_tree, self._anon_tree, self._canon_tree = get_trees(source_code, TREE_TYPE.get_all_types_set())
+    def __init__(self, source_code: Optional[str] = None,
+                 anon_tree: Optional[ast.AST] = None,
+                 canon_tree: Optional[ast.AST] = None):
+        if source_code is not None:
+            self._orig_tree, self._anon_tree, self._canon_tree = get_trees(source_code, TREE_TYPE.get_all_types_set())
+        else:
+            self._orig_tree, self._anon_tree, self._canon_tree = None, anon_tree, canon_tree
 
     @property
     def orig_tree(self) -> ast.AST:
