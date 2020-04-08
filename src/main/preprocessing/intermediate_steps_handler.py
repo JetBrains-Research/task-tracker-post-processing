@@ -3,11 +3,9 @@
 import logging
 import pandas as pd
 
-from src.main.preprocessing.util import handle_folder
 from src.main.util import consts
-from src.main.util.consts import LOGGER_NAME, ISO_ENCODING
-from src.main.util.file_util import get_all_file_system_items, extension_file_condition, get_result_folder, \
-    write_result
+from src.main.util.consts import LOGGER_NAME
+from src.main.preprocessing.util import handle_folder
 
 log = logging.getLogger(LOGGER_NAME)
 
@@ -16,6 +14,8 @@ FRAGMENT = consts.CODE_TRACKER_COLUMN.FRAGMENT.value
 
 
 def __is_same_line_with_changes(current_fragment: str, next_fragment: str) -> bool:
+    # If one from fragments is nan
+    # Then changes was not in the same lines
     if consts.DEFAULT_VALUE.FRAGMENT.is_equal(current_fragment) \
             or consts.DEFAULT_VALUE.FRAGMENT.is_equal(next_fragment):
         return False
@@ -50,7 +50,7 @@ def __handle_df(df: pd.DataFrame) -> pd.DataFrame:
     while i < df.shape[0]:
         new_index = __get_next_line_index_with_changes(df, i)
         if new_index != i:
-            need_to_remove += [_ for _ in range(i, new_index)]
+            need_to_remove += range(i, new_index)
         i = new_index + 1
     return df.drop(need_to_remove)
 

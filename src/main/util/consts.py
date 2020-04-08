@@ -197,6 +197,8 @@ PATH_CMD_ARG = '-path'
 ISO_ENCODING = 'ISO-8859-1'
 UTF_ENCODING = 'utf8'
 
+PYLINT_KEY_WORDS = ['Statement seems to have no effect']
+
 ATI_DATA_FOLDER = 'ati_'
 DI_DATA_FOLDER = 'di_'
 ACTIVITY_TRACKER_FILE_NAME = 'ide-events'

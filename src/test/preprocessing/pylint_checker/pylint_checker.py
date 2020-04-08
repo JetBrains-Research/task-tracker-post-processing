@@ -4,7 +4,7 @@ import pandas as pd
 
 from src.main.util import consts
 from src.test.test_util import LoggedTest
-from src.main.preprocessing.no_have_effect_statements_handler import __handle_df
+from src.main.preprocessing.pylint_checker import __handle_df
 
 FRAGMENT = consts.CODE_TRACKER_COLUMN.FRAGMENT.value
 
@@ -19,9 +19,9 @@ def run_test(input_df: pd.DataFrame, expected_df: pd.DataFrame) -> bool:
     return input_df.equals(expected_df)
 
 
-class TestNoHaveEffectStatements(LoggedTest):
+class TestPylintChecker(LoggedTest):
 
-    def test_no_diffs(self) -> None:
+    def test_no_have_effect_statements(self) -> None:
 
         #                                      fragment
         # 0  g3 = int(input())\nprint((g3 // 1))\nprint
