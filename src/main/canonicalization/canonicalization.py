@@ -92,7 +92,7 @@ def __get_canon_tree_from_anon_tree(anon_tree: ast.AST, imports: List[str]) -> a
     old_tree = None
     while compareASTs(old_tree, canon_tree, checkEquality=True) != 0:
         old_tree = deepcopy(canon_tree)
-        helperFolding(canon_tree, None, imports)
+        # helperFolding(canon_tree, None, imports)
         for t in transformations:
             canon_tree = t(canon_tree)
     return canon_tree
