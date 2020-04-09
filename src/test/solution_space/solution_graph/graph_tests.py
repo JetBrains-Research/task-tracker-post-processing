@@ -97,7 +97,7 @@ def create_code_info_chain() -> (List[Tuple[Code, CodeInfo]], List[str]):
     user = User()
     anon_and_canon_trees = [get_trees(s, {TREE_TYPE.ANON, TREE_TYPE.CANON}) for s, _ in rated_sources]
 
-    chain = [(create_code_from_source(rs[0], rs[1]), CodeInfo(user, anon_tree=anon_and_canon_trees[i][1]))
+    chain = [(create_code_from_source(rs[0], rs[1], anon_tree=anon_and_canon_trees[i][1]), CodeInfo(user))
              for i, rs in enumerate(rated_sources)]
     canon_sources = [get_code_from_tree(c_t).rstrip('\n') for _, c_t in anon_and_canon_trees]
     return chain, canon_sources

@@ -1,5 +1,5 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
-
+import collections
 import os
 import ast
 import logging
@@ -10,7 +10,7 @@ from src.main.util import consts
 from src.main.util.file_util import create_file
 from src.main.util.log_util import log_and_raise_error
 from src.main.util.language_util import get_extension_by_language
-from src.main.canonicalization.canonicalization import get_code_from_tree
+from src.main.canonicalization.canonicalization import get_code_from_tree, are_asts_equal
 from src.main.util.consts import EXPERIENCE, DEFAULT_VALUE, ACTIVITY_TRACKER_EVENTS
 
 log = logging.getLogger(consts.LOGGER_NAME)
@@ -92,11 +92,10 @@ class User:
 
 
 class CodeInfo:
-    def __init__(self, user: User, anon_tree: Optional[ast.AST] = None, timestamp: int = 0,
-                 date: datetime = DEFAULT_VALUE.DATE.value, ati_actions: Optional[List[AtiItem]] = None,
+    def __init__(self, user: User, timestamp: int = 0, date: datetime = DEFAULT_VALUE.DATE.value,
+                 ati_actions: Optional[List[AtiItem]] = None,
                  codetracker_filename: str = None):
         self._user = user
-        self._anon_tree = anon_tree
         self._ati_actions = ati_actions if ati_actions else []
         self._timestamp = timestamp
         self._date = date
@@ -105,10 +104,6 @@ class CodeInfo:
     @property
     def user(self) -> User:
         return self._user
-
-    @property
-    def anon_tree(self) -> ast.AST:
-        return self._anon_tree
 
     @property
     def ati_actions(self) -> List[AtiItem]:
@@ -127,16 +122,19 @@ class CodeInfo:
         return self._codetracker_filename
 
     def __str__(self) -> str:
-        return f'User: {self._user}, anon_tree: {get_code_from_tree(self._anon_tree)}, timestamp: {self._timestamp},' \
-               f' date: {self._date}. Length of ati actions is {len(self._ati_actions)}'
+        return f'User: {self._user}, timestamp: {self._timestamp}, date: {self._date}. ' \
+               f'Length of ati actions is {len(self._ati_actions)}'
 
 
 # Todo: rename because it's about a canon tree, but it's called 'Code'?
 class Code:
     _last_id = 0
 
-    def __init__(self, canon_tree: ast.AST = None, rate: float = 0.0, file_with_code: Optional[str] = None):
+    def __init__(self, canon_tree: ast.AST = None, rate: float = 0.0,
+                 file_with_code: Optional[str] = None,
+                 anon_tree: Optional[ast.AST] = None):
         self._canon_tree = canon_tree
+        self._anon_trees = [] if anon_tree is None else [anon_tree]
         self._file_with_code = file_with_code
         self._rate = rate
 
@@ -146,6 +144,10 @@ class Code:
     @property
     def canon_tree(self) -> ast.AST:
         return self._canon_tree
+
+    @property
+    def anon_trees(self) -> List[ast.AST]:
+        return self._anon_trees
 
     @property
     def rate(self) -> float:
@@ -158,6 +160,16 @@ class Code:
     @file_with_code.setter
     def file_with_code(self, file_with_code: str) -> None:
         self._file_with_code = file_with_code
+
+    def does_contain_anon_tree(self, anon_tree: ast.AST):
+        for a_t in self._anon_trees:
+            if are_asts_equal(a_t, anon_tree):
+                return True
+        return False
+
+    def add_anon_tree(self, anon_tree: ast.AST) -> None:
+        if not self.does_contain_anon_tree(anon_tree):
+            self._anon_trees.append(anon_tree)
 
     def create_file_with_code(self, folder_to_write: str, name_prefix: str,
                               language: consts.LANGUAGE = consts.LANGUAGE.PYTHON) -> None:
