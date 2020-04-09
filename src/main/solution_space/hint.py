@@ -41,5 +41,6 @@ class HintGetter:
         diffs, type = diffs_and_types_list[diffs_len_list.index(min(diffs_len_list))]
         log.info(f'The best type of trees is {type.value}')
         # Apply the first diff
-        recommended_tree = diff_handler.apply_diffs(diffs[:1], type)
+        # Todo: new vwrsion of apply diffs
+        recommended_tree = diff_handler.apply_diffs(diffs, type)
         return Hint(get_code_from_tree(recommended_tree))

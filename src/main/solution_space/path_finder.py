@@ -61,21 +61,30 @@ class PathFinder:
     # that have a distance (number of diffs) to the goal <= than 'user_code'
     # Run __choose_best_vertex on these vertices, which returns None in case of the empty list
     # Note: we have to remove the 'user_code' from the set
-    def __find_closest_vertex_with_path(self, user_diff_handler: DiffHandler, user: User, goal: Vertex) -> Optional[Vertex]:
+    def __find_closest_vertex_with_path(self, user_diff_handler: DiffHandler, user: User,
+                                        goal: Vertex, to_add_empty: bool = False) -> Optional[Vertex]:
         # Todo: move somewhere as a separate method
-
         user_diffs_to_goal = min(len(user_diff_handler.get_diffs(code_info.anon_tree, goal.code.canon_tree)[0]) for code_info in goal.code_info_list)
         candidates = []
-        vertices = SolutionGraph.get_vertexes_with_path(goal)
-        log.info(f'Vertexes with path are {([v.id for v in vertices])}')
+        vertices = self._graph.get_traversal()
+        vertices.remove(self._graph.start_vertex)
+
         for vertex in vertices:
             # We don't want to add to result the same vertex
             if are_asts_equal(user_diff_handler.canon_tree, vertex.code.canon_tree):
                 continue
+            # Todo: change to normal way
+            if get_code_from_tree(vertex.code.canon_tree) == '' \
+                    and get_code_from_tree(vertex.code_info_list[0].anon_tree) == '' \
+                    and not to_add_empty:
+                continue
             # Todo: we have not one anon tree, but we need only one for calculating diffs vertex -> goal
+            # Todo: calculate diffs to the nearest goal from each vertex or not???
+            # Todo: think about empty tree
             anon_tree = vertex.code.canon_tree if len(vertex.code_info_list) == 0 else vertex.code_info_list[0].anon_tree
             dh = DiffHandler(anon_tree=anon_tree, canon_tree=vertex.code.canon_tree)
-            diffs = min(len(dh.get_diffs(code_info.anon_tree, vertex.code.canon_tree)[0]) for code_info in goal.code_info_list)
+            diffs = min(len(dh.get_diffs(code_info.anon_tree, goal.code.canon_tree)[0]) for code_info in goal.code_info_list)
+
             if diffs <= user_diffs_to_goal:
                 candidates.append(vertex)
         return self.__choose_best_vertex(user_diff_handler, user, candidates)

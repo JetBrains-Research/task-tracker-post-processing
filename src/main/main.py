@@ -42,7 +42,7 @@ def main() -> None:
     # Path should contain files after preprocessing with tests results
     # split_tasks_into_separate_files(path)
 
-    source = 'a = int(input())\nb = int(input())'
+    source = 'a = int(input())\nb = int(input())\nn = int(input())'
     user = User()
 
     # graph = deserialize_data_from_file(f'/home/elena/workspaces/python/codetracker-data/data/pies_solution_graph{consts.EXTENSION.PICKLE.value}')
@@ -51,7 +51,7 @@ def main() -> None:
     graph = construct_solution_graph(path, TASK.PIES)
 
     gv = SolutionSpaceVisualizer(graph)
-    graph_representation_path = gv.create_graph_representation(name_prefix='graph_all_space_without_folding')
+    graph_representation_path = gv.create_graph_representation(name_prefix='graph_all_space_without_folding_v_3')
     print(graph_representation_path)
 
     hint_getter = HintGetter(graph)
