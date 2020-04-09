@@ -208,6 +208,7 @@ TEST_DATA_PATH = ROOT_DIR + '/../../resources/test_data'
 TEST_PATH = ROOT_DIR + '/../../test'
 
 GRAPH_REPRESENTATION_PATH = ROOT_DIR + '/../../resources/graph_representation'
+SOLUTION_SPACE_TEST_RESULT_PATH = ROOT_DIR + '/../../resources/solution_space'
 
 PREPROCESSING_RESULT_FOLDER = 'preprocessing_result'
 STATISTICS_RESULT_FOLDER = 'statistics_result'

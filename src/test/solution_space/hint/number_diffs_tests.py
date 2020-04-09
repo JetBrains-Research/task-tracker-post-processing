@@ -1,10 +1,13 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import logging
+import os
 from typing import Tuple, Any, List
 
+from src.main.util.file_util import create_file
+from src.main.util.strings_util import convert_camel_case_to_snake_case
 from src.test.test_util import LoggedTest
-from src.main.util.consts import TASK, LOGGER_NAME
+from src.main.util.consts import TASK, LOGGER_NAME, SOLUTION_SPACE_TEST_RESULT_PATH, EXTENSION
 from src.main.util.log_util import log_and_raise_error
 from src.main.canonicalization.diffs.diff_handler import DiffHandler
 from src.main.solution_space.solution_graph import Vertex, SolutionGraph
@@ -19,6 +22,8 @@ GOAL_ID = 'goal_id'
 USER_CODE_1 = 'a = int(input())\nb = int(input())'
 
 USER_CODE = [USER_CODE_1]
+
+SAVE_FOLDER = os.path.join(SOLUTION_SPACE_TEST_RESULT_PATH, 'hint')
 
 
 class PiesDiffsTypes:
@@ -104,13 +109,14 @@ def get_diffs_from_graph(graph: SolutionGraph, goal: Vertex) -> Tuple[int, ...]:
 
 
 def run_kelly_rivers_test(self, task: TASK):
+    current_save_folder = os.path.join(SAVE_FOLDER, task.value)
     s_g = get_solution_graph(task)
 
     for user_source_code in USER_CODE:
         resources = get_resources(task, user_source_code)
         user_diff_handler = DiffHandler(user_source_code)
 
-        for resource in resources:
+        for i, resource in enumerate(resources):
             current_goal_id = resource.get(GOAL_ID)
             goal = get_current_goal(current_goal_id, s_g)
 
@@ -120,7 +126,9 @@ def run_kelly_rivers_test(self, task: TASK):
 
             diffs_number_res = PiesDiffsTypes(diffs)
             res = get_res_for_current_test(task, user_source_code, goal, diffs_number_res, TEST_METHOD.KELLY)
-            # Todo: write to file
+            current_file_name = os.path.join(current_save_folder,
+                                             f'{convert_camel_case_to_snake_case(TEST_METHOD.KELLY.value)}_{i}{EXTENSION.TXT.value}')
+            create_file(res, current_file_name)
             log.info(res)
 
 
