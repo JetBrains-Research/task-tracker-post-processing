@@ -5,7 +5,7 @@ import logging
 import collections
 from typing import Optional, List, Tuple, Set, Dict
 
-from src.main.canonicalization.diffs.diff_handler import DiffHandler
+from src.main.canonicalization.diffs.rivers_diff_handler import KellyDiffHandler
 from src.main.util.log_util import log_and_raise_error
 from src.main.util.consts import LOGGER_NAME, TASK, LANGUAGE
 from src.main.solution_space import consts as solution_space_consts
@@ -87,7 +87,7 @@ class Vertex:
         users = [code_info.user for code_info in self._code_info_list]
         return set(users)
 
-    def get_diffs_number(self, start_dh: DiffHandler) -> int:
+    def get_diffs_number(self, start_dh: KellyDiffHandler) -> int:
         return min(len(start_dh.get_diffs(a_t, self.code.canon_tree)[0]) for a_t in self.code.anon_trees)
 
 
@@ -272,6 +272,6 @@ class SolutionGraph(collections.abc.Iterable):
     def get_diffs_number_between_vertexes(from_vertex: Vertex, to_vertex: Vertex):
         diffs = []
         for anon_tree in from_vertex.code.anon_trees:
-            dh = DiffHandler(anon_tree=anon_tree, canon_tree=from_vertex.code.canon_tree)
+            dh = KellyDiffHandler(anon_tree=anon_tree, canon_tree=from_vertex.code.canon_tree)
             diffs.append(to_vertex.get_diffs_number(dh))
         return min(diffs)

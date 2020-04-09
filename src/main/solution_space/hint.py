@@ -5,7 +5,7 @@ from src.main.util import consts
 from src.main.solution_space.data_classes import User
 from src.main.solution_space.path_finder import PathFinder
 from src.main.solution_space.solution_graph import SolutionGraph
-from src.main.canonicalization.diffs.diff_handler import DiffHandler
+from src.main.canonicalization.diffs.rivers_diff_handler import KellyDiffHandler
 from src.main.canonicalization.canonicalization import get_code_from_tree
 
 
@@ -32,7 +32,7 @@ class HintGetter:
         return self._graph
 
     def get_hint(self, source_code: str, user: User) -> Hint:
-        diff_handler = DiffHandler(source_code=source_code)
+        diff_handler = KellyDiffHandler(source_code=source_code)
         next_vertex = self._path_finder.find_next_vertex(diff_handler, user)
         log.info(f'Next vertex id is {next_vertex.id}')
         diffs_and_types_list = [diff_handler.get_diffs(a_t, next_vertex.code.canon_tree)

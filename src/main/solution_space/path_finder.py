@@ -6,7 +6,7 @@ from typing import List, Optional
 from src.main.util import consts
 from src.main.util.log_util import log_and_raise_error
 from src.main.canonicalization.consts import TREE_TYPE
-from src.main.canonicalization.diffs.diff_handler import DiffHandler
+from src.main.canonicalization.diffs.rivers_diff_handler import KellyDiffHandler
 from src.main.solution_space.data_classes import Code, User, Profile
 from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 from src.main.canonicalization.canonicalization import are_asts_equal, get_trees, get_code_from_tree
@@ -24,7 +24,7 @@ class PathFinder:
         return self._graph
 
     # Find a next canonicalized code state
-    def find_next_vertex(self, user_diff_handler: DiffHandler, user: User) -> Vertex:
+    def find_next_vertex(self, user_diff_handler: KellyDiffHandler, user: User) -> Vertex:
         # Todo: check if user_code is not valid
         # Todo: add method for getting source_code to DiffHandler?
         log.info(f'Start finding the next code state for the user code: '
@@ -42,7 +42,7 @@ class PathFinder:
 
     # Sort candidates and return the best for user_code from ones
     @staticmethod
-    def __choose_best_vertex(user_diff_handler: DiffHandler, user: User, vertices: List[Vertex]) -> Optional[Vertex]:
+    def __choose_best_vertex(user_diff_handler: KellyDiffHandler, user: User, vertices: List[Vertex]) -> Optional[Vertex]:
         if len(vertices) == 0:
             return None
         candidates = list(map(lambda vertex: MeasuredVertex(user_diff_handler, vertex, user), vertices))
@@ -53,7 +53,7 @@ class PathFinder:
 
     # Use '__choose_best_vertex' for choosing the best goal from all ones
     # Note: A goal is a vertex, which has the rate equals 1 and it connects to the end vertex
-    def __find_closest_goal(self, user_diff_handler: DiffHandler, user: User) -> Vertex:
+    def __find_closest_goal(self, user_diff_handler: KellyDiffHandler, user: User) -> Vertex:
         log.info(f'Goals ids are {[p.id for p in self._graph.end_vertex.parents]}')
         return self.__choose_best_vertex(user_diff_handler, user, self._graph.end_vertex.parents)
 
@@ -61,7 +61,7 @@ class PathFinder:
     # that have a distance (number of diffs) to the goal <= than 'user_code'
     # Run __choose_best_vertex on these vertices, which returns None in case of the empty list
     # Note: we have to remove the 'user_code' from the set
-    def __find_closest_vertex_with_path(self, user_diff_handler: DiffHandler, user: User,
+    def __find_closest_vertex_with_path(self, user_diff_handler: KellyDiffHandler, user: User,
                                         goal: Vertex, to_add_empty: bool = False) -> Optional[Vertex]:
         # Todo: move somewhere as a separate method
         user_diffs_to_goal = goal.get_diffs_number(user_diff_handler)
@@ -99,7 +99,7 @@ class PathFinder:
     # For example, if we have a good way through the graph, we should advise it,
     # but if don't we would advise going directly to the goal
     @staticmethod
-    def __go_through_graph(user_diff_handler: DiffHandler, graph_vertex: Vertex, goal: Vertex) -> bool:
+    def __go_through_graph(user_diff_handler: KellyDiffHandler, graph_vertex: Vertex, goal: Vertex) -> bool:
 
         diffs_from_user_to_goal = goal.get_diffs_number(user_diff_handler)
         diffs_from_empty_to_user = len(user_diff_handler.get_diffs_from_diff_handler(EMPTY_DIFF_HANDLER)[0])
@@ -112,7 +112,7 @@ class PathFinder:
 
 
 class MeasuredVertex:
-    def __init__(self, user_diff_handler: DiffHandler, vertex: Vertex, user: User, distance: Optional[int] = None):
+    def __init__(self, user_diff_handler: KellyDiffHandler, vertex: Vertex, user: User, distance: Optional[int] = None):
         self._vertex = vertex
         self._distance = distance if distance else vertex.get_diffs_number(user_diff_handler)
         # Todo: get actual vertex profile
