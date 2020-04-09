@@ -98,10 +98,7 @@ def get_diffs_from_graph(graph: SolutionGraph, goal: Vertex) -> Tuple[int, ...]:
     for vertex in vertices:
         if vertex.code.is_full():
             continue
-        # Todo: change it - use all anon trees
-        anon_tree = vertex.code.canon_tree if len(vertex.code.anon_trees) == 0 else vertex.code.anon_trees[0]
-        dh = DiffHandler(anon_tree=anon_tree, canon_tree=vertex.code.canon_tree)
-        diffs += (goal.get_diffs_number(dh),)
+        diffs += (graph.get_diffs_number_between_vertexes(vertex, goal),)
 
     return diffs
 
@@ -123,6 +120,7 @@ def run_kelly_rivers_test(self, task: TASK):
 
             diffs_number_res = PiesDiffsTypes(diffs)
             res = get_res_for_current_test(task, user_source_code, goal, diffs_number_res, TEST_METHOD.KELLY)
+            # Todo: write to file
             log.info(res)
 
 

@@ -78,12 +78,10 @@ class PathFinder:
                     and get_code_from_tree(vertex.code.anon_trees[0]) == '' \
                     and not to_add_empty:
                 continue
-            # Todo: we have not one anon tree, but we need only one for calculating diffs vertex -> goal
+
             # Todo: calculate diffs to the nearest goal from each vertex or not???
             # Todo: think about empty tree
-            anon_tree = vertex.code.canon_tree if len(vertex.code.anon_trees) == 0 else vertex.code.anon_trees[0]
-            dh = DiffHandler(anon_tree=anon_tree, canon_tree=vertex.code.canon_tree)
-            diffs = goal.get_diffs_number(dh)
+            diffs = self._graph.get_diffs_number_between_vertexes(vertex, goal)
 
             if diffs <= user_diffs_to_goal:
                 candidates.append(vertex)

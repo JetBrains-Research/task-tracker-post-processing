@@ -51,7 +51,7 @@ def main() -> None:
     graph = construct_solution_graph(path, TASK.PIES)
 
     gv = SolutionSpaceVisualizer(graph)
-    graph_representation_path = gv.create_graph_representation(name_prefix='graph_all_space_without_folding_v_3')
+    graph_representation_path = gv.create_graph_representation(name_prefix='graph_all_space_final_version')
     print(graph_representation_path)
 
     hint_getter = HintGetter(graph)
