@@ -40,8 +40,8 @@ class DiffHandler:
     def get_diffs(self, anon_dst_tree: ast.AST, canon_dst_tree: ast.AST) -> Tuple[List[ChangeVector], TREE_TYPE]:
         anon_diffs = diffAsts(self._anon_tree, anon_dst_tree)
         canon_diffs = diffAsts(self._canon_tree, canon_dst_tree)
-        log.info(f'Number of diffs between anonymized trees is {len(anon_diffs)}\n'
-                 f'Number of diffs between canonicalized trees is {len(canon_diffs)}')
+        # log.info(f'Number of diffs between anonymized trees is {len(anon_diffs)}\n'
+        #          f'Number of diffs between canonicalized trees is {len(canon_diffs)}')
 
         if len(anon_diffs) <= len(canon_diffs):
             log.info(f'Anonymized trees were selected')

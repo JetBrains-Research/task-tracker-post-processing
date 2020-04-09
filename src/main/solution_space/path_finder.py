@@ -64,8 +64,7 @@ class PathFinder:
     def __find_closest_vertex_with_path(self, user_diff_handler: DiffHandler, user: User,
                                         goal: Vertex, to_add_empty: bool = False) -> Optional[Vertex]:
         # Todo: move somewhere as a separate method
-        user_diffs_to_goal = min(len(user_diff_handler.get_diffs(a_t, goal.code.canon_tree)[0])
-                                 for a_t in goal.code.anon_trees)
+        user_diffs_to_goal = goal.get_diffs_number(user_diff_handler)
         candidates = []
         vertices = self._graph.get_traversal()
         vertices.remove(self._graph.start_vertex)
@@ -84,8 +83,7 @@ class PathFinder:
             # Todo: think about empty tree
             anon_tree = vertex.code.canon_tree if len(vertex.code.anon_trees) == 0 else vertex.code.anon_trees[0]
             dh = DiffHandler(anon_tree=anon_tree, canon_tree=vertex.code.canon_tree)
-            diffs = min(len(dh.get_diffs(a_t, goal.code.canon_tree)[0])
-                        for a_t in goal.code.anon_trees)
+            diffs = goal.get_diffs_number(dh)
 
             if diffs <= user_diffs_to_goal:
                 candidates.append(vertex)
@@ -105,24 +103,20 @@ class PathFinder:
     @staticmethod
     def __go_through_graph(user_diff_handler: DiffHandler, graph_vertex: Vertex, goal: Vertex) -> bool:
 
-        diffs_from_user_to_goal = min(len(user_diff_handler.get_diffs(a_t, goal.code.canon_tree)[0])
-                                      for a_t in goal.code.anon_trees)
+        diffs_from_user_to_goal = goal.get_diffs_number(user_diff_handler)
         diffs_from_empty_to_user = len(user_diff_handler.get_diffs_from_diff_handler(EMPTY_DIFF_HANDLER)[0])
         if PathFinder.__is_most_of_path_is_done(diffs_from_empty_to_user + diffs_from_user_to_goal,
                                                 diffs_from_user_to_goal):
             return False
 
-        diffs_from_user_to_graph_vertex = min(len(user_diff_handler.get_diffs(a_t, graph_vertex.code.canon_tree)[0])
-                                              for a_t in graph_vertex.code.anon_trees)
+        diffs_from_user_to_graph_vertex = graph_vertex.get_diffs_number(user_diff_handler)
         return not PathFinder.__is_far_from_graph(diffs_from_user_to_goal, diffs_from_user_to_graph_vertex)
 
 
 class MeasuredVertex:
     def __init__(self, user_diff_handler: DiffHandler, vertex: Vertex, user: User, distance: Optional[int] = None):
         self._vertex = vertex
-        self._distance = distance if distance \
-            else min(len(user_diff_handler.get_diffs(a_t, vertex.code.canon_tree)[0])
-                     for a_t in vertex.code.anon_trees)
+        self._distance = distance if distance else vertex.get_diffs_number(user_diff_handler)
         # Todo: get actual vertex profile
         self._profile = self.__init_profile(user)
         self._users_count = len(vertex.get_unique_users())

@@ -5,6 +5,7 @@ import logging
 import collections
 from typing import Optional, List, Tuple, Set, Dict
 
+from src.main.canonicalization.diffs.diff_handler import DiffHandler
 from src.main.util.log_util import log_and_raise_error
 from src.main.util.consts import LOGGER_NAME, TASK, LANGUAGE
 from src.main.solution_space import consts as solution_space_consts
@@ -85,6 +86,9 @@ class Vertex:
     def get_unique_users(self) -> Set[User]:
         users = [code_info.user for code_info in self._code_info_list]
         return set(users)
+
+    def get_diffs_number(self, diff_handler: DiffHandler) -> int:
+        return min(len(diff_handler.get_diffs(a_t, self.code.canon_tree)[0]) for a_t in self.code.anon_trees)
 
 
 class GraphIterator(collections.abc.Iterator):
