@@ -2,9 +2,9 @@
 
 import pandas as pd
 
-from src.main.preprocessing.intermediate_steps_handler import __handle_df
 from src.main.util import consts
 from src.test.test_util import LoggedTest
+from src.main.preprocessing.intermediate_changes_removing import __remove_intermediate_changes_from_df
 
 FRAGMENT = consts.CODE_TRACKER_COLUMN.FRAGMENT.value
 
@@ -15,9 +15,13 @@ source_4 = 'g3 = int(input())\nprint((g2 // 100))'
 source_5 = 'g2 = int(input())\nprint((g2 // 100))'
 source_6 = 'g2 = int(input())\nprint((g2 // 100))\nprint()'
 
+source_7 = 'print("hello")\nprint("world")'
+source_8 = 'print("hello world")\nprint("world")'
+source_9 = 'print("hello world")\nprint("hello world")'
+
 
 def run_test(input_df: pd.DataFrame, expected_df: pd.DataFrame) -> bool:
-    input_df = __handle_df(input_df)
+    input_df = __remove_intermediate_changes_from_df(input_df)
     input_df.index = [*range(input_df.shape[0])]
     return input_df.equals(expected_df)
 
@@ -51,11 +55,10 @@ class TestRemoveIntermediateSteps(LoggedTest):
         })
 
         #                                 fragment
-        # 0  g2 = int(input())\nprint((g2 // 100))
-        #                                 fragment
-        # 0  g2 = int(input())\nprint((g2 // 100))
+        # 0  g3 = int(input())\nprint((g2 // 100))
+        # 1  g2 = int(input())\nprint((g2 // 100))
         expected_df = pd.DataFrame({
-            FRAGMENT: [source_5]
+            FRAGMENT: [source_4, source_5]
         })
 
         self.assertTrue(run_test(input_df, expected_df))
@@ -72,10 +75,30 @@ class TestRemoveIntermediateSteps(LoggedTest):
         })
 
         #                                          fragment
-        # 0           g2 = int(input())\nprint((g2 // 100))
-        # 1  g2 = int(input())\nprint((g2 // 100))\nprint()
+        # 0           g3 = int(input())\nprint((g2 // 100))
+        # 1           g2 = int(input())\nprint((g2 // 100))
+        # 2  g2 = int(input())\nprint((g2 // 100))\nprint()
         expected_df = pd.DataFrame({
-            FRAGMENT: [source_5, source_6]
+            FRAGMENT: [source_4, source_5, source_6]
+        })
+
+        self.assertTrue(run_test(input_df, expected_df))
+
+    def test_next_and_through_one_lines(self) -> None:
+
+        #                                      fragment
+        # 0              print("hello")\nprint("world")
+        # 1        print("hello world")\nprint("world")
+        # 2  print("hello world")\nprint("hello world")
+        input_df = pd.DataFrame({
+            FRAGMENT: [source_7, source_8, source_9]
+        })
+
+        #                                      fragment
+        # 0        print("hello world")\nprint("world")
+        # 1  print("hello world")\nprint("hello world")
+        expected_df = pd.DataFrame({
+            FRAGMENT: [source_8, source_9]
         })
 
         self.assertTrue(run_test(input_df, expected_df))

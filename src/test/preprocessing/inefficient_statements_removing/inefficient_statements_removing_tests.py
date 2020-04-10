@@ -4,7 +4,7 @@ import pandas as pd
 
 from src.main.util import consts
 from src.test.test_util import LoggedTest
-from src.main.preprocessing.pylint_checker import __handle_df
+from src.main.preprocessing.inefficient_statements_removing import __remove_inefficient_statements_from_df
 
 FRAGMENT = consts.CODE_TRACKER_COLUMN.FRAGMENT.value
 
@@ -14,14 +14,14 @@ source_3 = 'g3 = int\n0\nprint()'
 
 
 def run_test(input_df: pd.DataFrame, expected_df: pd.DataFrame) -> bool:
-    input_df = __handle_df(input_df)
+    input_df = __remove_inefficient_statements_from_df(input_df)
     input_df.index = [*range(input_df.shape[0])]
     return input_df.equals(expected_df)
 
 
 class TestPylintChecker(LoggedTest):
 
-    def test_no_have_effect_statements(self) -> None:
+    def test_inefficient_statements(self) -> None:
 
         #                                      fragment
         # 0  g3 = int(input())\nprint((g3 // 1))\nprint
