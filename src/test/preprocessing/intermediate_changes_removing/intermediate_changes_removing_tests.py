@@ -13,11 +13,15 @@ source_2 = 'g3 = int(input())\nprint((g3 // 10))'
 source_3 = 'g3 = int(input())\nprint((g3 // 100))'
 source_4 = 'g3 = int(input())\nprint((g2 // 100))'
 source_5 = 'g2 = int(input())\nprint((g2 // 100))'
-source_6 = 'g2 = int(input())\nprint((g2 // 100))\nprint()'
 
-source_7 = 'print("hello")\nprint("world")'
-source_8 = 'print("hello world")\nprint("world")'
-source_9 = 'print("hello world")\nprint("hello world")'
+source_6 = 'print("hello")\nprint("world")'
+source_7 = 'print("hello world")\nprint("world")'
+source_8 = 'print("hello world")\nprint("hello world")'
+
+source_9 = 'a=5\nb=9'
+source_10 = 'a=50\nb=9\n'
+source_11 = 'a=505\nb=900\n'
+source_12 = 'a=505\nb=900\nprint()'
 
 
 def run_test(input_df: pd.DataFrame, expected_df: pd.DataFrame) -> bool:
@@ -73,27 +77,6 @@ class TestRemoveIntermediateSteps(LoggedTest):
 
         self.assertTrue(run_test(input_df, expected_df))
 
-    def test_all_diffs_in_several_lines(self) -> None:
-
-        #                                          fragment
-        # 0             g3 = int(input())\nprint((g3 // 1))
-        # 1           g3 = int(input())\nprint((g2 // 100))
-        # 2           g2 = int(input())\nprint((g2 // 100))
-        # 3  g2 = int(input())\nprint((g2 // 100))\nprint()
-        input_df = pd.DataFrame({
-            FRAGMENT: [source_1, source_4, source_5, source_6]
-        })
-
-        #                                          fragment
-        # 0           g3 = int(input())\nprint((g2 // 100))
-        # 1           g2 = int(input())\nprint((g2 // 100))
-        # 2  g2 = int(input())\nprint((g2 // 100))\nprint()
-        expected_df = pd.DataFrame({
-            FRAGMENT: [source_4, source_5, source_6]
-        })
-
-        self.assertTrue(run_test(input_df, expected_df))
-
     def test_next_and_through_one_lines(self) -> None:
 
         #                                      fragment
@@ -101,14 +84,53 @@ class TestRemoveIntermediateSteps(LoggedTest):
         # 1        print("hello world")\nprint("world")
         # 2  print("hello world")\nprint("hello world")
         input_df = pd.DataFrame({
-            FRAGMENT: [source_7, source_8, source_9]
+            FRAGMENT: [source_6, source_7, source_8]
         })
 
         #                                      fragment
         # 0        print("hello world")\nprint("world")
         # 1  print("hello world")\nprint("hello world")
         expected_df = pd.DataFrame({
-            FRAGMENT: [source_8, source_9]
+            FRAGMENT: [source_7, source_8]
+        })
+
+        self.assertTrue(run_test(input_df, expected_df))
+
+    def test_diffs_in_different_lines(self) -> None:
+        #                 fragment
+        # 0               a=5\nb=9
+        # 1            a=50\nb=9\n
+        # 2         a=505\nb=900\n
+        # 3  a=505\nb=900\nprint()
+        input_df = pd.DataFrame({
+            FRAGMENT: [source_9, source_10, source_11, source_12]
+        })
+
+        #                 fragment
+        # 0            a=50\nb=9\n
+        # 1         a=505\nb=900\n
+        # 2  a=505\nb=900\nprint()
+        expected_df = pd.DataFrame({
+            FRAGMENT: [source_10, source_11, source_12]
+        })
+
+        self.assertTrue(run_test(input_df, expected_df))
+
+    def test_first_line_is_none(self) -> None:
+        #                 fragment
+        # 0                    NaN
+        # 1            a=50\nb=9\n
+        # 2  a=505\nb=900\nprint()
+        input_df = pd.DataFrame({
+            FRAGMENT: [consts.DEFAULT_VALUE.FRAGMENT.value, source_10, source_12]
+        })
+
+        #                 fragment
+        # 0                    NaN
+        # 1            a=50\nb=9\n
+        # 2  a=505\nb=900\nprint()
+        expected_df = pd.DataFrame({
+            FRAGMENT: [consts.DEFAULT_VALUE.FRAGMENT.value, source_10, source_12]
         })
 
         self.assertTrue(run_test(input_df, expected_df))
