@@ -1,9 +1,9 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
-import os
 import logging
 import tempfile
 import subprocess
+
 import pandas as pd
 
 from src.main.util import consts

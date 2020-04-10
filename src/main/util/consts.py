@@ -34,9 +34,9 @@ class CODE_TRACKER_COLUMN(Enum):
 
 
 class TMP_COLUMN(Enum):
-    SHIFT_FRAGMENT = f'shift_{CODE_TRACKER_COLUMN.FRAGMENT.value}'
-    CHANGES = 'changes'
-    SHIFT_CHANGES = 'shift_changes'
+    SHIFTED_FRAGMENT = f'shift_{CODE_TRACKER_COLUMN.FRAGMENT.value}'
+    DIFFS = 'diffs'
+    SHIFTED_DIFFS = 'shift_diffs'
 
 
 

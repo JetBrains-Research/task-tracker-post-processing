@@ -1,8 +1,9 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import os
-import pandas as pd
 from typing import Any, Union, Callable
+
+import pandas as pd
 
 from src.main.plots.splitting_plots import create_comparative_filtering_plot
 from src.main.util.consts import CODE_TRACKER_COLUMN, ACTIVITY_TRACKER_COLUMN, ISO_ENCODING, EXTENSION

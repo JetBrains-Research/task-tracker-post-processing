@@ -4,7 +4,7 @@ import pandas as pd
 
 from src.main.util import consts
 from src.test.test_util import LoggedTest
-from src.main.preprocessing.intermediate_changes_removing import __remove_intermediate_changes_from_df
+from src.main.preprocessing.intermediate_diffs_removing import __remove_intermediate_diffs_from_df
 
 FRAGMENT = consts.CODE_TRACKER_COLUMN.FRAGMENT.value
 
@@ -25,7 +25,7 @@ source_12 = 'a=505\nb=900\nprint()'
 
 
 def run_test(input_df: pd.DataFrame, expected_df: pd.DataFrame) -> bool:
-    input_df = __remove_intermediate_changes_from_df(input_df)
+    input_df = __remove_intermediate_diffs_from_df(input_df)
     input_df.index = [*range(input_df.shape[0])]
     return input_df.equals(expected_df)
 
@@ -77,7 +77,7 @@ class TestRemoveIntermediateSteps(LoggedTest):
 
         self.assertTrue(run_test(input_df, expected_df))
 
-    def test_next_and_through_one_lines(self) -> None:
+    def test_next_and_after_next_lines(self) -> None:
 
         #                                      fragment
         # 0              print("hello")\nprint("world")
