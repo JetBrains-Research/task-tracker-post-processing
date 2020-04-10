@@ -2,6 +2,7 @@
 
 import os
 import logging
+import tempfile
 import subprocess
 import pandas as pd
 
@@ -22,15 +23,16 @@ def __has_inefficient_statements(source: str) -> bool:
     if consts.DEFAULT_VALUE.FRAGMENT.is_equal(source):
         return False
 
-    file_path = os.path.join(consts.RESOURCES_PATH, 'tmp' + consts.EXTENSION.PY.value)
-    create_file(source, file_path)
-    args = ['pylint', file_path]
-    p = subprocess.Popen(args, stdout=subprocess.PIPE)
-    output = p.communicate()[0].decode(consts.UTF_ENCODING)
-    p.kill()
-    remove_file(file_path)
+    with tempfile.NamedTemporaryFile() as tmp:
+        tmp.write(bytes(source, encoding=consts.UTF_ENCODING))
+        tmp.seek(0)
 
-    return contains_any_of_substrings(output, consts.PYLINT_KEY_WORDS)
+        args = ['pylint', tmp.name]
+        p = subprocess.Popen(args, stdout=subprocess.PIPE)
+        output = p.communicate()[0].decode(consts.UTF_ENCODING)
+        p.kill()
+
+        return contains_any_of_substrings(output, consts.PYLINT_KEY_WORDS)
 
 
 def __remove_inefficient_statements_from_df(df: pd.DataFrame) -> pd.DataFrame:
