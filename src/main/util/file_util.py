@@ -219,7 +219,7 @@ def write_result(result_folder: str, path: str, file: str, df: pd.DataFrame) -> 
     # check if file is in a path, otherwise we cannot reproduce its structure inside of result_folder
     if path != file[:len(path)]:
         raise ValueError('File is not in a path')
-    path_from_result_folder_to_file = file[len(path):]
+    path_from_result_folder_to_file = file[len(path):].lstrip('/')
     file_to_write = os.path.join(result_folder, path_from_result_folder_to_file)
     folder_to_write = get_parent_folder(file_to_write)
     create_folder_and_write_df_to_file(folder_to_write, file_to_write, df)

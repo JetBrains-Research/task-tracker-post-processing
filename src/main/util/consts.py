@@ -11,7 +11,6 @@ from numpy import nan, datetime64, isnat
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-
 class CODE_TRACKER_COLUMN(Enum):
     AGE = 'age'
     EXPERIENCE = 'programExperience'
@@ -32,6 +31,13 @@ class CODE_TRACKER_COLUMN(Enum):
         # Todo: implement restrictions for other columns
         else:
             raise NotImplementedError(f"Cannot find any restrictions for {self}")
+
+
+class TMP_COLUMN(Enum):
+    SHIFTED_FRAGMENT = f'shift_{CODE_TRACKER_COLUMN.FRAGMENT.value}'
+    DIFFS = 'diffs'
+    SHIFTED_DIFFS = 'shift_diffs'
+
 
 
 class ACTIVITY_TRACKER_COLUMN(Enum):
@@ -74,6 +80,7 @@ class DEFAULT_VALUE(Enum):
     DATE = datetime64('NaT')
     EVENT_TYPE = nan
     EVENT_DATA = nan
+    FRAGMENT = nan
 
     # todo: add tests
     def is_equal(self, value) -> bool:
@@ -196,6 +203,8 @@ PATH_CMD_ARG = '-path'
 ISO_ENCODING = 'ISO-8859-1'
 UTF_ENCODING = 'utf8'
 
+PYLINT_KEY_WORDS = ['Statement seems to have no effect']
+
 ATI_DATA_FOLDER = 'ati_'
 DI_DATA_FOLDER = 'di_'
 ACTIVITY_TRACKER_FILE_NAME = 'ide-events'
@@ -205,6 +214,7 @@ MAX_DIF_SEC = 0.5
 
 TEST_DATA_PATH = ROOT_DIR + '/../../resources/test_data'
 TEST_PATH = ROOT_DIR + '/../../test'
+RESOURCES_PATH = ROOT_DIR + '/../../resources'
 
 PREPROCESSING_RESULT_FOLDER = 'preprocessing_result'
 STATISTICS_RESULT_FOLDER = 'statistics_result'

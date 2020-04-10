@@ -1,13 +1,14 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import os
-from typing import Any, Union
+from typing import Any, Union, Callable
 
 import pandas as pd
 
 from src.main.plots.splitting_plots import create_comparative_filtering_plot
-from src.main.util.consts import CODE_TRACKER_COLUMN, ACTIVITY_TRACKER_COLUMN, ISO_ENCODING
-from src.main.util.file_util import get_name_from_path, get_parent_folder, create_folder_and_write_df_to_file
+from src.main.util.consts import CODE_TRACKER_COLUMN, ACTIVITY_TRACKER_COLUMN, ISO_ENCODING, EXTENSION
+from src.main.util.file_util import get_name_from_path, get_parent_folder, create_folder_and_write_df_to_file, \
+    get_result_folder, get_all_file_system_items, write_result, extension_file_condition
 
 Column = Union[CODE_TRACKER_COLUMN, ACTIVITY_TRACKER_COLUMN]
 
@@ -43,6 +44,16 @@ def crop_data_and_create_plots(original_data_path: str, column: Column, start_va
                                                   folder_name_prefix, create_sub_folder)
     create_comparative_filtering_plot(original_data_path, cropped_data_result_path,
                                       folder_to_save=get_parent_folder(cropped_data_result_path))
+
+
+def handle_folder(path: str, result_folder_prefix: str, handle_df: Callable) -> str:
+    result_folder = get_result_folder(path, result_folder_prefix)
+    files = get_all_file_system_items(path, extension_file_condition(EXTENSION.CSV))
+    for file in files:
+        df = pd.read_csv(file, encoding=ISO_ENCODING)
+        df = handle_df(df)
+        write_result(result_folder, path, file, df)
+    return result_folder
 
 
 
