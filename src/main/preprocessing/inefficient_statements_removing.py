@@ -9,7 +9,6 @@ import pandas as pd
 from src.main.util import consts
 from src.main.util.consts import LOGGER_NAME
 from src.main.util.data_util import handle_folder
-from src.main.util.file_util import create_file, remove_file
 from src.main.util.strings_util import contains_any_of_substrings
 
 log = logging.getLogger(LOGGER_NAME)
