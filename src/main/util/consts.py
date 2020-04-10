@@ -11,7 +11,6 @@ from numpy import nan, datetime64, isnat
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-
 class CODE_TRACKER_COLUMN(Enum):
     AGE = 'age'
     EXPERIENCE = 'programExperience'
@@ -32,6 +31,13 @@ class CODE_TRACKER_COLUMN(Enum):
         # Todo: implement restrictions for other columns
         else:
             raise NotImplementedError(f"Cannot find any restrictions for {self}")
+
+
+class TMP_COLUMN(Enum):
+    SHIFT_FRAGMENT = f'shift_{CODE_TRACKER_COLUMN.FRAGMENT.value}'
+    CHANGES = 'changes'
+    SHIFT_CHANGES = 'shift_changes'
+
 
 
 class ACTIVITY_TRACKER_COLUMN(Enum):

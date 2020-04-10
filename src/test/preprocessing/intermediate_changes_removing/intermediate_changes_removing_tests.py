@@ -40,7 +40,17 @@ class TestRemoveIntermediateSteps(LoggedTest):
             FRAGMENT: [source_1 for _ in range(5)]
         })
 
-        self.assertTrue(run_test(input_df, input_df))
+        #                               fragment
+        # 0  g3 = int(input())\nprint((g3 // 1))
+        # 1  g3 = int(input())\nprint((g3 // 1))
+        # 2  g3 = int(input())\nprint((g3 // 1))
+        # 3  g3 = int(input())\nprint((g3 // 1))
+        # 4  g3 = int(input())\nprint((g3 // 1))
+        expected_df = pd.DataFrame({
+            FRAGMENT: [source_1 for _ in range(5)]
+        })
+
+        self.assertTrue(run_test(input_df, expected_df))
 
     def test_all_diffs_in_one_line(self) -> None:
 
