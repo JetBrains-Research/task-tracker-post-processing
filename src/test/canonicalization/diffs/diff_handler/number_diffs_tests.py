@@ -125,7 +125,7 @@ def run_test(self, task: TASK, diff_handler: IDiffHandler,
 
     for user_source_code in USER_CODE:
         resources = get_resources(task, user_source_code)
-        user_diff_handler = diff_handler(user_source_code)
+        user_diff_handler = diff_handler.__init__(user_source_code)
 
         for i, resource in enumerate(resources):
             current_goal_id = resource.get(GOAL_ID)
@@ -147,6 +147,7 @@ def run_test(self, task: TASK, diff_handler: IDiffHandler,
 
 class TestNumberDiffs(LoggedTest):
 
+    # Todo: a right way to use diff_handler
     def test_kelly_rivers_diffs(self) -> None:
         run_test(self, TASK.PIES, diff_handler=RiversDiffHandler)
 
