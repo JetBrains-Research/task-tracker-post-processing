@@ -1,18 +1,18 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
-import logging
 import os
+import logging
 
-from src.main.canonicalization.diffs.diff_handler import IDiffHandler
-from src.main.canonicalization.diffs.gumtree_diff_handler import GumTreeDiffHandler
+from src.test.test_util import LoggedTest
+from src.main.util.file_util import create_file
 from src.main.solution_space.data_classes import User
 from src.main.solution_space.path_finder import PathFinder
+from src.main.canonicalization.diffs.diff_handler import IDiffHandler
 from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 from src.main.canonicalization.canonicalization import get_code_from_tree
-from src.main.util.file_util import create_file
-from src.main.util.consts import TASK, LOGGER_NAME, SOLUTION_SPACE_TEST_RESULT_PATH, EXTENSION
+from src.main.canonicalization.diffs.gumtree_diff_handler import GumTreeDiffHandler
 from src.test.solution_space.path_finder.util import get_solution_graph, get_user_solutions
-from src.test.test_util import LoggedTest
+from src.main.util.consts import TASK, LOGGER_NAME, SOLUTION_SPACE_TEST_RESULT_PATH, EXTENSION
 
 
 log = logging.getLogger(LOGGER_NAME)

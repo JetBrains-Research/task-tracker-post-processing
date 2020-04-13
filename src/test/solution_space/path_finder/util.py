@@ -5,7 +5,7 @@ import logging
 from typing import List, Tuple
 
 from src.main.util.log_util import log_and_raise_error
-from src.main.solution_space.data_classes import CodeInfo, User, Code
+from src.main.solution_space.data_classes import CodeInfo, User
 from src.main.solution_space.solution_graph import SolutionGraph
 from src.main.util.consts import TEST_DATA_PATH, TASK, FILE_SYSTEM_ITEM,LOGGER_NAME
 from src.test.canonicalization.diffs.diff_handler.util import __get_code_by_source, __plot_graph
