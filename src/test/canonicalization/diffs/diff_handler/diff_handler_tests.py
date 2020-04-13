@@ -9,7 +9,7 @@ from typing import List, Optional, Tuple
 from src.main.util.log_util import log_and_raise_error
 from src.test.test_util import LoggedTest
 from src.main.util.consts import LOGGER_NAME, TASK
-from src.main.canonicalization.diffs.rivers_diff_handler import KellyDiffHandler
+from src.main.canonicalization.diffs.rivers_diff_handler import RiversDiffHandler
 from src.main.canonicalization.canonicalization import get_code_from_tree, get_cleaned_code
 from src.test.canonicalization.util import run_test, DIFF_HANDLER_TEST_TYPES, CANONICALIZATION_TESTS
 from src.main.util.file_util import get_content_from_file, get_name_from_path, match_condition, get_parent_folder, \
@@ -32,8 +32,8 @@ FAILED_APPLYING_DIFFS_TO_STUDENTS_CODE_TEST = {
 def apply_diffs(src_file: str, dst_file: Optional[str] = None) -> str:
     if not dst_file:
         dst_file = re.sub(r'in(?=[^in]*$)', 'out', src_file)
-    src_diff_handler = KellyDiffHandler(source_code=get_content_from_file(src_file))
-    dst_diff_handler = KellyDiffHandler(source_code=get_content_from_file(dst_file))
+    src_diff_handler = RiversDiffHandler(source_code=get_content_from_file(src_file))
+    dst_diff_handler = RiversDiffHandler(source_code=get_content_from_file(dst_file))
     diffs, tree_type = src_diff_handler.get_diffs_from_diff_handler(dst_diff_handler)
     res_tree = src_diff_handler.apply_diffs(diffs, tree_type)
     return get_code_from_tree(res_tree).rstrip('\n')

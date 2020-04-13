@@ -2,7 +2,7 @@
 
 import ast
 import logging
-from abc import ABCMeta
+from abc import ABCMeta, abstractmethod
 from typing import Optional
 
 from src.main.util import consts
@@ -32,3 +32,10 @@ class IDiffHandler(object, metaclass=ABCMeta):
     @property
     def canon_tree(self) -> ast.AST:
         return self._canon_tree
+
+    @abstractmethod
+    def get_diffs_number(self, anon_dst_tree: Optional[ast.AST], canon_dst_tree: Optional[ast.AST]) -> int:
+        raise NotImplementedError
+
+    def get_diffs_number_from_diff_handler(self, diff_handler: 'IDiffHandler') -> int:
+        return self.get_diffs_number(diff_handler.anon_tree, diff_handler.canon_tree)

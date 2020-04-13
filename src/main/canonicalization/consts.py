@@ -4,7 +4,7 @@ from enum import Enum
 
 
 class TREE_TYPE(Enum):
-    ORIG = 'original',
+    ORIG = 'original'
     ANON = 'anonymized'
     CANON = 'canonicalized'
 
