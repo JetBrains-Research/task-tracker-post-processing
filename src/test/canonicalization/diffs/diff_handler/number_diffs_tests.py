@@ -1,6 +1,7 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import os
+import ast
 import logging
 from typing import Tuple, Any, List
 
@@ -11,7 +12,7 @@ from src.main.util.log_util import log_and_raise_error
 from src.main.canonicalization.diffs.diff_handler import IDiffHandler
 from src.main.util.strings_util import convert_camel_case_to_snake_case
 from src.main.solution_space.solution_graph import Vertex, SolutionGraph
-from src.main.canonicalization.canonicalization import get_code_from_tree, ast
+from src.main.canonicalization.canonicalization import get_code_from_tree
 from src.main.canonicalization.diffs.rivers_diff_handler import RiversDiffHandler
 from src.main.canonicalization.diffs.gumtree_diff_handler import GumTreeDiffHandler
 from src.main.util.consts import TASK, LOGGER_NAME, SOLUTION_SPACE_TEST_RESULT_PATH, EXTENSION

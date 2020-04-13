@@ -16,13 +16,12 @@ log = logging.getLogger(LOGGER_NAME)
 BASE_DATA_PATH = TEST_DATA_PATH + '/solution_space/path_finder'
 
 
-def get_user_solutions(task: TASK) -> List[Code]:
-    root = os.path.join(BASE_DATA_PATH, 'user_solutions', task.value)
-    solutions = get_all_file_system_items(root, match_condition(r'source_\d+'))
+def get_user_solutions(task: TASK) -> List[str]:
+    root = os.path.join(BASE_DATA_PATH, task.value, 'user_solutions')
+    solutions = get_all_file_system_items(root, match_condition(r'source_\d+.py'))
     # We have to know the order
     solutions.sort()
-    solutions = [get_content_from_file(f) for f in solutions]
-    return [__get_code_by_source(s) for s in solutions]
+    return [get_content_from_file(f) for f in solutions]
 
 
 def __get_chains(task: TASK) -> List[Tuple[List[str], str]]:
@@ -41,7 +40,8 @@ def __get_chains(task: TASK) -> List[Tuple[List[str], str]]:
     return res_chains
 
 
-def get_solution_graph(task: TASK, to_plot_graph: bool = True, test_prefix: str = 'path_finder_test') -> SolutionGraph:
+def get_solution_graph(task: TASK, to_plot_graph: bool = True,
+                       test_prefix: str = 'path_finder_test') -> SolutionGraph:
     chains = __get_chains(task)
     sg = SolutionGraph(task)
     code_info = CodeInfo(User())
