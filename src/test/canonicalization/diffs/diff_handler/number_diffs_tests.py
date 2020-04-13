@@ -4,17 +4,17 @@ import logging
 import os
 from typing import Tuple, Any, List
 
-from src.main.canonicalization.diffs.diff_handler import IDiffHandler
-from src.main.canonicalization.diffs.gumtree_diff_handler import GumTreeDiffHandler
-from src.main.canonicalization.diffs.rivers_diff_handler import RiversDiffHandler
-from src.main.util.file_util import create_file
-from src.main.util.strings_util import convert_camel_case_to_snake_case
 from src.test.test_util import LoggedTest
-from src.main.util.consts import TASK, LOGGER_NAME, SOLUTION_SPACE_TEST_RESULT_PATH, EXTENSION
+from src.main.util.file_util import create_file
 from src.main.util.log_util import log_and_raise_error
+from src.main.canonicalization.diffs.diff_handler import IDiffHandler
+from src.main.util.strings_util import convert_camel_case_to_snake_case
 from src.main.solution_space.solution_graph import Vertex, SolutionGraph
-from src.test.canonicalization.diffs.diff_handler.util import get_solution_graph, TEST_METHOD
 from src.main.canonicalization.canonicalization import get_code_from_tree, ast
+from src.main.canonicalization.diffs.rivers_diff_handler import RiversDiffHandler
+from src.main.canonicalization.diffs.gumtree_diff_handler import GumTreeDiffHandler
+from src.main.util.consts import TASK, LOGGER_NAME, SOLUTION_SPACE_TEST_RESULT_PATH, EXTENSION
+from src.test.canonicalization.diffs.diff_handler.util import get_solution_graph, TEST_METHOD
 
 log = logging.getLogger(LOGGER_NAME)
 
@@ -138,7 +138,7 @@ def run_test(self, task: TASK, diff_handler: IDiffHandler,
             diffs += (from_goal_to_user,)
 
             diffs_number_res = PiesDiffsTypes(diffs)
-            res = get_res_for_current_test(task, user_source_code, goal, diffs_number_res, TEST_METHOD.KELLY)
+            res = get_res_for_current_test(task, user_source_code, goal, diffs_number_res, test_method)
             current_file_name = os.path.join(current_save_folder,
                                              f'{convert_camel_case_to_snake_case(test_method.value)}_{i}{EXTENSION.TXT.value}')
             create_file(res, current_file_name)

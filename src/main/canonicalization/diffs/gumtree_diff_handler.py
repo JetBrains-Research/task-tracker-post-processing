@@ -2,14 +2,13 @@
 
 import ast
 import logging
-import subprocess
 import tempfile
 from typing import Optional
 from subprocess import check_output, CalledProcessError
 
 from src.main.util import consts
-from src.main.util.consts import UTF_ENCODING, EXTENSION
 from src.main.util.log_util import log_and_raise_error
+from src.main.util.consts import UTF_ENCODING, EXTENSION
 from src.main.canonicalization.diffs.diff_handler import IDiffHandler
 from src.main.canonicalization.canonicalization import get_code_from_tree
 
@@ -44,7 +43,6 @@ class GumTreeDiffHandler(IDiffHandler):
 
             return GumTreeDiffHandler.__get_diffs_number_from_gumtree(src_file.name, dst_file.name)
 
-    # Todo: add tests
     def get_diffs_number(self, anon_dst_tree: Optional[ast.AST], canon_dst_tree: Optional[ast.AST]) -> int:
         if anon_dst_tree is None and canon_dst_tree is None:
             log_and_raise_error(f'Both trees can not be empty!', log)

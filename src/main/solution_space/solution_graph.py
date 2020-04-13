@@ -5,13 +5,13 @@ import logging
 import collections
 from typing import Optional, List, Tuple, Set, Dict
 
-from src.main.canonicalization.diffs.rivers_diff_handler import RiversDiffHandler
 from src.main.util.log_util import log_and_raise_error
 from src.main.util.consts import LOGGER_NAME, TASK, LANGUAGE
 from src.main.solution_space import consts as solution_space_consts
 from src.main.canonicalization.diffs.diff_handler import IDiffHandler
 from src.main.canonicalization.canonicalization import are_asts_equal
 from src.main.solution_space.data_classes import User, Code, CodeInfo
+from src.main.canonicalization.diffs.rivers_diff_handler import RiversDiffHandler
 from src.main.util.file_util import remove_directory, create_directory, does_exist
 from src.main.solution_space.consts import VERTEX_TYPE, GRAPH_FOLDER_PREFIX, FOLDER_WITH_CODE_FILES, FILE_PREFIX
 

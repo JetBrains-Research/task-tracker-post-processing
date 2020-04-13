@@ -6,9 +6,9 @@ import logging
 import itertools
 from typing import List, Optional, Tuple
 
-from src.main.util.log_util import log_and_raise_error
 from src.test.test_util import LoggedTest
 from src.main.util.consts import LOGGER_NAME, TASK
+from src.main.util.log_util import log_and_raise_error
 from src.main.canonicalization.diffs.rivers_diff_handler import RiversDiffHandler
 from src.main.canonicalization.canonicalization import get_code_from_tree, get_cleaned_code
 from src.test.canonicalization.util import run_test, DIFF_HANDLER_TEST_TYPES, CANONICALIZATION_TESTS
