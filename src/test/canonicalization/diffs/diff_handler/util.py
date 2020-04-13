@@ -16,7 +16,7 @@ from src.main.util.file_util import get_content_from_file, get_all_file_system_i
 log = logging.getLogger(LOGGER_NAME)
 
 
-BASE_DATA_PATH = TEST_DATA_PATH + '/solution_space/hint'
+BASE_DATA_PATH = TEST_DATA_PATH + '/solution_space/'
 
 
 class TEST_METHOD(Enum):
@@ -24,8 +24,12 @@ class TEST_METHOD(Enum):
     GUM_TREE = 'Gum Tree Diff'
 
 
-def __get_sources_and_goals(task: TASK) -> Tuple[List[str], List[str]]:
-    root = os.path.join(BASE_DATA_PATH, task.value)
+class TEST_TYPE(Enum):
+    DIFF = 'diffs'
+
+
+def __get_sources_and_goals(task: TASK, test_type: TEST_TYPE = TEST_TYPE.DIFF) -> Tuple[List[str], List[str]]:
+    root = os.path.join(BASE_DATA_PATH, test_type.value, task.value)
     sources_paths = get_all_file_system_items(root, match_condition(r'source_\d+.py'))
     sources_paths.sort()
     goals_paths = get_all_file_system_items(root, match_condition(r'goal_\d+.py'))
@@ -42,7 +46,7 @@ def __get_code_by_source(source: str, is_goal: bool = False) -> Code:
     return Code(canon_tree=canon_tree, rate=rate, anon_tree=anon_tree)
 
 
-def get_solution_graph(task: TASK, to_plot_graph: bool = True) -> SolutionGraph:
+def get_solution_graph(task: TASK, to_plot_graph: bool = True, test_prefix: str = 'num_diffs') -> SolutionGraph:
     sources, goals = __get_sources_and_goals(task)
     sg = SolutionGraph(task)
     code_info = CodeInfo(User())
@@ -52,11 +56,11 @@ def get_solution_graph(task: TASK, to_plot_graph: bool = True) -> SolutionGraph:
         chain = [(code, code_info) for code in codes]
         sg.add_code_info_chain(chain)
     if to_plot_graph:
-        path = __plot_graph(task, sg)
+        path = __plot_graph(task, sg, test_prefix)
         log.info(f'Graph path for solution space for task {task.value} is {path}')
     return sg
 
 
-def __plot_graph(task: TASK, sg: SolutionGraph) -> str:
+def __plot_graph(task: TASK, sg: SolutionGraph, test_prefix: str) -> str:
     gv = SolutionSpaceVisualizer(sg)
-    return gv.create_graph_representation(name_prefix=f'test_graph_{task.value}')
+    return gv.create_graph_representation(name_prefix=f'test_graph_{test_prefix}_{task.value}')

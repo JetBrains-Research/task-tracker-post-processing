@@ -1,9 +1,10 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
-import logging
 import os
+import logging
 from typing import Tuple, Any, List
 
+from src.test.solution_space.solution_graph.util import init_default_ids
 from src.test.test_util import LoggedTest
 from src.main.util.file_util import create_file
 from src.main.util.log_util import log_and_raise_error
@@ -103,7 +104,7 @@ def get_res_for_current_test(task: TASK, user_code: str, goal: Vertex, actual_di
     return res
 
 
-def get_diffs_from_graph(graph: SolutionGraph, goal: Vertex, diff_handler: IDiffHandler) -> Tuple[int, ...]:
+def get_diffs_from_graph(graph: SolutionGraph, goal: Vertex, diff_handler_class: IDiffHandler) -> Tuple[int, ...]:
     vertices = graph.get_traversal()
     vertices.remove(graph.start_vertex)
 
@@ -112,20 +113,21 @@ def get_diffs_from_graph(graph: SolutionGraph, goal: Vertex, diff_handler: IDiff
     for vertex in vertices:
         if vertex.code.is_full():
             continue
-        diffs += (graph.get_diffs_number_between_vertexes(vertex, goal, diff_handler_class=diff_handler),)
-        diffs += (graph.get_diffs_number_between_vertexes(goal, vertex, diff_handler_class=diff_handler),)
+        diffs += (graph.get_diffs_number_between_vertexes(vertex, goal, diff_handler_class=diff_handler_class),)
+        diffs += (graph.get_diffs_number_between_vertexes(goal, vertex, diff_handler_class=diff_handler_class),)
 
     return diffs
 
 
 def run_test(self, task: TASK, diff_handler_class: IDiffHandler,
              test_method: TEST_METHOD = TEST_METHOD.KELLY) -> None:
+    init_default_ids()
     current_save_folder = os.path.join(SAVE_FOLDER, task.value)
     s_g = get_solution_graph(task)
 
     for user_source_code in USER_CODE:
         resources = get_resources(task, user_source_code)
-        user_diff_handler = diff_handler_class.__init__(user_source_code)
+        user_diff_handler = diff_handler_class(user_source_code)
 
         for i, resource in enumerate(resources):
             current_goal_id = resource.get(GOAL_ID)
