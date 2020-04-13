@@ -112,29 +112,30 @@ def get_diffs_from_graph(graph: SolutionGraph, goal: Vertex, diff_handler: IDiff
     for vertex in vertices:
         if vertex.code.is_full():
             continue
-        diffs += (graph.get_diffs_number_between_vertexes(vertex, goal, diff_handler=diff_handler),)
-        diffs += (graph.get_diffs_number_between_vertexes(goal, vertex, diff_handler=diff_handler),)
+        diffs += (graph.get_diffs_number_between_vertexes(vertex, goal, diff_handler_class=diff_handler),)
+        diffs += (graph.get_diffs_number_between_vertexes(goal, vertex, diff_handler_class=diff_handler),)
 
     return diffs
 
 
-def run_test(self, task: TASK, diff_handler: IDiffHandler,
+def run_test(self, task: TASK, diff_handler_class: IDiffHandler,
              test_method: TEST_METHOD = TEST_METHOD.KELLY) -> None:
     current_save_folder = os.path.join(SAVE_FOLDER, task.value)
     s_g = get_solution_graph(task)
 
     for user_source_code in USER_CODE:
         resources = get_resources(task, user_source_code)
-        user_diff_handler = diff_handler.__init__(user_source_code)
+        user_diff_handler = diff_handler_class.__init__(user_source_code)
 
         for i, resource in enumerate(resources):
             current_goal_id = resource.get(GOAL_ID)
             goal = get_current_goal(current_goal_id, s_g)
 
-            diffs = get_diffs_from_graph(s_g, goal, diff_handler)
+            diffs = get_diffs_from_graph(s_g, goal, diff_handler_class)
             from_user_to_goal = goal.get_diffs_number_to_vertex(user_diff_handler)
             diffs += (from_user_to_goal,)
-            from_goal_to_user = goal.get_diffs_number_from_vertex(user_diff_handler, diff_handler=diff_handler)
+            from_goal_to_user = goal.get_diffs_number_from_vertex(user_diff_handler,
+                                                                  diff_handler_class=diff_handler_class)
             diffs += (from_goal_to_user,)
 
             diffs_number_res = PiesDiffsTypes(diffs)
@@ -149,7 +150,7 @@ class TestNumberDiffs(LoggedTest):
 
     # Todo: a right way to use diff_handler
     def test_kelly_rivers_diffs(self) -> None:
-        run_test(self, TASK.PIES, diff_handler=RiversDiffHandler)
+        run_test(self, TASK.PIES, diff_handler_class=RiversDiffHandler)
 
     def test_gumtree_diffs(self) -> None:
-        run_test(self, TASK.PIES, diff_handler=GumTreeDiffHandler, test_method=TEST_METHOD.GUM_TREE)
+        run_test(self, TASK.PIES, diff_handler_class=GumTreeDiffHandler, test_method=TEST_METHOD.GUM_TREE)
