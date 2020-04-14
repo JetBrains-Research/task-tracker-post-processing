@@ -112,7 +112,7 @@ class PathFinder:
     @staticmethod
     def __is_rate_worse(user_rate: float, graph_vertex_rate: float):
         # TODO: 14/04 or If number of passed tests > 0 then True???
-        return graph_vertex_rate < user_rate
+        return user_rate > 0 and graph_vertex_rate == 0
 
     # Choose the best way to go to the goal
     # For example, if we have a good way through the graph, we should advise it,
@@ -120,7 +120,6 @@ class PathFinder:
     @staticmethod
     def __go_through_graph(user_diff_handler: IDiffHandler, graph_vertex: Vertex, goal: Vertex,
                            user_rate: float = 0.0) -> bool:
-
         diffs_from_user_to_goal = goal.get_diffs_number_to_vertex(user_diff_handler)
         diffs_from_empty_to_user = user_diff_handler.get_diffs_number_from_diff_handler(EMPTY_DIFF_HANDLER)
 
