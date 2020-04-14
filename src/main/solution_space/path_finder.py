@@ -1,9 +1,10 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
-
+import ast
 import logging
 from typing import List, Optional
 
 from src.main.canonicalization.diffs.diff_handler import IDiffHandler
+from src.main.canonicalization.diffs.gumtree_diff_handler import GumTreeDiffHandler
 from src.main.util import consts
 from src.main.util.log_util import log_and_raise_error
 from src.main.canonicalization.diffs.rivers_diff_handler import RiversDiffHandler
@@ -24,7 +25,8 @@ class PathFinder:
         return self._graph
 
     # Find a next canonicalized code state
-    def find_next_vertex(self, user_diff_handler: IDiffHandler, user: User) -> Vertex:
+    # Todo: 14/04 calculate user rate
+    def find_next_vertex(self, user_diff_handler: IDiffHandler, user: User, user_rate: float) -> Vertex:
         # Todo: check if user_code is not valid
         # Todo: add method for getting source_code to DiffHandler?
         log.info(f'Start finding the next code state for the user code: '
@@ -33,7 +35,7 @@ class PathFinder:
         goal = self.__find_closest_goal(user_diff_handler, user)
         graph_vertex = self.__find_closest_vertex_with_path(user_diff_handler, user, goal)
         # We can have graph_vertex = None
-        if graph_vertex and self.__go_through_graph(user_diff_handler, graph_vertex, goal):
+        if graph_vertex and self.__go_through_graph(user_diff_handler, graph_vertex, goal, user_rate=user_rate):
             log.info(f'We are going through graph')
             return graph_vertex
         else:
@@ -42,7 +44,8 @@ class PathFinder:
 
     # Sort candidates and return the best for user_code from ones
     @staticmethod
-    def __choose_best_vertex(user_diff_handler: IDiffHandler, user: User, vertices: List[Vertex]) -> Optional[Vertex]:
+    def __choose_best_vertex(user_diff_handler: IDiffHandler, user: User,
+                             vertices: List[Vertex]) -> Optional[Vertex]:
         if len(vertices) == 0:
             return None
         candidates = list(map(lambda vertex: MeasuredVertex(user_diff_handler, vertex, user), vertices))
@@ -62,30 +65,41 @@ class PathFinder:
     # Run __choose_best_vertex on these vertices, which returns None in case of the empty list
     # Note: we have to remove the 'user_code' from the set
     def __find_closest_vertex_with_path(self, user_diff_handler: IDiffHandler, user: User,
-                                        goal: Vertex, to_add_empty: bool = False) -> Optional[Vertex]:
+                                        goal: Vertex) -> Optional[Vertex]:
         # Todo: move somewhere as a separate method
         user_diffs_to_goal = goal.get_diffs_number_to_vertex(user_diff_handler)
+
+        # Todo: 14/04 test vertex from graph
+        vertex_in_graph = self._graph.find_vertex_by_canon_tree(user_diff_handler.canon_tree)
+        if vertex_in_graph:
+            return self.__choose_best_vertex(user_diff_handler, user, vertex_in_graph.children)
+
         candidates = []
         vertices = self._graph.get_traversal()
         vertices.remove(self._graph.start_vertex)
 
         for vertex in vertices:
-            # We don't want to add to result the same vertex
-            if are_asts_equal(user_diff_handler.canon_tree, vertex.code.canon_tree):
-                continue
-            # Todo: change to normal way
-            if get_code_from_tree(vertex.code.canon_tree) == '' \
-                    and get_code_from_tree(vertex.code.anon_trees[0]) == '' \
-                    and not to_add_empty:
-                continue
-
-            # Todo: calculate diffs to the nearest goal from each vertex or not???
-            # Todo: think about empty tree
-            diffs = self._graph.get_diffs_number_between_vertexes(vertex, goal)
-
-            if diffs <= user_diffs_to_goal:
+            # Todo: use const for 0.7
+            if self.__class__\
+                    .__get_is_rollback_probability(user_diff_handler.canon_tree, vertex.code.canon_tree) <= 0.7:
                 candidates.append(vertex)
+            #
+            # diffs = self._graph.get_diffs_number_between_vertexes(vertex, goal)
+            #
+            # if diffs <= user_diffs_to_goal:
+            #     candidates.append(vertex)
         return self.__choose_best_vertex(user_diff_handler, user, candidates)
+
+    @staticmethod
+    def __get_is_rollback_probability(user_canon_tree: ast.AST, vertex_canon_tree: ast.AST) -> float:
+        # Todo: use AST comparing or other measure
+        included_lines_count = 0
+        vertex_code_lines = get_code_from_tree(vertex_canon_tree).strip('\n').split('\n')
+        user_code = get_code_from_tree(user_canon_tree)
+        for line in vertex_code_lines:
+            if line in user_code:
+                included_lines_count += 1
+        return included_lines_count / len(vertex_code_lines)
 
     @staticmethod
     def __is_far_from_graph(diffs_from_user_to_goal: int, diffs_from_user_to_graph_vertex: int) -> bool:
@@ -95,16 +109,26 @@ class PathFinder:
     def __is_most_of_path_is_done(diffs_from_empty_to_goal: int, diffs_from_user_to_goal: int) -> bool:
         return diffs_from_user_to_goal <= diffs_from_empty_to_goal * DIFFS_PERCENT_TO_GO_DIRECTLY
 
+    @staticmethod
+    def __is_rate_worse(user_rate: float, graph_vertex_rate: float):
+        # TODO: 14/04 or If number of passed tests > 0 then True???
+        return graph_vertex_rate < user_rate
+
     # Choose the best way to go to the goal
     # For example, if we have a good way through the graph, we should advise it,
     # but if don't we would advise going directly to the goal
     @staticmethod
-    def __go_through_graph(user_diff_handler: IDiffHandler, graph_vertex: Vertex, goal: Vertex) -> bool:
+    def __go_through_graph(user_diff_handler: IDiffHandler, graph_vertex: Vertex, goal: Vertex,
+                           user_rate: float = 0.0) -> bool:
 
         diffs_from_user_to_goal = goal.get_diffs_number_to_vertex(user_diff_handler)
         diffs_from_empty_to_user = user_diff_handler.get_diffs_number_from_diff_handler(EMPTY_DIFF_HANDLER)
+
         if PathFinder.__is_most_of_path_is_done(diffs_from_empty_to_user + diffs_from_user_to_goal,
                                                 diffs_from_user_to_goal):
+            return False
+
+        if PathFinder.__is_rate_worse(user_rate, graph_vertex.code.rate):
             return False
 
         diffs_from_user_to_graph_vertex = graph_vertex.get_diffs_number_to_vertex(user_diff_handler)
@@ -112,9 +136,12 @@ class PathFinder:
 
 
 class MeasuredVertex:
-    def __init__(self, user_diff_handler: IDiffHandler, vertex: Vertex, user: User, distance: Optional[int] = None):
+    def __init__(self, user_diff_handler: IDiffHandler, vertex: Vertex, user: User,
+                 distance_to_user: Optional[int] = None):
+        # Todo: add fine for rollback
         self._vertex = vertex
-        self._distance = distance if distance else vertex.get_diffs_number_to_vertex(user_diff_handler)
+        self._distance_to_user = distance_to_user if distance_to_user \
+            else vertex.get_diffs_number_to_vertex(user_diff_handler)
         # Todo: get actual vertex profile
         self._profile = self.__init_profile(user)
         self._users_count = len(vertex.get_unique_users())
@@ -124,8 +151,8 @@ class MeasuredVertex:
         return self._vertex
 
     @property
-    def distance(self) -> int:
-        return self._distance
+    def distance_to_user(self) -> int:
+        return self._distance_to_user
 
     @property
     def profile(self) -> Profile:
@@ -142,7 +169,7 @@ class MeasuredVertex:
     def __eq__(self, o: object) -> bool:
         if not isinstance(o, MeasuredVertex):
             return False
-        if self._distance != o.distance or self._profile == o.profile:
+        if self._distance_to_user != o.distance_to_user or self._profile == o.profile:
             return False
         return True
 
@@ -152,10 +179,13 @@ class MeasuredVertex:
     def __lt__(self, o: object):
         if not isinstance(o, MeasuredVertex):
             log_and_raise_error(f'The object {o} is not {self.__class__} class', log)
-        if self._distance < o.distance:
+        if self._distance_to_user < o.distance_to_user:
             return True
         # Todo: use profile info
         return self._users_count < o.users_count
+
+
+
 
 
 

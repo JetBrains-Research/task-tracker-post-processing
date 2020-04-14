@@ -21,6 +21,10 @@ log = logging.getLogger(LOGGER_NAME)
 SAVE_FOLDER = os.path.join(SOLUTION_SPACE_TEST_RESULT_PATH, 'path_finder')
 
 
+# Todo: 14/04 calculate user rate
+NOT_ZERO_RATES_INDEXES = [4]
+
+
 def get_res_for_current_test(test_prefix: str, task: TASK, s_g: SolutionGraph,
                              user_dh: IDiffHandler, next_vertex: Vertex) -> str:
     res = ''
@@ -41,7 +45,8 @@ def run_test(self, task: TASK, test_prefix: str, s_g: SolutionGraph) -> None:
     for i, user_solution in enumerate(user_solutions):
         p_f = PathFinder(s_g)
         user_dh = GumTreeDiffHandler(user_solution)
-        next_vertex = p_f.find_next_vertex(user_dh, user)
+        user_rate = 0 if i not in NOT_ZERO_RATES_INDEXES else 0.5
+        next_vertex = p_f.find_next_vertex(user_dh, user, user_rate=user_rate)
         res = get_res_for_current_test(test_prefix, task, s_g, user_dh, next_vertex)
         current_file_name = os.path.join(current_save_folder, f'user_code_{i}{EXTENSION.TXT.value}')
         create_file(res, current_file_name)
