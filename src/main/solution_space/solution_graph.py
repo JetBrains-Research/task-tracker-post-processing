@@ -8,8 +8,10 @@ from typing import Optional, List, Tuple, Set, Dict
 from src.main.util.log_util import log_and_raise_error
 from src.main.util.consts import LOGGER_NAME, TASK, LANGUAGE
 from src.main.solution_space import consts as solution_space_consts
+from src.main.canonicalization.diffs.diff_handler import IDiffHandler
 from src.main.canonicalization.canonicalization import are_asts_equal
 from src.main.solution_space.data_classes import User, Code, CodeInfo
+from src.main.canonicalization.diffs.rivers_diff_handler import RiversDiffHandler
 from src.main.util.file_util import remove_directory, create_directory, does_exist
 from src.main.solution_space.consts import VERTEX_TYPE, GRAPH_FOLDER_PREFIX, FOLDER_WITH_CODE_FILES, FILE_PREFIX
 
@@ -85,6 +87,15 @@ class Vertex:
     def get_unique_users(self) -> Set[User]:
         users = [code_info.user for code_info in self._code_info_list]
         return set(users)
+
+    def get_diffs_number_to_vertex(self, start_dh: IDiffHandler) -> int:
+        return min(start_dh.get_diffs_number(a_t, self.code.canon_tree) for a_t in self.code.anon_trees)
+
+    # Todo: change default handler and add type annotation to type_handler
+    def get_diffs_number_from_vertex(self, end_dh: IDiffHandler,
+                                     diff_handler_class: IDiffHandler = RiversDiffHandler) -> int:
+        return min(diff_handler_class(anon_tree=a_t, canon_tree=self.code.canon_tree)
+                   .get_diffs_number_from_diff_handler(end_dh) for a_t in self.code.anon_trees)
 
 
 class GraphIterator(collections.abc.Iterator):
@@ -262,3 +273,13 @@ class SolutionGraph(collections.abc.Iterable):
                 adj_vertices.add(c.id)
             adj_list[vertex.id] = adj_vertices
         return adj_list
+
+    # Todo: calculate diffs to the nearest goal from each vertex during graph constructing
+    @staticmethod
+    def get_diffs_number_between_vertexes(from_vertex: Vertex, to_vertex: Vertex,
+                                          diff_handler_class: IDiffHandler = RiversDiffHandler) -> int:
+        diffs = []
+        for anon_tree in from_vertex.code.anon_trees:
+            dh = diff_handler_class(anon_tree=anon_tree, canon_tree=from_vertex.code.canon_tree)
+            diffs.append(to_vertex.get_diffs_number_to_vertex(dh))
+        return min(diffs)

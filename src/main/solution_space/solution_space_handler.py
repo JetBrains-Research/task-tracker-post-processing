@@ -90,12 +90,12 @@ def __get_user(solutions: pd.DataFrame) -> User:
     return User(__get_profile(solutions))
 
 
-def __get_code_info(solutions: pd.DataFrame, user: User, anon_tree: ast.AST, index: int,
+def __get_code_info(solutions: pd.DataFrame, user: User, index: int,
                     ati_actions: List[AtiItem], file: str) -> CodeInfo:
     date = __get_column_value(solutions, index, consts.CODE_TRACKER_COLUMN.DATE)
     timestamp = __get_column_value(solutions, index, consts.CODE_TRACKER_COLUMN.TIMESTAMP)
     filename = get_name_from_path(file)
-    return CodeInfo(user, anon_tree, timestamp, date, ati_actions, filename)
+    return CodeInfo(user, timestamp, date, ati_actions, filename)
 
 
 def __is_compiled(test_result: float) -> bool:
@@ -129,11 +129,11 @@ def __get_rate(tests_results: str, task_index: int) -> float:
     return tests_results[task_index]
 
 
-def __get_code(solutions: pd.DataFrame, index: int, task_index: int, canon_tree: ast.AST) -> Code:
+def __get_code(solutions: pd.DataFrame, index: int, task_index: int, canon_tree: ast.AST, anon_tree: ast.AST) -> Code:
     tests_results = __get_column_value(solutions, index, consts.CODE_TRACKER_COLUMN.TESTS_RESULTS)
     rate = __get_rate(tests_results, task_index)
     log.info(f'Task index is :{task_index}, rate is: {rate}')
-    return Code(canon_tree=canon_tree, rate=rate)
+    return Code(canon_tree=canon_tree, rate=rate, anon_tree=anon_tree)
 
 
 def __convert_to_datetime(df: pd.DataFrame) -> None:
@@ -153,8 +153,8 @@ def __create_code_info_chain(file: str, task: TASK) -> List[Tuple[Code, CodeInfo
     while i < solutions.shape[0]:
         old_index = i
         i, ati_actions, anon_tree, canon_tree = __find_same_fragments(solutions, i)
-        code = __get_code(solutions, old_index, task_index, canon_tree)
-        code_info = __get_code_info(solutions, user, anon_tree, old_index, ati_actions, file)
+        code = __get_code(solutions, old_index, task_index, canon_tree, anon_tree)
+        code_info = __get_code_info(solutions, user, old_index, ati_actions, file)
         code_info_chain.append((code, code_info))
     log.info(f'Finish solution space creating for file {file} for task {task}')
     return code_info_chain

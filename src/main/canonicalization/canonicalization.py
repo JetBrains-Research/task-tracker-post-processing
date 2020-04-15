@@ -27,7 +27,7 @@ def get_cleaned_code(source: str) -> str:
     return printFunction(get_ast(source))
 
 
-def get_code_from_tree(tree: ast.AST) -> str:
+def get_code_from_tree(tree: Optional[ast.AST]) -> str:
     return printFunction(tree)
 
 
