@@ -11,6 +11,12 @@ from src.main.util.consts import TEST_DATA_PATH
 from src.main.splitting.task_checker import check_call_safely
 from src.main.util.file_util import get_all_file_system_items, extension_file_condition
 
+"""
+UNUSED
+These tests aren't included in all tests running because it's unnecessary to compare pylint and mypy again.
+We have already chosen mypy.
+"""
+
 log = logging.getLogger(consts.LOGGER_NAME)
 
 PARSING_TEST_DATA_PATH = os.path.join(TEST_DATA_PATH, "splitting/tasks_tests_handler/python_parsing/")

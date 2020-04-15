@@ -9,6 +9,11 @@ from src.main.util.file_util import get_content_from_file
 from src.test.canonicalization.util import run_test, CANONICALIZATION_TESTS_TYPES
 from src.main.canonicalization.canonicalization import get_cleaned_code, get_code_from_tree, get_trees
 
+"""
+FAILED
+These tests are failed because of removing 'helperFolding' and 'deadCodeRemoval' from transformations.
+"""
+
 log = logging.getLogger(LOGGER_NAME)
 
 ADDITIONAL_FOLDER = 'canonicalization'

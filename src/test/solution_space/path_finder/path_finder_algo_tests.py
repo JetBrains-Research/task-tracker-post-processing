@@ -6,7 +6,7 @@ import logging
 from src.test.test_util import LoggedTest
 from src.main.util.file_util import create_file
 from src.main.solution_space.data_classes import User
-from src.main.solution_space.path_finder.path_finder import PathFinder
+from src.main.solution_space.path_finder.path_finder_v_1 import PathFinderV1
 from src.main.canonicalization.diffs.diff_handler import IDiffHandler
 from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 from src.main.canonicalization.canonicalization import get_code_from_tree
@@ -39,7 +39,7 @@ def run_test(self, task: TASK, test_prefix: str, s_g: SolutionGraph) -> None:
     user_solutions = get_user_solutions(task)
     user = User()
     for i, user_solution in enumerate(user_solutions):
-        p_f = PathFinder(s_g)
+        p_f = PathFinderV1(s_g)
         user_dh = GumTreeDiffHandler(user_solution)
         next_vertex = p_f.find_next_vertex(user_dh, user)
         res = get_res_for_current_test(test_prefix, task, s_g, user_dh, next_vertex)

@@ -15,6 +15,10 @@ from src.test.canonicalization.util import run_test, DIFF_HANDLER_TEST_TYPES, CA
 from src.main.util.file_util import get_content_from_file, get_name_from_path, match_condition, get_parent_folder, \
      get_all_file_system_items
 
+"""
+FAILED
+These tests are failed because of removing 'helperFolding' and 'deadCodeRemoval' from transformations.
+"""
 log = logging.getLogger(LOGGER_NAME)
 
 ADDITIONAL_FOLDER = 'diffs/diff_handler'

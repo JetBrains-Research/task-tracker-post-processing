@@ -8,6 +8,12 @@ from src.main.util.language_util import get_language_by_extension
 from src.main.splitting.tasks_tests_handler import create_in_and_out_dict, check_tasks, run_tests
 from src.main.util.file_util import get_all_file_system_items, get_extension_from_file, get_content_from_file
 
+"""
+UNUSED
+These tests aren't included in all tests running because the stage of running tests has already passed.
+All previous cases when some fragments had raised any errors are fixed now.
+"""
+
 PREVIOUS_ERRORS_TEST_DATA = os.path.join(TEST_DATA_PATH, 'splitting/tasks_tests_handler/previous_errors')
 
 

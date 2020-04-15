@@ -7,7 +7,7 @@ from src.test.test_util import LoggedTest
 from src.main.util.consts import TEST_DATA_PATH, TASK
 from src.main.canonicalization.consts import TREE_TYPE
 from src.main.util.file_util import get_content_from_file
-from src.main.solution_space.path_finder.path_finder import PathFinder
+from src.main.solution_space.path_finder.path_finder_v_1 import PathFinderV1
 from src.main.canonicalization.canonicalization import get_trees
 from src.main.solution_space.data_classes import Code, Profile, User
 from src.main.solution_space.solution_graph import SolutionGraph, Vertex
@@ -34,12 +34,12 @@ def init_graph() -> SolutionGraph:
 
 
 SG = init_graph()
-PF = PathFinder(SG)
+PF = PathFinderV1(SG)
 
 
 def get_best_vertex_from_empty_list() -> Optional[Vertex]:
     # Call the private function
-    return PF._PathFinder__choose_best_vertex(USER_CODE, DEFAULT_USER, [])
+    return PF._PathFinderV1__choose_best_vertex(USER_CODE, DEFAULT_USER, [])
 
 
 class TestChooseBestVertexMethod(LoggedTest):
