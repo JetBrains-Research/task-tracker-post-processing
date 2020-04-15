@@ -12,7 +12,7 @@ from src.main.splitting.task_checker import check_call_safely
 from src.main.util.file_util import get_all_file_system_items, extension_file_condition
 
 """
-UNUSED
+EXCLUDED
 These tests aren't included in all tests running because it's unnecessary to compare pylint and mypy again.
 We have already chosen mypy.
 """

@@ -18,6 +18,12 @@ from src.main.canonicalization.diffs.gumtree_diff_handler import GumTreeDiffHand
 from src.main.util.consts import TASK, LOGGER_NAME, SOLUTION_SPACE_TEST_RESULT_PATH, EXTENSION
 from src.test.canonicalization.diffs.diff_handler.util import get_solution_graph, TEST_METHOD
 
+"""
+EXCLUDED
+These tests aren't included in all tests running because they take a lot of time. Since we have already decided to
+use GumTree diffs as a metric, we don't need to run them every time. Also, we need to refactor them a little.
+"""
+
 log = logging.getLogger(LOGGER_NAME)
 
 DIFFS_NUMBER = 'diffs_number'

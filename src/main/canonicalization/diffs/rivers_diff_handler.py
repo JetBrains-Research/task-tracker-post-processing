@@ -18,6 +18,7 @@ log = logging.getLogger(consts.LOGGER_NAME)
 
 
 class RiversDiffHandler(IDiffHandler):
+
     def get_diffs(self, anon_dst_tree: ast.AST, canon_dst_tree: ast.AST) -> Tuple[List[ChangeVector], TREE_TYPE]:
         anon_diffs = diffAsts(self._anon_tree, anon_dst_tree)
         canon_diffs = diffAsts(self._canon_tree, canon_dst_tree)
@@ -37,9 +38,6 @@ class RiversDiffHandler(IDiffHandler):
             log_and_raise_error(f'Trees can not be empty!\nAnon tree:\n{get_code_from_tree(anon_dst_tree)}\n'
                                 f'Canon tree:\n{get_code_from_tree(canon_dst_tree)}', log)
         return len(self.get_diffs(anon_dst_tree, canon_dst_tree)[0])
-
-    def get_diffs_from_diff_handler(self, diff_handler: 'RiversDiffHandler') -> Tuple[List[ChangeVector], TREE_TYPE]:
-        return self.get_diffs(diff_handler.anon_tree, diff_handler.canon_tree)
 
     def apply_diffs(self, diffs: List[ChangeVector], tree_type: TREE_TYPE = TREE_TYPE.CANON) -> ast.AST:
         source_tree = deepcopy(self._orig_tree)

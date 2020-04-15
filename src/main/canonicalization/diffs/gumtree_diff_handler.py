@@ -28,7 +28,7 @@ class GumTreeDiffHandler(IDiffHandler):
             output = check_output(args, universal_newlines=True).strip('\n')
             return int(output)
         except CalledProcessError as e:
-            log_and_raise_error(f'Error during GeumTreeDiff running: {e}, src file: {src_file}, dst file: {dst_file}',
+            log_and_raise_error(f'Error during GumTreeDiff running: {e}, src file: {src_file}, dst file: {dst_file}',
                                 log, ValueError)
             exit(1)
 
@@ -46,7 +46,7 @@ class GumTreeDiffHandler(IDiffHandler):
 
     def get_diffs_number(self, anon_dst_tree: Optional[ast.AST], canon_dst_tree: Optional[ast.AST]) -> int:
         if anon_dst_tree is None and canon_dst_tree is None:
-            log_and_raise_error(f'Both trees can not be empty!', log)
+            log_and_raise_error(f'Both trees cannot be empty!', log)
 
         diffs_number = []
         if anon_dst_tree is not None:

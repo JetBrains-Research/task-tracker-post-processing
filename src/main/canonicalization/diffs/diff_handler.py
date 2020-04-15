@@ -2,8 +2,8 @@
 
 import ast
 import logging
-from abc import ABCMeta, abstractmethod
 from typing import Optional
+from abc import ABCMeta, abstractmethod
 
 from src.main.util import consts
 from src.main.canonicalization.consts import TREE_TYPE
@@ -22,7 +22,7 @@ class IDiffHandler(object, metaclass=ABCMeta):
             self._orig_tree, self._anon_tree, self._canon_tree = None, anon_tree, canon_tree
 
     @property
-    def orig_tree(self) -> ast.AST:
+    def orig_tree(self) -> Optional[ast.AST]:
         return self._orig_tree
 
     @property
@@ -37,5 +37,6 @@ class IDiffHandler(object, metaclass=ABCMeta):
     def get_diffs_number(self, anon_dst_tree: Optional[ast.AST], canon_dst_tree: Optional[ast.AST]) -> int:
         raise NotImplementedError
 
+    # todo: rename
     def get_diffs_number_from_diff_handler(self, diff_handler: 'IDiffHandler') -> int:
         return self.get_diffs_number(diff_handler.anon_tree, diff_handler.canon_tree)
