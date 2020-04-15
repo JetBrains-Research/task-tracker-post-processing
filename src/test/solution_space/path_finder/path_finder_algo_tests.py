@@ -6,7 +6,7 @@ import logging
 from src.test.test_util import LoggedTest
 from src.main.util.file_util import create_file
 from src.main.solution_space.data_classes import User
-from src.main.solution_space.path_finder import PathFinder
+from src.main.solution_space.path_finder.path_finder import PathFinder
 from src.main.canonicalization.diffs.diff_handler import IDiffHandler
 from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 from src.main.canonicalization.canonicalization import get_code_from_tree

@@ -7,7 +7,7 @@ from src.test.test_util import LoggedTest
 from src.main.util.consts import TEST_DATA_PATH, TASK
 from src.main.canonicalization.consts import TREE_TYPE
 from src.main.util.file_util import get_content_from_file
-from src.main.solution_space.path_finder import PathFinder
+from src.main.solution_space.path_finder.path_finder import PathFinder
 from src.main.canonicalization.canonicalization import get_trees
 from src.main.solution_space.data_classes import Code, Profile, User
 from src.main.solution_space.solution_graph import SolutionGraph, Vertex

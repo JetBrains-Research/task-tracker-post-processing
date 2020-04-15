@@ -3,7 +3,7 @@ import logging
 
 from src.main.util import consts
 from src.main.solution_space.data_classes import User
-from src.main.solution_space.path_finder import PathFinder
+from src.main.solution_space.path_finder.path_finder import PathFinder
 from src.main.solution_space.solution_graph import SolutionGraph
 from src.main.canonicalization.diffs.rivers_diff_handler import RiversDiffHandler
 from src.main.canonicalization.canonicalization import get_code_from_tree

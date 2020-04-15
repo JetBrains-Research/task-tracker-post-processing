@@ -1,29 +1,20 @@
-# Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
-
-import logging
 from typing import List, Optional
 
+from src.main.canonicalization.canonicalization import get_code_from_tree, are_asts_equal
 from src.main.canonicalization.diffs.diff_handler import IDiffHandler
-from src.main.util import consts
-from src.main.util.log_util import log_and_raise_error
-from src.main.canonicalization.diffs.rivers_diff_handler import RiversDiffHandler
-from src.main.solution_space.data_classes import Code, User, Profile
-from src.main.solution_space.solution_graph import SolutionGraph, Vertex
-from src.main.canonicalization.canonicalization import are_asts_equal, get_trees, get_code_from_tree
-from src.main.solution_space.consts import DIFFS_PERCENT_TO_GO_DIRECTLY, DISTANCE_TO_GRAPH_THRESHOLD, EMPTY_DIFF_HANDLER
+from src.main.solution_space.consts import DISTANCE_TO_GRAPH_THRESHOLD, DIFFS_PERCENT_TO_GO_DIRECTLY, EMPTY_DIFF_HANDLER
+from src.main.solution_space.data_classes import User
+from src.main.solution_space.path_finder.path_finder import IPathFinder, log, MeasuredVertex
+from src.main.solution_space.solution_graph import Vertex
 
-log = logging.getLogger(consts.LOGGER_NAME)
+"""
+The first version of path finder.
+*an algorithm description goes here*
+"""
 
 
-class PathFinder:
-    def __init__(self, graph: SolutionGraph):
-        self._graph = graph
+class PathFinderV1(IPathFinder):
 
-    @property
-    def graph(self) -> SolutionGraph:
-        return self._graph
-
-    # Find a next canonicalized code state
     def find_next_vertex(self, user_diff_handler: IDiffHandler, user: User) -> Vertex:
         # Todo: check if user_code is not valid
         # Todo: add method for getting source_code to DiffHandler?
@@ -63,7 +54,6 @@ class PathFinder:
     # Note: we have to remove the 'user_code' from the set
     def __find_closest_vertex_with_path(self, user_diff_handler: IDiffHandler, user: User,
                                         goal: Vertex, to_add_empty: bool = False) -> Optional[Vertex]:
-        # Todo: move somewhere as a separate method
         user_diffs_to_goal = goal.get_diffs_number_to_vertex(user_diff_handler)
         candidates = []
         vertices = self._graph.get_traversal()
@@ -103,59 +93,9 @@ class PathFinder:
 
         diffs_from_user_to_goal = goal.get_diffs_number_to_vertex(user_diff_handler)
         diffs_from_empty_to_user = user_diff_handler.get_diffs_number_from_diff_handler(EMPTY_DIFF_HANDLER)
-        if PathFinder.__is_most_of_path_is_done(diffs_from_empty_to_user + diffs_from_user_to_goal,
-                                                diffs_from_user_to_goal):
+        if PathFinderV1.__is_most_of_path_is_done(diffs_from_empty_to_user + diffs_from_user_to_goal,
+                                                  diffs_from_user_to_goal):
             return False
 
         diffs_from_user_to_graph_vertex = graph_vertex.get_diffs_number_to_vertex(user_diff_handler)
-        return not PathFinder.__is_far_from_graph(diffs_from_user_to_goal, diffs_from_user_to_graph_vertex)
-
-
-class MeasuredVertex:
-    def __init__(self, user_diff_handler: IDiffHandler, vertex: Vertex, user: User, distance: Optional[int] = None):
-        self._vertex = vertex
-        self._distance = distance if distance else vertex.get_diffs_number_to_vertex(user_diff_handler)
-        # Todo: get actual vertex profile
-        self._profile = self.__init_profile(user)
-        self._users_count = len(vertex.get_unique_users())
-
-    @property
-    def vertex(self) -> Vertex:
-        return self._vertex
-
-    @property
-    def distance(self) -> int:
-        return self._distance
-
-    @property
-    def profile(self) -> Profile:
-        return self._profile
-
-    @property
-    def users_count(self) -> int:
-        return self._users_count
-
-    def __init_profile(self, user: User) -> Profile:
-        # Todo: add user handling
-        return Profile()
-
-    def __eq__(self, o: object) -> bool:
-        if not isinstance(o, MeasuredVertex):
-            return False
-        if self._distance != o.distance or self._profile == o.profile:
-            return False
-        return True
-
-    def __ne__(self, o: object) -> bool:
-        return not self.__eq__(o)
-
-    def __lt__(self, o: object):
-        if not isinstance(o, MeasuredVertex):
-            log_and_raise_error(f'The object {o} is not {self.__class__} class', log)
-        if self._distance < o.distance:
-            return True
-        # Todo: use profile info
-        return self._users_count < o.users_count
-
-
-
+        return not PathFinderV1.__is_far_from_graph(diffs_from_user_to_goal, diffs_from_user_to_graph_vertex)

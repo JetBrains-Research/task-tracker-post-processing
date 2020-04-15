@@ -21,14 +21,15 @@ log = logging.getLogger(consts.LOGGER_NAME)
 class GumTreeDiffHandler(IDiffHandler):
 
     @staticmethod
-    def __get_diffs_number_from_gumtree(file_with_source_from: str, file_with_source_to: str) -> int:
+    def __get_diffs_number_with_gumtree(src_file: str, dst_file: str) -> int:
         # Todo: move to a separated file
         try:
-            args = [consts.GUMTREE_PATH, 'diffn', file_with_source_from, file_with_source_to]
+            args = [consts.GUMTREE_PATH, 'diffn', src_file, dst_file]
             output = check_output(args, universal_newlines=True).strip('\n')
             return int(output)
         except CalledProcessError as e:
-            log_and_raise_error(f'Error during GeumTreeDiff running: {e}', log, CalledProcessError)
+            log_and_raise_error(f'Error during GeumTreeDiff running: {e}, src file: {src_file}, dst file: {dst_file}',
+                                log, ValueError)
             exit(1)
 
     @staticmethod
@@ -41,7 +42,7 @@ class GumTreeDiffHandler(IDiffHandler):
             dst_file.seek(0)
             src_file.seek(0)
 
-            return GumTreeDiffHandler.__get_diffs_number_from_gumtree(src_file.name, dst_file.name)
+            return GumTreeDiffHandler.__get_diffs_number_with_gumtree(src_file.name, dst_file.name)
 
     def get_diffs_number(self, anon_dst_tree: Optional[ast.AST], canon_dst_tree: Optional[ast.AST]) -> int:
         if anon_dst_tree is None and canon_dst_tree is None:
