@@ -4,7 +4,7 @@ import os
 import logging
 from abc import ABCMeta, abstractmethod
 from typing import List, Tuple, Dict, Optional
-from subprocess import check_output, CalledProcessError, check_call, TimeoutExpired
+from subprocess import check_output, CalledProcessError, check_call, TimeoutExpired, STDOUT
 
 from src.main.util.log_util import log_and_raise_error
 from src.main.util.language_util import get_extension_by_language
@@ -40,9 +40,13 @@ def check_output_safely(input: str, expected_output: str, popen_args: List[str],
 
 # Returns True if time is out, because it means that no other errors were raised,
 # so in case of code correctness checking it means that code is correct
-def check_call_safely(call_args: List[str], timeout: Optional[int] = TIMEOUT, timeout_return: bool = True) -> bool:
+def check_call_safely(call_args: List[str], timeout: Optional[int] = TIMEOUT, timeout_return: bool = True,
+                      shell: Optional[bool] = None) -> bool:
     try:
-        check_call(call_args, timeout=timeout)
+        if shell is not None:
+            check_call(call_args, timeout=timeout, shell=shell)
+        else:
+            check_call(call_args, timeout=timeout)
         return True
     except CalledProcessError as e:
         log.exception(e)
