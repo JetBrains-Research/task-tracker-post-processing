@@ -40,6 +40,7 @@ setup(name='codetracker-data',
           # For checking style and correctness of code
           'mypy',
           'pylint',
+          'javalang',
 
           # For plots:
           'plotly',
