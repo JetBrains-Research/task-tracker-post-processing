@@ -1,12 +1,12 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import ast
+import pytest
 from typing import List
 
-import pytest
 
-from src.main.canonicalization.canonicalization import are_asts_equal, get_code_from_tree
 from src.test.util import does_skip, TEST_LEVEL
+from src.main.canonicalization.canonicalization import are_asts_equal, get_code_from_tree
 
 empty_source = ''
 
