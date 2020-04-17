@@ -38,6 +38,12 @@ jobs:
       - checkout
       - restore_cache:
           key: v1-dependency-cache-{{ checksum "setup.py" }}-{{ checksum "Makefile" }}
+      -run:
+        - sudo apt-get update
+        - sudo apt install build-essential
+        - sudo apt-get install manpages-dev
+        - curl -s https://get.sdkman.io | bash
+        - sdk install kotlin
       - run:
           name: install python dependencies
           command: |
