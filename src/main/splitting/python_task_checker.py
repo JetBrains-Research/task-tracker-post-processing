@@ -31,7 +31,8 @@ class PythonTaskChecker(ITaskChecker):
         return self.create_source_file_with_name(source_code, SOURCE_OBJECT_NAME)
 
     def is_source_file_correct(self, source_file: str) -> bool:
-        is_correct = check_call_safely(['mypy', source_file]) and check_call_safely([sys.executable, source_file])
+        is_correct = check_call_safely(['mypy', source_file]) and check_call_safely([sys.executable, source_file],
+                                                                                    shell=True)
         log.info(f'Source code is correct: {is_correct}')
         return is_correct
 
