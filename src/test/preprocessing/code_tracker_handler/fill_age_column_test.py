@@ -50,13 +50,11 @@ class TestAGEColumnFilling:
                                    CODE_TRACKER_COLUMN.AGE.fits_restrictions, DEFAULT_VALUE.AGE)
         assert INVALID_FILE_FOR_PREPROCESSING == column_value
 
-
     @pytest.mark.parametrize('valid_df', VALID_DFS)
     def test_valid_dfs(self, valid_df) -> None:
         column_value = fill_column(valid_df, CODE_TRACKER_COLUMN.AGE,
                                    CODE_TRACKER_COLUMN.AGE.fits_restrictions, DEFAULT_VALUE.AGE)
         assert 11.0 == column_value
-
 
     @pytest.mark.parametrize('default_df', DEFAULT_DFS)
     def test_default_dfs(self, default_df) -> None:

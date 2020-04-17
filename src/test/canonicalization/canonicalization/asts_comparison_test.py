@@ -135,7 +135,6 @@ class TestASTsComparison:
         assert not are_asts_equal(empty_ast_1, not_empty_ast), \
             f'\n\n{get_code_from_tree(empty_ast_1)} \n\n\n{get_code_from_tree(not_empty_ast)}'
 
-    # Todo: add parametrize ??
     def test_different_asts(self) -> None:
         asts = get_asts_from_sources(different_sources)
         for i in range(len(asts)):
@@ -143,7 +142,6 @@ class TestASTsComparison:
                 assert not are_asts_equal(asts[i], asts[j]), \
                     f'\nast {i}: \n{get_code_from_tree(asts[i])} \n\n\nast {j}: {get_code_from_tree(asts[j])}'
 
-    # Todo: add parametrize??
     def test_equal_asts(self) -> None:
         asts = get_asts_from_sources(equal_sources)
         for i in range(len(asts)):

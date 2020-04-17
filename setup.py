@@ -46,5 +46,5 @@ setup(name='codetracker-data',
           'matplotlib'
       ],
       setup_requires=['pytest-runner'],
-      tests_require=['pytest'],
+      tests_require=['pytest', 'pytest-subtests'],
       )

@@ -80,29 +80,27 @@ class TestDiffHandler:
                  to_clear_out=True)
 
     @pytest.mark.parametrize('task', [task for task in TASK])
-    def test_no_exceptions_raised_applying_diffs_to_students_code(self, task) -> None:
+    def test_no_exceptions_raised_applying_diffs_to_students_code(self, task, subtests) -> None:
         srs_and_dst_files = get_src_and_dst_files(DIFF_HANDLER_TEST_TYPES.STUDENTS_CODE, task)
 
-        # Todo: add parametrize
         for i, (src_file, dst_file) in enumerate(srs_and_dst_files):
             test_info = f'Task {task.value}\nTest number {i}\nSrc file is: {src_file}\n' \
                         f'Dst file is: {dst_file}\n'
             log.info(test_info)
-            try:
+            with subtests.test(msg=f'Exception was raised\n{test_info}'):
                 apply_diffs(src_file, dst_file)
-            except Exception as e:
-                pytest.fail(f'Exception {e} was raised\n{test_info}')
 
     @pytest.mark.parametrize('task', [task for task in TASK])
-    def test_result_of_applying_diffs_to_students_code(self, task) -> None:
+    def test_result_of_applying_diffs_to_students_code(self, task, subtests) -> None:
         in_and_out_files = get_in_and_out_files(DIFF_HANDLER_TEST_TYPES.STUDENTS_CODE, task)
-        # Todo: add parametrize
         for i, (src_file, dst_file, out_file) in enumerate(in_and_out_files):
             test_info = f'Task {task.value}\nTest number {i}\nSrc file is: {src_file}\n' \
                         f'Dst file is: {dst_file}\n'
             log.info(test_info)
 
-            actual_out = apply_diffs(src_file, dst_file)
-            expected_out = get_cleaned_code(get_content_from_file(out_file)).rstrip('\n')
-            log.info(f'Actual code is:\n{actual_out}\nExpected code is:\n{expected_out}\n')
-            assert expected_out == actual_out, test_info
+            with subtests.test(msg=f'Exception was raised\n{test_info}'):
+                apply_diffs(src_file, dst_file)
+                actual_out = apply_diffs(src_file, dst_file)
+                expected_out = get_cleaned_code(get_content_from_file(out_file)).rstrip('\n')
+                log.info(f'Actual code is:\n{actual_out}\nExpected code is:\n{expected_out}\n')
+                assert expected_out == actual_out, test_info
