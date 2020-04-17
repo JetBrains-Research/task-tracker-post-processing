@@ -42,6 +42,7 @@ jobs:
           sudo apt-get update
           sudo apt install build-essential
           sudo apt-get install manpages-dev
+          sudo apt install ubuntu-sdk
           curl -s https://get.sdkman.io | bash
           sdk install kotlin
       - run:
