@@ -41,6 +41,9 @@ setup(name='codetracker-data',
           'mypy',
           'pylint',
           'javalang',
+          'ast',
+          'copy',
+          'functools',
 
           # For plots:
           'plotly',
