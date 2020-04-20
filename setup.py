@@ -8,6 +8,9 @@ from src.test.util import TEST_LEVEL, get_level_by_param
 with open('README.md') as readme_file:
     readme = readme_file.read()
 
+with open('requirements.txt') as req_file:
+    install_requires = req_file.read()
+
 # Todo: find a better way for it
 args = sys.argv
 test_level_param = '--test_level'
@@ -31,21 +34,21 @@ setup(name='codetracker-data',
       license='MIT',
       packages=find_packages(),
       python_requires='>=3',
-      install_requires=[
-          # Todo: add others
-          # General:
-          'pandas',
-          'numpy',
-
-          # For checking style and correctness of code
-          'mypy',
-          'pylint',
-          'javalang',
-
-          # For plots:
-          'plotly',
-          'matplotlib'
-      ],
-      setup_requires=['pytest-runner'],
-      tests_require=['pytest', 'pytest-subtests'],
+      # install_requires=[
+      #     # Todo: add others
+      #     # General:
+      #     'pandas',
+      #     'numpy',
+      #
+      #     # For checking style and correctness of code
+      #     'mypy',
+      #     'pylint',
+      #     'javalang',
+      #
+      #     # For plots:
+      #     'plotly',
+      #     'matplotlib'
+      # ],
+      # setup_requires=['pytest-runner'],
+      # tests_require=['pytest', 'pytest-subtests'],
       )
