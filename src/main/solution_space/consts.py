@@ -14,11 +14,11 @@ class VERTEX_TYPE(Enum):
     INTERMEDIATE = 'intermediate'
 
 
-FOLDER_WITH_CODE_FILES = ROOT_DIR + '/../../resources/solution_space'
-FOLDER_WITH_CODE_FILES_FOR_TESTS = ROOT_DIR + '/../../resources/test_data/solution_space'
+SOLUTION_SPACE_FOLDER = ROOT_DIR + '/../../resources/solution_space'
+SOLUTION_SPACE_TEST_FOLDER = ROOT_DIR + '/../../resources/test_data/solution_space'
 EMPTY_CODE_FILE = ROOT_DIR + '/../../resources/solution_space/empty_code.py'
-GRAPH_FOLDER_PREFIX = 'graph_'
-FILE_PREFIX = 'code_'
+GRAPH_FOLDER_PREFIX = 'graph'
+FILE_PREFIX = 'code'
 
 DIFFS_PERCENT_TO_GO_DIRECTLY = 0.2
 DISTANCE_TO_GRAPH_THRESHOLD = 2

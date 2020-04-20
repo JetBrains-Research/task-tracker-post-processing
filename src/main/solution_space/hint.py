@@ -36,7 +36,7 @@ class HintGetter:
         next_vertex = self._path_finder.find_next_vertex(diff_handler, user)
         log.info(f'Next vertex id is {next_vertex.id}')
         diffs_and_types_list = [diff_handler.get_diffs(a_t, next_vertex.code.canon_tree)
-                                for a_t in next_vertex.code.anon_trees]
+                                for a_t in next_vertex.code.anon_tree]
         diffs_len_list = list(map(lambda diff_and_type: len(diff_and_type[0]), diffs_and_types_list))
         diffs, type = diffs_and_types_list[diffs_len_list.index(min(diffs_len_list))]
         log.info(f'The best type of trees is {type.value}')

@@ -1,16 +1,9 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
-import collections
-import os
-import ast
 import logging
 from datetime import datetime
 from typing import List, Union, Optional
 
 from src.main.util import consts
-from src.main.util.file_util import create_file
-from src.main.util.log_util import log_and_raise_error
-from src.main.util.language_util import get_extension_by_language
-from src.main.canonicalization.canonicalization import get_code_from_tree, are_asts_equal
 from src.main.util.consts import EXPERIENCE, DEFAULT_VALUE, ACTIVITY_TRACKER_EVENTS
 
 log = logging.getLogger(consts.LOGGER_NAME)
@@ -93,13 +86,11 @@ class User:
 
 class CodeInfo:
     def __init__(self, user: User, timestamp: int = 0, date: datetime = DEFAULT_VALUE.DATE.value,
-                 ati_actions: Optional[List[AtiItem]] = None,
-                 codetracker_filename: str = None):
+                 ati_actions: Optional[List[AtiItem]] = None):
         self._user = user
         self._ati_actions = ati_actions if ati_actions else []
         self._timestamp = timestamp
         self._date = date
-        self._codetracker_filename = codetracker_filename
 
     @property
     def user(self) -> User:
@@ -117,73 +108,6 @@ class CodeInfo:
     def date(self) -> timestamp:
         return self._date
 
-    @property
-    def codetracker_filename(self):
-        return self._codetracker_filename
-
     def __str__(self) -> str:
         return f'User: {self._user}, timestamp: {self._timestamp}, date: {self._date}. ' \
                f'Length of ati actions is {len(self._ati_actions)}'
-
-
-# Todo: rename because it's about a canon tree, but it's called 'Code'?
-class Code:
-    _last_id = 0
-
-    def __init__(self, canon_tree: ast.AST = None, rate: float = 0.0,
-                 file_with_code: Optional[str] = None,
-                 anon_tree: Optional[ast.AST] = None):
-        self._canon_tree = canon_tree
-        self._anon_trees = [] if anon_tree is None else [anon_tree]
-        self._file_with_code = file_with_code
-        self._rate = rate
-
-        self._id = self._last_id
-        self.__class__._last_id += 1
-
-    @property
-    def canon_tree(self) -> ast.AST:
-        return self._canon_tree
-
-    @property
-    def anon_trees(self) -> List[ast.AST]:
-        return self._anon_trees
-
-    @property
-    def rate(self) -> float:
-        return self._rate
-
-    @property
-    def file_with_code(self) -> Optional[str]:
-        return self._file_with_code
-
-    @file_with_code.setter
-    def file_with_code(self, file_with_code: str) -> None:
-        self._file_with_code = file_with_code
-
-    def does_contain_anon_tree(self, anon_tree: ast.AST):
-        for a_t in self._anon_trees:
-            if are_asts_equal(a_t, anon_tree):
-                return True
-        return False
-
-    def add_anon_tree(self, anon_tree: ast.AST) -> None:
-        if not self.does_contain_anon_tree(anon_tree):
-            self._anon_trees.append(anon_tree)
-
-    def create_file_with_code(self, folder_to_write: str, name_prefix: str,
-                              language: consts.LANGUAGE = consts.LANGUAGE.PYTHON) -> None:
-        if not self._canon_tree:
-            log_and_raise_error(f'Canon tree in the code {self} is None', log)
-
-        extension = get_extension_by_language(language)
-        file_path = os.path.join(folder_to_write, name_prefix + str(self._id) + str(extension.value))
-        code = get_code_from_tree(self._canon_tree)
-        create_file(code, file_path)
-        self._file_with_code = file_path
-
-    def __str__(self) -> str:
-        return f'Id: {self._id}, rate: {self._rate}\nCode:\n{get_code_from_tree(self._canon_tree)}\n'
-
-    def is_full(self) -> bool:
-        return self._rate == consts.TEST_RESULT.FULL_SOLUTION.value

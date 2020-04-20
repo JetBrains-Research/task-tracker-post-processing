@@ -3,38 +3,38 @@
 from src.main.util.consts import TASK
 from src.test.test_util import LoggedTest
 from src.main.solution_space.data_classes import User, CodeInfo
-from src.main.solution_space.solution_graph import Vertex, SolutionGraph
-from src.main.solution_space.consts import FOLDER_WITH_CODE_FILES_FOR_TESTS
+from src.main.solution_space.consts import SOLUTION_SPACE_TEST_FOLDER
+from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 
 CURRENT_TASK = TASK.PIES
-SolutionGraph.folder_with_code_files = FOLDER_WITH_CODE_FILES_FOR_TESTS
+SolutionGraph.solution_space_folder = SOLUTION_SPACE_TEST_FOLDER
 
 
 class TestVertex(LoggedTest):
 
     def test_adding_parent(self) -> None:
-        sg = SolutionGraph(CURRENT_TASK)
-        child = Vertex(sg)
+        graph = SolutionGraph(CURRENT_TASK)
+        child = Vertex(graph)
         parents_len = 100
-        parents = [Vertex(sg) for _ in range(parents_len)]
+        parents = [Vertex(graph) for _ in range(parents_len)]
         for parent in parents:
             child.add_parent(parent)
             self.assertEqual(parent.children, [child])
         self.assertEqual(child.parents, parents)
 
     def test_adding_children(self) -> None:
-        sg = SolutionGraph(CURRENT_TASK)
-        parent = Vertex(sg)
+        graph = SolutionGraph(CURRENT_TASK)
+        parent = Vertex(graph)
         children_len = 100
-        children = [Vertex(sg) for _ in range(children_len)]
+        children = [Vertex(graph) for _ in range(children_len)]
         for child in children:
             parent.add_child(child)
             self.assertEqual(child.parents, [parent])
         self.assertEqual(parent.children, children)
 
     def test_adding_code_info(self) -> None:
-        sg = SolutionGraph(CURRENT_TASK)
-        vertex = Vertex(sg)
+        graph = SolutionGraph(CURRENT_TASK)
+        vertex = Vertex(graph)
         code_info_list_len = 100
         code_info_list = [CodeInfo(User()) for _ in range(code_info_list_len)]
         for code_info in code_info_list:
@@ -51,8 +51,8 @@ class TestVertex(LoggedTest):
                 code_info_list.append(CodeInfo(users[i]))
         self.assertEqual(len(code_info_list), sum(users_dist))
 
-        sg = SolutionGraph(CURRENT_TASK)
-        vertex = Vertex(sg)
+        graph = SolutionGraph(CURRENT_TASK)
+        vertex = Vertex(graph)
         for code_info in code_info_list:
             vertex.add_code_info(code_info)
 

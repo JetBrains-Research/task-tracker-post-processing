@@ -3,7 +3,7 @@
 import ast
 import logging
 import tempfile
-from typing import Optional
+from typing import Optional, List, Callable
 from subprocess import check_output, CalledProcessError
 
 from src.main.util import consts
@@ -17,11 +17,22 @@ log = logging.getLogger(consts.LOGGER_NAME)
 
 # Use GumTreeDiff: https://github.com/GumTreeDiff/gumtree/tree/master
 
+def get_diffs_number(src_anon_tree_files: List[str], src_canon_tree_file: str,
+                     dst_anon_tree_files: List[str], dst_canon_tree_file: str) -> int:
+    # Firstly, add a diff number between canon trees:
+    diffs_numbers = [GumTreeDiffHandler.get_diffs_number_with_gumtree(src_canon_tree_file, dst_canon_tree_file)]
+    # Then add a diff number between all possible pairs of anon trees:
+    for src_anon_tree_file in src_anon_tree_files:
+        for dst_anon_tree_file in dst_anon_tree_files:
+            diffs_numbers.append(GumTreeDiffHandler.
+                                 get_diffs_number_with_gumtree(src_anon_tree_file, dst_anon_tree_file))
+    return min(diffs_numbers)
+
 
 class GumTreeDiffHandler(IDiffHandler):
 
     @staticmethod
-    def __get_diffs_number_with_gumtree(src_file: str, dst_file: str) -> int:
+    def get_diffs_number_with_gumtree(src_file: str, dst_file: str) -> int:
         # Todo: move to a separated file
         try:
             args = [consts.GUMTREE_PATH, 'diffn', src_file, dst_file]
@@ -42,7 +53,7 @@ class GumTreeDiffHandler(IDiffHandler):
             dst_file.seek(0)
             src_file.seek(0)
 
-            return GumTreeDiffHandler.__get_diffs_number_with_gumtree(src_file.name, dst_file.name)
+            return GumTreeDiffHandler.get_diffs_number_with_gumtree(src_file.name, dst_file.name)
 
     def get_diffs_number(self, anon_dst_tree: Optional[ast.AST], canon_dst_tree: Optional[ast.AST]) -> int:
         if anon_dst_tree is None and canon_dst_tree is None:
@@ -51,7 +62,21 @@ class GumTreeDiffHandler(IDiffHandler):
         diffs_number = []
         if anon_dst_tree is not None:
             diffs_number.append(self.__class__.__create_tmp_files_and_run_gumtree(self._anon_tree, anon_dst_tree))
-        if anon_dst_tree is not None:
+        if canon_dst_tree is not None:
             diffs_number.append(self.__class__.__create_tmp_files_and_run_gumtree(self._canon_tree, canon_dst_tree))
 
         return min(diffs_number)
+
+
+    @staticmethod
+    def get_min_diffs_between_all_tree_files(src_anon_tree_files: List[str], src_canon_tree_file: str,
+                                             dst_anon_tree_files: List[str], dst_canon_tree_file: str) -> int:
+        # Firstly, add a diff number between canon trees:
+        diffs_numbers = [GumTreeDiffHandler.get_diffs_number_with_gumtree(src_canon_tree_file, dst_canon_tree_file)]
+        # Then add a diff number between all possible pairs of anon trees:
+        for src_anon_tree_file in src_anon_tree_files:
+            for dst_anon_tree_file in dst_anon_tree_files:
+                diffs_numbers.append(GumTreeDiffHandler.
+                                     get_diffs_number_with_gumtree(src_anon_tree_file, dst_anon_tree_file))
+        return min(diffs_numbers)
+

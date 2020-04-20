@@ -1,5 +1,4 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
-
 import os
 from enum import Enum
 from contextlib import suppress

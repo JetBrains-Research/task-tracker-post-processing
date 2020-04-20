@@ -5,20 +5,21 @@ import unittest
 from enum import Enum
 from typing import List, Tuple, Dict, Union
 
-from src.main.canonicalization.consts import TREE_TYPE
 from src.test.test_util import LoggedTest
+from src.main.solution_space.code import Code
+from src.main.canonicalization.consts import TREE_TYPE
 from src.main.util.consts import TEST_RESULT, LOGGER_NAME, TASK
-from src.main.solution_space.data_classes import Code, User, CodeInfo
-from src.main.solution_space.solution_graph import Vertex, SolutionGraph
+from src.main.solution_space.data_classes import User, CodeInfo
+from src.main.solution_space.solution_graph import SolutionGraph, Vertex
+from src.main.solution_space.consts import SOLUTION_SPACE_TEST_FOLDER
 from src.main.canonicalization.canonicalization import get_code_from_tree, get_trees
-from src.main.solution_space.consts import FOLDER_WITH_CODE_FILES_FOR_TESTS
 from src.test.solution_space.solution_graph.util import create_code_from_source, init_default_ids
 
 log = logging.getLogger(LOGGER_NAME)
 
 
 CURRENT_TASK = TASK.PIES
-SolutionGraph.folder_with_code_files = FOLDER_WITH_CODE_FILES_FOR_TESTS
+SolutionGraph.solution_space_folder = SOLUTION_SPACE_TEST_FOLDER
 
 
 class ADJACENT_VERTEX_TYPE(Enum):
@@ -95,16 +96,13 @@ def create_code_info_chain() -> (List[Tuple[Code, CodeInfo]], List[str]):
                      (source_4, TEST_RESULT.FULL_SOLUTION.value)]
     # User is the same for all chain elements
     user = User()
-    anon_and_canon_trees = [get_trees(s, {TREE_TYPE.ANON, TREE_TYPE.CANON}) for s, _ in rated_sources]
-
-    chain = [(create_code_from_source(rs[0], rs[1], anon_tree=anon_and_canon_trees[i][1]), CodeInfo(user))
-             for i, rs in enumerate(rated_sources)]
-    canon_sources = [get_code_from_tree(c_t).rstrip('\n') for _, c_t in anon_and_canon_trees]
+    chain = [(create_code_from_source(s, r), CodeInfo(user)) for s, r in rated_sources]
+    canon_sources = [get_code_from_tree(code.canon_tree).rstrip('\n') for code, _ in chain]
     return chain, canon_sources
 
 
 def get_vertex_structure(vertex: Vertex) -> VertexStructure:
-    source = get_code_from_tree(vertex.code.canon_tree).strip('\n') if vertex.code else None
+    source = get_code_from_tree(vertex.serialized_code.canon_tree).strip('\n') if vertex.serialized_code else None
     return {VERTEX_STRUCTURE.SOURCE: source, VERTEX_STRUCTURE.CODE_INFO_LIST_LEN: len(vertex.code_info_list)}
 
 

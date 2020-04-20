@@ -10,7 +10,8 @@ from src.main.util.file_util import create_file
 from src.main.util.log_util import log_and_raise_error
 from src.main.canonicalization.diffs.diff_handler import IDiffHandler
 from src.main.util.strings_util import convert_camel_case_to_snake_case
-from src.main.solution_space.solution_graph import Vertex, SolutionGraph
+from src.main.solution_space.solution_graph import SolutionGraph
+from src.main.solution_space.vertex import Vertex
 from src.test.solution_space.solution_graph.util import init_default_ids
 from src.main.canonicalization.canonicalization import get_code_from_tree
 from src.main.canonicalization.diffs.rivers_diff_handler import RiversDiffHandler
@@ -104,7 +105,7 @@ def get_res_for_current_test(task: TASK, user_code: str, goal: Vertex, actual_di
     res += f'Current task: {task.value}\n'
     res += f'Current user source code:\n{user_code}\n\n'
     res += f'Current goal id: {goal.id}\n'
-    res += f'Current goal anon code:\n{anon_trees_to_str(goal.code.anon_trees)}\n'
+    res += f'Current goal anon code:\n{anon_trees_to_str(goal.code.anon_tree)}\n'
     res += f'Current goal canon code:\n{get_code_from_tree(goal.code.canon_tree)}\n\n'
     res += f'Diffs:\n{actual_diffs}\n'
     res += '_____________\n'
@@ -120,8 +121,8 @@ def get_diffs_from_graph(graph: SolutionGraph, goal: Vertex, diff_handler_class:
     for vertex in vertices:
         if vertex.code.is_full():
             continue
-        diffs += (graph.get_diffs_number_between_vertexes(vertex, goal, diff_handler_class=diff_handler_class),)
-        diffs += (graph.get_diffs_number_between_vertexes(goal, vertex, diff_handler_class=diff_handler_class),)
+        diffs += (graph.get_dist_between_vertices(vertex, goal, diff_handler_class=diff_handler_class),)
+        diffs += (graph.get_dist_between_vertices(goal, vertex, diff_handler_class=diff_handler_class),)
 
     return diffs
 

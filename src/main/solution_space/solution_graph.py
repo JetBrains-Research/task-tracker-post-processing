@@ -5,97 +5,18 @@ import logging
 import collections
 from typing import Optional, List, Tuple, Set, Dict
 
+from src.main.solution_space.code import Code
+from src.main.solution_space.vertex import Vertex
 from src.main.util.log_util import log_and_raise_error
+from src.main.solution_space.data_classes import CodeInfo
+from src.main.solution_space.distance import VertexDistance
 from src.main.util.consts import LOGGER_NAME, TASK, LANGUAGE
 from src.main.solution_space import consts as solution_space_consts
-from src.main.canonicalization.diffs.diff_handler import IDiffHandler
 from src.main.canonicalization.canonicalization import are_asts_equal
-from src.main.solution_space.data_classes import User, Code, CodeInfo
-from src.main.canonicalization.diffs.rivers_diff_handler import RiversDiffHandler
-from src.main.util.file_util import remove_directory, create_directory, does_exist
-from src.main.solution_space.consts import VERTEX_TYPE, GRAPH_FOLDER_PREFIX, FOLDER_WITH_CODE_FILES, FILE_PREFIX
+from src.main.util.file_util import remove_directory, create_directory
+from src.main.solution_space.consts import VERTEX_TYPE, GRAPH_FOLDER_PREFIX, SOLUTION_SPACE_FOLDER, FILE_PREFIX
 
 log = logging.getLogger(LOGGER_NAME)
-
-
-class Vertex:
-    _last_id = 0
-
-    def __init__(self, graph: 'SolutionGraph', code: Code = None,
-                 vertex_type: solution_space_consts.VERTEX_TYPE = solution_space_consts.VERTEX_TYPE.INTERMEDIATE):
-        self._parents = []
-        self._children = []
-        self._code_info_list = []
-        self._code = code
-        self._vertex_type = vertex_type
-
-        self._id = self._last_id
-        self.__class__._last_id += 1
-
-        if code:
-            if not does_exist(graph.graph_directory):
-                msg = f'The graph with id {graph.id} does not have directory for vertex code. Expected graph ' \
-                          f'folder prefix: {graph.graph_folder_prefix}{graph.id}'
-                log_and_raise_error(msg, log, OSError)
-
-            graph_folder_prefix = graph.graph_folder_prefix + str(graph.id) + '_' + graph.file_prefix
-            code.create_file_with_code(graph.graph_directory, graph_folder_prefix, graph.language)
-
-    @property
-    def id(self) -> int:
-        return self._id
-
-    @property
-    def parents(self) -> List['Vertex']:
-        return self._parents
-
-    @property
-    def children(self) -> List['Vertex']:
-        return self._children
-
-    @property
-    def code_info_list(self) -> List[CodeInfo]:
-        return self._code_info_list
-
-    @property
-    def code(self) -> Code:
-        return self._code
-
-    @property
-    def vertex_type(self) -> solution_space_consts.VERTEX_TYPE:
-        return self._vertex_type
-
-    # Use '' for better understanding.
-    # See: https://stackoverflow.com/questions/15853469/putting-current-class-as-return-type-annotation
-    def __add_parent_to_list(self, parent: 'Vertex') -> None:
-        self._parents.append(parent)
-
-    def __add_child_to_list(self, child: 'Vertex') -> None:
-        self._children.append(child)
-
-    def add_child(self, child: 'Vertex') -> None:
-        self.__add_child_to_list(child)
-        child.__add_parent_to_list(self)
-
-    def add_parent(self, parent: 'Vertex') -> None:
-        self.__add_parent_to_list(parent)
-        parent.__add_child_to_list(self)
-
-    def add_code_info(self, code_info: CodeInfo) -> None:
-        self._code_info_list.append(code_info)
-
-    def get_unique_users(self) -> Set[User]:
-        users = [code_info.user for code_info in self._code_info_list]
-        return set(users)
-
-    def get_diffs_number_to_vertex(self, start_dh: IDiffHandler) -> int:
-        return min(start_dh.get_diffs_number(a_t, self.code.canon_tree) for a_t in self.code.anon_trees)
-
-    # Todo: change default handler and add type annotation to type_handler
-    def get_diffs_number_from_vertex(self, end_dh: IDiffHandler,
-                                     diff_handler_class: IDiffHandler = RiversDiffHandler) -> int:
-        return min(diff_handler_class(anon_tree=a_t, canon_tree=self.code.canon_tree)
-                   .get_diffs_number_from_diff_handler(end_dh) for a_t in self.code.anon_trees)
 
 
 class GraphIterator(collections.abc.Iterator):
@@ -128,7 +49,7 @@ class GraphIterator(collections.abc.Iterator):
 
 class SolutionGraph(collections.abc.Iterable):
     _last_id = 0
-    folder_with_code_files = FOLDER_WITH_CODE_FILES
+    solution_space_folder = SOLUTION_SPACE_FOLDER
 
     def __init__(self, task: TASK, language: LANGUAGE = LANGUAGE.PYTHON, to_delete_old_graph: bool = True,
                  graph_folder_prefix: str = GRAPH_FOLDER_PREFIX, file_prefix: str = FILE_PREFIX):
@@ -140,16 +61,19 @@ class SolutionGraph(collections.abc.Iterable):
         self._id = self._last_id
         self.__class__._last_id += 1
 
+        self._graph_folder_prefix = graph_folder_prefix
+        self._file_prefix = file_prefix
+        self._graph_directory = os.path.join(self.__class__.solution_space_folder, str(self._task.value),
+                                             f'{self._graph_folder_prefix}_{str(self._id)}')
+
         self._start_vertex = Vertex(self, vertex_type=solution_space_consts.VERTEX_TYPE.START)
         self._end_vertex = Vertex(self, vertex_type=solution_space_consts.VERTEX_TYPE.END)
 
-        self._graph_folder_prefix = graph_folder_prefix
-        self._file_prefix = file_prefix
-        self._graph_directory = self.__get_graph_directory()
+        self._dist = VertexDistance()
 
         if to_delete_old_graph:
             remove_directory(self._graph_directory)
-        self.__create_graph_directory()
+        create_directory(self._graph_directory)
 
     @property
     def id(self) -> int:
@@ -183,13 +107,6 @@ class SolutionGraph(collections.abc.Iterable):
     def language(self) -> LANGUAGE:
         return self._language
 
-    def __get_graph_directory(self) -> str:
-        return os.path.join(self.__class__.folder_with_code_files, str(self._task.value),
-                            self._graph_folder_prefix + str(self._id))
-
-    def __create_graph_directory(self) -> None:
-        create_directory(self._graph_directory)
-
     def __iter__(self) -> GraphIterator:
         return GraphIterator(self._start_vertex)
 
@@ -198,7 +115,7 @@ class SolutionGraph(collections.abc.Iterable):
 
     # Todo: add tests
     @staticmethod
-    def get_vertexes_with_path(goal: Vertex) -> List[Vertex]:
+    def get_vertices_with_path(goal: Vertex) -> List[Vertex]:
         visited = [goal]
         vertices_queue = collections.deque(visited)
         while vertices_queue:
@@ -213,19 +130,36 @@ class SolutionGraph(collections.abc.Iterable):
         # Remove goal
         return visited[1:]
 
+    # def find_dist(self, new_vertex: Vertex) -> None:
+    #     self._dist[new_vertex] = {}
+    #     for old_vertex in self._dist.keys():
+    #         # todo: make sure dist is commutative
+    #         self._dist[new_vertex][old_vertex] = dist(new_vertex, old_vertex)
+    #         self._dist[old_vertex][new_vertex] = dist(old_vertex, new_vertex)
+    #
+    #
+    # def update_vertex_and_dist(self, upd_vertex: Vertex, code: Code, code_info: CodeInfo) -> None:
+    #     upd_vertex.add_code_info(code_info)
+    #     anon_file = upd_vertex.serialized_code.add_anon_tree(code.anon_tree)
+    #     if anon_file is not None:
+    #         for vertex in self._dist.keys():
+    #             self._dist[upd_vertex][vertex] = min(self._dist[upd_vertex][vertex], dist(anon_file, vertex))
+    #             self._dist[vertex][upd_vertex] = min(self._dist[vertex][upd_vertex], dist(vertex, anon_file))
+
     def create_vertex(self, code: Code, code_info: CodeInfo) -> Vertex:
         vertex = Vertex(self, code=code)
         vertex.add_code_info(code_info)
-        if code.is_full():
+        if vertex.serialized_code.is_full():
             log.info(f'Connect full code to the end vertex')
             self.connect_to_end_vertex(vertex)
+        self._dist.add_dist(vertex)
         return vertex
 
     def find_vertex(self, code: Code) -> Optional[Vertex]:
         vertices = self.get_traversal()
         vertices.remove(self.start_vertex)
         for vertex in vertices:
-            if are_asts_equal(vertex.code.canon_tree, code.canon_tree):
+            if are_asts_equal(vertex.serialized_code.canon_tree, code.canon_tree):
                 log.info(f'Found an existing vertex for code: {str(code)}')
                 return vertex
         return None
@@ -236,6 +170,8 @@ class SolutionGraph(collections.abc.Iterable):
         vertex = self.find_vertex(code)
         if vertex:
             vertex.add_code_info(code_info)
+            vertex.serialized_code.add_anon_tree(code.anon_tree)
+            self._dist.update_dist(vertex, code.anon_tree)
             return vertex
         log.info(f'Not found any existing vertex for code: {str(code)}, creating a new one')
         return self.create_vertex(code, code_info)
@@ -247,9 +183,9 @@ class SolutionGraph(collections.abc.Iterable):
         self._end_vertex.add_parent(vertex)
 
     def add_code_info_chain(self, code_info_chain: Optional[List[Tuple[Code, CodeInfo]]]) -> None:
-        log.info(f'Start adding code-user chain')
+        log.info(f'Start adding code-info chain')
         if code_info_chain is None:
-            log_and_raise_error(f'Code info chain should not be None', log)
+            log_and_raise_error(f'Code-info chain should not be None', log)
         if code_info_chain:
             log.info(f'Connect the first vertex in a chain to the start vertex')
             code, code_info = code_info_chain[0]
@@ -261,7 +197,7 @@ class SolutionGraph(collections.abc.Iterable):
                 next_vertex = self.find_or_create_vertex(next_code, next_code_info)
                 prev_vertex.add_child(next_vertex)
                 prev_vertex = next_vertex
-        log.info(f'Finish adding code-user chain')
+        log.info(f'Finish adding code-info chain')
 
     def get_adj_list_with_ids(self) -> Dict[int, Set[int]]:
         adj_list = {}
@@ -274,12 +210,8 @@ class SolutionGraph(collections.abc.Iterable):
             adj_list[vertex.id] = adj_vertices
         return adj_list
 
-    # Todo: calculate diffs to the nearest goal from each vertex during graph constructing
-    @staticmethod
-    def get_diffs_number_between_vertexes(from_vertex: Vertex, to_vertex: Vertex,
-                                          diff_handler_class: IDiffHandler = RiversDiffHandler) -> int:
-        diffs = []
-        for anon_tree in from_vertex.code.anon_trees:
-            dh = diff_handler_class(anon_tree=anon_tree, canon_tree=from_vertex.code.canon_tree)
-            diffs.append(to_vertex.get_diffs_number_to_vertex(dh))
-        return min(diffs)
+    def get_dist_between_vertices(self, src_vertex: Vertex, dst_vertex: Vertex) -> int:
+        dist = self._dist.get(src_vertex).get(dst_vertex)
+        if dist is None:
+            log_and_raise_error(f'No distance found for src_vertex {src_vertex} and dst_vertex {dst_vertex}', log)
+        return dist

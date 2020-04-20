@@ -5,13 +5,13 @@ from src.main.canonicalization.diffs.diff_handler import IDiffHandler
 from src.main.solution_space.consts import DISTANCE_TO_GRAPH_THRESHOLD, DIFFS_PERCENT_TO_GO_DIRECTLY, EMPTY_DIFF_HANDLER
 from src.main.solution_space.data_classes import User
 from src.main.solution_space.path_finder.path_finder import IPathFinder, log, MeasuredVertex
-from src.main.solution_space.solution_graph import Vertex
+from src.main.solution_space.vertex import Vertex
 
 """
 The first version of path finder.
 *an algorithm description goes here*
 """
-
+# Todo: add description as a field
 
 class PathFinderV1(IPathFinder):
 
@@ -65,13 +65,13 @@ class PathFinderV1(IPathFinder):
                 continue
             # Todo: change to normal way
             if get_code_from_tree(vertex.code.canon_tree) == '' \
-                    and get_code_from_tree(vertex.code.anon_trees[0]) == '' \
+                    and get_code_from_tree(vertex.code.anon_tree[0]) == '' \
                     and not to_add_empty:
                 continue
 
             # Todo: calculate diffs to the nearest goal from each vertex or not???
             # Todo: think about empty tree
-            diffs = self._graph.get_diffs_number_between_vertexes(vertex, goal)
+            diffs = self._graph.get_dist_between_vertices(vertex, goal)
 
             if diffs <= user_diffs_to_goal:
                 candidates.append(vertex)

@@ -6,7 +6,8 @@ from src.main.util import consts
 from src.main.splitting.task_checker import check_call_safely
 from src.main.util.file_util import create_file, remove_directory
 from src.main.canonicalization.canonicalization import get_code_from_tree
-from src.main.solution_space.solution_graph import SolutionGraph, Vertex
+from src.main.solution_space.solution_graph import SolutionGraph
+from src.main.solution_space.vertex import Vertex
 
 
 # It is the class for creating a solution graph representation by using graphviz library
@@ -18,8 +19,8 @@ class SolutionSpaceVisualizer:
     @staticmethod
     def __get_vertex_info(vertex: Vertex) -> str:
         info = ''
-        info += f'Canon code:\n{get_code_from_tree(vertex.code.canon_tree)}\n\n'
-        for i, a_t in enumerate(vertex.code.anon_trees):
+        info += f'Canon code:\n{get_code_from_tree(vertex.serialized_code.canon_tree)}\n\n'
+        for i, a_t in enumerate(vertex.serialized_code.anon_trees):
             info += f'Anon code {i}:\n{get_code_from_tree(a_t)}\n'
         return info
 
