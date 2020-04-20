@@ -45,13 +45,13 @@ class TestZeroTests:
                     params=[
                         (python_actual_pairs, LANGUAGE.PYTHON),
                         (java_actual_pairs, LANGUAGE.JAVA),
-                        (kotlin_actual_pairs, LANGUAGE.KOTLIN),
+                        # (kotlin_actual_pairs, LANGUAGE.KOTLIN),
                         (cpp_actual_pairs, LANGUAGE.CPP)
                     ],
                     ids=[
                         'test_python',
                         'test_java',
-                        'test_kotlin',
+                        # 'test_kotlin',
                         'test_cpp'
                     ]
                     )
