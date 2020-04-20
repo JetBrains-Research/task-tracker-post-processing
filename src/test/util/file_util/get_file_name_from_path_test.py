@@ -1,10 +1,11 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
-import pytest
 from enum import Enum
 from typing import Dict, Union, List
 
-from src.test.util import does_skip, TEST_LEVEL
+import pytest
+
+from src.test.util import to_skip, TEST_LEVEL
 from src.main.util.file_util import get_name_from_path
 
 
@@ -72,7 +73,7 @@ def run_test(paths_data_dict: PathsDataDict) -> None:
         assert file_name == paths_data_dict[PATHS_TEST_DATA.FILE_NAME][EXTENSION.WITH]
 
 
-@pytest.mark.skipif(does_skip(current_module_level=TEST_LEVEL.UTIL), reason=TEST_LEVEL.UTIL.value)
+@pytest.mark.skipif(to_skip(current_module_level=TEST_LEVEL.UTIL), reason=TEST_LEVEL.UTIL.value)
 class TestGettingFileNameFromPath:
 
     @staticmethod
@@ -86,7 +87,7 @@ class TestGettingFileNameFromPath:
                         'test_file_name'
                     ]
                     )
-    def param_get_file_name_test(request):
+    def param_get_file_name_test(request) -> PathsDataDict:
         return request.param
 
     def test_paths_data(self, param_get_file_name_test):

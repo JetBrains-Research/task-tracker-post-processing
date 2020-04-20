@@ -1,10 +1,11 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import os
+
 import pytest
 
 from src.test.plots.util import TO_OPEN_PLOTS
-from src.test.util import does_skip, TEST_LEVEL
+from src.test.util import to_skip, TEST_LEVEL
 from src.main.util.consts import TEST_DATA_PATH
 from src.main.plots.util.consts import STATISTICS_KEY, PLOT_TYPE
 from src.main.plots.profile_statistics_plots import plot_profile_statistics
@@ -15,7 +16,7 @@ STATISTICS_PATH = os.path.join(TEST_DATA_PATH, 'plots/data.csv')
 
 
 # Just to check no errors are raised during plot creation
-@pytest.mark.skipif(does_skip(current_module_level=TEST_LEVEL.PLOTS), reason=TEST_LEVEL.PLOTS.value)
+@pytest.mark.skipif(to_skip(current_module_level=TEST_LEVEL.PLOTS), reason=TEST_LEVEL.PLOTS.value)
 class TestProfileStatisticsPlots:
 
     def test_plot_creation(self) -> None:

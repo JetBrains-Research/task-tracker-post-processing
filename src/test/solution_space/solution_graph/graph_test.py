@@ -1,19 +1,18 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import logging
-import unittest
 from enum import Enum
 from typing import List, Tuple, Dict, Union
 
 import pytest
 
+from src.test.util import to_skip, TEST_LEVEL
 from src.main.util.consts import TEST_RESULT, LOGGER_NAME, TASK
 from src.main.solution_space.data_classes import Code, User, CodeInfo
 from src.main.solution_space.solution_graph import Vertex, SolutionGraph
 from src.main.canonicalization.canonicalization import get_code_from_tree
 from src.main.solution_space.consts import FOLDER_WITH_CODE_FILES_FOR_TESTS
 from src.test.solution_space.solution_graph.util import create_code_from_source, init_default_ids
-from src.test.util import does_skip, TEST_LEVEL
 
 log = logging.getLogger(LOGGER_NAME)
 
@@ -120,7 +119,7 @@ def check_adjacent_vertices_structure(adjacent_vertex_type: ADJACENT_VERTEX_TYPE
     assert not adjacent_vertices_structure
 
 
-@pytest.mark.skipif(does_skip(current_module_level=TEST_LEVEL.SOLUTION_SPACE), reason=TEST_LEVEL.SOLUTION_SPACE.value)
+@pytest.mark.skipif(to_skip(current_module_level=TEST_LEVEL.SOLUTION_SPACE), reason=TEST_LEVEL.SOLUTION_SPACE.value)
 class TestGraph:
 
     def test_bfs_traversal(self) -> None:

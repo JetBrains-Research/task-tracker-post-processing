@@ -1,11 +1,12 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
-import pytest
-import pandas as pd
 from typing import List
 
+import pytest
+import pandas as pd
+
 from src.main.util import consts
-from src.test.util import does_skip, TEST_LEVEL
+from src.test.util import to_skip, TEST_LEVEL
 from src.main.splitting.splitting import find_task_start_indices
 
 PIES_COUNT_1 = 2
@@ -37,7 +38,7 @@ def crop_last_pies(df: pd.DataFrame, n: int = PIES_COUNT_3) -> pd.DataFrame:
     return df[:-n]
 
 
-@pytest.mark.skipif(does_skip(current_module_level=TEST_LEVEL.SPLITTING), reason=TEST_LEVEL.SPLITTING.value)
+@pytest.mark.skipif(to_skip(current_module_level=TEST_LEVEL.SPLITTING), reason=TEST_LEVEL.SPLITTING.value)
 class TestStartIndexFinding:
 
     @staticmethod

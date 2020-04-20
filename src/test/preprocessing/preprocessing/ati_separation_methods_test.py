@@ -8,7 +8,7 @@ import pytest
 
 from src.main.util import consts
 from src.main.preprocessing.preprocessing import __separate_ati_and_other_files
-from src.test.util import does_skip, TEST_LEVEL
+from src.test.util import to_skip, TEST_LEVEL
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -67,7 +67,7 @@ def run_test(case: dict) -> bool:
     return are_pairs_equal(case[TEST_DATA.RESULT.value], (ct_files, at_file))
 
 
-@pytest.mark.skipif(does_skip(current_module_level=TEST_LEVEL.PREPROCESSING), reason=TEST_LEVEL.PREPROCESSING.value)
+@pytest.mark.skipif(to_skip(current_module_level=TEST_LEVEL.PREPROCESSING), reason=TEST_LEVEL.PREPROCESSING.value)
 class TestFilterFiles:
 
     @staticmethod
@@ -78,7 +78,7 @@ class TestFilterFiles:
                         normal_case,
                         without_ati_case
                     ])
-    def param_filter_files_test(request):
+    def param_filter_files_test(request) -> dict:
         return request.param
 
     def test_filter_files(self, param_filter_files_test: Callable):

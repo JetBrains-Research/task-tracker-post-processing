@@ -1,9 +1,10 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
-import pytest
-from typing import Callable
+from typing import Callable, Tuple, List
 
-from src.test.util import does_skip, TEST_LEVEL
+import pytest
+
+from src.test.util import to_skip, TEST_LEVEL
 from src.main.util.strings_util import contains_any_of_substrings
 
 string = 'Roses are red, violets are blue, sugar is sweet, and so are you'
@@ -12,7 +13,7 @@ partly_contained_substrings = ['mint', 'candy', 'sugar']
 not_contained_substrings = ['parsley', 'sun']
 
 
-@pytest.mark.skipif(does_skip(current_module_level=TEST_LEVEL.UTIL), reason=TEST_LEVEL.UTIL.value)
+@pytest.mark.skipif(to_skip(current_module_level=TEST_LEVEL.UTIL), reason=TEST_LEVEL.UTIL.value)
 class TestContainingSubstrings:
 
     @staticmethod
@@ -22,7 +23,7 @@ class TestContainingSubstrings:
                         (partly_contained_substrings, True),
                         (not_contained_substrings, False)
                     ])
-    def param_contained_substrings_test(request):
+    def param_contained_substrings_test(request) -> Tuple[List[str], bool]:
         return request.param
 
     def test_contained_substrings(self, param_contained_substrings_test: Callable) -> None:

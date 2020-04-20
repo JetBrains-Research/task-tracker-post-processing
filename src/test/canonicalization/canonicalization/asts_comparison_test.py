@@ -1,11 +1,11 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import ast
-import pytest
 from typing import List
 
+import pytest
 
-from src.test.util import does_skip, TEST_LEVEL
+from src.test.util import to_skip, TEST_LEVEL
 from src.main.canonicalization.canonicalization import are_asts_equal, get_code_from_tree
 
 empty_source = ''
@@ -113,20 +113,16 @@ def get_asts_from_sources(sources: List[str]) -> List[ast.AST]:
     return [ast.parse(source) for source in sources]
 
 
-empty_ast_1 = ast.parse('')
-empty_ast_2 = ast.parse('')
-
-
-@pytest.mark.skipif(does_skip(current_module_level=TEST_LEVEL.CANONICALIZATION),
+@pytest.mark.skipif(to_skip(current_module_level=TEST_LEVEL.CANONICALIZATION),
                     reason=TEST_LEVEL.CANONICALIZATION.value)
 class TestASTsComparison:
 
     @pytest.mark.parametrize('ast', get_asts_from_sources(sources_with_empty))
-    def test_same_ast(self, ast) -> None:
+    def test_same_ast(self, ast: ast.AST) -> None:
         assert are_asts_equal(ast, ast)
 
     @pytest.mark.parametrize('not_empty_ast', get_asts_from_sources(sources_without_empty))
-    def test_empty_ast(self, not_empty_ast) -> None:
+    def test_empty_ast(self, not_empty_ast: ast.AST) -> None:
         empty_ast_1 = ast.parse('')
         empty_ast_2 = ast.parse('')
         # Check that different empty asts are equal

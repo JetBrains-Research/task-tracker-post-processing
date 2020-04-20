@@ -2,9 +2,10 @@
 
 import os
 import sys
-import pytest
 import logging
 from subprocess import check_output, CalledProcessError
+
+import pytest
 
 from src.main.util import consts
 from src.main.util.consts import TEST_DATA_PATH
