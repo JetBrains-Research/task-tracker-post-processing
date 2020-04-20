@@ -1,11 +1,11 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import os
-from typing import Callable
+from typing import Callable, Tuple
 
 import pytest
 
-from src.test.util import does_skip, TEST_LEVEL
+from src.test.util import to_skip, TEST_LEVEL
 from src.main.util.consts import TEST_DATA_PATH, EXTENSION
 from src.main.util.file_util import get_extension_from_file, change_extension_to, create_file, remove_file, \
     remove_directory, create_directory
@@ -26,7 +26,7 @@ def clear_folder(folder) -> None:
     create_directory(folder)
 
 
-@pytest.mark.skipif(does_skip(current_module_level=TEST_LEVEL.UTIL), reason=TEST_LEVEL.UTIL.value)
+@pytest.mark.skipif(to_skip(current_module_level=TEST_LEVEL.UTIL), reason=TEST_LEVEL.UTIL.value)
 class TestExtensionMethods:
 
     @staticmethod
@@ -42,7 +42,7 @@ class TestExtensionMethods:
                         'getting_exception_from_folder'
                     ]
                     )
-    def param_getting_extension_test(request):
+    def param_getting_extension_test(request) -> Tuple[str, EXTENSION]:
         return request.param
 
     def test_getting_extension(self, param_getting_extension_test: Callable) -> None:
@@ -62,7 +62,7 @@ class TestExtensionMethods:
                         'changing_empty_extension'
                     ]
                     )
-    def param_changing_extension_test(request):
+    def param_changing_extension_test(request) -> Tuple[str, EXTENSION, str]:
         return request.param
 
     def test_changing_extension(self, param_changing_extension_test: Callable) -> None:

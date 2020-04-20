@@ -1,12 +1,13 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import ast
-import pytest
 import logging
-import pandas as pd
 from typing import List, Tuple, Callable
 
-from src.test.util import does_skip, TEST_LEVEL
+import pytest
+import pandas as pd
+
+from src.test.util import to_skip, TEST_LEVEL
 from src.main.canonicalization.consts import TREE_TYPE
 from src.main.solution_space.data_classes import AtiItem
 from src.main.canonicalization.canonicalization import get_trees, are_asts_equal
@@ -93,7 +94,7 @@ def get_actual_out(solutions: pd.DataFrame, index: int) -> Tuple[int, List[AtiIt
     return i, ati_elements, current_tree
 
 
-@pytest.mark.skipif(does_skip(current_module_level=TEST_LEVEL.SOLUTION_SPACE), reason=TEST_LEVEL.SOLUTION_SPACE.value)
+@pytest.mark.skipif(to_skip(current_module_level=TEST_LEVEL.SOLUTION_SPACE), reason=TEST_LEVEL.SOLUTION_SPACE.value)
 class TestFindSomeFragments:
 
     @staticmethod
@@ -110,7 +111,7 @@ class TestFindSomeFragments:
                         'test_middle_index_with_other_fragment',
                         'test_last_index'
                     ])
-    def param_find_some_fragments_test(request):
+    def param_find_some_fragments_test(request) -> Tuple[int, int]:
         return request.param
 
     def test_find_some_fragments(self, param_find_some_fragments_test: Callable) -> None:

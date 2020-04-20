@@ -7,7 +7,7 @@ class TEST_LEVEL(Enum):
     # Run all tests in the project
     ALL = 'all tests'
 
-    # Run only scanonicalization tests
+    # Run only canonicalization tests
     CANONICALIZATION = 'canonicalization tests'
 
     # Run only solution space tests
@@ -29,7 +29,7 @@ class TEST_LEVEL(Enum):
 CURRENT_TEST_LEVEL = TEST_LEVEL.ALL
 
 
-def does_skip(current_module_level: TEST_LEVEL):
+def to_skip(current_module_level: TEST_LEVEL) -> bool:
     # If we want to run all tests, we don't want skip tests in the all modules
     if CURRENT_TEST_LEVEL == TEST_LEVEL.ALL:
         return False

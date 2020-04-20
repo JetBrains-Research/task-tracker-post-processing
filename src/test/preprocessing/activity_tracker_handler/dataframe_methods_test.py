@@ -1,12 +1,13 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import os
-import pytest
-import pandas as pd
 from typing import Tuple, Callable
 
+import pytest
+import pandas as pd
+
 from src.main.util import consts
-from src.test.util import does_skip, TEST_LEVEL
+from src.test.util import to_skip, TEST_LEVEL
 from src.main.preprocessing import activity_tracker_handler as ath
 
 ath_test_folder = os.path.join(consts.TEST_DATA_PATH, 'preprocessing/activity_tracker_handler')
@@ -137,7 +138,7 @@ def is_equals(df_1: pd.DataFrame, df_2: pd.DataFrame) -> bool:
     return df_1.equals(df_2)
 
 
-@pytest.mark.skipif(does_skip(current_module_level=TEST_LEVEL.PREPROCESSING), reason=TEST_LEVEL.PREPROCESSING.value)
+@pytest.mark.skipif(to_skip(current_module_level=TEST_LEVEL.PREPROCESSING), reason=TEST_LEVEL.PREPROCESSING.value)
 class TestDataFrameMethods:
 
     @staticmethod
@@ -153,7 +154,7 @@ class TestDataFrameMethods:
                         get_data_for_merging_test_2,
                         get_data_for_merging_test_3
                     ])
-    def param_data_frame_methods_test(request):
+    def param_data_frame_methods_test(request) -> Callable:
         return request.param
 
     def test_data_frame_methods(self, param_data_frame_methods_test: Callable) -> None:

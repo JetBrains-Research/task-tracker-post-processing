@@ -1,9 +1,10 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
-import pytest
-from typing import Callable
+from typing import Callable, Tuple
 
-from src.test.util import does_skip, TEST_LEVEL
+import pytest
+
+from src.test.util import to_skip, TEST_LEVEL
 from src.main.util.file_util import add_slash, remove_slash
 
 path_with_slash = 'home/data/src/'
@@ -12,7 +13,7 @@ empty_path_without_slash = ''
 empty_path_with_slash = '/'
 
 
-@pytest.mark.skipif(does_skip(current_module_level=TEST_LEVEL.UTIL), reason=TEST_LEVEL.UTIL.value)
+@pytest.mark.skipif(to_skip(current_module_level=TEST_LEVEL.UTIL), reason=TEST_LEVEL.UTIL.value)
 class TestAddAndRemoveSlash:
 
     @staticmethod
@@ -30,7 +31,7 @@ class TestAddAndRemoveSlash:
                         'add_existing_slash_to_empty_slash'
                     ]
                     )
-    def param_add_slash_test(request):
+    def param_add_slash_test(request) -> Tuple[str, str]:
         return request.param
     
     def test_add_slash(self, param_add_slash_test: Callable) -> None:
@@ -53,7 +54,7 @@ class TestAddAndRemoveSlash:
                         'remove_existing_slash_from_empty_slash'
                     ]
                     )
-    def param_remove_slash_test(request):
+    def param_remove_slash_test(request) -> Tuple[str, str]:
         return request.param
 
     def test_remove_slash(self, param_remove_slash_test: Callable) -> None:

@@ -2,13 +2,13 @@
 
 import os
 import re
-import pytest
 import logging
 import itertools
 from typing import List, Optional, Tuple
 
+import pytest
 
-from src.test.util import does_skip, TEST_LEVEL
+from src.test.util import to_skip, TEST_LEVEL
 from src.main.util.consts import LOGGER_NAME, TASK
 from src.main.util.log_util import log_and_raise_error
 from src.main.canonicalization.diffs.diff_handler import DiffHandler
@@ -70,7 +70,7 @@ def get_in_and_out_files(test_type: DIFF_HANDLER_TEST_TYPES, task: TASK) -> List
     return in_and_out_files
 
 
-@pytest.mark.skipif(does_skip(current_module_level=TEST_LEVEL.CANONICALIZATION),
+@pytest.mark.skipif(to_skip(current_module_level=TEST_LEVEL.CANONICALIZATION),
                     reason=TEST_LEVEL.CANONICALIZATION.value)
 class TestDiffHandler:
 
@@ -80,7 +80,7 @@ class TestDiffHandler:
                  to_clear_out=True)
 
     @pytest.mark.parametrize('task', [task for task in TASK])
-    def test_no_exceptions_raised_applying_diffs_to_students_code(self, task, subtests) -> None:
+    def test_no_exceptions_raised_applying_diffs_to_students_code(self, task: TASK, subtests) -> None:
         srs_and_dst_files = get_src_and_dst_files(DIFF_HANDLER_TEST_TYPES.STUDENTS_CODE, task)
 
         for i, (src_file, dst_file) in enumerate(srs_and_dst_files):
@@ -91,7 +91,7 @@ class TestDiffHandler:
                 apply_diffs(src_file, dst_file)
 
     @pytest.mark.parametrize('task', [task for task in TASK])
-    def test_result_of_applying_diffs_to_students_code(self, task, subtests) -> None:
+    def test_result_of_applying_diffs_to_students_code(self, task: TASK, subtests) -> None:
         in_and_out_files = get_in_and_out_files(DIFF_HANDLER_TEST_TYPES.STUDENTS_CODE, task)
         for i, (src_file, dst_file, out_file) in enumerate(in_and_out_files):
             test_info = f'Task {task.value}\nTest number {i}\nSrc file is: {src_file}\n' \

@@ -1,9 +1,12 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import sys
-import src
+
 from setuptools import setup, find_packages
-from src.test.util import TEST_LEVEL, get_level_by_param
+
+import src
+from src.test.util import get_level_by_param
+
 
 with open('README.md') as readme_file:
     readme = readme_file.read()
@@ -30,21 +33,5 @@ setup(name='codetracker-data',
       long_description=readme,
       license='MIT',
       packages=find_packages(),
-      python_requires='>=3',
-      install_requires=[
-          # Todo: add others
-          # General:
-          'pandas',
-          'numpy',
-
-          # For checking style and correctness of code
-          'mypy',
-          'pylint',
-
-          # For plots:
-          'plotly',
-          'matplotlib'
-      ],
-      setup_requires=['pytest-runner'],
-      tests_require=['pytest', 'pytest-subtests'],
+      python_requires='>=3'
       )

@@ -1,10 +1,11 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
-import pytest
 from enum import Enum
 from typing import Dict, Union, List, Callable
 
-from src.test.util import does_skip, TEST_LEVEL
+import pytest
+
+from src.test.util import to_skip, TEST_LEVEL
 from src.main.util.file_util import get_parent_folder_name, get_parent_folder
 
 
@@ -54,7 +55,7 @@ def run_test(dict_data: DictData) -> None:
         assert dict_data[PARENT_FOLDER_TEST_DATA.PARENT_FOLDER_WITH_SLASH] == get_parent_folder(path, True)
 
 
-@pytest.mark.skipif(does_skip(current_module_level=TEST_LEVEL.UTIL), reason=TEST_LEVEL.UTIL.value)
+@pytest.mark.skipif(to_skip(current_module_level=TEST_LEVEL.UTIL), reason=TEST_LEVEL.UTIL.value)
 class TestParentFolder:
 
     @staticmethod
@@ -65,7 +66,7 @@ class TestParentFolder:
                         path_without_leading_slash_data,
                         path_with_leading_slash_data
                     ])
-    def param_parent_folder_test(request):
+    def param_parent_folder_test(request) -> DictData:
         return request.param
 
     def test_parent_folder(self, param_parent_folder_test: Callable) -> None:

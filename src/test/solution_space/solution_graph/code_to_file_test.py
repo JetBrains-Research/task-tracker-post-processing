@@ -1,12 +1,13 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import os
-import pytest
 import logging
 import unittest
 from typing import List, Tuple
 
-from src.test.util import does_skip, TEST_LEVEL
+import pytest
+
+from src.test.util import to_skip, TEST_LEVEL
 from src.main.solution_space.solution_graph import SolutionGraph
 from src.main.util.language_util import get_extension_by_language
 from src.main.util.consts import LOGGER_NAME, TASK, FILE_SYSTEM_ITEM, LANGUAGE
@@ -58,7 +59,7 @@ def delete_folder() -> None:
     remove_directory(get_test_folder_path())
 
 
-@pytest.mark.skipif(does_skip(current_module_level=TEST_LEVEL.SOLUTION_SPACE), reason=TEST_LEVEL.SOLUTION_SPACE.value)
+@pytest.mark.skipif(to_skip(current_module_level=TEST_LEVEL.SOLUTION_SPACE), reason=TEST_LEVEL.SOLUTION_SPACE.value)
 class TestCodeToFile:
 
     # Create three graphs and check all folders names which were created for each graph

@@ -1,10 +1,11 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
-import pytest
 import logging
-from typing import Callable
+from typing import Callable, Tuple, Optional
 
-from src.test.util import does_skip, TEST_LEVEL
+import pytest
+
+from src.test.util import to_skip, TEST_LEVEL
 from src.main.util.consts import LOGGER_NAME, TASK
 from src.main.canonicalization.consts import TREE_TYPE
 from src.main.util.file_util import get_content_from_file
@@ -31,7 +32,7 @@ def get_canonicalized_code_from_file(file: str) -> str:
     return get_code_from_tree(canon_tree).rstrip('\n')
 
 
-@pytest.mark.skipif(does_skip(current_module_level=TEST_LEVEL.CANONICALIZATION),
+@pytest.mark.skipif(to_skip(current_module_level=TEST_LEVEL.CANONICALIZATION),
                     reason=TEST_LEVEL.CANONICALIZATION.value)
 class TestCanonicalizationTool:
 
@@ -60,7 +61,7 @@ class TestCanonicalizationTool:
                         'test_student_code_brackets'
                     ]
                     )
-    def param_canonicalization_tool_test(request):
+    def param_canonicalization_tool_test(request) -> Tuple[CANONICALIZATION_TESTS_TYPES, Callable, Optional[TASK]]:
         return request.param
 
     def test_canonicalization_tool(self, param_canonicalization_tool_test: Callable) -> None:

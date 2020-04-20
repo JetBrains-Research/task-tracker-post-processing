@@ -1,11 +1,12 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
-import pytest
 import logging
-import pandas as pd
-from typing import Callable
+from typing import Callable, Tuple
 
-from src.test.util import does_skip, TEST_LEVEL
+import pytest
+import pandas as pd
+
+from src.test.util import to_skip, TEST_LEVEL
 from src.main.util.consts import LOGGER_NAME, CODE_TRACKER_COLUMN
 from src.main.solution_space.solution_space_handler import __filter_incorrect_fragments
 
@@ -57,7 +58,7 @@ def clear_df(df: pd.DataFrame) -> pd.DataFrame:
     return df.iloc[0:0]
 
 
-@pytest.mark.skipif(does_skip(current_module_level=TEST_LEVEL.SOLUTION_SPACE), reason=TEST_LEVEL.SOLUTION_SPACE.value)
+@pytest.mark.skipif(to_skip(current_module_level=TEST_LEVEL.SOLUTION_SPACE), reason=TEST_LEVEL.SOLUTION_SPACE.value)
 class TestFilterIncorrectFragments:
 
     @staticmethod
@@ -72,7 +73,7 @@ class TestFilterIncorrectFragments:
                         'test_all_incorrect',
                         'test_all_mixed'
                     ])
-    def param_filter_incorrect_fragments_test(request):
+    def param_filter_incorrect_fragments_test(request) -> Tuple[pd.DataFrame, pd.DataFrame]:
         return request.param
 
     def test_filter_incorrect_fragments(self, param_filter_incorrect_fragments_test: Callable) -> None:
@@ -89,7 +90,7 @@ class TestFilterIncorrectFragments:
                         'test_incorrect_data',
                         'test_error_data'
                     ])
-    def param_filter_incorrect_fragments_with_errors_test(request):
+    def param_filter_incorrect_fragments_with_errors_test(request) -> Tuple[pd.DataFrame, pd.DataFrame]:
         return request.param
 
     def test_filter_incorrect_fragments_with_errors(self,

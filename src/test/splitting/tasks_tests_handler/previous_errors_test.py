@@ -1,6 +1,7 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import os
+
 import pytest
 
 from src.main.util.consts import TEST_DATA_PATH, TASK
@@ -20,7 +21,7 @@ class TestPreviousErrors:
 
     @pytest.mark.parametrize('fragment_file', get_all_file_system_items(PREVIOUS_ERRORS_TEST_DATA,
                                                                         (lambda name: 'fragment' in name)))
-    def test_fragments(self, fragment_file) -> None:
+    def test_fragments(self, fragment_file: str) -> None:
         in_and_out_files_dict = create_in_and_out_dict(TASK.tasks())
         language = get_language_by_extension(get_extension_from_file(fragment_file))
         check_tasks(TASK.tasks(), get_content_from_file(fragment_file), in_and_out_files_dict, language, False)

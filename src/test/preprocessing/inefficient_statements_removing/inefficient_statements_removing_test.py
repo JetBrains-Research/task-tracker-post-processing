@@ -3,7 +3,7 @@
 import pytest
 import pandas as pd
 
-from src.test.util import does_skip, TEST_LEVEL
+from src.test.util import to_skip, TEST_LEVEL
 from src.main.util import consts
 from src.main.preprocessing.inefficient_statements_removing import __remove_inefficient_statements_from_df
 
@@ -23,7 +23,7 @@ def run_test(input_df: pd.DataFrame, expected_df: pd.DataFrame) -> bool:
     return input_df.equals(expected_df)
 
 
-@pytest.mark.skipif(does_skip(current_module_level=TEST_LEVEL.PREPROCESSING), reason=TEST_LEVEL.PREPROCESSING.value)
+@pytest.mark.skipif(to_skip(current_module_level=TEST_LEVEL.PREPROCESSING), reason=TEST_LEVEL.PREPROCESSING.value)
 class TestPylintChecker:
 
     def test_inefficient_statements(self) -> None:

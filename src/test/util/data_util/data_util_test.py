@@ -1,10 +1,11 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
-import pytest
-import pandas as pd
 from typing import Tuple, Callable
 
-from src.test.util import does_skip, TEST_LEVEL
+import pytest
+import pandas as pd
+
+from src.test.util import to_skip, TEST_LEVEL
 from src.main.util.consts import CODE_TRACKER_COLUMN
 from src.main.util.data_util import crop_data_by_timestamp
 
@@ -49,7 +50,7 @@ def run_test(get_data_for_test: Callable) -> bool:
     return are_equal(actual_data, expected_crop_data)
 
 
-@pytest.mark.skipif(does_skip(current_module_level=TEST_LEVEL.UTIL), reason=TEST_LEVEL.UTIL.value)
+@pytest.mark.skipif(to_skip(current_module_level=TEST_LEVEL.UTIL), reason=TEST_LEVEL.UTIL.value)
 class TestDataUtilMethods:
 
     def test_crop_data_by_start_and_end(self) -> None:

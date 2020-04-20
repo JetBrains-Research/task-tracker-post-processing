@@ -1,9 +1,10 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
-import pytest
-from typing import Callable
+from typing import Callable, Tuple, Dict
 
-from src.test.util import does_skip, TEST_LEVEL
+import pytest
+
+from src.test.util import to_skip, TEST_LEVEL
 from src.main.util.consts import LANGUAGE, TASK
 from src.test.splitting.tasks_tests_handler.util import run_test_task, SOLUTION
 
@@ -36,7 +37,7 @@ cpp_actual_pairs = {
 }
 
 
-@pytest.mark.skipif(does_skip(current_module_level=TEST_LEVEL.SPLITTING), reason=TEST_LEVEL.SPLITTING.value)
+@pytest.mark.skipif(to_skip(current_module_level=TEST_LEVEL.SPLITTING), reason=TEST_LEVEL.SPLITTING.value)
 class TestPiesTests:
     task = TASK.PIES
 
@@ -54,7 +55,7 @@ class TestPiesTests:
                         'test_kotlin',
                         'test_cpp'
                     ])
-    def param_language_test(request):
+    def param_language_test(request) -> Tuple[Dict[SOLUTION, Tuple[int, int]], LANGUAGE]:
         return request.param
 
     def test_language(self, param_language_test: Callable):
