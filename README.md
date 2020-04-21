@@ -8,6 +8,16 @@ Todo: add description
 
 ---
 
+### Installation
+
+Just clone the repository and run the following commands:
+
+1. `pip install -r requirements.txt`
+2. `pip install -r dev-requirements.txt`
+3. `pip install -r test-requirements.txt`
+
+---
+
 ### Run tests
 
 We use [`pytest`](https://docs.pytest.org/en/latest/contents.html) library for tests.
