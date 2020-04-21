@@ -22,10 +22,16 @@ class GumTreeDiffHandler(IDiffHandler):
     @staticmethod
     def get_diffs_number_with_gumtree(src_file: str, dst_file: str) -> int:
         try:
-            args = [consts.GUMTREE_PATH, '-dm', 'diffn', src_file, dst_file]
+            args = ['ls', '/tmp']
+            output = check_output(args, text=True, stderr=STDOUT).strip('\n')
+            print(output + '\n\n\n')
+            args = [consts.GUMTREE_PATH, 'diffn', src_file, dst_file]
             output = check_output(args, text=True, stderr=STDOUT).strip('\n')
             return int(output)
         except CalledProcessError as e:
+            args = ['ls', '/tmp']
+            output = check_output(args, text=True, stderr=STDOUT).strip('\n')
+            print(output + '\n\n\n')
             log_and_raise_error(f'Error during GumTreeDiff running: {e}, src file: {src_file}, dst file: {dst_file}',
                                 log, ValueError)
             exit(1)

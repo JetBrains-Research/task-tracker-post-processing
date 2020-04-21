@@ -13,6 +13,8 @@ jobs:
       - run:
           name: run tests
           command: |
-            python setup.py test
+            ls /tmp
+            pytest src/test/solution_space/solution_graph/gumtree_test.py
+            ls /tmp
       - store_artifacts:
           path: htmlcov/
