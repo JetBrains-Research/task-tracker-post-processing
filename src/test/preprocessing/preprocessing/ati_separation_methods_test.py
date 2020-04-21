@@ -1,5 +1,6 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
+import os
 import logging
 from enum import Enum
 from typing import List, Tuple, Union, Optional, Callable
@@ -7,8 +8,8 @@ from typing import List, Tuple, Union, Optional, Callable
 import pytest
 
 from src.main.util import consts
-from src.main.preprocessing.preprocessing import __separate_ati_and_other_files
 from src.test.util import to_skip, TEST_LEVEL
+from src.main.preprocessing.preprocessing import __separate_ati_and_other_files
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -19,14 +20,15 @@ class TEST_DATA(Enum):
 
 
 VALUE_ERROR = 'value_error'
+TEST_DATA_FOLDER = os.path.join(consts.TEST_DATA_PATH, 'preprocessing/preprocessing')
 
 
-ATI_FILE_1 = consts.TEST_DATA_PATH + '/preprocessing/preprocessing/ide-events_18963327637.58422_2ec6b363dfea2f6e12ea59dbef61c90ef23c4b02.csv'
-ATI_FILE_2 = consts.TEST_DATA_PATH + '/preprocessing/preprocessing/ide-events_18963327648.58422_2ec6b363dfea2f6e12ea59dbef61c90ef23c4b02.csv'
+ATI_FILE_1 = os.path.join(TEST_DATA_FOLDER, 'ide-events_18963327637.58422_2ec6b363dfea2f6e12ea59dbef61c90ef23c4b02.csv')
+ATI_FILE_2 = os.path.join(TEST_DATA_FOLDER, 'ide-events_18963327648.58422_2ec6b363dfea2f6e12ea59dbef61c90ef23c4b02.csv')
 
-FILE_1 = consts.TEST_DATA_PATH + '/preprocessing/preprocessing/Main_203985_1349205394_43223189605.08081_37c0720d12b4f83bb694fc801a8ab7b20b354bdd.csv'
-FILE_2 = consts.TEST_DATA_PATH + '/preprocessing/preprocessing/Main_69437_1494035819_963152475617.9932_2c75cd4f24b92a7c95ffe3253c2b1d821784a5b3.csv'
-FILE_3 = consts.TEST_DATA_PATH + '/preprocessing/preprocessing/Name_69437_1494035819_963152475617.9932_2c75cd4f24b92a7c95ffe3253c2b1d821784a5b3.csv'
+FILE_1 = os.path.join(TEST_DATA_FOLDER, 'Main_203985_1349205394_43223189605.08081_37c0720d12b4f83bb694fc801a8ab7b20b354bdd.csv')
+FILE_2 = os.path.join(TEST_DATA_FOLDER, 'Main_69437_1494035819_963152475617.9932_2c75cd4f24b92a7c95ffe3253c2b1d821784a5b3.csv')
+FILE_3 = os.path.join(TEST_DATA_FOLDER, 'Name_69437_1494035819_963152475617.9932_2c75cd4f24b92a7c95ffe3253c2b1d821784a5b3.csv')
 
 two_ati_case = {
     TEST_DATA.FILES.value: [ATI_FILE_1, ATI_FILE_2, FILE_1],

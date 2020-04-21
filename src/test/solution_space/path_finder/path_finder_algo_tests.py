@@ -3,14 +3,12 @@
 import os
 import logging
 
-from src.test.test_util import LoggedTest
 from src.main.util.file_util import create_file
 from src.main.solution_space.data_classes import User
-from src.main.solution_space.path_finder.path_finder_v_1 import PathFinderV1
 from src.main.canonicalization.diffs.diff_handler import IDiffHandler
-from src.main.solution_space.solution_graph import SolutionGraph
-from src.main.solution_space.vertex import Vertex
+from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 from src.main.canonicalization.canonicalization import get_code_from_tree
+from src.main.solution_space.path_finder.path_finder_v_1 import PathFinderV1
 from src.main.canonicalization.diffs.gumtree_diff_handler import GumTreeDiffHandler
 from src.test.solution_space.path_finder.util import get_solution_graph, get_user_solutions
 from src.main.util.consts import TASK, LOGGER_NAME, SOLUTION_SPACE_TEST_RESULT_PATH, EXTENSION
@@ -29,13 +27,13 @@ def get_res_for_current_test(test_prefix: str, task: TASK, s_g: SolutionGraph,
     res += f'Test prefix for graph_folder: {test_prefix}. Graph id: {s_g.id}\n\n'
     res += f'User original code:\n{get_code_from_tree(user_dh.orig_tree)}\n\n'
     res += f'Next vertex id: {next_vertex.id}\n'
-    res += f'Next canon code:\n{get_code_from_tree(next_vertex.code.canon_tree)}\n'
-    for i, a_t in enumerate(next_vertex.code.anon_tree):
+    res += f'Next canon code:\n{get_code_from_tree(next_vertex.serialized_code.canon_tree)}\n'
+    for i, a_t in enumerate(next_vertex.serialized_code.anon_trees):
         res += f'Next anon code {i}:\n{get_code_from_tree(a_t)}\n'
     return res
 
 
-def run_test(self, task: TASK, test_prefix: str, s_g: SolutionGraph) -> None:
+def run_test(task: TASK, test_prefix: str, s_g: SolutionGraph) -> None:
     current_save_folder = os.path.join(SAVE_FOLDER, task.value)
     user_solutions = get_user_solutions(task)
     user = User()
@@ -49,7 +47,7 @@ def run_test(self, task: TASK, test_prefix: str, s_g: SolutionGraph) -> None:
         log.info(res)
 
 
-class TestPathFinderAlgo(LoggedTest):
+class TestPathFinderAlgo:
 
     def test_pies_path_finder_algo(self) -> None:
         task = TASK.PIES

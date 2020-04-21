@@ -137,50 +137,54 @@ class TestDistBetweenVertices():
 
     # Check all fragments in same vertices have the same canon trees
     @pytest.mark.parametrize('vertex', [v for v in VERTEX])
-    def test_same_canon_trees_in_same_vertices(self, vertex: VERTEX):
+    def test_same_canon_trees_in_same_vertices(self, vertex: VERTEX, subtests):
         same_canon_fragments = [all_fragments[i] for i in INDICES_BY_VERTEX[vertex]]
         canon_trees = [get_trees(f, {TREE_TYPE.CANON})[0] for f in same_canon_fragments]
         for canon_tree_1, canon_tree_2 in itertools.product(canon_trees, repeat=2):
-            self.assertTrue(are_asts_equal(canon_tree_1, canon_tree_2))
+            with subtests.test():
+                assert are_asts_equal(canon_tree_1, canon_tree_2)
 
     # Check all fragments in different vertices have different canon trees
-    def test_different_canon_trees_in_different_vertices(self):
+    def test_different_canon_trees_in_different_vertices(self, subtests):
         # Take the first fragment from each vertex to get all fragments with different canon trees
         different_canon_fragments = [all_fragments[INDICES_BY_VERTEX[vertex][0]] for vertex in VERTEX]
         canon_trees = [get_trees(f, {TREE_TYPE.CANON})[0] for f in different_canon_fragments]
         for canon_tree_1, canon_tree_2 in zip(canon_trees, np.roll(canon_trees, 1)):
-            self.assertFalse(are_asts_equal(canon_tree_1, canon_tree_2))
+            with subtests.test():
+                assert not are_asts_equal(canon_tree_1, canon_tree_2)
 
     # Check anon distance matrix is filled right
-    def test_anon_distance_correctness(self):
+    def test_anon_distance_correctness(self, subtests):
         fragments = [fragment_0, fragment_1, fragment_2, fragment_3, fragment_4, fragment_5]
         for i, src_fragment in enumerate(fragments):
             src_anon_tree, = get_trees(src_fragment, {TREE_TYPE.ANON})
             for j, dst_fragment in enumerate(fragments):
-                dst_anon_tree, = get_trees(dst_fragment, {TREE_TYPE.ANON})
-                real_dist = GumTreeDiffHandler.create_tmp_files_and_run_gumtree(src_anon_tree, dst_anon_tree)
-                self.assertEqual(real_dist, anon_distance[i][j], msg=f'Dists are not equal: {i}, {j}')
+                with subtests.test():
+                    dst_anon_tree, = get_trees(dst_fragment, {TREE_TYPE.ANON})
+                    real_dist = GumTreeDiffHandler.create_tmp_files_and_run_gumtree(src_anon_tree, dst_anon_tree)
+                    assert real_dist == anon_distance[i][j], f'Dists are not equal: {i}, {j}'
 
     # Check canon distance matrix is filled right
-    def test_canon_distance_correctness(self):
-        for src_vertex in VERTEX:
-            src_canon_tree, = get_trees(all_fragments[INDICES_BY_VERTEX[src_vertex][0]], {TREE_TYPE.CANON})
-            for dst_vertex in VERTEX:
+    @pytest.mark.parametrize('src_vertex', [v for v in VERTEX])
+    def test_canon_distance_correctness(self, src_vertex, subtests):
+        src_canon_tree, = get_trees(all_fragments[INDICES_BY_VERTEX[src_vertex][0]], {TREE_TYPE.CANON})
+        for dst_vertex in VERTEX:
+            with subtests.test():
                 dst_canon_tree, = get_trees(all_fragments[INDICES_BY_VERTEX[dst_vertex][0]], {TREE_TYPE.CANON})
                 real_dist = GumTreeDiffHandler.create_tmp_files_and_run_gumtree(src_canon_tree, dst_canon_tree)
-                self.assertEqual(real_dist, canon_distance[src_vertex][dst_vertex])
+                assert real_dist == canon_distance[src_vertex][dst_vertex]
 
-    def test_consequent_dist_updating(self):
+    def test_consequent_dist_updating(self, subtests):
         sg = SolutionGraph(TASK.PIES)
-
         added_indices_by_vertex = collections.defaultdict(list)
         for i in fragment_indices_to_add:
-            # We should create code_info_chain for each fragment to emulate consequent fragments adding.
-            code_info_chain = get_code_info_chain([all_fragments[i]])
-            sg.add_code_info_chain(code_info_chain)
-            actual_dist_matrix = sg._dist._IItemDistance__get_dist_matrix()
+            with subtests.test():
+                # We should create code_info_chain for each fragment to emulate consequent fragments adding.
+                code_info_chain = get_code_info_chain([all_fragments[i]])
+                sg.add_code_info_chain(code_info_chain)
+                actual_dist_matrix = sg._dist._IItemDistance__get_dist_matrix()
 
-            added_indices_by_vertex[get_vertex_by_index(i)].append(i)
-            expected_dist_matrix = find_dist_matrix(added_indices_by_vertex)
+                added_indices_by_vertex[get_vertex_by_index(i)].append(i)
+                expected_dist_matrix = find_dist_matrix(added_indices_by_vertex)
 
-            self.assertEqual(expected_dist_matrix, actual_dist_matrix)
+                assert expected_dist_matrix == actual_dist_matrix

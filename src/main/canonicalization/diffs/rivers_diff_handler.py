@@ -33,6 +33,9 @@ class RiversDiffHandler(IDiffHandler):
         canon_diffs, _ = updateChangeVectors(canon_diffs, self._canon_tree, self._canon_tree)
         return canon_diffs, TREE_TYPE.CANON
 
+    def get_diffs_from_diff_handler(self, diff_handler: IDiffHandler) -> Tuple[List[ChangeVector], TREE_TYPE]:
+        return self.get_diffs(diff_handler.anon_tree, diff_handler._canon_tree)
+
     def get_diffs_number(self, anon_dst_tree: Optional[ast.AST], canon_dst_tree: Optional[ast.AST]) -> int:
         if anon_dst_tree is None or canon_dst_tree is None:
             log_and_raise_error(f'Trees can not be empty!\nAnon tree:\n{get_code_from_tree(anon_dst_tree)}\n'
