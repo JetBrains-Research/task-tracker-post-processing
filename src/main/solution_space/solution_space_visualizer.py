@@ -1,6 +1,7 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
+
 import os
-from typing import List, Set
+from typing import Set
 
 from src.main.util import consts
 from src.main.splitting.task_checker import check_call_safely
@@ -79,8 +80,8 @@ class SolutionSpaceVisualizer:
     #           |
     #       Vertex F
     #
-    def __get_graph_representation(self) -> str:
-        start = 'digraph  D {\n\nnode [shape=record fontname=Arial];\n\n'
+    def __get_graph_representation(self, font_name: str = 'Arial') -> str:
+        start = 'digraph  D {\n\nnode [shape=record fontname=' + font_name + '];\n\n'
         graph_representation = start + f'{self.__get_labels()}\n\n'
         graph_representation += self.__get_graph_structure()
         end = '\n\n}'
