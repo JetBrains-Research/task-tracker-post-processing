@@ -7,12 +7,11 @@ from typing import List, Tuple, Dict, Union
 
 from src.test.test_util import LoggedTest
 from src.main.solution_space.code import Code
-from src.main.canonicalization.consts import TREE_TYPE
 from src.main.util.consts import TEST_RESULT, LOGGER_NAME, TASK
 from src.main.solution_space.data_classes import User, CodeInfo
-from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 from src.main.solution_space.consts import SOLUTION_SPACE_TEST_FOLDER
-from src.main.canonicalization.canonicalization import get_code_from_tree, get_trees
+from src.main.solution_space.solution_graph import SolutionGraph, Vertex
+from src.main.canonicalization.canonicalization import get_code_from_tree
 from src.test.solution_space.solution_graph.util import create_code_from_source, init_default_ids
 
 log = logging.getLogger(LOGGER_NAME)

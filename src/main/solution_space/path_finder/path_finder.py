@@ -1,15 +1,14 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import logging
-from abc import ABCMeta, abstractmethod
 from typing import Optional
+from abc import ABCMeta, abstractmethod
 
-from src.main.canonicalization.diffs.diff_handler import IDiffHandler
 from src.main.util import consts
 from src.main.util.log_util import log_and_raise_error
 from src.main.solution_space.data_classes import User, Profile
-from src.main.solution_space.solution_graph import SolutionGraph
-from src.main.solution_space.vertex import Vertex
+from src.main.canonicalization.diffs.diff_handler import IDiffHandler
+from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 
 log = logging.getLogger(consts.LOGGER_NAME)
 

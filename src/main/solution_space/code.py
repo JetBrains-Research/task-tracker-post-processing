@@ -1,16 +1,18 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
+from __future__ import annotations
+
+import os
 import ast
 import logging
-import os
 from typing import List, Dict, Callable, Optional
 
 from src.main.util import consts
 from src.main.util.file_util import create_file
 from src.main.canonicalization.consts import TREE_TYPE
+from src.main.util.log_util import log_and_raise_error
 from src.main.util.language_util import get_extension_by_language
 from src.main.canonicalization.canonicalization import are_asts_equal, get_code_from_tree
-from src.main.util.log_util import log_and_raise_error
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -64,7 +66,7 @@ class SerializedCode:
         self.__create_files_for_trees()
 
     @classmethod
-    def from_code(cls, code: Code, folder_with_files: str, file_prefix: str) -> 'SerializedCode':
+    def from_code(cls, code: Code, folder_with_files: str, file_prefix: str) -> SerializedCode:
         return SerializedCode(code.anon_tree, code.canon_tree, code.rate, folder_with_files, file_prefix, code.language)
 
     @property

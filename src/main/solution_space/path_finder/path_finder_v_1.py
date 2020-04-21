@@ -1,11 +1,13 @@
+# Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
+
 from typing import List, Optional
 
-from src.main.canonicalization.canonicalization import get_code_from_tree, are_asts_equal
-from src.main.canonicalization.diffs.diff_handler import IDiffHandler
-from src.main.solution_space.consts import DISTANCE_TO_GRAPH_THRESHOLD, DIFFS_PERCENT_TO_GO_DIRECTLY, EMPTY_DIFF_HANDLER
 from src.main.solution_space.data_classes import User
+from src.main.solution_space.solution_graph import Vertex
+from src.main.canonicalization.diffs.diff_handler import IDiffHandler
+from src.main.canonicalization.canonicalization import get_code_from_tree, are_asts_equal
 from src.main.solution_space.path_finder.path_finder import IPathFinder, log, MeasuredVertex
-from src.main.solution_space.vertex import Vertex
+from src.main.solution_space.consts import DISTANCE_TO_GRAPH_THRESHOLD, DIFFS_PERCENT_TO_GO_DIRECTLY, EMPTY_DIFF_HANDLER
 
 """
 The first version of path finder.
@@ -61,11 +63,11 @@ class PathFinderV1(IPathFinder):
 
         for vertex in vertices:
             # We don't want to add to result the same vertex
-            if are_asts_equal(user_diff_handler.canon_tree, vertex.code.canon_tree):
+            if are_asts_equal(user_diff_handler.canon_tree, vertex.serialized_code.canon_tree):
                 continue
             # Todo: change to normal way
-            if get_code_from_tree(vertex.code.canon_tree) == '' \
-                    and get_code_from_tree(vertex.code.anon_tree[0]) == '' \
+            if get_code_from_tree(vertex.serialized_code.canon_tree) == '' \
+                    and get_code_from_tree(vertex.serialized_code.anon_trees[0]) == '' \
                     and not to_add_empty:
                 continue
 

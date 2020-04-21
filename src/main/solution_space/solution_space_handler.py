@@ -9,15 +9,15 @@ import pandas as pd
 
 from src.main.util import consts
 from src.main.util.data_util import Column
+from src.main.solution_space.code import Code
 from src.main.canonicalization.consts import TREE_TYPE
 from src.main.util.log_util import log_and_raise_error
 from src.main.splitting.splitting import unpack_tests_results
 from src.main.solution_space.solution_graph import SolutionGraph
 from src.main.canonicalization.canonicalization import are_asts_equal, get_trees
+from src.main.solution_space.data_classes import AtiItem, Profile, User, CodeInfo
 from src.main.util.consts import EXPERIENCE, DEFAULT_VALUE, TASK, LANGUAGE, EXTENSION
 from src.main.util.file_util import get_all_file_system_items, extension_file_condition
-from src.main.solution_space.data_classes import AtiItem, Profile, User, CodeInfo
-from src.main.solution_space.code import Code
 
 log = logging.getLogger(consts.LOGGER_NAME)
 

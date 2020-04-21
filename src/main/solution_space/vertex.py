@@ -1,4 +1,5 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
+
 from __future__ import annotations
 
 from typing import List, Set, Optional
@@ -18,7 +19,8 @@ class Vertex:
         self._children = []
         self._code_info_list = []
         self._graph = graph
-        self._serialized_code = None if code is None else SerializedCode.from_code(code, graph.graph_directory, graph.file_prefix)
+        self._serialized_code = None if code is None \
+            else SerializedCode.from_code(code, graph.graph_directory, graph.file_prefix)
         self._vertex_type = vertex_type
 
         self._id = self._last_id
@@ -52,8 +54,6 @@ class Vertex:
     def vertex_type(self) -> solution_space_consts.VERTEX_TYPE:
         return self._vertex_type
 
-    # Use  for better understanding.
-    # See: https://stackoverflow.com/questions/15853469/putting-current-class-as-return-type-annotation
     def __add_parent_to_list(self, parent: Vertex) -> None:
         self._parents.append(parent)
 
@@ -74,3 +74,6 @@ class Vertex:
     def get_unique_users(self) -> Set[User]:
         users = [code_info.user for code_info in self._code_info_list]
         return set(users)
+
+    def get_dist(self, dst_vertex: Vertex) -> int:
+        return self._graph.get_dist_between_vertices(self, dst_vertex)

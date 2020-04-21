@@ -5,9 +5,8 @@ from typing import List, Set
 from src.main.util import consts
 from src.main.splitting.task_checker import check_call_safely
 from src.main.util.file_util import create_file, remove_directory
+from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 from src.main.canonicalization.canonicalization import get_code_from_tree
-from src.main.solution_space.solution_graph import SolutionGraph
-from src.main.solution_space.vertex import Vertex
 
 
 # It is the class for creating a solution graph representation by using graphviz library

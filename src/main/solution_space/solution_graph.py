@@ -130,22 +130,6 @@ class SolutionGraph(collections.abc.Iterable):
         # Remove goal
         return visited[1:]
 
-    # def find_dist(self, new_vertex: Vertex) -> None:
-    #     self._dist[new_vertex] = {}
-    #     for old_vertex in self._dist.keys():
-    #         # todo: make sure dist is commutative
-    #         self._dist[new_vertex][old_vertex] = dist(new_vertex, old_vertex)
-    #         self._dist[old_vertex][new_vertex] = dist(old_vertex, new_vertex)
-    #
-    #
-    # def update_vertex_and_dist(self, upd_vertex: Vertex, code: Code, code_info: CodeInfo) -> None:
-    #     upd_vertex.add_code_info(code_info)
-    #     anon_file = upd_vertex.serialized_code.add_anon_tree(code.anon_tree)
-    #     if anon_file is not None:
-    #         for vertex in self._dist.keys():
-    #             self._dist[upd_vertex][vertex] = min(self._dist[upd_vertex][vertex], dist(anon_file, vertex))
-    #             self._dist[vertex][upd_vertex] = min(self._dist[vertex][upd_vertex], dist(vertex, anon_file))
-
     def create_vertex(self, code: Code, code_info: CodeInfo) -> Vertex:
         vertex = Vertex(self, code=code)
         vertex.add_code_info(code_info)
@@ -170,8 +154,8 @@ class SolutionGraph(collections.abc.Iterable):
         vertex = self.find_vertex(code)
         if vertex:
             vertex.add_code_info(code_info)
-            vertex.serialized_code.add_anon_tree(code.anon_tree)
-            self._dist.update_dist(vertex, code.anon_tree)
+            anon_tree_file = vertex.serialized_code.add_anon_tree(code.anon_tree)
+            self._dist.update_dist(vertex, anon_tree_file)
             return vertex
         log.info(f'Not found any existing vertex for code: {str(code)}, creating a new one')
         return self.create_vertex(code, code_info)
@@ -211,7 +195,4 @@ class SolutionGraph(collections.abc.Iterable):
         return adj_list
 
     def get_dist_between_vertices(self, src_vertex: Vertex, dst_vertex: Vertex) -> int:
-        dist = self._dist.get(src_vertex).get(dst_vertex)
-        if dist is None:
-            log_and_raise_error(f'No distance found for src_vertex {src_vertex} and dst_vertex {dst_vertex}', log)
-        return dist
+        return self._dist.get_dist(src_vertex, dst_vertex)

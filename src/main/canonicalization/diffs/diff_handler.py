@@ -1,5 +1,7 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
+from __future__ import annotations
+
 import ast
 import logging
 from typing import Optional
@@ -38,5 +40,5 @@ class IDiffHandler(object, metaclass=ABCMeta):
         raise NotImplementedError
 
     # todo: rename
-    def get_diffs_number_from_diff_handler(self, diff_handler: 'IDiffHandler') -> int:
+    def get_diffs_number_from_diff_handler(self, diff_handler: IDiffHandler) -> int:
         return self.get_diffs_number(diff_handler.anon_tree, diff_handler.canon_tree)
