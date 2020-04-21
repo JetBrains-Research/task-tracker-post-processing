@@ -1,8 +1,20 @@
+[![CircleCI](https://circleci.com/gh/elena-lyulina/codetracker-data.svg?style=shield)](https://circleci.com/gh/elena-lyulina/codetracker-data)
+
 # codetracker-data
 
 ### Description
 
 Todo: add description
+
+---
+
+### Installation
+
+Just clone the repository and run the following commands:
+
+1. `pip install -r requirements.txt`
+2. `pip install -r dev-requirements.txt`
+3. `pip install -r test-requirements.txt`
 
 ---
 

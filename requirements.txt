@@ -1,0 +1,16 @@
+# General:
+pandas
+numpy
+
+# For checking style and correctness of code
+mypy
+pylint
+javalang
+
+# For plots:
+plotly
+matplotlib
+
+# For GumTreeDiff:
+jsontree
+asttokens
