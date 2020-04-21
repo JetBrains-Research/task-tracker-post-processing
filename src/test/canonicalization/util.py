@@ -3,7 +3,7 @@
 import os
 import logging
 from enum import Enum
-from typing import Callable, Union, Tuple, List
+from typing import Callable, Union, Tuple, List, Optional
 
 from src.main.util.consts import LOGGER_NAME, ROOT_DIR, TASK
 from src.main.canonicalization.canonicalization import get_cleaned_code
@@ -46,8 +46,8 @@ def get_test_in_and_out_files(test_type: Union[CANONICALIZATION_TESTS_TYPES, DIF
     return pair_in_and_out_files(in_files, out_files)
 
 
-def run_test(self, test_type:  Union[CANONICALIZATION_TESTS_TYPES, DIFF_HANDLER_TEST_TYPES],
-             get_code: Callable[[str], str], task: TASK = None, additional_folder_name: str = '',
+def run_test(test_type:  Union[CANONICALIZATION_TESTS_TYPES, DIFF_HANDLER_TEST_TYPES],
+             get_code: Callable[[str], str], task: Optional[TASK] = None, additional_folder_name: str = '',
              to_clear_out: bool = False) -> None:
     files = get_test_in_and_out_files(test_type, task, additional_folder_name=additional_folder_name)
     count_tests = 1
@@ -58,5 +58,5 @@ def run_test(self, test_type:  Union[CANONICALIZATION_TESTS_TYPES, DIFF_HANDLER_
         if to_clear_out:
             expected_code = get_cleaned_code(expected_code).rstrip('\n')
         log.info(f'Actual code is:\n{actual_code}\nExpected code is:\n{expected_code}\n')
-        self.assertEqual(expected_code, actual_code)
+        assert expected_code == actual_code
         count_tests += 1

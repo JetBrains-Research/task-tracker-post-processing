@@ -40,9 +40,10 @@ def check_output_safely(input: str, expected_output: str, popen_args: List[str],
 
 # Returns True if time is out, because it means that no other errors were raised,
 # so in case of code correctness checking it means that code is correct
-def check_call_safely(call_args: List[str], timeout: Optional[int] = TIMEOUT, timeout_return: bool = True) -> bool:
+def check_call_safely(call_args: List[str], timeout: Optional[int] = TIMEOUT, timeout_return: bool = True,
+                      shell: bool = False) -> bool:
     try:
-        check_call(call_args, timeout=timeout)
+        check_call(call_args, timeout=timeout, shell=shell)
         return True
     except CalledProcessError as e:
         log.exception(e)

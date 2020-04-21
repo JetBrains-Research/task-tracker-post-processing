@@ -6,16 +6,16 @@ import logging
 
 import pandas as pd
 
-from src.main.solution_space.data_classes import User
-from src.main.solution_space.hint import HintGetter
-from src.main.solution_space.solution_space_handler import construct_solution_graph
-from src.main.solution_space.solution_space_visualizer import SolutionSpaceVisualizer
 from src.main.util import consts
-from src.main.util.file_util import add_slash, serialize_data_and_write_to_file, deserialize_data_from_file
-from src.main.util.consts import PATH_CMD_ARG, LOGGER_FORMAT, TASK
+from src.main.util.file_util import add_slash
+from src.main.util.consts import PATH_CMD_ARG, TASK
+from src.main.solution_space.hint import HintGetter
+from src.main.util.log_util import configure_logger
+from src.main.solution_space.data_classes import User
 from src.main.preprocessing.preprocessing import preprocess_data
 from src.main.splitting.splitting import split_tasks_into_separate_files
-
+from src.main.solution_space.solution_space_handler import construct_solution_graph
+from src.main.solution_space.solution_space_visualizer import SolutionSpaceVisualizer
 
 pd.set_option('display.max_rows', 250)
 pd.set_option('display.max_columns', 100)
@@ -33,7 +33,7 @@ def __get_data_path() -> str:
 
 
 def main() -> None:
-    logging.basicConfig(filename=consts.LOGGER_FILE, format=LOGGER_FORMAT, level=logging.INFO)
+    configure_logger()
     path = __get_data_path()
 
     # Preprocess data before splitting
