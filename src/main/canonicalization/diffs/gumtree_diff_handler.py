@@ -22,7 +22,7 @@ class GumTreeDiffHandler(IDiffHandler):
     @staticmethod
     def get_diffs_number_with_gumtree(src_file: str, dst_file: str) -> int:
         try:
-            args = [consts.GUMTREE_PATH, 'diffn', src_file, dst_file]
+            args = [consts.GUMTREE_PATH, '-dm', 'diffn', src_file, dst_file]
             output = check_output(args, text=True, stderr=STDOUT).strip('\n')
             return int(output)
         except CalledProcessError as e:
