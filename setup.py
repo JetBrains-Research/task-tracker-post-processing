@@ -14,6 +14,7 @@ with open('requirements.txt') as req_file:
     install_requires = req_file.read()
 
 # Todo: find a better way for it
+# See: https://docs.pytest.org/en/latest/example/simple.html#pass-different-values-to-a-test-function-depending-on-command-line-options
 args = sys.argv
 test_level_param = '--test_level'
 
