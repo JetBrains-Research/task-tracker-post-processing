@@ -27,6 +27,7 @@ class GumTreeDiffHandler(IDiffHandler):
             print(output + '\n\n\n')
             args = [consts.GUMTREE_PATH, 'diffn', src_file, dst_file]
             output = check_output(args, text=True, stderr=STDOUT).strip('\n')
+            print(f'Output: {output}')
             return int(output)
         except CalledProcessError as e:
             args = ['ls', '/tmp']
