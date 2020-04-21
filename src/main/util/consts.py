@@ -215,7 +215,6 @@ MAX_DIF_SEC = 0.5
 RESOURCES_PATH = ROOT_DIR + '/../../resources/'
 TEST_DATA_PATH = RESOURCES_PATH + 'test_data'
 TEST_PATH = ROOT_DIR + '/../../test'
-RESOURCES_PATH = ROOT_DIR + '/../../resources'
 
 GRAPH_REPRESENTATION_PATH = RESOURCES_PATH + 'graph_representation'
 SOLUTION_SPACE_TEST_RESULT_PATH = RESOURCES_PATH + 'solution_space'

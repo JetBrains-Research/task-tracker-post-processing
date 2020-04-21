@@ -155,7 +155,8 @@ class SolutionGraph(collections.abc.Iterable):
         if vertex:
             vertex.add_code_info(code_info)
             anon_tree_file = vertex.serialized_code.add_anon_tree(code.anon_tree)
-            self._dist.update_dist(vertex, anon_tree_file)
+            if anon_tree_file:
+                self._dist.update_dist(vertex, anon_tree_file)
             return vertex
         log.info(f'Not found any existing vertex for code: {str(code)}, creating a new one')
         return self.create_vertex(code, code_info)
