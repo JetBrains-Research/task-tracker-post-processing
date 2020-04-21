@@ -14,8 +14,8 @@ jobs:
       - run:
           name: run tests
           command: |
-            ls /tmp
-            python src/test/solution_space/solution_graph/gumtree_test.py
+            echo | ls /tmp
+            echo | ls
             ls /tmp
       - store_artifacts:
           path: htmlcov/
