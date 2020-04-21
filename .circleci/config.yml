@@ -8,6 +8,8 @@ jobs:
   build:
     docker:
       - image: nastyabirillo/codetracker:1.1
+    working_directory:
+      - ~/codetracker-data
     steps:
       - checkout
       - run:
