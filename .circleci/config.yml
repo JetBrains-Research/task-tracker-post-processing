@@ -1,0 +1,18 @@
+version: 2.1
+workflows:
+  build_and_deploy:
+    jobs:
+      - build
+
+jobs:
+  build:
+    docker:
+      - image: nastyabirillo/codetracker:1.1
+    steps:
+      - checkout
+      - run:
+          name: run tests
+          command: |
+            python setup.py test
+      - store_artifacts:
+          path: htmlcov/

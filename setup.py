@@ -1,28 +1,30 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import sys
-
+import argparse
 from setuptools import setup, find_packages
 
 import src
 from src.test.util import get_level_by_param
 
-
 with open('README.md') as readme_file:
     readme = readme_file.read()
+
+with open('requirements.txt') as req_file:
+    install_requires = req_file.read()
 
 # Todo: find a better way for it
 args = sys.argv
 test_level_param = '--test_level'
 
 if test_level_param in args:
-    test_level_index = args.index(test_level_param)
-    if test_level_index + 1 >= len(args):
-        raise ValueError(f'The param {test_level_param} does not have a value, but it is necessarily!')
-    test_level_key = sys.argv[test_level_index + 1]
-    src.test.util.CURRENT_TEST_LEVEL = get_level_by_param(test_level_key)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('test', action='store', choices=['test'], help='Action type')
+    parser.add_argument(test_level_param, action='store', dest='test_level_key', help='Test level key', type=str)
+    args = parser.parse_args()
+    src.test.util.CURRENT_TEST_LEVEL = get_level_by_param(args.test_level_key)
     sys.argv.remove(test_level_param)
-    sys.argv.remove(test_level_key)
+    sys.argv.remove(args.test_level_key)
 
 setup(name='codetracker-data',
       # version='1.0.0',
