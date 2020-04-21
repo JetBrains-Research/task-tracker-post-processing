@@ -6,10 +6,11 @@ import collections
 from enum import Enum
 from typing import Dict, List, Tuple
 
+import pytest
 import numpy as np
 
-from src.test.test_util import LoggedTest
 from src.main.solution_space.code import Code
+from src.test.util import to_skip, TEST_LEVEL
 from src.main.util.consts import TASK, LOGGER_NAME
 from src.main.canonicalization.consts import TREE_TYPE
 from src.main.solution_space.data_classes import CodeInfo, User
@@ -72,6 +73,7 @@ INDICES_BY_VERTEX = {VERTEX.VERTEX_0: vertex_0_indices,
                      VERTEX.VERTEX_1: vertex_1_indices,
                      VERTEX.VERTEX_2: vertex_2_indices}
 
+
 def get_vertex_by_index(index: 0) -> VERTEX:
     for vertex in INDICES_BY_VERTEX.keys():
         if index in INDICES_BY_VERTEX[vertex]:
@@ -130,15 +132,16 @@ def get_code_info_chain(sources: List[str]) -> List[Tuple[Code, CodeInfo]]:
     return [(create_code_from_source(s), CodeInfo(user)) for s in sources]
 
 
-class TestDistBetweenVertices(LoggedTest):
+@pytest.mark.skipif(to_skip(current_module_level=TEST_LEVEL.SOLUTION_SPACE), reason=TEST_LEVEL.SOLUTION_SPACE.value)
+class TestDistBetweenVertices():
 
     # Check all fragments in same vertices have the same canon trees
-    def test_same_canon_trees_in_same_vertices(self):
-        for vertex in VERTEX:
-            same_canon_fragments = [all_fragments[i] for i in INDICES_BY_VERTEX[vertex]]
-            canon_trees = [get_trees(f, {TREE_TYPE.CANON})[0] for f in same_canon_fragments]
-            for canon_tree_1, canon_tree_2 in itertools.product(canon_trees, repeat=2):
-                self.assertTrue(are_asts_equal(canon_tree_1, canon_tree_2))
+    @pytest.mark.parametrize('vertex', [v for v in VERTEX])
+    def test_same_canon_trees_in_same_vertices(self, vertex: VERTEX):
+        same_canon_fragments = [all_fragments[i] for i in INDICES_BY_VERTEX[vertex]]
+        canon_trees = [get_trees(f, {TREE_TYPE.CANON})[0] for f in same_canon_fragments]
+        for canon_tree_1, canon_tree_2 in itertools.product(canon_trees, repeat=2):
+            self.assertTrue(are_asts_equal(canon_tree_1, canon_tree_2))
 
     # Check all fragments in different vertices have different canon trees
     def test_different_canon_trees_in_different_vertices(self):

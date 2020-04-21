@@ -111,11 +111,11 @@ class TestFindSomeFragments:
                         'test_middle_index_with_other_fragment',
                         'test_last_index'
                     ])
-    def param_find_some_fragments_test(request) -> Tuple[int, int]:
+    def param_find_same_fragments_test(request) -> Tuple[int, int]:
         return request.param
 
-    def test_find_some_fragments(self, param_find_some_fragments_test: Callable) -> None:
-        (index, end_index) = param_find_some_fragments_test
+    def test_find_some_fragments(self, param_find_same_fragments_test: Callable) -> None:
+        (index, end_index) = param_find_same_fragments_test
         solutions = create_solutions()
         actual_out = get_actual_out(solutions, index)
         expected_out = get_expected_out(solutions, index, end_index)
