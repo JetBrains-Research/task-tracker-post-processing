@@ -8,10 +8,10 @@ import pandas as pd
 
 from src.main.util import consts
 from src.main.util.file_util import add_slash
-from src.main.util.consts import PATH_CMD_ARG, LOGGER_FORMAT
+from src.main.util.consts import PATH_CMD_ARG
+from src.main.util.log_util import configure_logger
 from src.main.preprocessing.preprocessing import preprocess_data
 from src.main.splitting.splitting import split_tasks_into_separate_files
-
 
 pd.set_option('display.max_rows', 250)
 pd.set_option('display.max_columns', 100)
@@ -29,7 +29,7 @@ def __get_data_path() -> str:
 
 
 def main() -> None:
-    logging.basicConfig(filename=consts.LOGGER_FILE, format=LOGGER_FORMAT, level=logging.INFO)
+    configure_logger()
     path = __get_data_path()
 
     # Preprocess data before splitting
