@@ -10,3 +10,7 @@ javalang
 # For plots:
 plotly
 matplotlib
+
+# For GumTreeDiff:
+jsontree
+asttokens
