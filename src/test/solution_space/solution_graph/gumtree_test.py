@@ -1,3 +1,7 @@
+import sys
+
+sys.path.append('.')
+
 from src.main.canonicalization.consts import TREE_TYPE
 from src.main.canonicalization.canonicalization import get_trees
 from src.main.canonicalization.diffs.gumtree_diff_handler import GumTreeDiffHandler
