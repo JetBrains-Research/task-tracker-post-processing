@@ -15,8 +15,10 @@ jobs:
           name: run tests
           command: |
             echo | ls /tmp
+            cd src/resources/gumtree/bin/
             echo | ls
-            python src/test/solution_space/solution_graph/gumtree_test.py
-            ls /tmp
+            ./gumtree
+            ./gumtree -dm diff test_1.py test_2.py
+            echo | ls /tmp
       - store_artifacts:
           path: htmlcov/
