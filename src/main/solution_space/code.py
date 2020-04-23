@@ -93,11 +93,12 @@ class SerializedCode:
         return self._rate == consts.TEST_RESULT.FULL_SOLUTION.value
 
     def add_anon_tree(self, anon_tree) -> Optional[str]:
-        if not self.__does_contain_anon_tree(anon_tree):
-            self._anon_trees.append(anon_tree)
-            index_of_tree = self._anon_trees.index(anon_tree)
-            return self.__create_file_for_tree(anon_tree, f'{TREE_TYPE.ANON.value}_{index_of_tree}')
-        return None
+        if self.__does_contain_anon_tree(anon_tree):
+            return None
+
+        self._anon_trees.append(anon_tree)
+        index_of_tree = self._anon_trees.index(anon_tree)
+        return self.__create_file_for_tree(anon_tree, f'{TREE_TYPE.ANON.value}_{index_of_tree}')
 
     def get_anon_files(self, filter_anon_trees: Callable[[ast.AST], bool] = (lambda tree: True)) -> List[str]:
         anon_tree_files = []
@@ -114,13 +115,13 @@ class SerializedCode:
             self.__create_file_for_tree(anon_tree, f'{TREE_TYPE.ANON.value}_{i}')
 
     # Todo: check if file exists already in graph folder to not override?
-    def __create_file_for_tree(self, tree: ast.AST, tree_type: str) -> str:
+    def __create_file_for_tree(self, tree: ast.AST, str_tree_type: str) -> str:
         if self._file_by_tree_dict.get(tree) is not None:
             log_and_raise_error(f'File for tree {get_code_from_tree(tree)} already exists in files dict', log)
 
         extension = get_extension_by_language(self._language)
         file_path = os.path.join(self._folder_with_files,
-                                 f'{self._file_prefix}_{str(self._id)}_{tree_type}{str(extension.value)}')
+                                 f'{self._file_prefix}_{str(self._id)}_{str_tree_type}{str(extension.value)}')
         code = get_code_from_tree(tree)
         create_file(code, file_path)
         self._file_by_tree_dict[tree] = file_path

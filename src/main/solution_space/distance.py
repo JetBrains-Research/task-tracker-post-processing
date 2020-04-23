@@ -1,5 +1,5 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
-
+import itertools
 import logging
 from abc import ABCMeta, abstractmethod
 from typing import TypeVar, List, Generic, Dict, Union
@@ -7,6 +7,7 @@ from typing import TypeVar, List, Generic, Dict, Union
 from src.main.util.consts import LOGGER_NAME
 from src.main.solution_space.solution_graph import Vertex
 from src.main.canonicalization.diffs.gumtree_diff_handler import GumTreeDiffHandler
+from src.main.util.log_util import log_and_raise_error
 
 log = logging.getLogger(LOGGER_NAME)
 
@@ -21,7 +22,7 @@ class IItemDistance(Generic[Item, Upd], metaclass=ABCMeta):
 
     # If we have stored a distance between src_item and dst_item, we return it, otherwise we find it explicitly.
     def get_dist(self, src_item: Item, dst_item: Item) -> int:
-        dist = self._dist.get([src_item], {}).get([dst_item], None)
+        dist = self._dist.get(src_item, {}).get(dst_item, None)
         if dist is None:
             return self.__find_dist(src_item, dst_item)
         return dist
@@ -99,13 +100,13 @@ class VertexDistance(IItemDistance[Vertex, str]):
             anon_files = dst.serialized_code.get_anon_files()
             return self.__find_dist_between_files([src], anon_files)
         else:
-            raise NotImplementedError
+            log_and_raise_error(f'The function find_updated_dist does not implemented for types: src - {type(src)} and '
+                                f'dst{type(src)}', log, NotImplementedError)
 
     @staticmethod
     def __find_dist_between_files(src_files: List[str], dst_files: List[str]) -> int:
         diffs_numbers = []
-        for src_file in src_files:
-            for dst_file in dst_files:
-                diffs_number = GumTreeDiffHandler.get_diffs_number_with_gumtree(src_file, dst_file)
-                diffs_numbers.append(diffs_number)
+        for src_file, dst_file in itertools.product(src_files, dst_files):
+            diffs_number = GumTreeDiffHandler.get_diffs_number_with_gumtree(src_file, dst_file)
+            diffs_numbers.append(diffs_number)
         return min(diffs_numbers)

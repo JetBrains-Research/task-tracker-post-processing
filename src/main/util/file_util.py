@@ -4,7 +4,6 @@ import os
 import re
 import pickle
 import shutil
-import tempfile
 from typing import Callable, Any, List, Tuple
 
 import pandas as pd
