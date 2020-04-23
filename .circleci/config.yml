@@ -8,12 +8,13 @@ jobs:
   build:
     docker:
       - image: alyonalyulina/codetracker:1.1
-    working_directory: ~/codetracker-data
+    working_directory: /opt
     steps:
       - checkout
       - run:
           name: run tests
           command: |
+
             cd src/resources/gumtree/bin/
             echo | ls
             ./gumtree
