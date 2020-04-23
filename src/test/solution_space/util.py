@@ -13,7 +13,7 @@ from src.main.util.file_util import get_all_file_system_items, match_condition, 
 
 log = logging.getLogger(LOGGER_NAME)
 
-BASE_DATA_PATH = os.path.join(TEST_DATA_PATH, 'solution_space/path_finder')
+BASE_DATA_PATH = os.path.join(TEST_DATA_PATH, 'solution_space', 'graphs')
 
 
 def get_user_solutions(task: TASK) -> List[str]:

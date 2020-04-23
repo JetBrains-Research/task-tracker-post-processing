@@ -136,7 +136,7 @@ class SolutionGraph(collections.abc.Iterable):
         if vertex.serialized_code.is_full():
             log.info(f'Connect full code to the end vertex')
             self.connect_to_end_vertex(vertex)
-        self._dist.add_dist(vertex)
+        # self._dist.add_dist(vertex)
         return vertex
 
     def find_vertex(self, code: Code) -> Optional[Vertex]:
@@ -154,9 +154,9 @@ class SolutionGraph(collections.abc.Iterable):
         vertex = self.find_vertex(code)
         if vertex:
             vertex.add_code_info(code_info)
-            anon_tree_file = vertex.serialized_code.add_anon_tree(code.anon_tree)
-            if anon_tree_file:
-                self._dist.update_dist(vertex, anon_tree_file)
+            # anon_tree_file = vertex.serialized_code.add_anon_tree(code.anon_tree)
+            # if anon_tree_file:
+            #     self._dist.update_dist(vertex, anon_tree_file)
             return vertex
         log.info(f'Not found any existing vertex for code: {str(code)}, creating a new one')
         return self.create_vertex(code, code_info)

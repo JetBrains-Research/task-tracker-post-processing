@@ -27,11 +27,13 @@ class GRAPH_TYPE(Enum):
     pass
 
 
-EMPTY_GRAPH = SolutionGraph(CURRENT_TASK)
-
-
 CODE_FOR_LOOP_1 = 'a = int(input())\nb = int(input())\nn = int(input())'
 CODE_FOR_LOOP_2 = 'a=int(input())\nb=int(input())\nn=int(input())\nr=a*n\nc=b*n\nwhile c>=100:\n    r+=1\n    c-=100'
+
+
+def get_empty_graph() -> SolutionGraph:
+    init_default_ids()
+    return SolutionGraph(CURRENT_TASK)
 
 
 def get_simple_graph() -> SolutionGraph:
@@ -67,7 +69,7 @@ class TestGraphRepresentation:
     @staticmethod
     @pytest.fixture(scope="function",
                     params=[
-                        (EMPTY_GRAPH, get_expected_graph_representation(GRAPH_TYPE.EMPTY_GRAPH)),
+                        (get_empty_graph(), get_expected_graph_representation(GRAPH_TYPE.EMPTY_GRAPH)),
                         (get_simple_graph(), get_expected_graph_representation(GRAPH_TYPE.SIMPLE)),
                         (get_graph_with_loop(), get_expected_graph_representation(GRAPH_TYPE.LOOP))
                     ],
