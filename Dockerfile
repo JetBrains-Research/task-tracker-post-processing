@@ -19,14 +19,14 @@ RUN apt-get install -y default-jdk
 
 # Copy the file from your host to your current location
 # And run the command inside your image filesystem
-WORKDIR /opt
-COPY requirements.txt /opt/requirements.txt
+#WORKDIR /opt
+COPY requirements.txt /requirements.txt
 RUN pip3 install -r requirements.txt
 
-COPY dev-requirements.txt /opt/dev-requirements.txt
+COPY dev-requirements.txt /dev-requirements.txt
 RUN pip3 install -r dev-requirements.txt
 
-COPY test-requirements.txt /opt/test-requirements.txt
+COPY test-requirements.txt /test-requirements.txt
 RUN pip3 install -r test-requirements.txt
 
 #COPY gumtree-2.1.2.zip /opt/gumtree-2.1.2.zip
