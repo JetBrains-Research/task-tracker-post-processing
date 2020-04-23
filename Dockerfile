@@ -21,7 +21,7 @@ RUN apt-get install -y default-jdk
 # And run the command inside your image filesystem
 WORKDIR /opt
 COPY requirements.txt /opt/requirements.txt
-RUN pip3 install -r /opt/requirements.txt
+RUN pip3 install -r requirements.txt
 
 COPY dev-requirements.txt /opt/dev-requirements.txt
 RUN pip3 install -r dev-requirements.txt
@@ -29,4 +29,6 @@ RUN pip3 install -r dev-requirements.txt
 COPY test-requirements.txt /opt/test-requirements.txt
 RUN pip3 install -r test-requirements.txt
 
-CMD ['cd', '/opt']
+COPY gumtree-2.1.2.zip /opt/gumtree-2.1.2.zip
+RUN unzip gumtree-2.1.2.zip
+#	&& ln -s /opt/gumtree-2.1.2/bin/gumtree /usr/bin/gumtree
