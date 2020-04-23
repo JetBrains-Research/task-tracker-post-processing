@@ -29,6 +29,6 @@ RUN pip3 install -r dev-requirements.txt
 COPY test-requirements.txt /opt/test-requirements.txt
 RUN pip3 install -r test-requirements.txt
 
-COPY gumtree-2.1.2.zip /opt/gumtree-2.1.2.zip
-RUN unzip gumtree-2.1.2.zip
+#COPY gumtree-2.1.2.zip /opt/gumtree-2.1.2.zip
+#RUN unzip gumtree-2.1.2.zip
 #	&& ln -s /opt/gumtree-2.1.2/bin/gumtree /usr/bin/gumtree
