@@ -13,7 +13,7 @@ from src.main.util.file_util import get_all_file_system_items, match_condition, 
 
 log = logging.getLogger(LOGGER_NAME)
 
-BASE_DATA_PATH = TEST_DATA_PATH + '/solution_space/graphs'
+BASE_DATA_PATH = os.path.join(TEST_DATA_PATH, 'solution_space/path_finder')
 
 
 def get_user_solutions(task: TASK) -> List[str]:
@@ -55,3 +55,5 @@ def get_solution_graph(task: TASK, to_plot_graph: bool = True,
         path = __plot_graph(task, sg, test_prefix)
         log.info(f'Graph path for solution space for task {task.value} is {path}')
     return sg
+
+get_solution_graph(TASK.PIES)

@@ -7,12 +7,18 @@ workflows:
 jobs:
   build:
     docker:
-      - image: nastyabirillo/codetracker:1.1
+      - image: alyonalyulina/codetracker:1.1
+    working_directory: ~/codetracker-data
     steps:
       - checkout
       - run:
           name: run tests
           command: |
-            python setup.py test
+            echo | ls
+            cd src/resources/gumtree/bin/
+            echo | ls
+            ./gumtree
+            ./gumtree -dm diff test_1.py test_2.py
+            echo | ls /tmp
       - store_artifacts:
           path: htmlcov/

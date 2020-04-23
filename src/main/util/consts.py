@@ -216,14 +216,14 @@ RESOURCES_PATH = ROOT_DIR + '/../../resources/'
 TEST_DATA_PATH = RESOURCES_PATH + 'test_data'
 TEST_PATH = ROOT_DIR + '/../../test'
 
-GRAPH_REPRESENTATION_PATH = RESOURCES_PATH + 'graph_representation'
-SOLUTION_SPACE_TEST_RESULT_PATH = RESOURCES_PATH + 'solution_space'
+GRAPH_REPRESENTATION_PATH = os.path.join(RESOURCES_PATH, 'graph_representation')
+SOLUTION_SPACE_TEST_RESULT_PATH = os.path.join(RESOURCES_PATH, 'solution_space')
 
 PREPROCESSING_RESULT_FOLDER = 'preprocessing_result'
 STATISTICS_RESULT_FOLDER = 'statistics_result'
 
 # Todo: use zip
-GUMTREE_PATH = RESOURCES_PATH + 'gumtree/bin/gumtree'
+GUMTREE_PATH = os.path.join(RESOURCES_PATH, 'gumtree/bin/gumtree')
 
 # v 2.0 - with stopping after the first break
 # v 3.0 - with java package detecting

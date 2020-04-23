@@ -16,8 +16,10 @@ from src.main.util.file_util import get_content_from_file, get_all_file_system_i
 
 log = logging.getLogger(LOGGER_NAME)
 
+FAIL_REASON = "These tests are failed because of removing 'helperFolding' and 'deadCodeRemoval' from transformations."
 
-BASE_DATA_PATH = TEST_DATA_PATH + '/solution_space/'
+
+BASE_DATA_PATH = os.path.join(TEST_DATA_PATH, 'solution_space/')
 
 
 class TEST_METHOD(Enum):
