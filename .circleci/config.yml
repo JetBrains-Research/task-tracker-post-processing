@@ -16,10 +16,6 @@ jobs:
           command: |
             rm src/resources/gumtree/bin/gumtree
             ln -s /opt/gumtree-2.1.2/bin/gumtree src/resources/gumtree/bin/gumtree
-            echo | ls
-            ./gumtree
-            ./gumtree -dm diff 1.py 2.py
-            echo | ls /tmp
             python setup.py test
       - store_artifacts:
           path: htmlcov/
