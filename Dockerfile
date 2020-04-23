@@ -10,6 +10,8 @@ RUN apt-get install -y gcc
 RUN apt-get install -y default-jre
 # Install JDK
 RUN apt-get install -y default-jdk
+# For using graphviz
+RUN apt-get install -y  python-pydot python-pydot-ng graphviz
 # Install kotlin
 # Todo: install kotlin with snap
 # See: https://stackoverflow.com/questions/58385340/dockerfile-how-install-snap-snapd-unrecognized-service
