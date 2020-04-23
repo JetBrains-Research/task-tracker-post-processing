@@ -7,14 +7,14 @@ workflows:
 jobs:
   build:
     docker:
-      - image: nastyabirillo/codetracker:1.1
+      - image: alyonalyulina/codetracker:1.0
     working_directory: ~/codetracker-data
     steps:
       - checkout
       - run:
           name: run tests
           command: |
-            echo | ls /tmp
+            echo | ls
             cd src/resources/gumtree/bin/
             echo | ls
             ./gumtree
