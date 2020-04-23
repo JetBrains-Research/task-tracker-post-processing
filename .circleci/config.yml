@@ -14,11 +14,8 @@ jobs:
       - run:
           name: run tests
           command: |
-            echo | ls
-            cd src/resources/gumtree/bin/
-            echo | ls
-            ./gumtree
-            ./gumtree -dm diff test_1.py test_2.py
-            echo | ls /tmp
+            rm src/resources/gumtree/bin/gumtree
+            ln -s /opt/gumtree-2.1.2/bin/gumtree src/resources/gumtree/bin/gumtree
+            python setup.py test
       - store_artifacts:
           path: htmlcov/
