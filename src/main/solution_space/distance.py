@@ -1,8 +1,9 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
+
 import itertools
 import logging
 from abc import ABCMeta, abstractmethod
-from typing import TypeVar, List, Generic, Dict, Union
+from typing import TypeVar, List, Generic, Dict, Union, Type
 
 from src.main.util.consts import LOGGER_NAME
 from src.main.solution_space.solution_graph import Vertex
@@ -17,7 +18,6 @@ Upd = TypeVar('Upd')
 
 class IItemDistance(Generic[Item, Upd], metaclass=ABCMeta):
     def __init__(self):
-        # Todo: is it better to use id as a key instead of Item?
         self._dist: Dict[Item, Dict[Item, int]] = {}
 
     # If we have stored a distance between src_item and dst_item, we return it, otherwise we find it explicitly.

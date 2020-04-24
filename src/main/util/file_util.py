@@ -119,8 +119,12 @@ def create_file(content: str, file: str) -> None:
         f.write(content)
 
 
+def is_file(file: str) -> bool:
+    return os.path.isfile(file)
+
+
 def remove_file(file: str) -> None:
-    if os.path.isfile(file):
+    if is_file(file):
         os.remove(file)
 
 

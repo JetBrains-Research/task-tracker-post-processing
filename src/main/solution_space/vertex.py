@@ -4,17 +4,19 @@ from __future__ import annotations
 
 from typing import List, Set, Optional
 
+from src.main.util.id_counter import IdCounter
 import src.main.solution_space.solution_graph as sg
 from src.main.solution_space.code import Code, SerializedCode
 from src.main.solution_space.data_classes import CodeInfo, User
 from src.main.solution_space import consts as solution_space_consts
 
 
-class Vertex:
-    _last_id = 0
+class Vertex(IdCounter):
 
     def __init__(self, graph: sg.SolutionGraph, code: Optional[Code] = None,
                  vertex_type: solution_space_consts.VERTEX_TYPE = solution_space_consts.VERTEX_TYPE.INTERMEDIATE):
+        # Todo: auto call __init__??
+        super().__init__(self.__class__.__name__)
         self._parents = []
         self._children = []
         self._code_info_list = []
@@ -22,13 +24,6 @@ class Vertex:
         self._serialized_code = None if code is None \
             else SerializedCode.from_code(code, graph.graph_directory, graph.file_prefix)
         self._vertex_type = vertex_type
-
-        self._id = self._last_id
-        self.__class__._last_id += 1
-
-    @property
-    def id(self) -> int:
-        return self._id
 
     @property
     def graph(self) -> sg.SolutionGraph:

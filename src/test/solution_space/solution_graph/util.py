@@ -3,9 +3,9 @@
 from typing import Tuple, List
 
 from src.main.util.consts import TEST_RESULT
-from src.main.solution_space.data_classes import User
+from src.main.solution_space.code import Code
+from src.main.util.id_counter import IdCounter
 from src.main.canonicalization.consts import TREE_TYPE
-from src.main.solution_space.code import Code, SerializedCode
 from src.main.canonicalization.canonicalization import get_trees
 from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 
@@ -30,7 +30,4 @@ def get_two_vertices(sg: SolutionGraph) -> List[Vertex]:
 
 # Reset graph, vertex and code last ids to avoid different ids in one-by-one test running and running them all at once
 def init_default_ids() -> None:
-    SolutionGraph._last_id = 0
-    Vertex._last_id = 0
-    SerializedCode._last_id = 0
-    User._last_id = 0
+    IdCounter.reset()
