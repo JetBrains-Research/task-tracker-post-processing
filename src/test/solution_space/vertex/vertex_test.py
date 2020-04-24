@@ -5,11 +5,11 @@ import pytest
 from src.main.util.consts import TASK
 from src.test.util import to_skip, TEST_LEVEL
 from src.main.solution_space.data_classes import User, CodeInfo
+from src.main.solution_space.consts import SOLUTION_SPACE_TEST_FOLDER
 from src.main.solution_space.solution_graph import Vertex, SolutionGraph
-from src.main.solution_space.consts import FOLDER_WITH_CODE_FILES_FOR_TESTS
 
 CURRENT_TASK = TASK.PIES
-SolutionGraph.folder_with_code_files = FOLDER_WITH_CODE_FILES_FOR_TESTS
+SolutionGraph.solution_space_folder = SOLUTION_SPACE_TEST_FOLDER
 
 
 @pytest.mark.skipif(to_skip(current_module_level=TEST_LEVEL.SOLUTION_SPACE), reason=TEST_LEVEL.SOLUTION_SPACE.value)

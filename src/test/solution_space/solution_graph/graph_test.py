@@ -6,19 +6,20 @@ from typing import List, Tuple, Dict, Union
 
 import pytest
 
+from src.main.solution_space.code import Code
 from src.test.util import to_skip, TEST_LEVEL
 from src.main.util.consts import TEST_RESULT, LOGGER_NAME, TASK
-from src.main.solution_space.data_classes import Code, User, CodeInfo
-from src.main.solution_space.solution_graph import Vertex, SolutionGraph
+from src.main.solution_space.data_classes import User, CodeInfo
+from src.main.solution_space.consts import SOLUTION_SPACE_TEST_FOLDER
+from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 from src.main.canonicalization.canonicalization import get_code_from_tree
-from src.main.solution_space.consts import FOLDER_WITH_CODE_FILES_FOR_TESTS
 from src.test.solution_space.solution_graph.util import create_code_from_source, init_default_ids
 
 log = logging.getLogger(LOGGER_NAME)
 
 
 CURRENT_TASK = TASK.PIES
-SolutionGraph.folder_with_code_files = FOLDER_WITH_CODE_FILES_FOR_TESTS
+SolutionGraph.solution_space_folder = SOLUTION_SPACE_TEST_FOLDER
 
 
 class ADJACENT_VERTEX_TYPE(Enum):
@@ -37,8 +38,8 @@ VertexStructure = Dict[VERTEX_STRUCTURE, Union[str, int]]
 def create_graph_with_code() -> (SolutionGraph, List[Vertex], List[str]):
     source_0 = ''
     source_1 = 'print(\'Hello\')'
-    source_2 = 'a = 5'
-    source_3 = 'x = True\nif(x):\n    x = False'
+    source_2 = 'a = int(input())\nprint(a)'
+    source_3 = 'x = 5\nif(x > 4):\n    print(x)'
 
     sources = [source_0, source_1, source_2, source_3]
 
@@ -85,23 +86,23 @@ def find_or_create_vertex_with_code_info_and_rate_check(sg: SolutionGraph, sourc
 
 
 def create_code_info_chain() -> (List[Tuple[Code, CodeInfo]], List[str]):
-    source_1 = 'a = 3'
-    source_2 = 'a = 5'
-    source_3 = 'a = 5\nb = 3'
-    source_4 = 'a = 5\nb = 3\nc = 4'
+    source_1 = 'a = 3\nprint(a)'
+    source_2 = 'a = int(input())\nprint(a)'
+    source_3 = 'a = 5\nb = 3\nprint(a - b)'
+    source_4 = 'a = 5\nb = 3\nc = 4\nprint(a - b - c)'
     rated_sources = [(source_1, TEST_RESULT.CORRECT_CODE.value),
                      (source_2, TEST_RESULT.CORRECT_CODE.value),
                      (source_3, TEST_RESULT.CORRECT_CODE.value),
                      (source_4, TEST_RESULT.FULL_SOLUTION.value)]
     # User is the same for all chain elements
     user = User()
-    chain = [(create_code_from_source(rs[0], rs[1]), CodeInfo(user)) for rs in rated_sources]
-    sources = [rs[0] for rs in rated_sources]
-    return chain, sources
+    chain = [(create_code_from_source(s, r), CodeInfo(user)) for s, r in rated_sources]
+    canon_sources = [get_code_from_tree(code.canon_tree).rstrip('\n') for code, _ in chain]
+    return chain, canon_sources
 
 
 def get_vertex_structure(vertex: Vertex) -> VertexStructure:
-    source = get_code_from_tree(vertex.code.ast).strip('\n') if vertex.code else None
+    source = get_code_from_tree(vertex.serialized_code.canon_tree).strip('\n') if vertex.serialized_code else None
     return {VERTEX_STRUCTURE.SOURCE: source, VERTEX_STRUCTURE.CODE_INFO_LIST_LEN: len(vertex.code_info_list)}
 
 

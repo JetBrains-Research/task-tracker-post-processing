@@ -1,7 +1,7 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import re
-from typing import List
+from typing import List, Any
 
 
 def contains_any_of_substrings(string: str, substrings: List[str]) -> bool:
@@ -18,3 +18,4 @@ def convert_camel_case_to_snake_case(string: str) -> str:
 
 def crop_string(string: str, short_part_length: int, separator: str = '...') -> str:
     return ''.join((string[:short_part_length], separator, string[-short_part_length:]))
+
