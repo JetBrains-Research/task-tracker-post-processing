@@ -13,7 +13,7 @@ from src.main.util.file_util import get_all_file_system_items, match_condition, 
 
 log = logging.getLogger(LOGGER_NAME)
 
-BASE_DATA_PATH = os.path.join(TEST_DATA_PATH, 'solution_space/path_finder')
+BASE_DATA_PATH = os.path.join(TEST_DATA_PATH, 'solution_space', 'graphs')
 
 
 def get_user_solutions(task: TASK) -> List[str]:
@@ -41,9 +41,10 @@ def __get_chains(task: TASK) -> List[Tuple[List[str], str]]:
 
 
 def get_solution_graph(task: TASK, to_plot_graph: bool = True,
-                       test_prefix: str = 'path_finder_test') -> SolutionGraph:
+                       test_prefix: str = 'path_finder_test',
+                       to_store_dist: bool = True) -> SolutionGraph:
     chains = __get_chains(task)
-    sg = SolutionGraph(task)
+    sg = SolutionGraph(task, to_store_dist=to_store_dist)
     code_info = CodeInfo(User())
     for chain in chains:
         sources, goal = chain
@@ -55,3 +56,5 @@ def get_solution_graph(task: TASK, to_plot_graph: bool = True,
         path = __plot_graph(task, sg, test_prefix)
         log.info(f'Graph path for solution space for task {task.value} is {path}')
     return sg
+
+get_solution_graph(TASK.PIES)

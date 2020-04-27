@@ -10,7 +10,7 @@ from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 from src.main.canonicalization.canonicalization import get_code_from_tree
 from src.main.solution_space.path_finder.path_finder_v_1 import PathFinderV1
 from src.main.canonicalization.diffs.gumtree_diff_handler import GumTreeDiffHandler
-from src.test.solution_space.path_finder.util import get_solution_graph, get_user_solutions
+from src.test.solution_space.util import get_solution_graph, get_user_solutions
 from src.main.util.consts import TASK, LOGGER_NAME, SOLUTION_SPACE_TEST_RESULT_PATH, EXTENSION
 
 

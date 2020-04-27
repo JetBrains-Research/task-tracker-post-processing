@@ -192,10 +192,10 @@ class SPLIT(Enum):
     TASKS = 'tasks'
 
 
-LOGGER_FILE = os.path.join(ROOT_DIR, '../../../../logs.log')
+LOGGER_FILE = ROOT_DIR + '../../../../logs.log'
 LOGGER_NAME = 'main_logger'
 
-LOGGER_TEST_FILE = os.path.join(ROOT_DIR, '../../../../test_logs.log')
+LOGGER_TEST_FILE = ROOT_DIR + '../../../../test_logs.log'
 
 LOGGER_FORMAT = '%(asctime)s:%(levelname)s ==> %(message)s'
 
@@ -212,9 +212,9 @@ ACTIVITY_TRACKER_FILE_NAME = 'ide-events'
 DATE_TIME_FORMAT = '%Y-%m-%dT%H:%M:%S.%f%z'
 MAX_DIF_SEC = 0.5
 
-RESOURCES_PATH = os.path.join(ROOT_DIR, '../../resources')
-TEST_DATA_PATH = os.path.join(RESOURCES_PATH, 'test_data')
-TEST_PATH = os.path.join(ROOT_DIR, '../../test')
+RESOURCES_PATH = ROOT_DIR + '/../../resources/'
+TEST_DATA_PATH = RESOURCES_PATH + 'test_data'
+TEST_PATH = ROOT_DIR + '/../../test'
 
 GRAPH_REPRESENTATION_PATH = os.path.join(RESOURCES_PATH, 'graph_representation')
 SOLUTION_SPACE_TEST_RESULT_PATH = os.path.join(RESOURCES_PATH, 'solution_space')

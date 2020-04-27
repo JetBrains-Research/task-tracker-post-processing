@@ -52,6 +52,16 @@ def __get_canonical_transformations() -> List[Callable]:
         deMorganize,
         orderCommutativeOperations,
 
+        # Using this transformation, we will remove a lot of fragments with dead code, which we don't want to remove.
+        # For example:
+        # a = int(input())
+        # b = a + 5
+        # print()
+        #
+        # In this case code b = a + 5 and print() is dead code, and we will get canon state without it.
+        # But it is important for us to store this kind of fragments fully,
+        # because we want to get the most relevant step-by-step solution graph
+
         # deadCodeRemoval
     ]
 
@@ -92,6 +102,10 @@ def __get_canon_tree_from_anon_tree(anon_tree: ast.AST, imports: List[str]) -> a
     old_tree = None
     while compareASTs(old_tree, canon_tree, checkEquality=True) != 0:
         old_tree = deepcopy(canon_tree)
+
+        # We don't want to fold the functions, because it can remove dead code
+        # You can see an example above for deadCodeRemoval why we don't use it
+
         # helperFolding(canon_tree, None, imports)
         for t in transformations:
             canon_tree = t(canon_tree)
