@@ -137,6 +137,7 @@ class SolutionGraph(collections.abc.Iterable):
         if vertex.serialized_code.is_full():
             log.info(f'Connect full code to the end vertex')
             self.connect_to_end_vertex(vertex)
+        self._dist.add_dist(vertex)
         return vertex
 
     def find_vertex(self, code: Code) -> Optional[Vertex]:

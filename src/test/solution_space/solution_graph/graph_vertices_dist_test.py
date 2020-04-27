@@ -133,7 +133,7 @@ def get_code_info_chain(sources: List[str]) -> List[Tuple[Code, CodeInfo]]:
 
 
 @pytest.mark.skipif(to_skip(current_module_level=TEST_LEVEL.SOLUTION_SPACE), reason=TEST_LEVEL.SOLUTION_SPACE.value)
-class TestDistBetweenVertices():
+class TestDistBetweenVertices:
 
     # Check all fragments in same vertices have the same canon trees
     @pytest.mark.parametrize('vertex', [v for v in VERTEX])
