@@ -15,10 +15,10 @@ Upd = TypeVar('Upd')
 
 
 class IDistanceMatrix(Generic[Item, Upd], metaclass=ABCMeta):
-    def __init__(self, to_use_dist: bool = True):
+    def __init__(self, to_store_dist: bool = True):
         # Todo: is it better to use id as a key instead of Item?
         self._dist: Dict[Item, Dict[Item, int]] = {}
-        self._to_use_dist = to_use_dist
+        self._to_store_dist = to_store_dist
 
     # If we have stored a distance between src_item and dst_item, we return it, otherwise we find it explicitly.
     def get_dist(self, src_item: Item, dst_item: Item) -> int:
@@ -28,7 +28,7 @@ class IDistanceMatrix(Generic[Item, Upd], metaclass=ABCMeta):
         return dist
 
     def add_dist(self, new_item: Item) -> bool:
-        if not self._to_use_dist:
+        if not self._to_store_dist:
             log.info('The param to_use_dist is False. We don\'t use distance matrix')
             return False
 
@@ -42,7 +42,7 @@ class IDistanceMatrix(Generic[Item, Upd], metaclass=ABCMeta):
         return True
 
     def update_dist(self, upd_item: Item, updates: Upd) -> bool:
-        if not self._to_use_dist:
+        if not self._to_store_dist:
             log.info('The param to_use_dist is False. We don\'t use distance matrix')
             return False
 

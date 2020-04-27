@@ -86,7 +86,7 @@ class SolutionSpaceVisualizer:
         return f'digraph  D {{\n\n' \
                f'node [shape=record fontname={font_name}];\n\n' \
                f'{self.__get_labels()}\n\n' \
-               f'self.__get_graph_structure()' \
+               f'{self.__get_graph_structure()}' \
                f'\n\n}}'
 
     # Returns result's folder path
