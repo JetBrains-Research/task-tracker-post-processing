@@ -8,10 +8,10 @@ import logging
 from typing import List, Dict, Callable, Optional
 
 from src.main.util import consts
-from src.main.util.file_util import create_file, is_file
-from src.main.canonicalization.consts import TREE_TYPE
 from src.main.util.id_counter import IdCounter
 from src.main.util.log_util import log_and_raise_error
+from src.main.canonicalization.consts import TREE_TYPE
+from src.main.util.file_util import create_file, is_file
 from src.main.util.language_util import get_extension_by_language
 from src.main.canonicalization.canonicalization import are_asts_equal, get_code_from_tree
 
