@@ -1,7 +1,7 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import os
-from typing import Set
+from typing import Set, Dict, List
 
 from src.main.util import consts
 from src.main.splitting.task_checker import check_call_safely
@@ -11,7 +11,6 @@ from src.main.canonicalization.canonicalization import get_code_from_tree
 
 
 # It is the class for creating a solution graph representation by using graphviz library
-# Todo: add tests?
 class SolutionSpaceVisualizer:
     def __init__(self, graph: SolutionGraph):
         self._graph = graph
@@ -43,15 +42,18 @@ class SolutionSpaceVisualizer:
             create_file(content, current_path)
 
     @staticmethod
-    def __get_vertices_list(vertices: Set[int]) -> str:
-        return ', '.join(list(map(str, vertices)))
+    def __get_vertices_list(vertices: List[Vertex]) -> str:
+        vertices = list(set(vertices))
+        vertices.sort()
+        return ', '.join(list(map(lambda v: str(v.id), vertices)))
 
     def __get_graph_structure(self) -> str:
         structure = ''
-        adj_list = self._graph.get_adj_list_with_ids()
-        for v_from, v_to_list in adj_list.items():
-            if len(v_to_list) > 0:
-                structure += f'{str(v_from)} -> {self.__class__.__get_vertices_list(v_to_list)}\n'
+        vertices = self._graph.get_traversal()
+        vertices.remove(self._graph.start_vertex)
+        for vertex in vertices:
+            if vertex.children:
+                structure += f'{vertex.id} -> {self.__class__.__get_vertices_list(vertex.children)}\n'
         return structure
 
     # We want to get a graph representation in the dot format for the graphviz library
@@ -81,15 +83,14 @@ class SolutionSpaceVisualizer:
     #       Vertex F
     #
     def __get_graph_representation(self, font_name: str = 'Arial') -> str:
-        start = 'digraph  D {\n\nnode [shape=record fontname=' + font_name + '];\n\n'
-        graph_representation = start + f'{self.__get_labels()}\n\n'
-        graph_representation += self.__get_graph_structure()
-        end = '\n\n}'
-        return graph_representation + end
+        prefix = 'digraph  D {\n\nnode [shape=record fontname=' + font_name + '];\n\n'
+        graph_representation = prefix + f'{self.__get_labels()}\n\n' + self.__get_graph_structure()
+        suffix = '\n\n}'
+        return graph_representation + suffix
 
     # Returns result's folder path
     def create_graph_representation(self, name_prefix: str = 'graph',
-                                    does_create_vertices_content: bool = True,
+                                    to_create_vertices_content: bool = True,
                                     output_format: consts.EXTENSION = consts.EXTENSION.PNG) -> str:
         graph_representation = self.__get_graph_representation()
         folder_path = os.path.join(consts.GRAPH_REPRESENTATION_PATH, f'{name_prefix}_{self._graph.id}')
@@ -102,6 +103,6 @@ class SolutionSpaceVisualizer:
         args = ['dot', f'-T{output_format.value[1:]}', file_path, '-o', dst_path]
         # Generate graph representation
         check_call_safely(args)
-        if does_create_vertices_content:
+        if to_create_vertices_content:
             self.__create_vertices_content(folder_path)
         return folder_path

@@ -11,10 +11,10 @@ from src.main.util.consts import TASK, EXTENSION
 from src.main.util.file_util import get_content_from_file
 from src.test.solution_space.util import get_solution_graph
 from src.main.solution_space.solution_graph import SolutionGraph
-from src.test.solution_space.solution_graph.util import init_default_ids
 from src.main.solution_space.consts import SOLUTION_SPACE_TEST_FOLDER
-from src.main.solution_space.solution_space_visualizer import SolutionSpaceVisualizer
+from src.test.solution_space.solution_graph.util import init_default_ids
 from src.test.canonicalization.diffs.diff_handler.util import __get_code_by_source
+from src.main.solution_space.solution_space_visualizer import SolutionSpaceVisualizer
 
 
 CURRENT_TASK = TASK.PIES

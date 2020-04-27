@@ -52,8 +52,7 @@ def __get_canonical_transformations() -> List[Callable]:
         deMorganize,
         orderCommutativeOperations,
 
-        # If we can use this transformation, we will get a lot of fragments with dead code,
-        # but we don't want to delete it.
+        # Using this transformation, we will remove a lot of fragments with dead code, which we don't want to remove.
         # For example:
         # a = int(input())
         # b = a + 5
@@ -61,7 +60,7 @@ def __get_canonical_transformations() -> List[Callable]:
         #
         # In this case code b = a + 5 and print() is dead code, and we will get canon state without it.
         # But it is important for us to store this kind of fragments fully,
-        # because we want get the most relevant step-by-step solution graph
+        # because we want to get the most relevant step-by-step solution graph
 
         # deadCodeRemoval
     ]

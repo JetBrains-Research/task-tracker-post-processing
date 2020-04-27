@@ -14,7 +14,7 @@ Item = TypeVar('Item')
 Upd = TypeVar('Upd')
 
 
-class IItemDistance(Generic[Item, Upd], metaclass=ABCMeta):
+class IDistanceMatrix(Generic[Item, Upd], metaclass=ABCMeta):
     def __init__(self):
         # Todo: is it better to use id as a key instead of Item?
         self._dist: Dict[Item, Dict[Item, int]] = {}
@@ -63,11 +63,11 @@ class IItemDistance(Generic[Item, Upd], metaclass=ABCMeta):
 #  with algo versions because it's needed only there
 
 # We update 'Vertex' by adding new anon_file, so update type is 'str'
-class VertexDistance(IItemDistance[Vertex, str]):
+class VertexDistanceMatrix(IDistanceMatrix[Vertex, str]):
 
     # Need to add base class name as prefix if we want to have private abstract methods because otherwise
     # "TypeError: Can't instantiate abstract class ... with abstract methods ..." is raised.
-    def _IItemDistance__find_dist(self, src: Vertex, dst: Vertex) -> int:
+    def _IDistanceMatrix__find_dist(self, src: Vertex, dst: Vertex) -> int:
         # Todo: it seems that GumTreeDiff always return 0 on the same fragments, but we need to add tests to be sure
         if src == dst:
             return 0
@@ -91,7 +91,7 @@ class VertexDistance(IItemDistance[Vertex, str]):
     # Multimethod doesn't work, because it raises an error:
     # AttributeError: 'multimethod' object has no attribute 'dispatch', and that's weird
     # Is it better to split it into two methods with different names?
-    def _IItemDistance__find_updated_dist(self, src: [Vertex, str], dst: [Vertex, str]) -> int:
+    def _IDistanceMatrix__find_updated_dist(self, src: [Vertex, str], dst: [Vertex, str]) -> int:
         if isinstance(src, Vertex) and isinstance(dst, str):
             anon_files = src.serialized_code.get_anon_files()
             return self.__find_dist_between_files(anon_files, [dst])
