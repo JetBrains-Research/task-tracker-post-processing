@@ -53,7 +53,7 @@ class SolutionGraph(collections.abc.Iterable):
 
     def __init__(self, task: TASK, language: LANGUAGE = LANGUAGE.PYTHON, to_delete_old_graph: bool = True,
                  graph_folder_prefix: str = GRAPH_FOLDER_PREFIX, file_prefix: str = FILE_PREFIX,
-                 to_use_dist: bool = True):
+                 to_store_dist: bool = True):
         if language == LANGUAGE.NOT_DEFINED:
             log_and_raise_error(f'Error during constructing a solution graph. Language is not defined', log)
         self._task = task
@@ -70,7 +70,7 @@ class SolutionGraph(collections.abc.Iterable):
         self._start_vertex = Vertex(self, vertex_type=solution_space_consts.VERTEX_TYPE.START)
         self._end_vertex = Vertex(self, vertex_type=solution_space_consts.VERTEX_TYPE.END)
 
-        self._dist = VertexDistanceMatrix(to_use_dist=to_use_dist)
+        self._dist = VertexDistanceMatrix(to_store_dist=to_store_dist)
 
         if to_delete_old_graph:
             remove_directory(self._graph_directory)

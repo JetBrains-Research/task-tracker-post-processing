@@ -74,6 +74,9 @@ class IDistanceMatrix(Generic[Item, Upd], metaclass=ABCMeta):
 # We update 'Vertex' by adding new anon_file, so update type is 'str'
 class VertexDistanceMatrix(IDistanceMatrix[Vertex, str]):
 
+    def __init__(self, to_store_dist: bool = True):
+        super().__init__(to_store_dist)
+
     # Need to add base class name as prefix if we want to have private abstract methods because otherwise
     # "TypeError: Can't instantiate abstract class ... with abstract methods ..." is raised.
     def _IDistanceMatrix__find_dist(self, src: Vertex, dst: Vertex) -> int:
