@@ -108,6 +108,7 @@ class SerializedCode(IdCounter):
         for i, anon_tree in enumerate(self._anon_trees):
             self.__create_file_for_tree(anon_tree, f'{TREE_TYPE.ANON.value}_{i}')
 
+    # If file exists already in graph folder, we don't want to override it
     def __create_file_for_tree(self, tree: ast.AST, str_tree_type: str) -> str:
         if self._file_by_tree_dict.get(tree) is not None:
             log_and_raise_error(f'File for tree {get_code_from_tree(tree)} already exists in files dict', log)
@@ -116,7 +117,6 @@ class SerializedCode(IdCounter):
         file_path = os.path.join(self._folder_with_files,
                                  f'{self._file_prefix}_{str(self._id)}_{str_tree_type}{str(extension.value)}')
 
-        # If file does not exist in graph folder, we want to override it
         if not is_file(file_path):
             code = get_code_from_tree(tree)
             create_file(code, file_path)
