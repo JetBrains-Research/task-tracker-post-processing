@@ -42,9 +42,9 @@ def __get_chains(task: TASK) -> List[Tuple[List[str], str]]:
 
 def get_solution_graph(task: TASK, to_plot_graph: bool = True,
                        test_prefix: str = 'path_finder_test',
-                       to_use_dist: bool = True) -> SolutionGraph:
+                       to_store_dist: bool = True) -> SolutionGraph:
     chains = __get_chains(task)
-    sg = SolutionGraph(task, to_store_dist=to_use_dist)
+    sg = SolutionGraph(task, to_store_dist=to_store_dist)
     code_info = CodeInfo(User())
     for chain in chains:
         sources, goal = chain

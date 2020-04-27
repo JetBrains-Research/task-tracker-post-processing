@@ -38,7 +38,7 @@ def get_empty_graph() -> SolutionGraph:
 
 def get_simple_graph() -> SolutionGraph:
     init_default_ids()
-    return get_solution_graph(CURRENT_TASK, to_plot_graph=False, to_use_dist=False)
+    return get_solution_graph(CURRENT_TASK, to_plot_graph=False, to_store_dist=False)
 
 
 def get_graph_with_loop() -> SolutionGraph:

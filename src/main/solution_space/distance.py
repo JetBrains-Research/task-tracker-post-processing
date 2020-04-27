@@ -29,7 +29,7 @@ class IDistanceMatrix(Generic[Item, Upd], metaclass=ABCMeta):
 
     def add_dist(self, new_item: Item) -> bool:
         if not self._to_store_dist:
-            log.info('The param to_use_dist is False. We don\'t use distance matrix')
+            log.info('The param to_store_dist is False. We don\'t use distance matrix')
             return False
 
         if new_item in self._dist.keys():
@@ -43,7 +43,7 @@ class IDistanceMatrix(Generic[Item, Upd], metaclass=ABCMeta):
 
     def update_dist(self, upd_item: Item, updates: Upd) -> bool:
         if not self._to_store_dist:
-            log.info('The param to_use_dist is False. We don\'t use distance matrix')
+            log.info('The param to_store_dist is False. We don\'t use distance matrix')
             return False
 
         if upd_item not in self._dist.keys():
