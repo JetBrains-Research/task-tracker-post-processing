@@ -49,18 +49,6 @@ class TestIdCounter:
         run_id_setting_test_for_class(B)
 
     @pytest.mark.parametrize('i', range(10))
-    def test_reset(self, i: int):
-        if self.__class__.is_first_test(i):
-            # Before all tests
-            IdCounter.reset_all()
-        a = A()
-        assert a.id == 0
-        IdCounter.reset(A.__name__)
-        assert get_last_id_from_id_counter(A.__name__) == 0
-        b = B()
-        assert b.id + 1 == get_last_id_from_id_counter(B.__name__)
-
-    @pytest.mark.parametrize('i', range(10))
     def test_reset_all(self, i: int):
         run_reset_all_test_for_class(A)
         run_reset_all_test_for_class(B)

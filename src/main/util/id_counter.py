@@ -19,7 +19,3 @@ class IdCounter:
     @staticmethod
     def reset_all():
         IdCounter._instances = defaultdict(int)
-
-    @staticmethod
-    def reset(class_name: str):
-        IdCounter._instances[class_name] = 0
