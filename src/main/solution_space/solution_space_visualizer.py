@@ -83,10 +83,11 @@ class SolutionSpaceVisualizer:
     #       Vertex F
     #
     def __get_graph_representation(self, font_name: str = 'Arial') -> str:
-        prefix = 'digraph  D {\n\nnode [shape=record fontname=' + font_name + '];\n\n'
-        graph_representation = prefix + f'{self.__get_labels()}\n\n' + self.__get_graph_structure()
-        suffix = '\n\n}'
-        return graph_representation + suffix
+        return f'digraph  D {{\n\n' \
+               f'node [shape=record fontname={font_name}];\n\n' \
+               f'{self.__get_labels()}\n\n' \
+               f'self.__get_graph_structure()' \
+               f'\n\n}}'
 
     # Returns result's folder path
     def create_graph_representation(self, name_prefix: str = 'graph',
