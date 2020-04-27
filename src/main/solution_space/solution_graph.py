@@ -6,6 +6,7 @@ import collections
 from typing import Optional, List, Tuple
 
 from src.main.solution_space.code import Code
+from src.main.util.id_counter import IdCounter
 from src.main.solution_space.vertex import Vertex
 from src.main.util.log_util import log_and_raise_error
 from src.main.solution_space.data_classes import CodeInfo
@@ -47,20 +48,17 @@ class GraphIterator(collections.abc.Iterator):
         return self._traversal[self._cursor]
 
 
-class SolutionGraph(collections.abc.Iterable):
-    _last_id = 0
+class SolutionGraph(collections.abc.Iterable, IdCounter):
     solution_space_folder = SOLUTION_SPACE_FOLDER
 
     def __init__(self, task: TASK, language: LANGUAGE = LANGUAGE.PYTHON, to_delete_old_graph: bool = True,
                  graph_folder_prefix: str = GRAPH_FOLDER_PREFIX, file_prefix: str = FILE_PREFIX,
                  to_store_dist: bool = True):
+        super().__init__()
         if language == LANGUAGE.NOT_DEFINED:
             log_and_raise_error(f'Error during constructing a solution graph. Language is not defined', log)
         self._task = task
         self._language = language
-
-        self._id = self._last_id
-        self.__class__._last_id += 1
 
         self._graph_folder_prefix = graph_folder_prefix
         self._file_prefix = file_prefix
@@ -75,10 +73,6 @@ class SolutionGraph(collections.abc.Iterable):
         if to_delete_old_graph:
             remove_directory(self._graph_directory)
         create_directory(self._graph_directory)
-
-    @property
-    def id(self) -> int:
-        return self._id
 
     @property
     def graph_directory(self) -> str:

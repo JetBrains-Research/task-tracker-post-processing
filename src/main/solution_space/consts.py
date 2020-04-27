@@ -3,7 +3,7 @@
 import os
 from enum import Enum
 
-from src.main.canonicalization.diffs.rivers_diff_handler import RiversDiffHandler
+from src.main.canonicalization.diffs.gumtree_diff_handler import GumTreeDiffHandler
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -23,4 +23,4 @@ FILE_PREFIX = 'code'
 DIFFS_PERCENT_TO_GO_DIRECTLY = 0.2
 DISTANCE_TO_GRAPH_THRESHOLD = 2
 
-EMPTY_DIFF_HANDLER = RiversDiffHandler(source_code='')
+EMPTY_DIFF_HANDLER = GumTreeDiffHandler(source_code='')

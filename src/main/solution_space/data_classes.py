@@ -5,6 +5,7 @@ from datetime import datetime
 from typing import List, Union, Optional
 
 from src.main.util import consts
+from src.main.util.id_counter import IdCounter
 from src.main.util.consts import EXPERIENCE, DEFAULT_VALUE, ACTIVITY_TRACKER_EVENTS
 
 log = logging.getLogger(consts.LOGGER_NAME)
@@ -65,21 +66,15 @@ class Profile:
         return f'Experience: {self._experience}, age: {self._age}'
 
 
-class User:
-    _last_id = 0
+class User(IdCounter):
 
     def __init__(self, profile: Profile = None):
+        super().__init__()
         self._profile = profile
-        self._id = self._last_id
-        self.__class__._last_id += 1
 
     @property
     def profile(self) -> Profile:
         return self._profile
-
-    @property
-    def id(self) -> int:
-        return self._id
 
     def __str__(self) -> str:
         return f'Id: {self._id}, profile: {self._profile}'
