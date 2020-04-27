@@ -15,8 +15,7 @@ class Vertex(IdCounter):
 
     def __init__(self, graph: sg.SolutionGraph, code: Optional[Code] = None,
                  vertex_type: solution_space_consts.VERTEX_TYPE = solution_space_consts.VERTEX_TYPE.INTERMEDIATE):
-        # Todo: auto call __init__??
-        super().__init__(self.__class__.__name__)
+        super().__init__()
         self._parents = []
         self._children = []
         self._code_info_list = []

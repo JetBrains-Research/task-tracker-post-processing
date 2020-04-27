@@ -51,8 +51,7 @@ class SerializedCode(IdCounter):
 
     def __init__(self, anon_tree: ast.AST, canon_tree: ast.AST, rate: float, folder_with_files: str, file_prefix: str,
                  language: consts.LANGUAGE = consts.LANGUAGE.PYTHON):
-        # Todo: auto call __init__??
-        super().__init__(self.__class__.__name__)
+        super().__init__()
         self._anon_trees = [anon_tree]
         self._canon_tree = canon_tree
         self._rate = rate
@@ -117,12 +116,11 @@ class SerializedCode(IdCounter):
         file_path = os.path.join(self._folder_with_files,
                                  f'{self._file_prefix}_{str(self._id)}_{str_tree_type}{str(extension.value)}')
 
-        # if file exists already in graph folder to not override
-        if is_file(file_path):
-            return file_path
+        # If file does not exist in graph folder, we want to override it
+        if not is_file(file_path):
+            code = get_code_from_tree(tree)
+            create_file(code, file_path)
 
-        code = get_code_from_tree(tree)
-        create_file(code, file_path)
         self._file_by_tree_dict[tree] = file_path
         return file_path
 

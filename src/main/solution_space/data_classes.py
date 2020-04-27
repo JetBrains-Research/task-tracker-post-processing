@@ -69,8 +69,7 @@ class Profile:
 class User(IdCounter):
 
     def __init__(self, profile: Profile = None):
-        # Todo: auto call __init__??
-        super().__init__(self.__class__.__name__)
+        super().__init__()
         self._profile = profile
 
     @property

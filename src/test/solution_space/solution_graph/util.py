@@ -30,4 +30,4 @@ def get_two_vertices(sg: SolutionGraph) -> List[Vertex]:
 
 # Reset graph, vertex and code last ids to avoid different ids in one-by-one test running and running them all at once
 def init_default_ids() -> None:
-    IdCounter.reset()
+    IdCounter.reset_all()
