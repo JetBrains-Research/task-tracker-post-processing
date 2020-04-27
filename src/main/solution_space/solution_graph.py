@@ -5,10 +5,10 @@ import logging
 import collections
 from typing import Optional, List, Tuple
 
-from src.main.solution_space.code import Code
 from src.main.util.id_counter import IdCounter
 from src.main.solution_space.vertex import Vertex
 from src.main.util.log_util import log_and_raise_error
+from src.main.solution_space.serialized_code import Code
 from src.main.solution_space.data_classes import CodeInfo
 from src.main.util.consts import LOGGER_NAME, TASK, LANGUAGE
 from src.main.solution_space.distance import VertexDistanceMatrix
@@ -16,6 +16,7 @@ from src.main.solution_space import consts as solution_space_consts
 from src.main.canonicalization.canonicalization import are_asts_equal
 from src.main.util.file_util import remove_directory, create_directory
 from src.main.solution_space.consts import VERTEX_TYPE, GRAPH_FOLDER_PREFIX, SOLUTION_SPACE_FOLDER, FILE_PREFIX
+
 
 log = logging.getLogger(LOGGER_NAME)
 
@@ -181,3 +182,16 @@ class SolutionGraph(collections.abc.Iterable, IdCounter):
 
     def get_dist_between_vertices(self, src_vertex: Vertex, dst_vertex: Vertex) -> int:
         return self._dist.get_dist(src_vertex, dst_vertex)
+
+    def __str__(self) -> str:
+        vertices_str = ''
+        vertices = self.get_traversal()
+        vertices_str += str(self.start_vertex) + '\n'
+        vertices.remove(self.start_vertex)
+        for vertex in vertices:
+            vertices_str += str(vertex) + '\n'
+        return f'\n\n________________Solution Graph START________________\n\n' \
+               f'Task: {self._task.value}\n' \
+               f'Language: {self._language.value}\n' \
+               f'Vertices:\n{vertices_str}\n' \
+               f'\n\n________________Solution Graph END________________\n\n'

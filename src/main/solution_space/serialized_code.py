@@ -44,7 +44,11 @@ class Code:
         return self._language
 
     def __str__(self) -> str:
-        return f'Rate: {self._rate}\nCode:\n{get_code_from_tree(self._canon_tree)}\n'
+        return f'\n\n________________CODE START________________\n\n' \
+               f'Rate: {self._rate}\nLanguage: {self._language.value}\n' \
+               f'Canon tree:\n{get_code_from_tree(self._canon_tree)}\n' \
+               f'Anon tree:\n{get_code_from_tree(self.anon_tree)}\n' \
+               f'\n\n________________CODE END________________\n\n'
 
 
 class SerializedCode(IdCounter):
@@ -135,3 +139,12 @@ class SerializedCode(IdCounter):
         if tree_file is None:
             log_and_raise_error(f'No file is created for anon_tree {get_code_from_tree(tree)}', log)
         return tree_file
+
+    def __str__(self) -> str:
+        return f'\n\n________________SERIALIZED CODE START________________\n\n' \
+               f'Id: {self._id}\n' \
+               f'Rate: {self._rate}\n' \
+               f'Language: {self._language.value}\n' \
+               f'Canon tree:\n{get_code_from_tree(self._canon_tree)}\nAnon trees:' \
+               f'{list(map(lambda tree: get_code_from_tree(tree), self._anon_trees))}\n' \
+               f'\n\n________________SERIALIZED CODE END________________\n\n'

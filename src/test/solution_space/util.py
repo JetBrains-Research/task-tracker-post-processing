@@ -56,5 +56,3 @@ def get_solution_graph(task: TASK, to_plot_graph: bool = True,
         path = __plot_graph(task, sg, test_prefix)
         log.info(f'Graph path for solution space for task {task.value} is {path}')
     return sg
-
-get_solution_graph(TASK.PIES)

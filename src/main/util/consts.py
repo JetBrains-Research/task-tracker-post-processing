@@ -217,6 +217,7 @@ TEST_DATA_PATH = RESOURCES_PATH + 'test_data'
 TEST_PATH = ROOT_DIR + '/../../test'
 
 GRAPH_REPRESENTATION_PATH = os.path.join(RESOURCES_PATH, 'graph_representation')
+SERIALIZED_GRAPH_PATH = os.path.join(RESOURCES_PATH, 'serialized_graph')
 SOLUTION_SPACE_TEST_RESULT_PATH = os.path.join(RESOURCES_PATH, 'solution_space')
 
 PREPROCESSING_RESULT_FOLDER = 'preprocessing_result'

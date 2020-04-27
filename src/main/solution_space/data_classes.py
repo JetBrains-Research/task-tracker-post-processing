@@ -38,7 +38,9 @@ class AtiItem:
                and DEFAULT_VALUE.EVENT_DATA.is_equal(self._event_data)
 
     def __str__(self) -> str:
-        return f'Timestamp: {self._timestamp}, event_type: {self._event_type}, event_data: {self._event_data}'
+        return f'\n\n________________ATI ITEM START________________\n\n' \
+               f'Timestamp: {self._timestamp}, event_type: {self._event_type}, event_data: {self._event_data}' \
+               f'\n\n________________ATI ITEM END\n\n'
 
     def __eq__(self, o: object) -> bool:
         if not isinstance(o, AtiItem):
@@ -63,7 +65,9 @@ class Profile:
         return self._experience
 
     def __str__(self) -> str:
-        return f'Experience: {self._experience}, age: {self._age}'
+        return f'\n\n________________PROFILE START________________\n\n' \
+               f'Experience: {self._experience}, age: {self._age}' \
+               f'\n\n________________PROFILE END________________\n\n'
 
 
 class User(IdCounter):
@@ -77,7 +81,9 @@ class User(IdCounter):
         return self._profile
 
     def __str__(self) -> str:
-        return f'Id: {self._id}, profile: {self._profile}'
+        return f'\n\n________________USER START________________\n\n' \
+               f'Id: {self._id}, profile: {self._profile}' \
+               f'\n\n________________USER END________________\n\n'
 
 
 class CodeInfo:
@@ -105,5 +111,9 @@ class CodeInfo:
         return self._date
 
     def __str__(self) -> str:
-        return f'User: {self._user}, timestamp: {self._timestamp}, date: {self._date}. ' \
-               f'Length of ati actions is {len(self._ati_actions)}'
+        return f'\n\n________________CODE INFO START________________\n\n' \
+               f'User: {self._user}, timestamp: {self._timestamp}, date: {self._date}. ' \
+               f'Length of ati actions is {len(self._ati_actions)}\n' \
+               f'Ati actions:\n{list(map(str, self.ati_actions))}' \
+               f'\n\n________________CODE INFO END________________\n\n'
+

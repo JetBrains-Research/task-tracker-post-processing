@@ -5,7 +5,7 @@ from typing import Optional
 
 import pytest
 
-from src.main.solution_space.code import Code
+from src.main.solution_space.serialized_code import Code
 from src.test.util import to_skip, TEST_LEVEL
 from src.main.util.consts import TEST_DATA_PATH, TASK
 from src.main.canonicalization.consts import TREE_TYPE
