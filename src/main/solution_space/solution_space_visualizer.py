@@ -43,9 +43,9 @@ class SolutionSpaceVisualizer:
 
     @staticmethod
     def __get_vertices_list(vertices: List[Vertex]) -> str:
-        vertices = list(set(vertices))
+        vertices = list(set(map(lambda v: v.id, vertices)))
         vertices.sort()
-        return ', '.join(list(map(lambda v: str(v.id), vertices)))
+        return ', '.join(list(map(str, vertices)))
 
     def __get_graph_structure(self) -> str:
         structure = ''
