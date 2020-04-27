@@ -9,7 +9,7 @@ class IdCounter:
     _last_id = 0
 
     def __init__(self):
-        self._id = self.__class__._instances.get(self.__class__.__name__, 0)
+        self._id = self.__class__._instances[self.__class__.__name__]
         self.__class__._instances[self.__class__.__name__] += 1
 
     @property

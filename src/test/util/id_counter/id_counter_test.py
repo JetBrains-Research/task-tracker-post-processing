@@ -17,7 +17,7 @@ class B(IdCounter):
 
 
 def get_last_id_from_id_counter(class_name: str) -> int:
-    return IdCounter._instances.get(class_name, 0)
+    return IdCounter._instances[class_name]
 
 
 def run_reset_all_test_for_class(current_class: Type[IdCounter]) -> None:
