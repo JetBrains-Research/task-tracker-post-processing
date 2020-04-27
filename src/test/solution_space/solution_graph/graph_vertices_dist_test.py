@@ -182,7 +182,7 @@ class TestDistBetweenVertices:
                 # We should create code_info_chain for each fragment to emulate consequent fragments adding.
                 code_info_chain = get_code_info_chain([all_fragments[i]])
                 sg.add_code_info_chain(code_info_chain)
-                actual_dist_matrix = sg._dist._IItemDistance__get_dist_matrix()
+                actual_dist_matrix = sg._dist._IDistanceMatrix__get_dist_matrix()
 
                 added_indices_by_vertex[get_vertex_by_index(i)].append(i)
                 expected_dist_matrix = find_dist_matrix(added_indices_by_vertex)

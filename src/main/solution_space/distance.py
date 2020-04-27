@@ -16,9 +16,12 @@ Item = TypeVar('Item')
 Upd = TypeVar('Upd')
 
 
-class IItemDistance(Generic[Item, Upd], metaclass=ABCMeta):
-    def __init__(self):
+
+class IDistanceMatrix(Generic[Item, Upd], metaclass=ABCMeta):
+    def __init__(self, to_store_dist: bool = True):
+        # Todo: is it better to use id as a key instead of Item?
         self._dist: Dict[Item, Dict[Item, int]] = {}
+        self._to_store_dist = to_store_dist
 
     # If we have stored a distance between src_item and dst_item, we return it, otherwise we find it explicitly.
     def get_dist(self, src_item: Item, dst_item: Item) -> int:
@@ -28,8 +31,12 @@ class IItemDistance(Generic[Item, Upd], metaclass=ABCMeta):
         return dist
 
     def add_dist(self, new_item: Item) -> bool:
+        if not self._to_store_dist:
+            log.info('The param to_store_dist is False. We don\'t use distance matrix')
+            return False
+
         if new_item in self._dist.keys():
-            log.info("This item already exists")
+            log.info('This item already exists')
             return False
         self._dist[new_item] = {}
         for old_item in self._dist.keys():
@@ -38,8 +45,12 @@ class IItemDistance(Generic[Item, Upd], metaclass=ABCMeta):
         return True
 
     def update_dist(self, upd_item: Item, updates: Upd) -> bool:
+        if not self._to_store_dist:
+            log.info('The param to_store_dist is False. We don\'t use distance matrix')
+            return False
+
         if upd_item not in self._dist.keys():
-            log.info("This item doesn't exist, so dist cannot be updated")
+            log.info('This item doesn\'t exist, so dist cannot be updated')
             return False
         for item in self._dist.keys():
             upd_dist = self.__find_updated_dist(item, updates)
@@ -64,11 +75,14 @@ class IItemDistance(Generic[Item, Upd], metaclass=ABCMeta):
 #  with algo versions because it's needed only there
 
 # We update 'Vertex' by adding new anon_file, so update type is 'str'
-class VertexDistance(IItemDistance[Vertex, str]):
+class VertexDistanceMatrix(IDistanceMatrix[Vertex, str]):
+
+    def __init__(self, to_store_dist: bool = True):
+        super().__init__(to_store_dist)
 
     # Need to add base class name as prefix if we want to have private abstract methods because otherwise
     # "TypeError: Can't instantiate abstract class ... with abstract methods ..." is raised.
-    def _IItemDistance__find_dist(self, src: Vertex, dst: Vertex) -> int:
+    def _IDistanceMatrix__find_dist(self, src: Vertex, dst: Vertex) -> int:
         # Todo: it seems that GumTreeDiff always return 0 on the same fragments, but we need to add tests to be sure
         if src == dst:
             return 0
@@ -92,7 +106,7 @@ class VertexDistance(IItemDistance[Vertex, str]):
     # Multimethod doesn't work, because it raises an error:
     # AttributeError: 'multimethod' object has no attribute 'dispatch', and that's weird
     # Is it better to split it into two methods with different names?
-    def _IItemDistance__find_updated_dist(self, src: [Vertex, str], dst: [Vertex, str]) -> int:
+    def _IDistanceMatrix__find_updated_dist(self, src: [Vertex, str], dst: [Vertex, str]) -> int:
         if isinstance(src, Vertex) and isinstance(dst, str):
             anon_files = src.serialized_code.get_anon_files()
             return self.__find_dist_between_files(anon_files, [dst])

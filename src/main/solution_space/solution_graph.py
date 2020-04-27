@@ -3,15 +3,15 @@
 import os
 import logging
 import collections
-from typing import Optional, List, Tuple, Set, Dict
+from typing import Optional, List, Tuple
 
 from src.main.solution_space.code import Code
 from src.main.util.id_counter import IdCounter
 from src.main.solution_space.vertex import Vertex
 from src.main.util.log_util import log_and_raise_error
 from src.main.solution_space.data_classes import CodeInfo
-from src.main.solution_space.distance import VertexDistance
 from src.main.util.consts import LOGGER_NAME, TASK, LANGUAGE
+from src.main.solution_space.distance import VertexDistanceMatrix
 from src.main.solution_space import consts as solution_space_consts
 from src.main.canonicalization.canonicalization import are_asts_equal
 from src.main.util.file_util import remove_directory, create_directory
@@ -53,7 +53,7 @@ class SolutionGraph(collections.abc.Iterable, IdCounter):
 
     def __init__(self, task: TASK, language: LANGUAGE = LANGUAGE.PYTHON, to_delete_old_graph: bool = True,
                  graph_folder_prefix: str = GRAPH_FOLDER_PREFIX, file_prefix: str = FILE_PREFIX,
-                 to_use_dist: bool = True):
+                 to_store_dist: bool = True):
         # Todo: auto call __init__??
         super().__init__(self.__class__.__name__)
         if language == LANGUAGE.NOT_DEFINED:
@@ -69,8 +69,7 @@ class SolutionGraph(collections.abc.Iterable, IdCounter):
         self._start_vertex = Vertex(self, vertex_type=solution_space_consts.VERTEX_TYPE.START)
         self._end_vertex = Vertex(self, vertex_type=solution_space_consts.VERTEX_TYPE.END)
 
-        self._dist = VertexDistance()
-        self._to_use_dist = to_use_dist
+        self._dist = VertexDistanceMatrix(to_store_dist=to_store_dist)
 
         if to_delete_old_graph:
             remove_directory(self._graph_directory)
@@ -133,8 +132,7 @@ class SolutionGraph(collections.abc.Iterable, IdCounter):
         if vertex.serialized_code.is_full():
             log.info(f'Connect full code to the end vertex')
             self.connect_to_end_vertex(vertex)
-        if self._to_use_dist:
-            self._dist.add_dist(vertex)
+        self._dist.add_dist(vertex)
         return vertex
 
     def find_vertex(self, code: Code) -> Optional[Vertex]:
@@ -152,10 +150,9 @@ class SolutionGraph(collections.abc.Iterable, IdCounter):
         vertex = self.find_vertex(code)
         if vertex:
             vertex.add_code_info(code_info)
-            if self._to_use_dist:
-                anon_tree_file = vertex.serialized_code.add_anon_tree(code.anon_tree)
-                if anon_tree_file:
-                    self._dist.update_dist(vertex, anon_tree_file)
+            anon_tree_file = vertex.serialized_code.add_anon_tree(code.anon_tree)
+            if anon_tree_file:
+                self._dist.update_dist(vertex, anon_tree_file)
             return vertex
         log.info(f'Not found any existing vertex for code: {str(code)}, creating a new one')
         return self.create_vertex(code, code_info)
@@ -182,17 +179,6 @@ class SolutionGraph(collections.abc.Iterable, IdCounter):
                 prev_vertex.add_child(next_vertex)
                 prev_vertex = next_vertex
         log.info(f'Finish adding code-info chain')
-
-    def get_adj_list_with_ids(self) -> Dict[int, Set[int]]:
-        adj_list = {}
-        vertices = self.get_traversal()
-        vertices.remove(self.start_vertex)
-        for vertex in vertices:
-            adj_vertices = adj_list.get(vertex.id, set())
-            for c in vertex.children:
-                adj_vertices.add(c.id)
-            adj_list[vertex.id] = adj_vertices
-        return adj_list
 
     def get_dist_between_vertices(self, src_vertex: Vertex, dst_vertex: Vertex) -> int:
         return self._dist.get_dist(src_vertex, dst_vertex)

@@ -20,7 +20,7 @@ node [shape=record fontname=Arial];
 1 [label="Vertex 1. End vertex"]
 
 
-2 -> 11, 3
+2 -> 3, 11
 3 -> 4
 11 -> 12
 4 -> 5, 7
