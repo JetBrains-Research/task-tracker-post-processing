@@ -6,6 +6,7 @@ import logging
 
 import pandas as pd
 
+from src.main.solution_space.solution_space_serializer import SolutionSpaceSerializer
 from src.main.util import consts
 from src.main.util.file_util import add_slash
 from src.main.util.consts import PATH_CMD_ARG, TASK
@@ -45,18 +46,20 @@ def main() -> None:
     source = 'a = int(input())\nb = int(input())\nn = int(input())'
     user = User()
 
-    # graph = deserialize_data_from_file(f'/home/elena/workspaces/python/codetracker-data/data/pies_solution_graph{consts.EXTENSION.PICKLE.value}')
-    # serialize_data_and_write_to_file(f'/home/elena/workspaces/python/codetracker-data/data/pies_solution_graph{consts.EXTENSION.PICKLE.value}', graph)
+    graph = construct_solution_graph(path, TASK.PIES, to_store_dist=False)
+    print('Graph was been constructed')
+    path = SolutionSpaceSerializer.serialize(graph)
+    print(f'Serialized path: {path}')
+    new_graph = SolutionSpaceSerializer.deserialize(path)
+    print(str(graph) == str(new_graph))
 
-    graph = construct_solution_graph(path, TASK.PIES)
-
-    gv = SolutionSpaceVisualizer(graph)
-    graph_representation_path = gv.create_graph_representation(name_prefix='graph_all_space_final_version')
-    print(graph_representation_path)
-
-    hint_getter = HintGetter(graph)
-    hint = hint_getter.get_hint(source, user)
-    print(hint.recommended_code)
+    # gv = SolutionSpaceVisualizer(graph)
+    # graph_representation_path = gv.create_graph_representation(name_prefix='graph_all_space_final_version')
+    # print(graph_representation_path)
+    #
+    # hint_getter = HintGetter(graph)
+    # hint = hint_getter.get_hint(source, user)
+    # print(hint.recommended_code)
 
 
 if __name__ == '__main__':
