@@ -6,10 +6,10 @@ from enum import Enum
 from typing import Tuple, List
 
 from src.main.canonicalization.consts import TREE_TYPE
+from src.main.solution_space.serialized_code import Code
+from src.main.solution_space.data_classes import CodeInfo, User
 from src.main.canonicalization.canonicalization import get_trees
 from src.main.solution_space.solution_graph import SolutionGraph
-from src.main.solution_space.data_classes import CodeInfo, User
-from src.main.solution_space.serialized_code import Code
 from src.main.util.consts import LOGGER_NAME, TEST_DATA_PATH, TASK, TEST_RESULT
 from src.main.solution_space.solution_space_visualizer import SolutionSpaceVisualizer
 from src.main.util.file_util import get_content_from_file, get_all_file_system_items, match_condition

@@ -6,7 +6,6 @@ import logging
 
 import pandas as pd
 
-from src.main.solution_space.solution_space_serializer import SolutionSpaceSerializer
 from src.main.util import consts
 from src.main.util.file_util import add_slash
 from src.main.util.consts import PATH_CMD_ARG, TASK
@@ -17,6 +16,7 @@ from src.main.preprocessing.preprocessing import preprocess_data
 from src.main.splitting.splitting import split_tasks_into_separate_files
 from src.main.solution_space.solution_space_handler import construct_solution_graph
 from src.main.solution_space.solution_space_visualizer import SolutionSpaceVisualizer
+from src.main.solution_space.solution_space_serializer import SolutionSpaceSerializer
 
 pd.set_option('display.max_rows', 250)
 pd.set_option('display.max_columns', 100)
