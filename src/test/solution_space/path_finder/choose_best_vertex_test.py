@@ -14,7 +14,7 @@ from src.main.solution_space.data_classes import Profile, User
 from src.main.canonicalization.canonicalization import get_trees
 from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 from src.test.solution_space.solution_graph.util import get_two_vertices
-from src.main.solution_space.path_finder.path_finder_v_1 import PathFinderV1
+from src.main.solution_space.path_finder.path_finder_v_1 import PathFinderV3
 
 USER_SOURCE_PATH = os.path.join(TEST_DATA_PATH, 'solution_space', 'choose_best_vertex', 'source.py')
 USER_SOURCE = get_content_from_file(USER_SOURCE_PATH)
@@ -37,7 +37,7 @@ def init_graph() -> SolutionGraph:
 
 
 SG = init_graph()
-PF = PathFinderV1(SG)
+PF = PathFinderV3(SG)
 
 
 def get_best_vertex_from_empty_list() -> Optional[Vertex]:

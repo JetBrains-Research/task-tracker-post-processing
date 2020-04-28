@@ -5,7 +5,7 @@ from src.main.util import consts
 from src.main.solution_space.data_classes import User
 from src.main.solution_space.solution_graph import SolutionGraph
 from src.main.canonicalization.canonicalization import get_code_from_tree
-from src.main.solution_space.path_finder.path_finder_v_1 import PathFinderV1
+from src.main.solution_space.path_finder.path_finder_v_1 import PathFinderV3
 from src.main.canonicalization.diffs.rivers_diff_handler import RiversDiffHandler
 
 
@@ -25,7 +25,7 @@ class Hint:
 class HintGetter:
     def __init__(self, graph: SolutionGraph):
         self._graph = graph
-        self._path_finder = PathFinderV1(graph)
+        self._path_finder = PathFinderV3(graph)
 
     @property
     def graph(self) -> str:

@@ -1,5 +1,5 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
-
+import ast
 import os
 import logging
 import collections
@@ -142,6 +142,9 @@ class SolutionGraph(collections.abc.Iterable, IdCounter):
                 log.info(f'Found an existing vertex for code: {str(code)}')
                 return vertex
         return None
+
+    def find_vertex_by_canon_tree(self, canon_tree: ast.AST) -> Optional[Vertex]:
+        return self.find_vertex(Code(canon_tree=canon_tree))
 
     def find_or_create_vertex(self, code: Optional[Code], code_info: CodeInfo) -> Vertex:
         if code is None:

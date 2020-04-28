@@ -6,11 +6,13 @@ from src.main.solution_space.data_classes import User, Profile
 from src.main.solution_space.path_finder.path_finder import log
 from src.main.canonicalization.diffs.diff_handler import IDiffHandler
 
-
 class MeasuredVertex:
-    def __init__(self, user_diff_handler: IDiffHandler, vertex: Vertex, user: User, distance: Optional[int] = None):
+    def __init__(self, user_diff_handler: IDiffHandler, vertex: Vertex, user: User,
+                 distance_to_user: Optional[int] = None):
+        # Todo: add fine for rollback
         self._vertex = vertex
-        self._distance = distance if distance else vertex.get_diffs_number_to_vertex(user_diff_handler)
+        self._distance_to_user = distance_to_user if distance_to_user \
+            else vertex.get_diffs_number_to_vertex(user_diff_handler)
         # Todo: get actual vertex profile
         self._profile = self.__init_profile(user)
         self._users_count = len(vertex.get_unique_users())
@@ -20,8 +22,8 @@ class MeasuredVertex:
         return self._vertex
 
     @property
-    def distance(self) -> int:
-        return self._distance
+    def distance_to_user(self) -> int:
+        return self._distance_to_user
 
     @property
     def profile(self) -> Profile:
@@ -38,7 +40,7 @@ class MeasuredVertex:
     def __eq__(self, o: object) -> bool:
         if not isinstance(o, MeasuredVertex):
             return False
-        if self._distance != o.distance or self._profile == o.profile:
+        if self._distance_to_user != o.distance_to_user or self._profile == o.profile:
             return False
         return True
 
@@ -48,7 +50,7 @@ class MeasuredVertex:
     def __lt__(self, o: object):
         if not isinstance(o, MeasuredVertex):
             log_and_raise_error(f'The object {o} is not {self.__class__} class', log)
-        if self._distance < o.distance:
+        if self._distance_to_user < o.distance_to_user:
             return True
         # Todo: use profile info
         return self._users_count < o.users_count
