@@ -91,7 +91,7 @@ class TestDiffHandler:
             with subtests.test(msg=f'Exception was raised\n{test_info}'):
                 apply_diffs(src_file, dst_file)
 
-    # Xfail doesn't work because of subtest using, so mark it as skip
+    # Xfail doesn't work because of subtest using, so mark them as skip
     @pytest.mark.skip(reason=FAIL_REASON)
     @pytest.mark.parametrize('task', [pytest.param(task, marks=pytest.mark.xfail) for task in TASK])
     def test_result_of_applying_diffs_to_students_code(self, task: TASK, subtests) -> None:

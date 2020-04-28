@@ -143,6 +143,7 @@ class SolutionGraph(collections.abc.Iterable, IdCounter):
                 return vertex
         return None
 
+    # Todo: redo
     def find_vertex_by_canon_tree(self, canon_tree: ast.AST) -> Optional[Vertex]:
         return self.find_vertex(Code(canon_tree=canon_tree))
 

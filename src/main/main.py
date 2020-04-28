@@ -9,7 +9,7 @@ import pandas as pd
 from src.main.util import consts
 from src.main.util.file_util import add_slash
 from src.main.util.consts import PATH_CMD_ARG, TASK
-from src.main.solution_space.hint import HintGetter
+from src.main.solution_space.hint import HintHandler
 from src.main.util.log_util import configure_logger
 from src.main.solution_space.data_classes import User
 from src.main.preprocessing.preprocessing import preprocess_data
@@ -54,7 +54,7 @@ def main() -> None:
     graph_representation_path = gv.create_graph_representation(name_prefix='graph_all_space_final_version')
     print(graph_representation_path)
 
-    hint_getter = HintGetter(graph)
+    hint_getter = HintHandler(graph)
     hint = hint_getter.get_hint(source, user)
     print(hint.recommended_code)
 

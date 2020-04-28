@@ -8,8 +8,8 @@ from src.main.solution_space.data_classes import User
 from src.main.canonicalization.diffs.diff_handler import IDiffHandler
 from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 from src.main.canonicalization.canonicalization import get_code_from_tree
-from src.main.solution_space.path_finder.path_finder_v_1 import PathFinderV3
-from src.main.canonicalization.diffs.gumtree_diff_handler import GumTreeDiffHandler
+from src.main.solution_space.path_finder.path_finder_v_2 import PathFinderV2
+from src.main.canonicalization.diffs.gumtree import GumTreeDiff
 from src.test.solution_space.util import get_solution_graph, get_user_solutions
 from src.main.util.consts import TASK, LOGGER_NAME, SOLUTION_SPACE_TEST_RESULT_PATH, EXTENSION
 
@@ -42,8 +42,8 @@ def run_test(task: TASK, test_prefix: str, s_g: SolutionGraph) -> None:
     user_solutions = get_user_solutions(task)
     user = User()
     for i, user_solution in enumerate(user_solutions):
-        p_f = PathFinderV3(s_g)
-        user_dh = GumTreeDiffHandler(user_solution)
+        p_f = PathFinderV2(s_g)
+        user_dh = GumTreeDiff(user_solution)
         user_rate = 0 if i not in NOT_ZERO_RATES_INDEXES else 0.5
         next_vertex = p_f.find_next_vertex(user_dh, user, user_rate=user_rate)
         res = get_res_for_current_test(test_prefix, task, s_g, user_dh, next_vertex)

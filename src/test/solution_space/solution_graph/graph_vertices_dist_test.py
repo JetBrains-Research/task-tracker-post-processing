@@ -9,16 +9,15 @@ from typing import Dict, List, Tuple
 import pytest
 import numpy as np
 
-from src.main.solution_space.code_1 import Code
 from src.test.util import to_skip, TEST_LEVEL
-from src.main.util.consts import TASK, LOGGER_NAME
+from src.main.solution_space.code_1 import Code
 from src.main.canonicalization.consts import TREE_TYPE
+from src.main.canonicalization.diffs.gumtree import GumTreeDiff
 from src.main.solution_space.data_classes import CodeInfo, User
+from src.main.util.consts import TASK, LOGGER_NAME, TEST_RESULT
 from src.main.solution_space.solution_graph import SolutionGraph
 from src.main.solution_space.consts import SOLUTION_SPACE_TEST_FOLDER
-from src.test.solution_space.solution_graph.util import create_code_from_source
 from src.main.canonicalization.canonicalization import get_trees, are_asts_equal
-from src.main.canonicalization.diffs.gumtree_diff_handler import GumTreeDiffHandler
 
 log = logging.getLogger(LOGGER_NAME)
 
@@ -129,7 +128,7 @@ def find_dist_matrix(added_indices_by_vertex: Dict[VERTEX, List[int]]) -> List[L
 
 def get_code_info_chain(sources: List[str]) -> List[Tuple[Code, CodeInfo]]:
     user = User()
-    return [(create_code_from_source(s), CodeInfo(user)) for s in sources]
+    return [(Code.from_source(s, TEST_RESULT.CORRECT_CODE.value), CodeInfo(user)) for s in sources]
 
 
 @pytest.mark.skipif(to_skip(current_module_level=TEST_LEVEL.SOLUTION_SPACE), reason=TEST_LEVEL.SOLUTION_SPACE.value)
@@ -161,7 +160,7 @@ class TestDistBetweenVertices:
             for j, dst_fragment in enumerate(fragments):
                 with subtests.test():
                     dst_anon_tree, = get_trees(dst_fragment, {TREE_TYPE.ANON})
-                    real_dist = GumTreeDiffHandler.create_tmp_files_and_run_gumtree(src_anon_tree, dst_anon_tree)
+                    real_dist = GumTreeDiff.create_tmp_files_and_get_diffs_number(src_anon_tree, dst_anon_tree)
                     assert real_dist == anon_distance[i][j], f'Dists are not equal: {i}, {j}'
 
     # Check canon distance matrix is filled right
@@ -171,7 +170,7 @@ class TestDistBetweenVertices:
         for dst_vertex in VERTEX:
             with subtests.test():
                 dst_canon_tree, = get_trees(all_fragments[INDICES_BY_VERTEX[dst_vertex][0]], {TREE_TYPE.CANON})
-                real_dist = GumTreeDiffHandler.create_tmp_files_and_run_gumtree(src_canon_tree, dst_canon_tree)
+                real_dist = GumTreeDiff.create_tmp_files_and_get_diffs_number(src_canon_tree, dst_canon_tree)
                 assert real_dist == canon_distance[src_vertex][dst_vertex]
 
     def test_consequent_dist_updating(self, subtests):

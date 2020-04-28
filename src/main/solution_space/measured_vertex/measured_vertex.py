@@ -1,21 +1,43 @@
-from typing import Optional
+# Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
+from __future__ import annotations
 
-from src.main.util.log_util import log_and_raise_error
+from typing import Optional, Type, TypeVar
+from abc import ABCMeta, abstractmethod
+
 from src.main.solution_space.solution_graph import Vertex
-from src.main.solution_space.data_classes import User, Profile
-from src.main.solution_space.path_finder.path_finder import log
-from src.main.canonicalization.diffs.diff_handler import IDiffHandler
+from src.main.solution_space.data_classes import Profile, User
 
-class MeasuredVertex:
-    def __init__(self, user_diff_handler: IDiffHandler, vertex: Vertex, user: User,
-                 distance_to_user: Optional[int] = None):
-        # Todo: add fine for rollback
+class IMeasuredVertex(object,  metaclass=ABCMeta):
+
+    def __init__(self, user_vertex: Vertex, vertex: Vertex, distance_to_user: Optional[int] = None):
+        # Todo: 14/04 add fine for rollback
         self._vertex = vertex
         self._distance_to_user = distance_to_user if distance_to_user \
-            else vertex.get_diffs_number_to_vertex(user_diff_handler)
-        # Todo: get actual vertex profile
-        self._profile = self.__init_profile(user)
+            else vertex.get_dist(user_vertex)
         self._users_count = len(vertex.get_unique_users())
+        self._profile = self.__init_profile(user_vertex.code_info_list[0].user)
+
+    @classmethod
+    @abstractmethod
+    def get_description(cls) -> str:
+        raise NotImplementedError
+
+    # Todo: maybe not call here, but in user vertex?
+    @abstractmethod
+    def __init_profile(self, user: User) -> Profile:
+        raise NotImplementedError
+
+    @abstractmethod
+    def __eq__(self, o: object) -> bool:
+        raise NotImplementedError
+
+    @abstractmethod
+    def __ne__(self, o: object) -> bool:
+        raise NotImplementedError
+
+    @abstractmethod
+    def __lt__(self, o: object):
+        raise NotImplementedError
 
     @property
     def vertex(self) -> Vertex:
@@ -33,24 +55,3 @@ class MeasuredVertex:
     def users_count(self) -> int:
         return self._users_count
 
-    def __init_profile(self, user: User) -> Profile:
-        # Todo: add user handling
-        return Profile()
-
-    def __eq__(self, o: object) -> bool:
-        if not isinstance(o, MeasuredVertex):
-            return False
-        if self._distance_to_user != o.distance_to_user or self._profile == o.profile:
-            return False
-        return True
-
-    def __ne__(self, o: object) -> bool:
-        return not self.__eq__(o)
-
-    def __lt__(self, o: object):
-        if not isinstance(o, MeasuredVertex):
-            log_and_raise_error(f'The object {o} is not {self.__class__} class', log)
-        if self._distance_to_user < o.distance_to_user:
-            return True
-        # Todo: use profile info
-        return self._users_count < o.users_count
