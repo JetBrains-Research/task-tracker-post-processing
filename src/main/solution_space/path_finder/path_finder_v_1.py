@@ -5,17 +5,25 @@ from typing import List, Optional
 from src.main.solution_space.data_classes import User
 from src.main.solution_space.solution_graph import Vertex
 from src.main.canonicalization.diffs.diff_handler import IDiffHandler
+from src.main.solution_space.path_finder.path_finder import IPathFinder, log
+from src.main.solution_space.measured_vertex.measured_vertex import MeasuredVertex
 from src.main.canonicalization.canonicalization import get_code_from_tree, are_asts_equal
-from src.main.solution_space.path_finder.path_finder import IPathFinder, log, MeasuredVertex
 from src.main.solution_space.consts import DISTANCE_TO_GRAPH_THRESHOLD, DIFFS_PERCENT_TO_GO_DIRECTLY, EMPTY_DIFF_HANDLER
 
-"""
-The first version of path finder.
-*an algorithm description goes here*
-"""
-# Todo: add description as a field
 
 class PathFinderV1(IPathFinder):
+
+    _description: str = \
+        """
+        PathFinder
+        version: 1
+        find_next_vertex: *description*
+        choose_best_vertex: *description*
+        """
+
+    @classmethod
+    def description(cls) -> str:
+        return cls._description
 
     def find_next_vertex(self, user_diff_handler: IDiffHandler, user: User) -> Vertex:
         # Todo: check if user_code is not valid

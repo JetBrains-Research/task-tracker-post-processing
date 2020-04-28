@@ -9,7 +9,7 @@ from typing import Dict, List, Tuple
 import pytest
 import numpy as np
 
-from src.main.solution_space.code import Code
+from src.main.solution_space.code_1 import Code
 from src.test.util import to_skip, TEST_LEVEL
 from src.main.util.consts import TASK, LOGGER_NAME
 from src.main.canonicalization.consts import TREE_TYPE

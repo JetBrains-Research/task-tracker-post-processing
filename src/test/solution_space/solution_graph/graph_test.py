@@ -6,7 +6,7 @@ from typing import List, Tuple, Dict, Union
 
 import pytest
 
-from src.main.solution_space.code import Code
+from src.main.solution_space.code_1 import Code
 from src.test.util import to_skip, TEST_LEVEL
 from src.main.util.consts import TEST_RESULT, LOGGER_NAME, TASK
 from src.main.solution_space.data_classes import User, CodeInfo

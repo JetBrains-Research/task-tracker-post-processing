@@ -3,7 +3,7 @@
 from typing import Tuple, List
 
 from src.main.util.consts import TEST_RESULT
-from src.main.solution_space.code import Code
+from src.main.solution_space.code_1 import Code
 from src.main.util.id_counter import IdCounter
 from src.main.canonicalization.consts import TREE_TYPE
 from src.main.canonicalization.canonicalization import get_trees

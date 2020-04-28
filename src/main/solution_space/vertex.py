@@ -6,7 +6,7 @@ from typing import List, Set, Optional
 
 from src.main.util.id_counter import IdCounter
 import src.main.solution_space.solution_graph as sg
-from src.main.solution_space.code import Code, SerializedCode
+from src.main.solution_space.code_1 import Code, SerializedCode
 from src.main.solution_space.data_classes import CodeInfo, User
 from src.main.solution_space import consts as solution_space_consts
 

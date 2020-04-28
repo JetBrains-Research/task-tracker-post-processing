@@ -16,7 +16,6 @@ Item = TypeVar('Item')
 Upd = TypeVar('Upd')
 
 
-
 class IDistanceMatrix(Generic[Item, Upd], metaclass=ABCMeta):
     def __init__(self, to_store_dist: bool = True):
         # Todo: is it better to use id as a key instead of Item?

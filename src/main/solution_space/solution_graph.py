@@ -5,7 +5,7 @@ import logging
 import collections
 from typing import Optional, List, Tuple
 
-from src.main.solution_space.code import Code
+from src.main.solution_space.code_1 import Code
 from src.main.util.id_counter import IdCounter
 from src.main.solution_space.vertex import Vertex
 from src.main.util.log_util import log_and_raise_error
