@@ -40,7 +40,7 @@ class AtiItem:
     def __str__(self) -> str:
         return f'\n\n________________ATI ITEM START________________\n\n' \
                f'Timestamp: {self._timestamp}, event_type: {self._event_type}, event_data: {self._event_data}' \
-               f'\n\n________________ATI ITEM END\n\n'
+               f'\n\n________________ATI ITEM END________________\n\n'
 
     def __eq__(self, o: object) -> bool:
         if not isinstance(o, AtiItem):
