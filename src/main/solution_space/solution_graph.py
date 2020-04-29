@@ -5,11 +5,6 @@ import logging
 import collections
 from typing import Optional, List, Tuple
 
-<<<<<<< HEAD
-from src.main.solution_space.code_1 import Code
-from src.main.util.id_counter import IdCounter
-=======
->>>>>>> solution-space/dev
 from src.main.solution_space.vertex import Vertex
 from src.main.util.log_util import log_and_raise_error
 from src.main.solution_space.serialized_code import Code

@@ -1,20 +1,16 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
+import importlib
 import logging
 import os
 import pkgutil
-import importlib
-from enum import Enum
-from typing import Type, List, TypeVar, Union
+from typing import Type, TypeVar, Union
 
-from src.main.canonicalization.canonicalization import get_code_from_tree
-from src.main.solution_space.code_1 import Code
-from src.main.solution_space.data_classes import CodeInfo, User, Profile
-from src.main.solution_space.hint import HintHandler
-from src.main.util import consts
-from src.main.util.consts import TASK, LOGGER_NAME, EXPERIENCE, DEFAULT_VALUE
+from src.main.solution_space.serialized_code import Code
 from src.main.solution_space.algo_version import AlgoVersion
-from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 from src.main.solution_space.path_finder.path_finder import IPathFinder
+from src.main.solution_space.solution_graph import SolutionGraph, Vertex
+from src.main.solution_space.data_classes import CodeInfo, User, Profile
+from src.main.util.consts import TASK, LOGGER_NAME, EXPERIENCE, DEFAULT_VALUE
 from src.main.solution_space.measured_vertex.measured_vertex import IMeasuredVertex
 
 # File cannot be named 'test_system.py' because of pytest

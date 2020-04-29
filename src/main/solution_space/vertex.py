@@ -6,11 +6,7 @@ import ast
 from typing import List, Set, Optional
 
 import src.main.solution_space.solution_graph as sg
-<<<<<<< HEAD
-from src.main.solution_space.code_1 import Code, SerializedCode
-=======
 from src.main.util.helper_classes.id_counter import IdCounter
->>>>>>> solution-space/dev
 from src.main.solution_space.data_classes import CodeInfo, User
 from src.main.solution_space import consts as solution_space_consts
 from src.main.util.helper_classes.pretty_string import PrettyString

@@ -9,10 +9,6 @@ import pandas as pd
 
 from src.main.util import consts
 from src.main.util.data_util import Column
-<<<<<<< HEAD
-from src.main.solution_space.code_1 import Code
-=======
->>>>>>> solution-space/dev
 from src.main.canonicalization.consts import TREE_TYPE
 from src.main.util.log_util import log_and_raise_error
 from src.main.solution_space.serialized_code import Code

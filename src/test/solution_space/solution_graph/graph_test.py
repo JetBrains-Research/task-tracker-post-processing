@@ -6,13 +6,8 @@ from typing import List, Tuple, Dict, Union
 
 import pytest
 
-<<<<<<< HEAD
-from src.main.solution_space.code_1 import Code
-from src.test.util import to_skip, TEST_LEVEL
-=======
 from src.test.test_config import to_skip, TEST_LEVEL
 from src.main.solution_space.serialized_code import Code
->>>>>>> solution-space/dev
 from src.main.util.consts import TEST_RESULT, LOGGER_NAME, TASK
 from src.main.solution_space.data_classes import User, CodeInfo
 from src.main.solution_space.consts import SOLUTION_SPACE_TEST_FOLDER

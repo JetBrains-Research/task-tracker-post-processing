@@ -7,6 +7,7 @@ from abc import ABCMeta, abstractmethod
 from src.main.solution_space.solution_graph import Vertex
 from src.main.solution_space.data_classes import Profile, User
 
+
 class IMeasuredVertex(object,  metaclass=ABCMeta):
 
     def __init__(self, user_vertex: Vertex, vertex: Vertex, distance_to_user: Optional[int] = None):

@@ -5,14 +5,13 @@ from __future__ import annotations
 import logging
 from abc import ABCMeta, abstractmethod
 
-from src.main.canonicalization.canonicalization import get_trees, Optional, Type, TypeVar
-from src.main.canonicalization.consts import TREE_TYPE
-from src.main.solution_space.code_1 import Code
-from src.main.solution_space.measured_vertex.measured_vertex import IMeasuredVertex
 from src.main.util import consts
-from src.main.solution_space.data_classes import User
-from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 from src.main.util.consts import TEST_RESULT
+from src.main.canonicalization.consts import TREE_TYPE
+from src.main.solution_space.serialized_code import Code
+from src.main.solution_space.solution_graph import SolutionGraph, Vertex
+from src.main.canonicalization.canonicalization import get_trees, Optional, Type
+from src.main.solution_space.measured_vertex.measured_vertex import IMeasuredVertex
 
 log = logging.getLogger(consts.LOGGER_NAME)
 

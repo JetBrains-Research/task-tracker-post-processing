@@ -6,12 +6,12 @@ from typing import Optional
 import pytest
 
 from src.test.test_config import to_skip, TEST_LEVEL
-from src.main.util.consts import TEST_DATA_PATH, TASK
 from src.main.canonicalization.consts import TREE_TYPE
 from src.main.solution_space.serialized_code import Code
 from src.main.util.file_util import get_content_from_file
 from src.main.solution_space.data_classes import Profile, User
 from src.main.canonicalization.canonicalization import get_trees
+from src.main.util.consts import TEST_DATA_PATH, TASK, TEST_RESULT
 from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 from src.test.solution_space.solution_graph.util import get_two_vertices
 from src.main.solution_space.path_finder.path_finder_v_1 import PathFinderV1
@@ -20,7 +20,7 @@ USER_SOURCE_PATH = os.path.join(TEST_DATA_PATH, 'solution_space', 'choose_best_v
 USER_SOURCE = get_content_from_file(USER_SOURCE_PATH)
 USER_ANON_AST, USER_CANON_AST = get_trees(USER_SOURCE, {TREE_TYPE.ANON, TREE_TYPE.CANON})
 
-USER_CODE = Code(USER_CANON_AST, 1, USER_ANON_AST)
+USER_CODE = Code(USER_ANON_AST, USER_CANON_AST, TEST_RESULT.FULL_SOLUTION.value)
 DEFAULT_PROFILE = Profile()
 DEFAULT_USER = User(DEFAULT_PROFILE)
 

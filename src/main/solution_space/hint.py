@@ -1,18 +1,14 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 import logging
-from typing import TypeVar, Type
 
-from src.main.solution_space.algo_version import AlgoVersion
-from src.main.solution_space.code_1 import Code
-from src.main.solution_space.measured_vertex.measured_vertex import IMeasuredVertex
-from src.main.solution_space.path_finder.path_finder import IPathFinder
 from src.main.util import consts
-from src.main.solution_space.data_classes import User, CodeInfo
+from src.main.solution_space.serialized_code import Code
+from src.main.solution_space.data_classes import CodeInfo
+from src.main.solution_space.algo_version import AlgoVersion
+from src.main.solution_space.path_finder.path_finder import IPathFinder
 from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 from src.main.canonicalization.canonicalization import get_code_from_tree
-from src.main.solution_space.path_finder.path_finder_v_2 import PathFinderV2
 from src.main.canonicalization.diffs.rivers_diff_handler import RiversDiffHandler
-
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
