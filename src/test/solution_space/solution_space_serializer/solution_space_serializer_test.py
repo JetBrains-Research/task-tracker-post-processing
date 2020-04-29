@@ -5,7 +5,7 @@ from typing import Callable
 import pytest
 
 from src.main.util.consts import TASK
-from src.test.util import to_skip, TEST_LEVEL
+from src.test.test_config import to_skip, TEST_LEVEL
 from src.test.solution_space.util import get_solution_graph
 from src.main.solution_space.solution_graph import SolutionGraph
 from src.main.solution_space.solution_space_serializer import SolutionSpaceSerializer
@@ -32,7 +32,7 @@ class TestSolutionSpaceSerializer:
         return request.param
 
     def test_graph_representation(self, param_solution_space_serializer_test: Callable) -> None:
-        graph = param_solution_space_serializer_test
+        graph: SolutionGraph = param_solution_space_serializer_test
         serialized_path = SolutionSpaceSerializer.serialize(graph)
         deserialized_graph = SolutionSpaceSerializer.deserialize(serialized_path)
-        assert str(graph) == str(deserialized_graph)
+        assert graph.get_pretty_string() == deserialized_graph.get_pretty_string()

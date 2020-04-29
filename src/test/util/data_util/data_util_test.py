@@ -5,7 +5,7 @@ from typing import Tuple, Callable
 import pytest
 import pandas as pd
 
-from src.test.util import to_skip, TEST_LEVEL
+from src.test.test_config import to_skip, TEST_LEVEL
 from src.main.util.consts import CODE_TRACKER_COLUMN
 from src.main.util.data_util import crop_data_by_timestamp
 

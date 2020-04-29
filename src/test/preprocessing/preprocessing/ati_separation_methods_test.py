@@ -8,7 +8,7 @@ from typing import List, Tuple, Union, Optional, Callable
 import pytest
 
 from src.main.util import consts
-from src.test.util import to_skip, TEST_LEVEL
+from src.test.test_config import to_skip, TEST_LEVEL
 from src.main.preprocessing.preprocessing import __separate_ati_and_other_files
 
 log = logging.getLogger(consts.LOGGER_NAME)

@@ -6,7 +6,7 @@ from typing import List, Tuple, Dict, Union
 
 import pytest
 
-from src.test.util import to_skip, TEST_LEVEL
+from src.test.test_config import to_skip, TEST_LEVEL
 from src.main.solution_space.serialized_code import Code
 from src.main.util.consts import TEST_RESULT, LOGGER_NAME, TASK
 from src.main.solution_space.data_classes import User, CodeInfo

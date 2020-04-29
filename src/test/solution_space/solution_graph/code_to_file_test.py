@@ -1,4 +1,5 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
+
 import os
 import logging
 import unittest
@@ -6,7 +7,7 @@ from typing import List, Tuple
 
 import pytest
 
-from src.test.util import to_skip, TEST_LEVEL
+from src.test.test_config import to_skip, TEST_LEVEL
 from src.main.canonicalization.consts import TREE_TYPE
 from src.main.solution_space.solution_graph import SolutionGraph
 from src.main.util.language_util import get_extension_by_language

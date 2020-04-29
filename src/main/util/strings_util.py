@@ -18,4 +18,3 @@ def convert_camel_case_to_snake_case(string: str) -> str:
 
 def crop_string(string: str, short_part_length: int, separator: str = '...') -> str:
     return ''.join((string[:short_part_length], separator, string[-short_part_length:]))
-

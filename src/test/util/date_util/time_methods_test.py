@@ -4,7 +4,7 @@ from typing import Tuple
 
 import pytest
 
-from src.test.util import to_skip, TEST_LEVEL
+from src.test.test_config import to_skip, TEST_LEVEL
 from src.main.util.time_util import corrected_time
 
 

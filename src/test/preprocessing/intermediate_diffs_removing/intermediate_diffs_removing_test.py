@@ -4,7 +4,7 @@ import pytest
 import pandas as pd
 
 from src.main.util import consts
-from src.test.util import to_skip, TEST_LEVEL
+from src.test.test_config import to_skip, TEST_LEVEL
 from src.main.preprocessing.intermediate_diffs_removing import __remove_intermediate_diffs_from_df
 
 # Hidden SettingWithCopyWarning

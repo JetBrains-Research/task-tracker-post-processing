@@ -46,9 +46,9 @@ def main() -> None:
     source = 'a = int(input())\nb = int(input())\nn = int(input())'
     user = User()
 
-    graph = construct_solution_graph(path, TASK.PIES, to_store_dist=False)
-    print('Graph was been constructed')
-    path = SolutionSpaceSerializer.serialize(graph)
+    graph = construct_solution_graph(path, TASK.PIES)
+    print('Graph was constructed')
+    path = SolutionSpaceSerializer.serialize(graph, serialized_file_prefix='serialized_graph_with_dist')
     print(f'Serialized path: {path}')
     new_graph = SolutionSpaceSerializer.deserialize(path)
     print(str(graph) == str(new_graph))

@@ -5,8 +5,8 @@ from typing import Callable, Tuple, Optional
 
 import pytest
 
-from src.test.util import to_skip, TEST_LEVEL
 from src.main.util.consts import LOGGER_NAME, TASK
+from src.test.test_config import to_skip, TEST_LEVEL
 from src.main.canonicalization.consts import TREE_TYPE
 from src.main.util.file_util import get_content_from_file
 from src.test.canonicalization.diffs.diff_handler.util import FAIL_REASON

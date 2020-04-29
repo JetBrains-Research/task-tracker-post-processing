@@ -5,8 +5,8 @@ import os
 import pytest
 
 from src.test.plots.util import TO_OPEN_PLOTS
-from src.test.util import to_skip, TEST_LEVEL
 from src.main.util.consts import TEST_DATA_PATH
+from src.test.test_config import to_skip, TEST_LEVEL
 from src.main.plots.ati_data_plots import create_ati_data_plot
 
 DATA = os.path.join(TEST_DATA_PATH, 'plots/data.csv')

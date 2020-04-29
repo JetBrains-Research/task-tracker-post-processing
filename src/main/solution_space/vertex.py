@@ -4,14 +4,15 @@ from __future__ import annotations
 
 from typing import List, Set, Optional
 
-from src.main.util.id_counter import IdCounter
 import src.main.solution_space.solution_graph as sg
+from src.main.util.helper_classes.id_counter import IdCounter
 from src.main.solution_space.data_classes import CodeInfo, User
 from src.main.solution_space import consts as solution_space_consts
+from src.main.util.helper_classes.pretty_string import PrettyString
 from src.main.solution_space.serialized_code import Code, SerializedCode
 
 
-class Vertex(IdCounter):
+class Vertex(IdCounter, PrettyString):
 
     def __init__(self, graph: sg.SolutionGraph, code: Optional[Code] = None,
                  vertex_type: solution_space_consts.VERTEX_TYPE = solution_space_consts.VERTEX_TYPE.INTERMEDIATE):
@@ -73,11 +74,9 @@ class Vertex(IdCounter):
         return self._graph.get_dist_between_vertices(self, dst_vertex)
 
     def __str__(self) -> str:
-        return f'\n\n________________VERTEX START________________\n\n' \
-               f'Vertex id: {self._id}\n' \
+        return f'Vertex id: {self._id}\n' \
                f'Vertex type: {self._vertex_type.value}\n' \
                f'Serialized_code: {self._serialized_code}\n' \
                f'Code info:\n{list(map(str, self._code_info_list))}\n' \
                f'Parents ids:\n{list(map(lambda parent: parent.id, self._parents))}\n' \
-               f'Children:\n{list(map(lambda parent: parent.id, self._children))}' \
-               f'\n\n________________VERTEX END________________\n\n'
+               f'Children:\n{list(map(lambda parent: parent.id, self._children))}'

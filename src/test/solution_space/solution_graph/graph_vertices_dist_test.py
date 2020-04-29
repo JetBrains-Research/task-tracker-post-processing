@@ -9,8 +9,8 @@ from typing import Dict, List, Tuple
 import pytest
 import numpy as np
 
-from src.test.util import to_skip, TEST_LEVEL
 from src.main.util.consts import TASK, LOGGER_NAME
+from src.test.test_config import to_skip, TEST_LEVEL
 from src.main.canonicalization.consts import TREE_TYPE
 from src.main.solution_space.serialized_code import Code
 from src.main.solution_space.data_classes import CodeInfo, User
