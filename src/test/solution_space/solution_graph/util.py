@@ -3,9 +3,14 @@
 from typing import Tuple, List
 
 from src.main.util.consts import TEST_RESULT
+<<<<<<< HEAD
 from src.main.solution_space.code_1 import Code
 from src.main.util.id_counter import IdCounter
+=======
+>>>>>>> solution-space/dev
 from src.main.canonicalization.consts import TREE_TYPE
+from src.main.solution_space.serialized_code import Code
+from src.main.util.helper_classes.id_counter import IdCounter
 from src.main.canonicalization.canonicalization import get_trees
 from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 

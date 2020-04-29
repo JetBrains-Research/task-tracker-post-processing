@@ -5,7 +5,7 @@ import argparse
 from setuptools import setup, find_packages
 
 import src
-from src.test.util import get_level_by_param
+from src.test.test_config import get_level_by_param
 
 with open('README.md') as readme_file:
     readme = readme_file.read()
@@ -23,7 +23,7 @@ if test_level_param in args:
     parser.add_argument('test', action='store', choices=['test'], help='Action type')
     parser.add_argument(test_level_param, action='store', dest='test_level_key', help='Test level key', type=str)
     args = parser.parse_args()
-    src.test.util.CURRENT_TEST_LEVEL = get_level_by_param(args.test_level_key)
+    src.test.test_config.CURRENT_TEST_LEVEL = get_level_by_param(args.test_level_key)
     sys.argv.remove(test_level_param)
     sys.argv.remove(args.test_level_key)
 

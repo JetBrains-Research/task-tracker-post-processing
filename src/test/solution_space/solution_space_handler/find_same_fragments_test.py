@@ -7,7 +7,7 @@ from typing import List, Tuple, Callable
 import pytest
 import pandas as pd
 
-from src.test.util import to_skip, TEST_LEVEL
+from src.test.test_config import to_skip, TEST_LEVEL
 from src.main.canonicalization.consts import TREE_TYPE
 from src.main.solution_space.data_classes import AtiItem
 from src.main.canonicalization.canonicalization import get_trees, are_asts_equal

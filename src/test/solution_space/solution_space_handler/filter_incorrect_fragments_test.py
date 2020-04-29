@@ -6,7 +6,7 @@ from typing import Callable, Tuple
 import pytest
 import pandas as pd
 
-from src.test.util import to_skip, TEST_LEVEL
+from src.test.test_config import to_skip, TEST_LEVEL
 from src.main.util.consts import LOGGER_NAME, CODE_TRACKER_COLUMN
 from src.main.solution_space.solution_space_handler import __filter_incorrect_fragments
 

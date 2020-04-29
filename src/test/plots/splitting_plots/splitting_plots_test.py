@@ -5,8 +5,8 @@ import os
 import pytest
 
 from src.test.plots.util import TO_OPEN_PLOTS
-from src.test.util import to_skip, TEST_LEVEL
 from src.main.util.consts import TEST_DATA_PATH
+from src.test.test_config import to_skip, TEST_LEVEL
 from src.main.plots.splitting_plots import create_comparative_splitting_plot
 
 DATA = os.path.join(TEST_DATA_PATH, 'plots/data.csv')

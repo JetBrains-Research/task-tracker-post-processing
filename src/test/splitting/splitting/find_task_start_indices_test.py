@@ -6,7 +6,7 @@ import pytest
 import pandas as pd
 
 from src.main.util import consts
-from src.test.util import to_skip, TEST_LEVEL
+from src.test.test_config import to_skip, TEST_LEVEL
 from src.main.splitting.splitting import find_task_start_indices
 
 PIES_COUNT_1 = 2

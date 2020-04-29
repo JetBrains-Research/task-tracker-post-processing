@@ -5,7 +5,7 @@ from typing import Dict, Union, List
 
 import pytest
 
-from src.test.util import to_skip, TEST_LEVEL
+from src.test.test_config import to_skip, TEST_LEVEL
 from src.main.util.file_util import get_name_from_path
 
 

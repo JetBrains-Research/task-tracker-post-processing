@@ -7,7 +7,7 @@ import pytest
 import pandas as pd
 
 from src.main.util import consts
-from src.test.util import to_skip, TEST_LEVEL
+from src.test.test_config import to_skip, TEST_LEVEL
 from src.main.splitting.splitting import find_task_dfs
 from src.main.util.file_util import get_all_file_system_items
 

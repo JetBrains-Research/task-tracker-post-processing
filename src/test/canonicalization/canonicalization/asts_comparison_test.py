@@ -5,7 +5,7 @@ from typing import List
 
 import pytest
 
-from src.test.util import to_skip, TEST_LEVEL
+from src.test.test_config import to_skip, TEST_LEVEL
 from src.main.canonicalization.canonicalization import are_asts_equal, get_code_from_tree
 
 empty_source = ''

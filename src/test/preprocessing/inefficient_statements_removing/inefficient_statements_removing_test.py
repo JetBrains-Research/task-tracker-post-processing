@@ -3,8 +3,8 @@
 import pytest
 import pandas as pd
 
-from src.test.util import to_skip, TEST_LEVEL
 from src.main.util import consts
+from src.test.test_config import to_skip, TEST_LEVEL
 from src.main.preprocessing.inefficient_statements_removing import __remove_inefficient_statements_from_df
 
 # Hidden SettingWithCopyWarning

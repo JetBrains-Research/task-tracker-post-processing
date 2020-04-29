@@ -6,7 +6,7 @@ from typing import Callable, Tuple
 
 import pytest
 
-from src.test.util import to_skip, TEST_LEVEL
+from src.test.test_config import to_skip, TEST_LEVEL
 from src.main.util.consts import TASK, EXTENSION
 from src.main.util.file_util import get_content_from_file
 from src.test.solution_space.util import get_solution_graph

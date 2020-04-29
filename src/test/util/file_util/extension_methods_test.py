@@ -5,7 +5,7 @@ from typing import Callable, Tuple
 
 import pytest
 
-from src.test.util import to_skip, TEST_LEVEL
+from src.test.test_config import to_skip, TEST_LEVEL
 from src.main.util.consts import TEST_DATA_PATH, EXTENSION
 from src.main.util.file_util import get_extension_from_file, change_extension_to, create_file, remove_file, \
     remove_directory, create_directory
