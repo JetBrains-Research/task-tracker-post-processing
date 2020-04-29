@@ -15,19 +15,10 @@ log = logging.getLogger(LOGGER_NAME)
 
 
 class PathFinderV2(IPathFinder):
-    _description: str = \
-        """
-        PathFinder
-        version: 2
-        find_next_vertex: *description*
-        choose_best_vertex: *description*
-        """
-
-    @classmethod
-    def description(cls) -> str:
-        return cls._description
 
     def find_next_vertex(self, user_vertex: Vertex) -> Vertex:
+        'description 2'
+
         log.info(f'Start finding the next code state for '
                  f'the user code: {get_code_from_tree(user_vertex.serialized_code.anon_trees[0])} and '
                  f'the user: {user_vertex.code_info_list[0].user}')
@@ -43,9 +34,11 @@ class PathFinderV2(IPathFinder):
 
     # Sort candidates and return the best for user_code from ones
     def __choose_best_vertex(self, user_vertex: Vertex, vertices: List[Vertex]) -> Optional[Vertex]:
+        'description 2'
+
         if len(vertices) == 0:
             return None
-        candidates = list(map(lambda vertex: self.measured_vertex(user_vertex, vertex), vertices))
+        candidates = list(map(lambda vertex: self.get_measured_vertex(user_vertex, vertex), vertices))
         candidates.sort()
         log.info(f'Candidates ids are {([c.vertex.id for c in candidates])}')
         log.info(f'The best vertex id is {candidates[0].vertex.id}')
@@ -64,7 +57,7 @@ class PathFinderV2(IPathFinder):
     def __find_closest_vertex_with_path(self, user_vertex: Vertex, goal: Vertex) -> Optional[Vertex]:
         user_diffs_to_goal = user_vertex.get_dist(goal)
         # Todo: 14/04 test vertex from graph
-        vertex_in_graph = self._graph.find_vertex_by_canon_tree(user_vertex.canon_tree)
+        vertex_in_graph = self._graph.find_vertex(user_vertex.canon_tree)
         if vertex_in_graph:
             return self.__choose_best_vertex(user_vertex, vertex_in_graph.children)
 
@@ -84,6 +77,7 @@ class PathFinderV2(IPathFinder):
 
     @staticmethod
     def __get_rollback_probability(user_canon_tree: ast.AST, vertex_canon_tree: ast.AST) -> float:
+        'to take into account probability of rollback'
         # Todo: use AST comparing or other measure
         included_lines_count = 0
         vertex_code_lines = get_code_from_tree(vertex_canon_tree).strip('\n').split('\n')

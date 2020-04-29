@@ -11,22 +11,10 @@ from src.main.util.log_util import log_and_raise_error
 
 
 class MeasuredVertexV1(IMeasuredVertex):
-    _description = \
-        """
-        version: 1
-        *description*
-        """
-
-    def __init__(self, user_vertex: Vertex, vertex: Vertex, distance_to_user: Optional[int] = None):
-        super().__init__(user_vertex, vertex, distance_to_user)
-
-    @classmethod
-    def description(cls) -> str:
-        return cls._description
 
     # Todo: get actual vertex profile
     @classmethod
-    def __init_profile(self, user: User) -> Profile:
+    def _IMeasuredVertex__init_profile(self, user: User) -> Profile:
         return Profile()
 
     def __eq__(self, o: object) -> bool:

@@ -10,19 +10,8 @@ from src.main.solution_space.consts import DISTANCE_TO_GRAPH_THRESHOLD, DIFFS_PE
 
 class PathFinderV1(IPathFinder):
 
-    _description: str = \
-        """
-        PathFinder
-        version: 1
-        find_next_vertex: *description*
-        choose_best_vertex: *description*
-        """
-
-    @classmethod
-    def description(cls) -> str:
-        return cls._description
-
     def find_next_vertex(self, user_vertex: Vertex) -> Vertex:
+        'description'
         log.info(f'Start finding the next code state for '
                  f'the user code: {get_code_from_tree(user_vertex.serialized_code.anon_trees[0])} and '
                  f'the user: {user_vertex.code_info_list[0].user}')
@@ -38,9 +27,11 @@ class PathFinderV1(IPathFinder):
 
     # Sort candidates and return the best for user_code from ones
     def __choose_best_vertex(self, user_vertex: Vertex, vertices: List[Vertex]) -> Optional[Vertex]:
+        'desrciption'
+
         if len(vertices) == 0:
             return None
-        candidates = list(map(lambda vertex: self.measured_vertex(user_vertex, vertex), vertices))
+        candidates = list(map(lambda vertex: self.get_measured_vertex(user_vertex, vertex), vertices))
         candidates.sort()
         log.info(f'Candidates ids are {([c.vertex.id for c in candidates])}')
         log.info(f'The best vertex id is {candidates[0].vertex.id}')
@@ -102,5 +93,3 @@ class PathFinderV1(IPathFinder):
 
         diffs_from_user_to_graph_vertex = user_vertex.get_dist(graph_vertex)
         return not PathFinderV1.__is_far_from_graph(diffs_from_user_to_goal, diffs_from_user_to_graph_vertex)
-
-

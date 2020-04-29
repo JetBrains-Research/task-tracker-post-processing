@@ -18,11 +18,6 @@ class IMeasuredVertex(object,  metaclass=ABCMeta):
         self._users_count = len(vertex.get_unique_users())
         self._profile = self.__init_profile(user_vertex.code_info_list[0].user)
 
-    @classmethod
-    @abstractmethod
-    def get_description(cls) -> str:
-        raise NotImplementedError
-
     # Todo: maybe not call here, but in user vertex?
     @abstractmethod
     def __init_profile(self, user: User) -> Profile:

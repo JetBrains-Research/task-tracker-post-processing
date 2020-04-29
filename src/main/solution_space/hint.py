@@ -4,7 +4,7 @@ import logging
 from src.main.util import consts
 from src.main.solution_space.serialized_code import Code
 from src.main.solution_space.data_classes import CodeInfo
-from src.main.solution_space.algo_version import AlgoVersion
+from src.main.solution_space.test_system.algo_version import AlgoVersion
 from src.main.solution_space.path_finder.path_finder import IPathFinder
 from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 from src.main.canonicalization.canonicalization import get_code_from_tree

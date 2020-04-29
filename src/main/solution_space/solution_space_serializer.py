@@ -17,6 +17,7 @@ class SolutionSpaceSerializer:
     # Returns file path with serialized graph
     @staticmethod
     def serialize(graph: SolutionGraph, serialized_file_prefix: str = 'serialized_graph') -> str:
+        # todo: change path?
         path = os.path.join(SERIALIZED_GRAPH_PATH, f'graph_{graph.id}',
                             serialized_file_prefix + EXTENSION.PICKLE.value)
         serialize_data_and_write_to_file(path, graph)

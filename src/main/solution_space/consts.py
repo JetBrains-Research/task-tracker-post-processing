@@ -2,8 +2,6 @@
 
 import os
 from enum import Enum
-from typing import TypeVar
-
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -15,6 +13,7 @@ class VERTEX_TYPE(Enum):
 
 
 SOLUTION_SPACE_FOLDER = ROOT_DIR + '/../../resources/solution_space'
+TEST_SYSTEM_GRAPH = ROOT_DIR + '/../../resources/test_system/test_system_graph.pickle'
 SOLUTION_SPACE_TEST_FOLDER = ROOT_DIR + '/../../resources/test_data/solution_space'
 EMPTY_CODE_FILE = ROOT_DIR + '/../../resources/solution_space/empty_code.py'
 GRAPH_FOLDER_PREFIX = 'graph'
