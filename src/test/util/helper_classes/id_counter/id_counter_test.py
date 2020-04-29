@@ -4,8 +4,8 @@ from typing import Type
 
 import pytest
 
-from src.test.util import to_skip, TEST_LEVEL
-from src.main.util.id_counter import IdCounter
+from src.test.test_config import to_skip, TEST_LEVEL
+from src.main.util.helper_classes.id_counter import IdCounter
 
 
 class A(IdCounter):

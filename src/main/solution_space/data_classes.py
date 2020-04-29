@@ -5,13 +5,14 @@ from datetime import datetime
 from typing import List, Union, Optional
 
 from src.main.util import consts
-from src.main.util.id_counter import IdCounter
+from src.main.util.helper_classes.id_counter import IdCounter
+from src.main.util.helper_classes.pretty_string import PrettyString
 from src.main.util.consts import EXPERIENCE, DEFAULT_VALUE, ACTIVITY_TRACKER_EVENTS
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
 
-class AtiItem:
+class AtiItem(PrettyString):
     def __init__(self, timestamp: datetime = DEFAULT_VALUE.DATE.value,
                  event_type: Union[ACTIVITY_TRACKER_EVENTS, DEFAULT_VALUE] = DEFAULT_VALUE.EVENT_TYPE,
                  event_data: str = DEFAULT_VALUE.EVENT_DATA.value):
@@ -48,7 +49,7 @@ class AtiItem:
                self._event_data == o._event_data
 
 
-class Profile:
+class Profile(PrettyString):
     def __init__(self, age: int = consts.DEFAULT_VALUE.AGE.value,
                  experience: Union[EXPERIENCE, DEFAULT_VALUE] = DEFAULT_VALUE.EXPERIENCE):
         self._age = age
@@ -66,7 +67,7 @@ class Profile:
         return f'Experience: {self._experience}, age: {self._age}'
 
 
-class User(IdCounter):
+class User(IdCounter, PrettyString):
 
     def __init__(self, profile: Profile = None):
         super().__init__()
@@ -80,7 +81,7 @@ class User(IdCounter):
         return f'Id: {self._id}, profile: {self._profile}'
 
 
-class CodeInfo:
+class CodeInfo(PrettyString):
     def __init__(self, user: User, timestamp: int = 0, date: datetime = DEFAULT_VALUE.DATE.value,
                  ati_actions: Optional[List[AtiItem]] = None):
         self._user = user
@@ -106,4 +107,6 @@ class CodeInfo:
 
     def __str__(self) -> str:
         return f'User: {self._user}, timestamp: {self._timestamp}, date: {self._date}. ' \
-               f'Length of ati actions is {len(self._ati_actions)}'
+               f'Length of ati actions is {len(self._ati_actions)}\n' \
+               f'Ati actions:\n{list(map(str, self.ati_actions))}'
+

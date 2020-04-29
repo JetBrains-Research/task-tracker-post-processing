@@ -8,17 +8,18 @@ import logging
 from typing import List, Dict, Callable, Optional
 
 from src.main.util import consts
-from src.main.util.id_counter import IdCounter
 from src.main.util.log_util import log_and_raise_error
 from src.main.canonicalization.consts import TREE_TYPE
 from src.main.util.file_util import create_file, is_file
+from src.main.util.helper_classes.id_counter import IdCounter
 from src.main.util.language_util import get_extension_by_language
+from src.main.util.helper_classes.pretty_string import PrettyString
 from src.main.canonicalization.canonicalization import are_asts_equal, get_code_from_tree
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
 
-class Code:
+class Code(PrettyString):
 
     def __init__(self, canon_tree: ast.AST, rate: float, anon_tree: ast.AST,
                  language: consts.LANGUAGE = consts.LANGUAGE.PYTHON):
@@ -44,10 +45,12 @@ class Code:
         return self._language
 
     def __str__(self) -> str:
-        return f'Rate: {self._rate}\nCode:\n{get_code_from_tree(self._canon_tree)}\n'
+        return f'Rate: {self._rate}\nLanguage: {self._language.value}\n' \
+               f'Canon tree:\n{get_code_from_tree(self._canon_tree)}\n' \
+               f'Anon tree:\n{get_code_from_tree(self.anon_tree)}\n'
 
 
-class SerializedCode(IdCounter):
+class SerializedCode(IdCounter, PrettyString):
 
     def __init__(self, anon_tree: ast.AST, canon_tree: ast.AST, rate: float, folder_with_files: str, file_prefix: str,
                  language: consts.LANGUAGE = consts.LANGUAGE.PYTHON):
@@ -135,3 +138,10 @@ class SerializedCode(IdCounter):
         if tree_file is None:
             log_and_raise_error(f'No file is created for anon_tree {get_code_from_tree(tree)}', log)
         return tree_file
+
+    def __str__(self) -> str:
+        return f'Id: {self._id}\n' \
+               f'Rate: {self._rate}\n' \
+               f'Language: {self._language.value}\n' \
+               f'Canon tree:\n{get_code_from_tree(self._canon_tree)}\nAnon trees:' \
+               f'{list(map(lambda tree: get_code_from_tree(tree), self._anon_trees))}\n'

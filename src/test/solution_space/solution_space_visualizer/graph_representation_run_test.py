@@ -3,7 +3,7 @@
 import pytest
 
 from src.main.util.consts import TASK
-from src.test.util import to_skip, TEST_LEVEL
+from src.test.test_config import to_skip, TEST_LEVEL
 from src.test.solution_space.util import get_solution_graph
 from src.main.solution_space.solution_graph import SolutionGraph
 from src.test.solution_space.solution_graph.util import init_default_ids

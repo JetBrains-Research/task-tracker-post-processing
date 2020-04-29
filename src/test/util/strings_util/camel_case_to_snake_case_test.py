@@ -4,7 +4,7 @@ from typing import Tuple
 
 import pytest
 
-from src.test.util import to_skip, TEST_LEVEL
+from src.test.test_config import to_skip, TEST_LEVEL
 from src.main.util.strings_util import convert_camel_case_to_snake_case
 
 data = [('considerMeAsOneWhoLovedPoetryAndPersimmons', 'consider_me_as_one_who_loved_poetry_and_persimmons'),

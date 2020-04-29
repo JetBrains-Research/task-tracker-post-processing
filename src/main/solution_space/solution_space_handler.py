@@ -9,9 +9,9 @@ import pandas as pd
 
 from src.main.util import consts
 from src.main.util.data_util import Column
-from src.main.solution_space.code import Code
 from src.main.canonicalization.consts import TREE_TYPE
 from src.main.util.log_util import log_and_raise_error
+from src.main.solution_space.serialized_code import Code
 from src.main.splitting.splitting import unpack_tests_results
 from src.main.solution_space.solution_graph import SolutionGraph
 from src.main.canonicalization.canonicalization import are_asts_equal, get_trees
@@ -159,9 +159,10 @@ def __create_code_info_chain(file: str, task: TASK) -> List[Tuple[Code, CodeInfo
     return code_info_chain
 
 
-def construct_solution_graph(path: str, task: TASK, language: LANGUAGE = LANGUAGE.PYTHON) -> SolutionGraph:
+def construct_solution_graph(path: str, task: TASK, language: LANGUAGE = LANGUAGE.PYTHON,
+                             to_store_dist: bool = True) -> SolutionGraph:
     files = get_all_file_system_items(path, extension_file_condition(EXTENSION.CSV))
-    sg = SolutionGraph(task, language)
+    sg = SolutionGraph(task, language, to_store_dist=to_store_dist)
     log.info(f'Start creating of solution space')
     for file in files:
         log.info(f'Start handling file {file}')

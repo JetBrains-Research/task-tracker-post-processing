@@ -8,8 +8,8 @@ from typing import List, Optional, Tuple
 
 import pytest
 
-from src.test.util import to_skip, TEST_LEVEL
 from src.main.util.consts import LOGGER_NAME, TASK
+from src.test.test_config import to_skip, TEST_LEVEL
 from src.main.util.log_util import log_and_raise_error
 from src.test.canonicalization.diffs.diff_handler.util import FAIL_REASON
 from src.main.canonicalization.diffs.rivers_diff_handler import RiversDiffHandler

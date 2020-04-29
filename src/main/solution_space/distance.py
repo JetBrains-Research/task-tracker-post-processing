@@ -3,18 +3,17 @@
 import itertools
 import logging
 from abc import ABCMeta, abstractmethod
-from typing import TypeVar, List, Generic, Dict, Union, Type
+from typing import TypeVar, List, Generic, Dict, Union
 
 from src.main.util.consts import LOGGER_NAME
+from src.main.util.log_util import log_and_raise_error
 from src.main.solution_space.solution_graph import Vertex
 from src.main.canonicalization.diffs.gumtree_diff_handler import GumTreeDiffHandler
-from src.main.util.log_util import log_and_raise_error
 
 log = logging.getLogger(LOGGER_NAME)
 
 Item = TypeVar('Item')
 Upd = TypeVar('Upd')
-
 
 
 class IDistanceMatrix(Generic[Item, Upd], metaclass=ABCMeta):

@@ -73,13 +73,13 @@ class ACTIVITY_TRACKER_EVENTS(Enum):
 
 class DEFAULT_VALUE(Enum):
     AGE = 0
-    EXPERIENCE = nan
-    TASK = nan
-    TASK_STATUS = nan
+    EXPERIENCE = None
+    TASK = None
+    TASK_STATUS = None
     DATE = datetime64('NaT')
-    EVENT_TYPE = nan
-    EVENT_DATA = nan
-    FRAGMENT = nan
+    EVENT_TYPE = None
+    EVENT_DATA = None
+    FRAGMENT = None
 
     # todo: add tests
     def is_equal(self, value) -> bool:
@@ -217,6 +217,7 @@ TEST_DATA_PATH = RESOURCES_PATH + 'test_data'
 TEST_PATH = ROOT_DIR + '/../../test'
 
 GRAPH_REPRESENTATION_PATH = os.path.join(RESOURCES_PATH, 'graph_representation')
+SERIALIZED_GRAPH_PATH = os.path.join(RESOURCES_PATH, 'serialized_graph')
 SOLUTION_SPACE_TEST_RESULT_PATH = os.path.join(RESOURCES_PATH, 'solution_space')
 
 PREPROCESSING_RESULT_FOLDER = 'preprocessing_result'

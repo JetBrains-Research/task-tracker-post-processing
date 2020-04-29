@@ -3,7 +3,7 @@
 import pytest
 import pandas as pd
 
-from src.test.util import to_skip, TEST_LEVEL
+from src.test.test_config import to_skip, TEST_LEVEL
 from src.main.preprocessing.code_tracker_handler import fill_column
 from src.main.util.consts import CODE_TRACKER_COLUMN, DEFAULT_VALUE, INVALID_FILE_FOR_PREPROCESSING
 

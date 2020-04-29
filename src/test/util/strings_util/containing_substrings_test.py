@@ -4,7 +4,7 @@ from typing import Callable, Tuple, List
 
 import pytest
 
-from src.test.util import to_skip, TEST_LEVEL
+from src.test.test_config import to_skip, TEST_LEVEL
 from src.main.util.strings_util import contains_any_of_substrings
 
 string = 'Roses are red, violets are blue, sugar is sweet, and so are you'
