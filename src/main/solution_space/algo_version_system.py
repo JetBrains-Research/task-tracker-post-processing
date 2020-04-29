@@ -17,6 +17,7 @@ from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 from src.main.solution_space.path_finder.path_finder import IPathFinder
 from src.main.solution_space.measured_vertex.measured_vertex import IMeasuredVertex
 
+# File cannot be named 'test_system.py' because of pytest
 
 log = logging.getLogger(LOGGER_NAME)
 
@@ -29,7 +30,8 @@ graph = SolutionGraph(task)
 
 
 # To make '__subclasses__()' work all subclasses need to be imported
-def get_all_subclasses(clazz: Type[Class]) -> List[Type[Class]]:
+def get_all_subclasses(clazz: Type[Class]):
+    module = clazz.__module__
     pkg_dir = os.path.dirname(clazz.__module__)
     for (module_loader, name, ispkg) in pkgutil.iter_modules([pkg_dir]):
         importlib.import_module(name)
@@ -46,10 +48,11 @@ def create_user_vertex(source_code: str, age: int, experience: Union[EXPERIENCE,
 
 
 algo_versions = []
+m = IPathFinder.__module__
+dir = os.path.dirname(m)
 for path_finder in get_all_subclasses(IPathFinder):
     for measured_vertex in get_all_subclasses(IMeasuredVertex):
         algo_versions.append(AlgoVersion(path_finder, measured_vertex))
-
 
 
 # Todo: Add more code fragments, change their structure?
@@ -68,4 +71,4 @@ for source_code, age, experience in test_fragments:
         log.info(f'Algo version: {algo_versions}')
         path_finder = algo_versions.create_path_finder(graph)
         next_vertex = path_finder.find_next_vertex(user_vertex)
-        log.info(f'Next vertex is: vertex {next_vertex.id} with source_code:\n{get_code_from_tree(next_vertex.canon_tree)}')
+        # log.info(f'Next vertex is: vertex {next_vertex.id} with source_code:\n{get_code_from_tree(next_vertex.canon_tree)}')
