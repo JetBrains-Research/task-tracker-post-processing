@@ -108,7 +108,6 @@ class TestSystem:
 
         return TestSystem.__set_table_style(table)
 
-
     def __get_all_possible_path_finders(self) -> List[IPathFinder]:
         path_finders = []
         for path_finder_subclass in self._path_finder_subclasses:
@@ -193,13 +192,13 @@ class TestSystem:
             importlib.import_module(f'.{name}', class_parent_package)
         return clazz.__subclasses__()
 
-
-configure_logger()
-test_fragments = [{TEST_INPUT.SOURCE_CODE: 'a = int(input())',
-                   TEST_INPUT.AGE: 17,
-                   TEST_INPUT.EXPERIENCE: EXPERIENCE.LESS_THAN_HALF_YEAR},
-                  {TEST_INPUT.SOURCE_CODE: 'a = int(input())\nb = int(input())',
-                   TEST_INPUT.AGE: 12,
-                   TEST_INPUT.EXPERIENCE: EXPERIENCE.FROM_ONE_TO_TWO_YEARS}]
-
-ts = TestSystem(test_fragments)
+#
+# configure_logger()
+# test_fragments = [{TEST_INPUT.SOURCE_CODE: 'a = int(input())',
+#                    TEST_INPUT.AGE: 17,
+#                    TEST_INPUT.EXPERIENCE: EXPERIENCE.LESS_THAN_HALF_YEAR},
+#                   {TEST_INPUT.SOURCE_CODE: 'a = int(input())\nb = int(input())',
+#                    TEST_INPUT.AGE: 12,
+#                    TEST_INPUT.EXPERIENCE: EXPERIENCE.FROM_ONE_TO_TWO_YEARS}]
+#
+# ts = TestSystem(test_fragments)
