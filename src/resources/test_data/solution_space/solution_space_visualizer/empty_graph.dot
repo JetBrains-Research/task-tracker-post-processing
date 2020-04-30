@@ -2,7 +2,7 @@ digraph  D {
 
 node [shape=record fontname=Arial];
 
-1 [label="Vertex 1. End vertex"]
+1 [label="End vertex 1"]
 
 
 

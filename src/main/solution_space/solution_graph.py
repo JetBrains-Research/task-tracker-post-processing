@@ -117,9 +117,11 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
 
     def get_traversal(self, to_remove_start: bool = True, to_remove_end: bool = True) -> List[Vertex]:
         traversal = self.__iter__().traversal
+        # Traversal always contains START_VERTEX, because it's a root for GraphIterator
         if to_remove_start:
             traversal.remove(self._start_vertex)
-        if to_remove_end:
+        # However, it may not contain END_VERTEX if there is no path from the root to it:
+        if to_remove_end and self._end_vertex in traversal:
             traversal.remove(self._end_vertex)
         return traversal
 
