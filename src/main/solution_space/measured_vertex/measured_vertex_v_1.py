@@ -1,13 +1,11 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
+
 from __future__ import annotations
 
-from typing import Optional
-
-from src.main.solution_space.data_classes import Profile, User
-from src.main.solution_space.measured_vertex.measured_vertex import IMeasuredVertex
-from src.main.solution_space.path_finder.path_finder import log
-from src.main.solution_space.vertex import Vertex
 from src.main.util.log_util import log_and_raise_error
+from src.main.solution_space.data_classes import Profile, User
+from src.main.solution_space.path_finder.path_finder import log
+from src.main.solution_space.measured_vertex.measured_vertex import IMeasuredVertex
 
 
 class MeasuredVertexV1(IMeasuredVertex):

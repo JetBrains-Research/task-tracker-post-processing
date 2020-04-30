@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import os
-import time
 import inspect
 import pkgutil
 import importlib
@@ -127,7 +126,6 @@ class TestSystem:
 
     @staticmethod
     def __run_path_finder(path_finder: IPathFinder, user_vertex: Vertex) -> str:
-        # time_format = '%m/%d/%y %H:%M:%S'
         start_time = datetime.now()
         next_vertex = path_finder.find_next_vertex(user_vertex)
         end_time = datetime.now()
@@ -138,7 +136,7 @@ class TestSystem:
     # Gets path_finder version in format like this: 'PathFinderV1, MeasuredVertexV1'
     @staticmethod
     def __get_path_finder_version(path_finder: IPathFinder) -> str:
-        return f'{type(path_finder).__name__},{path_finder.measured_vertex_subclass.__name__}'
+        return f'{type(path_finder).__name__}, {path_finder.measured_vertex_subclass.__name__}'
 
     @staticmethod
     def __format_doc_str(doc: str) -> str:
@@ -153,7 +151,7 @@ class TestSystem:
         table.align = 'l'
         return table
 
-    # Filter all object methods like __new__,  __setattr__ except for methods passed as argument
+    # Filter all object methods like __new__,  __setattr__ except methods passed as argument
     # Filter ABCMeta class methods
     @staticmethod
     def __filter_method(method: FunctionType, object_methods_to_keep: Optional[List[str]]) -> bool:

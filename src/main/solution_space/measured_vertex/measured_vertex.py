@@ -1,7 +1,7 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 from __future__ import annotations
 
-from typing import Optional, Type, TypeVar
+from typing import Optional
 from abc import ABCMeta, abstractmethod
 
 from src.main.solution_space.solution_graph import Vertex
