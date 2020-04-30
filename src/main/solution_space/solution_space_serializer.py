@@ -6,8 +6,8 @@ from typing import Optional
 
 from src.main.solution_space.solution_graph import SolutionGraph
 from src.main.util.consts import SERIALIZED_GRAPH_PATH, EXTENSION, LOGGER_NAME
-from src.main.util.file_util import is_file, serialize_data_and_write_to_file, deserialize_data_from_file
-
+from src.main.util.file_util import is_file, serialize_data_and_write_to_file, deserialize_data_from_file, \
+    remove_directory
 
 log = logging.getLogger(LOGGER_NAME)
 
@@ -24,8 +24,14 @@ class SolutionSpaceSerializer:
         return path
 
     @staticmethod
-    def deserialize(path: str) -> Optional[SolutionGraph]:
-        if not is_file(path):
-            log.info(f'Path {path} is incorrect')
+    def deserialize(serialized_graph_path: str,
+                    new_path_for_graph: Optional[str] = None,
+                    to_delete_old_graph_directory: bool = True) -> Optional[SolutionGraph]:
+        if not is_file(serialized_graph_path):
+            log.info(f'Path {serialized_graph_path} is incorrect')
             return None
-        return deserialize_data_from_file(path)
+        deserialized_graph: SolutionGraph = deserialize_data_from_file(serialized_graph_path)
+        if to_delete_old_graph_directory:
+            remove_directory(deserialized_graph.graph_directory)
+        deserialized_graph.rewrite_graph_files(new_path_for_graph)
+        return deserialized_graph
