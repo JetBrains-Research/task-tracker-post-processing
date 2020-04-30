@@ -10,29 +10,8 @@ from src.main.solution_space.measured_vertex.measured_vertex import IMeasuredVer
 
 class MeasuredVertexV1(IMeasuredVertex):
 
-    # Todo: get actual vertex profile
-    @classmethod
-    def _IMeasuredVertex__init_profile(self, user: User) -> Profile:
-        return Profile()
-
-    def __eq__(self, o: object) -> bool:
-        """
-        1. If o is not an instance of class, return False
-        2. If any of distance_to_user or profile aren't equal, return False
-        3. Otherwise, return True
-        """
-        if not isinstance(o, MeasuredVertexV1):
-            return False
-        if self._distance_to_user != o.distance_to_user or self._profile == o.profile:
-            return False
-        return True
-
-    def __ne__(self, o: object) -> bool:
-        """
-        1. Return not __eq__
-        """
-        return not self.__eq__(o)
-
+    # Todo: use profile info for vertex and user_profile
+    # Todo: 14/04 penalize for rollback
     def __lt__(self, o: object):
         """
         1. If o is not an instance of class, raise an error
@@ -43,5 +22,4 @@ class MeasuredVertexV1(IMeasuredVertex):
             log_and_raise_error(f'The object {o} is not {self.__class__} class', log)
         if self._distance_to_user < o.distance_to_user:
             return True
-        # Todo: use profile info
         return self._users_count < o.users_count

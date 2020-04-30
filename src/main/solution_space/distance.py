@@ -1,7 +1,7 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
-import itertools
 import logging
+import itertools
 from abc import ABCMeta, abstractmethod
 from typing import TypeVar, List, Generic, Dict, Union
 

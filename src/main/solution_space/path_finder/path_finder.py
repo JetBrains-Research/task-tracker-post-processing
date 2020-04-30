@@ -21,7 +21,7 @@ class IPathFinder(object, metaclass=ABCMeta):
     def __init__(self, graph: SolutionGraph, measured_vertex_subclass: Type[IMeasuredVertex]):
         self._graph = graph
         self._measured_vertex_subclass = measured_vertex_subclass
-        empty_anon, empty_canon = get_trees("", {TREE_TYPE.ANON, TREE_TYPE.CANON})
+        empty_anon, empty_canon = get_trees('', {TREE_TYPE.ANON, TREE_TYPE.CANON})
         # Todo: create empty vertex in a graph to not recount dist between empty and goal?
         self._empty_vertex = Vertex(graph, Code(empty_anon, empty_canon, TEST_RESULT.CORRECT_CODE.value))
 

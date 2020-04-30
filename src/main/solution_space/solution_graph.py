@@ -1,6 +1,7 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
-import ast
+
 import os
+import ast
 import logging
 import collections
 from typing import Optional, List, Tuple
@@ -14,8 +15,8 @@ from src.main.util.helper_classes.id_counter import IdCounter
 from src.main.solution_space.distance import VertexDistanceMatrix
 from src.main.util.helper_classes.pretty_string import PrettyString
 from src.main.solution_space import consts as solution_space_consts
-from src.main.canonicalization.canonicalization import are_asts_equal, get_code_from_tree
 from src.main.util.file_util import remove_directory, create_directory
+from src.main.canonicalization.canonicalization import are_asts_equal, get_code_from_tree
 from src.main.solution_space.consts import VERTEX_TYPE, GRAPH_FOLDER_PREFIX, SOLUTION_SPACE_FOLDER, FILE_PREFIX
 
 

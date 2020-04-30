@@ -9,6 +9,7 @@ import importlib
 from enum import Enum
 from abc import ABCMeta
 from datetime import datetime
+from itertools import product
 from types import FunctionType
 from typing import Type, TypeVar, List, Dict, Any, Tuple, Optional
 
@@ -28,7 +29,6 @@ from src.main.solution_space.solution_space_serializer import SolutionSpaceSeria
 
 log = logging.getLogger(LOGGER_NAME)
 
-
 class TEST_INPUT(Enum):
     SOURCE_CODE = 'source'
     AGE = 'age'
@@ -44,17 +44,15 @@ MethodsDict = Dict[Type[Class], Dict[str, FunctionType]]
 # Print results of running all possible PathFinder and MeasuredVertex versions, using https://github.com/kxxoling/PTable
 class TestSystem:
     _no_method_sign = '---'
+    _spaces_to_crop_in_doc = 8
 
     def __init__(self, test_inputs: List[TestInput], serialized_graph_path: str = TEST_SYSTEM_GRAPH):
         graph = SolutionSpaceSerializer.deserialize(serialized_graph_path)
-        if graph is None:
-            log_and_raise_error('Deserialization failed, returned graph is None', log)
         self._graph = graph
         self._test_inputs = test_inputs
         self._path_finder_subclasses = self.__get_all_subclasses(IPathFinder)
         self._measured_vertex_subclasses = self.__get_all_subclasses(IMeasuredVertex)
-        print(self.get_methods_doc_table(self._measured_vertex_subclasses, 'MeasuredVertex description',
-                                         ['__eq__', '__ne__', '__lt__']))
+        print(self.get_methods_doc_table(self._measured_vertex_subclasses, 'MeasuredVertex description', ['__lt__']))
         print('\n')
         print(self.get_methods_doc_table(self._path_finder_subclasses, 'PathFinder description', None))
         print(self.get_result_table('Results of running find_next_vertex'))
@@ -110,15 +108,15 @@ class TestSystem:
 
     def __get_all_possible_path_finders(self) -> List[IPathFinder]:
         path_finders = []
-        for path_finder_subclass in self._path_finder_subclasses:
-            for measured_vertex_subclass in self.__get_all_subclasses(IMeasuredVertex):
-                path_finders.append(path_finder_subclass(self._graph, measured_vertex_subclass))
+        for pf_subclass, mv_subclass in product(self._path_finder_subclasses, self._measured_vertex_subclasses):
+            path_finders.append(pf_subclass(self._graph, mv_subclass))
         return path_finders
 
     def __create_user_vertex(self, test_input: TestInput) -> Vertex:
-        # todo: find rate
+        # Todo: find rate
         rate = 0
         vertex = Vertex(self._graph, Code.from_source(test_input[TEST_INPUT.SOURCE_CODE], rate))
+        # Todo: init profile of it's None
         code_info = CodeInfo(User(Profile(test_input[TEST_INPUT.AGE], test_input[TEST_INPUT.EXPERIENCE])))
         vertex.add_code_info(code_info)
         return vertex
@@ -139,9 +137,9 @@ class TestSystem:
 
     @staticmethod
     def __format_doc_str(doc: str) -> str:
-        spaces_to_crop = 8
         lines = doc.split('\n')
-        cropped_lines = [line[spaces_to_crop:] if line.startswith(spaces_to_crop * ' ') else line for line in lines ]
+        cropped_lines = [line[TestSystem._spaces_to_crop_in_doc:]
+                         if line.startswith(TestSystem._spaces_to_crop_in_doc * ' ') else line for line in lines]
         return '\n'.join(cropped_lines)
 
     @staticmethod
@@ -157,7 +155,7 @@ class TestSystem:
         object_methods_to_filter = [m for m in dir(object) if callable(getattr(object, m))]
         if object_methods_to_keep:
             object_methods_to_filter = [m for m in object_methods_to_filter if m not in object_methods_to_keep]
-        return not (isinstance(method, ABCMeta) or method.__name__ in object_methods_to_filter)
+        return not (method.__name__ in ABCMeta.__name__ or method.__name__ in object_methods_to_filter)
 
     @staticmethod
     def __get_class_methods_with_doc(clazz: Type[Class], methods_to_keep: Optional[List[str]]) -> List[FunctionType]:
@@ -179,7 +177,6 @@ class TestSystem:
                 methods_names.add(m.__name__)
         # Get sorted list to make it determined
         methods_names = sorted(methods_names)
-        methods_names.remove('ABCMeta')
         return methods_dict, methods_names
 
     @classmethod
@@ -190,14 +187,3 @@ class TestSystem:
         for (_, name, _) in pkgutil.iter_modules([class_parent_dir]):
             importlib.import_module(f'.{name}', class_parent_package)
         return clazz.__subclasses__()
-
-#
-# configure_logger()
-# test_fragments = [{TEST_INPUT.SOURCE_CODE: 'a = int(input())',
-#                    TEST_INPUT.AGE: 17,
-#                    TEST_INPUT.EXPERIENCE: EXPERIENCE.LESS_THAN_HALF_YEAR},
-#                   {TEST_INPUT.SOURCE_CODE: 'a = int(input())\nb = int(input())',
-#                    TEST_INPUT.AGE: 12,
-#                    TEST_INPUT.EXPERIENCE: EXPERIENCE.FROM_ONE_TO_TWO_YEARS}]
-#
-# ts = TestSystem(test_fragments)

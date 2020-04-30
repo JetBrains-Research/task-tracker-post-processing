@@ -26,7 +26,7 @@ class PathFinderV2(IPathFinder):
                  f'the user code: {get_code_from_tree(user_vertex.serialized_code.anon_trees[0])} and '
                  f'the user: {user_vertex.code_info_list[0].user}')
         goal = self.__find_closest_goal(user_vertex)
-        graph_vertex = self.__find_closest_vertex_with_path(user_vertex, goal)
+        graph_vertex = self.__find_closest_vertex(user_vertex, goal)
         # We can have graph_vertex = None
         if graph_vertex and self.__go_through_graph(user_vertex, graph_vertex, goal):
             log.info(f'We are going through graph')
@@ -59,7 +59,7 @@ class PathFinderV2(IPathFinder):
         return self.__choose_best_vertex(user_vertex, self._graph.end_vertex.parents)
 
     # Note: we have to remove the 'user_code' from the set
-    def __find_closest_vertex_with_path(self, user_vertex: Vertex, goal: Vertex) -> Optional[Vertex]:
+    def __find_closest_vertex(self, user_vertex: Vertex, goal: Vertex) -> Optional[Vertex]:
         """
         1. If there is a vertex in the graph with same canon_tree:
             1.1 Return __choose_best_vertex on vertex children
