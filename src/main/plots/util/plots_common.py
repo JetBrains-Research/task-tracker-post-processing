@@ -1,13 +1,14 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import os
-from typing import Optional
+from typing import Optional, Dict
 
 import pandas as pd
 
 from src.main.plots.util import consts as plot_consts
 from src.main.util.strings_util import crop_string, convert_camel_case_to_snake_case
 from src.main.util.consts import EXTENSION, DEFAULT_VALUE, INVALID_FILE_FOR_PREPROCESSING
+from src.main.plots.util.consts import STATISTICS_KEY, STATISTICS_FREQ, STATISTICS_SHOWING_KEY
 from src.main.util.file_util import get_parent_folder_name, get_name_from_path, create_directory, get_parent_folder, \
     get_file_and_parent_folder_names, change_extension_to
 
@@ -16,6 +17,13 @@ def get_result_file_name(name_prefix: str, data_path: Optional[str] = None, exte
     if data_path:
         name_prefix += '_' + (get_file_and_parent_folder_names(data_path).replace('/', '_'))
     return change_extension_to(name_prefix, extension)
+
+
+def get_labels_for_plots(column: STATISTICS_KEY) -> Dict[str, str]:
+    return {
+        STATISTICS_FREQ: STATISTICS_SHOWING_KEY.FREQ.value,
+        column.value: get_readable_key(column.value)
+    }
 
 
 def get_short_name(path: str) -> str:

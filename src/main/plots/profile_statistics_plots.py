@@ -10,7 +10,7 @@ from src.main.util import consts
 from src.main.plots.util.plotly_util import save_plot
 from src.main.util.log_util import log_and_raise_error
 from src.main.util.file_util import get_parent_folder, deserialize_data_from_file
-from src.main.plots.util.plots_common import to_filter_rare_values, get_readable_key
+from src.main.plots.util.plots_common import to_filter_rare_values, get_readable_key, get_labels_for_plots
 from src.main.plots.util.consts import PLOTTY_CATEGORY_ORDER, PLOT_TYPE, STATISTICS_FREQ, STATISTICS_SHOWING_KEY, \
     STATISTICS_KEY, STATISTICS_COLORS
 
@@ -33,13 +33,6 @@ def __get_statistics_df_from_file(path: str, column: STATISTICS_KEY, default_val
     if to_union_rare:
         statistics_df.loc[to_filter_rare_values(statistics_df), column.value] = STATISTICS_SHOWING_KEY.OTHERS.value
     return statistics_df
-
-
-def __get_labels_for_plots(column: STATISTICS_KEY) -> Dict[str, str]:
-    return {
-        STATISTICS_FREQ: STATISTICS_SHOWING_KEY.FREQ.value,
-        column.value: get_readable_key(column.value)
-    }
 
 
 def __get_title_for_plots(column: STATISTICS_KEY) -> str:
@@ -87,7 +80,7 @@ def plot_profile_statistics(file: str, column: STATISTICS_KEY, plot_type: PLOT_T
     default_value = column.get_default()
     statistics_df = __get_statistics_df_from_file(file, column, default_value, to_union_rare)
     path = get_parent_folder(file)
-    labels = __get_labels_for_plots(column)
+    labels = get_labels_for_plots(column)
     title = __get_title_for_plots(column)
     if plot_type == PLOT_TYPE.PIE:
         __plot_pie_chart(statistics_df, title, path, column, labels, plot_name=column.value, format=format,
