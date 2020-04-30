@@ -1,14 +1,15 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
+
 import logging
 
 from src.main.util import consts
 from src.main.solution_space.serialized_code import Code
 from src.main.solution_space.data_classes import CodeInfo
-from src.main.solution_space.test_system.algo_version import AlgoVersion
 from src.main.solution_space.path_finder.path_finder import IPathFinder
 from src.main.solution_space.solution_graph import SolutionGraph, Vertex
-from src.main.canonicalization.canonicalization import get_code_from_tree
+from src.main.canonicalization.canonicalization import get_code_from_tree, Type
 from src.main.canonicalization.diffs.rivers_diff_handler import RiversDiffHandler
+from src.main.solution_space.measured_vertex.measured_vertex import IMeasuredVertex
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -23,9 +24,9 @@ class Hint:
 
 
 class HintHandler:
-    def __init__(self, graph: SolutionGraph, algo_version: AlgoVersion):
+    def __init__(self, graph: SolutionGraph, path_finder: Type[IPathFinder], measured_vertex: Type[IMeasuredVertex]):
         self._graph = graph
-        self._path_finder = algo_version.create_path_finder(graph)
+        self._path_finder = path_finder(graph, measured_vertex)
 
     @property
     def graph(self) -> str:

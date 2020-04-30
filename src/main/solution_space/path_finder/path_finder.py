@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import logging
 from abc import ABCMeta, abstractmethod
-from enum import Enum
 
 from src.main.util import consts
 from src.main.util.consts import TEST_RESULT
@@ -39,7 +38,7 @@ class IPathFinder(object, metaclass=ABCMeta):
         return self._measured_vertex_subclass(user_vertex, vertex, distance_to_user)
 
     # Find the next canonicalized code state
-    # Make sure that code_info_list has 1 element with code_info
+    # Make sure code_info_list of user_vertex has 1 element with code_info
     @abstractmethod
     def find_next_vertex(self, user_vertex: Vertex) -> Vertex:
         raise NotImplementedError

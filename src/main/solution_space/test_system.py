@@ -1,3 +1,5 @@
+# Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
+
 from __future__ import annotations
 
 import os
@@ -42,7 +44,7 @@ MethodsDict = Dict[Type[Class], Dict[str, FunctionType]]
 
 # Print results of running all possible PathFinder and MeasuredVertex versions, using https://github.com/kxxoling/PTable
 class TestSystem:
-    _no_method_sign = '-'
+    _no_method_sign = '---'
 
     def __init__(self, test_inputs: List[TestInput], serialized_graph_path: str = TEST_SYSTEM_GRAPH):
         graph = SolutionSpaceSerializer.deserialize(serialized_graph_path)
@@ -57,14 +59,14 @@ class TestSystem:
         print(self.get_result_table('Results of running find_next_vertex'))
 
     # Get a table with all methods docs collected from given classes.
-    # If some class doesn't have a method, there is self._no_method_sign (for example, '-') in a corresponding cell.
+    # If some class doesn't have a method, there is self._no_method_sign (for example, '---') in a corresponding cell.
     # If some class does have a method, but without docs, there is an empty cell
     # +---------------+---------------+---------------+
     # |  class name   |    method_1   |    method_2   |
     # +---------------+---------------+---------------+
     # |    class_1    |               |     *doc*     |
     # +---------------+---------------+---------------+
-    # |    class_2    |     *doc*     |      -        |
+    # |    class_2    |     *doc*     |     ---       |
     # +---------------+---------------+---------------+
     @staticmethod
     def get_method_doc_table(classes: List[Type[Class]], title: str) -> PrettyTable:
@@ -74,7 +76,7 @@ class TestSystem:
             class_row = [c.__name__]
             for name in methods_names:
                 method = methods_dict[c].get(name)
-                doc = '-' if method is None else method.__doc__
+                doc = TestSystem._no_method_sign if method is None else TestSystem.__format_doc_str(method.__doc__)
                 class_row.append(doc)
             table.add_row(class_row)
         return TestSystem.__set_table_style(table)
@@ -132,6 +134,13 @@ class TestSystem:
     @staticmethod
     def __get_path_finder_version(path_finder: IPathFinder) -> str:
         return f'{type(path_finder).__name__},{path_finder.measured_vertex_subclass.__name__}'
+
+    @staticmethod
+    def __format_doc_str(doc: str) -> str:
+        spaces_to_remove = 8
+        lines = doc.split('\n')
+        lines = [l[spaces_to_remove:] for l in lines if l.startswith(spaces_to_remove * ' ')]
+        return '\n'.join(lines)
 
     @staticmethod
     def __set_table_style(table: PrettyTable) -> PrettyTable:
