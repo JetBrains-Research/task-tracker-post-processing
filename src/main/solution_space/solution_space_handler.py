@@ -132,7 +132,7 @@ def __get_code(solutions: pd.DataFrame, index: int, task_index: int, canon_tree:
     tests_results = __get_column_value(solutions, index, consts.CODE_TRACKER_COLUMN.TESTS_RESULTS)
     rate = __get_rate(tests_results, task_index)
     log.info(f'Task index is :{task_index}, rate is: {rate}')
-    return Code(canon_tree, rate, anon_tree)
+    return Code(anon_tree, canon_tree, rate)
 
 
 def __convert_to_datetime(df: pd.DataFrame) -> None:

@@ -12,8 +12,8 @@ from src.main.util.consts import TEST_RESULT, LOGGER_NAME, TASK
 from src.main.solution_space.data_classes import User, CodeInfo
 from src.main.solution_space.consts import SOLUTION_SPACE_TEST_FOLDER
 from src.main.solution_space.solution_graph import SolutionGraph, Vertex
+from src.test.solution_space.solution_graph.util import init_default_ids
 from src.main.canonicalization.canonicalization import get_code_from_tree
-from src.test.solution_space.solution_graph.util import create_code_from_source, init_default_ids
 
 log = logging.getLogger(LOGGER_NAME)
 
@@ -56,7 +56,7 @@ def create_graph_with_code() -> (SolutionGraph, List[Vertex], List[str]):
     rates = [TEST_RESULT.CORRECT_CODE.value, TEST_RESULT.FULL_SOLUTION.value, TEST_RESULT.CORRECT_CODE.value,
              TEST_RESULT.CORRECT_CODE.value]
 
-    vertices = [Vertex(sg, code=create_code_from_source(s, rates[i])) for i, s in enumerate(sources)]
+    vertices = [Vertex(sg, code=Code.from_source(s, rates[i])) for i, s in enumerate(sources)]
 
     # Add code infos with different users
     list(map(lambda v: v.add_code_info(CodeInfo(User())), vertices))
@@ -76,7 +76,7 @@ def create_graph_with_code() -> (SolutionGraph, List[Vertex], List[str]):
 def find_or_create_vertex_with_code_info_and_rate_check(sg: SolutionGraph, source: str,
                                                         rate: float = TEST_RESULT.CORRECT_CODE.value) -> Vertex:
     code_info = CodeInfo(User())
-    found_vertex = sg.find_or_create_vertex(create_code_from_source(source, rate), code_info)
+    found_vertex = sg.find_or_create_vertex(Code.from_source(source, rate), code_info)
     # Check if user is added to user list
     assert code_info in found_vertex.code_info_list
     # Check if vertex is connected with end_vertex if it has 'full_solution'-code
@@ -96,7 +96,7 @@ def create_code_info_chain() -> (List[Tuple[Code, CodeInfo]], List[str]):
                      (source_4, TEST_RESULT.FULL_SOLUTION.value)]
     # User is the same for all chain elements
     user = User()
-    chain = [(create_code_from_source(s, r), CodeInfo(user)) for s, r in rated_sources]
+    chain = [(Code.from_source(s, r), CodeInfo(user)) for s, r in rated_sources]
     canon_sources = [get_code_from_tree(code.canon_tree).rstrip('\n') for code, _ in chain]
     return chain, canon_sources
 

@@ -14,19 +14,24 @@ from src.main.util.file_util import create_file, is_file
 from src.main.util.helper_classes.id_counter import IdCounter
 from src.main.util.language_util import get_extension_by_language
 from src.main.util.helper_classes.pretty_string import PrettyString
-from src.main.canonicalization.canonicalization import are_asts_equal, get_code_from_tree
+from src.main.canonicalization.canonicalization import are_asts_equal, get_code_from_tree, get_trees
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
 
 class Code(PrettyString):
 
-    def __init__(self, canon_tree: ast.AST, rate: float, anon_tree: ast.AST,
+    def __init__(self, anon_tree: ast.AST, canon_tree: ast.AST, rate: float,
                  language: consts.LANGUAGE = consts.LANGUAGE.PYTHON):
         self._canon_tree = canon_tree
         self._rate = rate
         self._anon_tree = anon_tree
         self._language = language
+
+    @classmethod
+    def from_source(cls, source: str, rate: float, language: consts.LANGUAGE = consts.LANGUAGE.PYTHON) -> Code:
+        anon_tree, canon_tree = get_trees(source, {TREE_TYPE.ANON, TREE_TYPE.CANON})
+        return Code(anon_tree, canon_tree, rate, language)
 
     @property
     def canon_tree(self) -> ast.AST:
@@ -69,6 +74,7 @@ class SerializedCode(IdCounter, PrettyString):
     @classmethod
     def from_code(cls, code: Code, folder_with_files: str, file_prefix: str) -> SerializedCode:
         return SerializedCode(code.anon_tree, code.canon_tree, code.rate, folder_with_files, file_prefix, code.language)
+
 
     @property
     def canon_tree(self) -> ast.AST:

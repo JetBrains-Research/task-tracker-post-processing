@@ -4,7 +4,7 @@ import os
 import re
 import pickle
 import shutil
-from typing import Callable, Any, List, Tuple
+from typing import Callable, Any, List, Tuple, Type
 
 import pandas as pd
 
@@ -92,6 +92,20 @@ def get_parent_folder(path: str, to_add_slash: bool = False) -> str:
     if to_add_slash:
         parent_folder = add_slash(parent_folder)
     return parent_folder
+
+
+# For given directory structure:
+#  /root
+#  -- /foo
+#  ---- /bar
+#  ------ /class_file.py
+#  -------- class A
+# returns 'root.foo.bar'
+def get_class_parent_package(clazz: Type[object]) -> str:
+    # For example from comment above, class_module is 'root.foo.bar.class_file'
+    class_module = clazz.__module__
+    # Cut everything after the last dot to get parent package:
+    return class_module.rsplit(sep='.', maxsplit=1)[0]
 
 
 def get_parent_folder_name(path: str) -> str:
