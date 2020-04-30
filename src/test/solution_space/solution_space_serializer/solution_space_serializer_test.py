@@ -15,7 +15,7 @@ from src.main.solution_space.solution_space_serializer import SolutionSpaceSeria
 CURRENT_TASK = TASK.PIES
 
 
-def are_equal_graph_folder_structures(old_graph_folder: str, new_graph_folder: str):
+def are_graph_folder_structures_equal(old_graph_folder: str, new_graph_folder: str):
     old_items = get_all_file_system_items(old_graph_folder)
     old_items.sort()
     new_items = get_all_file_system_items(new_graph_folder)
@@ -44,5 +44,5 @@ class TestSolutionSpaceSerializer:
         graph: SolutionGraph = param_solution_space_serializer_test
         serialized_path = SolutionSpaceSerializer.serialize(graph)
         deserialized_graph = SolutionSpaceSerializer.deserialize(serialized_path)
-        assert are_equal_graph_folder_structures(graph.graph_directory, deserialized_graph.graph_directory)
+        assert are_graph_folder_structures_equal(graph.graph_directory, deserialized_graph.graph_directory)
         assert graph.get_pretty_string() == deserialized_graph.get_pretty_string()

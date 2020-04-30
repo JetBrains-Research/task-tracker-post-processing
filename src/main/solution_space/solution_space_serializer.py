@@ -17,8 +17,7 @@ class SolutionSpaceSerializer:
     # Returns file path with serialized graph
     @staticmethod
     def serialize(graph: SolutionGraph, serialized_file_prefix: str = 'serialized_graph') -> str:
-        path = os.path.join(SERIALIZED_GRAPH_PATH, f'graph_{graph.id}',
-                            serialized_file_prefix + EXTENSION.PICKLE.value)
+        path = os.path.join(SERIALIZED_GRAPH_PATH, f'graph_{graph.id}_{serialized_file_prefix}{EXTENSION.PICKLE.value}')
         serialize_data_and_write_to_file(path, graph)
         log.info(f'Graph with id {graph.id} was serialized successfully. File path is {path}')
         return path
@@ -33,5 +32,5 @@ class SolutionSpaceSerializer:
         deserialized_graph: SolutionGraph = deserialize_data_from_file(serialized_graph_path)
         if to_delete_old_graph_directory:
             remove_directory(deserialized_graph.graph_directory)
-        deserialized_graph.rewrite_graph_files(new_path_for_graph)
+        deserialized_graph.recreate_graph_files(new_path_for_graph)
         return deserialized_graph
