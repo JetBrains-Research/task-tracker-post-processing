@@ -3,6 +3,7 @@
 import os
 import sys
 import logging
+import datetime
 
 import pandas as pd
 
@@ -46,16 +47,18 @@ def main() -> None:
     source = 'a = int(input())\nb = int(input())\nn = int(input())'
     user = User()
 
-    graph = construct_solution_graph(path, TASK.PIES)
-    print('Graph was constructed')
+    print(f'{datetime.datetime.now()}: Start')
+    graph = construct_solution_graph(path, TASK.PIES, to_store_dist=False)
+    print(f'{datetime.datetime.now()}: Graph was constructed')
     path = SolutionSpaceSerializer.serialize(graph, serialized_file_prefix='serialized_graph_with_dist')
-    print(f'Serialized path: {path}')
+    print(f'{datetime.datetime.now()}: Serialized path: {path}')
     new_graph = SolutionSpaceSerializer.deserialize(path)
-    print(str(graph) == str(new_graph))
+    print(f'{datetime.datetime.now()}: Graph was deserialized')
 
-    # gv = SolutionSpaceVisualizer(graph)
-    # graph_representation_path = gv.create_graph_representation(name_prefix='graph_all_space_final_version')
-    # print(graph_representation_path)
+    gv = SolutionSpaceVisualizer(new_graph)
+    graph_representation_path = gv.create_graph_representation(name_prefix='graph_all_space_final_version')
+    print(f'{datetime.datetime.now()}: {graph_representation_path}')
+    print(f'{datetime.datetime.now()}: Finish')
     #
     # hint_getter = HintGetter(graph)
     # hint = hint_getter.get_hint(source, user)
