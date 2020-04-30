@@ -112,14 +112,19 @@ class SerializedCode(IdCounter, PrettyString):
     def get_canon_file(self) -> str:
         return self.__get_file_by_tree(self._canon_tree)
 
-    def __create_files_for_trees(self) -> None:
-        self.__create_file_for_tree(self._canon_tree, TREE_TYPE.CANON.value)
+    def recreate_files_for_trees(self, new_folder_with_files: str) -> None:
+        self._folder_with_files = new_folder_with_files
+        self.__create_files_for_trees(to_rewrite=True)
+
+    def __create_files_for_trees(self, to_rewrite: bool = False) -> None:
+        self.__create_file_for_tree(self._canon_tree, TREE_TYPE.CANON.value, to_overwrite=to_rewrite)
         for i, anon_tree in enumerate(self._anon_trees):
-            self.__create_file_for_tree(anon_tree, f'{TREE_TYPE.ANON.value}_{i}')
+            self.__create_file_for_tree(anon_tree, f'{TREE_TYPE.ANON.value}_{i}', to_overwrite=to_rewrite)
 
     # If file exists already in graph folder, we don't want to override it
-    def __create_file_for_tree(self, tree: ast.AST, str_tree_type: str) -> str:
-        if self._file_by_tree_dict.get(tree) is not None:
+    def __create_file_for_tree(self, tree: ast.AST, str_tree_type: str,
+                               to_overwrite: bool = False) -> str:
+        if self._file_by_tree_dict.get(tree) is not None and not to_overwrite:
             log_and_raise_error(f'File for tree {get_code_from_tree(tree)} already exists in files dict', log)
 
         extension = get_extension_by_language(self._language)

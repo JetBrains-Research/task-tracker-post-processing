@@ -65,8 +65,7 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
 
         self._graph_folder_prefix = graph_folder_prefix
         self._file_prefix = file_prefix
-        self._graph_directory = os.path.join(self.__class__.solution_space_folder, str(self._task.value),
-                                             f'{self._graph_folder_prefix}_{str(self._id)}')
+        self._graph_directory = self.get_default_graph_directory()
 
         self._start_vertex = Vertex(self, vertex_type=solution_space_consts.VERTEX_TYPE.START)
         self._end_vertex = Vertex(self, vertex_type=solution_space_consts.VERTEX_TYPE.END)
@@ -110,6 +109,20 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
 
     def get_traversal(self) -> List[Vertex]:
         return self.__iter__().traversal
+
+    def get_default_graph_directory(self) -> str:
+        return os.path.join(self.__class__.solution_space_folder, str(self._task.value),
+                            f'{self._graph_folder_prefix}_{str(self._id)}')
+
+    def recreate_graph_files(self, new_path_for_graph: Optional[str]) -> None:
+        if new_path_for_graph is None:
+            new_path_for_graph = self.get_default_graph_directory()
+        self._graph_directory = new_path_for_graph
+
+        vertices = self.get_traversal()
+        vertices.remove(self.start_vertex)
+        for vertex in vertices:
+            vertex.serialized_code.recreate_files_for_trees(self._graph_directory)
 
     # Todo: add tests
     @staticmethod
