@@ -11,7 +11,7 @@ from abc import ABCMeta
 from datetime import datetime
 from enum import Enum
 from types import FunctionType
-from typing import Type, TypeVar, List, Dict, Any, Tuple
+from typing import Type, TypeVar, List, Dict, Any, Tuple, Optional
 
 from prettytable import PrettyTable, ALL
 
@@ -54,8 +54,10 @@ class TestSystem:
         self._test_inputs = test_inputs
         self._path_finder_subclasses = self.__get_all_subclasses(IPathFinder)
         self._measured_vertex_subclasses = self.__get_all_subclasses(IMeasuredVertex)
-        print(self.get_method_doc_table(self._measured_vertex_subclasses, 'MeasuredVertex description'))
-        print(self.get_method_doc_table(self._path_finder_subclasses, 'PathFinder description'))
+        print(self.get_methods_doc_table(self._measured_vertex_subclasses, 'MeasuredVertex description',
+                                         ['__eq__', '__ne__', '__lt__']))
+        print('\n')
+        print(self.get_methods_doc_table(self._path_finder_subclasses, 'PathFinder description', None))
         print(self.get_result_table('Results of running find_next_vertex'))
 
     # Get a table with all methods docs collected from given classes.
@@ -68,9 +70,12 @@ class TestSystem:
     # +---------------+---------------+---------------+
     # |    class_2    |     *doc*     |     ---       |
     # +---------------+---------------+---------------+
+    # methods_to_keep should contain object methods, which should be included in the table.
+    # By default, all object methods are removed.
     @staticmethod
-    def get_method_doc_table(classes: List[Type[Class]], title: str) -> PrettyTable:
-        methods_dict, methods_names = TestSystem.__get_methods_dict_and_names(classes)
+    def get_methods_doc_table(classes: List[Type[Class]], title: str,
+                              methods_to_keep: Optional[List[str]]) -> PrettyTable:
+        methods_dict, methods_names = TestSystem.__get_methods_dict_and_names(classes, methods_to_keep)
         table = PrettyTable(field_names=['class name'] + methods_names, title=title)
         for c in classes:
             class_row = [c.__name__]
@@ -137,10 +142,10 @@ class TestSystem:
 
     @staticmethod
     def __format_doc_str(doc: str) -> str:
-        spaces_to_remove = 8
+        spaces_to_crop = 8
         lines = doc.split('\n')
-        lines = [l[spaces_to_remove:] for l in lines if l.startswith(spaces_to_remove * ' ')]
-        return '\n'.join(lines)
+        cropped_lines = [line[spaces_to_crop:] if line.startswith(spaces_to_crop * ' ') else line for line in lines ]
+        return '\n'.join(cropped_lines)
 
     @staticmethod
     def __set_table_style(table: PrettyTable) -> PrettyTable:
@@ -148,25 +153,30 @@ class TestSystem:
         table.align = 'l'
         return table
 
-    # Filter methods to get rid of different '__dir__'-like methods or '<class> ABCMeta'
+    # Filter all object methods like __new__,  __setattr__ except for methods passed as argument
+    # Filter ABCMeta class methods
     @staticmethod
-    def __filter_method(method: FunctionType) -> bool:
-        return not ((method.__name__.startswith('__') and method.__name__.endswith('__')) or isinstance(method, ABCMeta))
+    def __filter_method(method: FunctionType, object_methods_to_keep: Optional[List[str]]) -> bool:
+        object_methods_to_filter = [m for m in dir(object) if callable(getattr(object, m))]
+        if object_methods_to_keep:
+            object_methods_to_filter = [m for m in object_methods_to_filter if m not in object_methods_to_keep]
+        return not (isinstance(method, ABCMeta) or method.__name__ in object_methods_to_filter)
 
     @staticmethod
-    def __get_class_methods_with_doc(clazz: Type[Class]) -> List[FunctionType]:
+    def __get_class_methods_with_doc(clazz: Type[Class], methods_to_keep: Optional[List[str]]) -> List[FunctionType]:
         class_methods = [getattr(clazz, m) for m in dir(clazz) if callable(getattr(clazz, m))]
-        filtered_class_methods = [m for m in class_methods if TestSystem.__filter_method(m)]
+        filtered_class_methods = [m for m in class_methods if TestSystem.__filter_method(m, methods_to_keep)]
         return [m for m in filtered_class_methods if m.__doc__]
 
     # Get dict, that for each class stores a 'method by method name' dict, and list off all methods names
     @staticmethod
-    def __get_methods_dict_and_names(classes: List[Type[Class]]) -> Tuple[MethodsDict, List[str]]:
+    def __get_methods_dict_and_names(classes: List[Type[Class]],
+                                     methods_to_keep: Optional[List[str]]) -> Tuple[MethodsDict, List[str]]:
         methods_dict = {}
         methods_names = set()
         for c in classes:
             methods_dict[c] = {}
-            class_methods = TestSystem.__get_class_methods_with_doc(c)
+            class_methods = TestSystem.__get_class_methods_with_doc(c, methods_to_keep)
             for m in class_methods:
                 methods_dict[c][m.__name__] = m
                 methods_names.add(m.__name__)
