@@ -118,7 +118,7 @@ class PathFinderV2(IPathFinder):
         3. Return not __is_far_from_graph
         """
         diffs_from_user_to_goal = user_vertex.get_dist(goal)
-        diffs_from_empty_to_user = self._empty_vertex.get_dist(user_vertex)
+        diffs_from_empty_to_user = self._graph.empty_vertex.get_dist(user_vertex)
         if self.__is_most_of_path_is_done(diffs_from_empty_to_user + diffs_from_user_to_goal,
                                           diffs_from_user_to_goal):
             return False

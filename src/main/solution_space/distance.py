@@ -19,7 +19,6 @@ Upd = TypeVar('Upd')
 
 class IDistanceMatrix(Generic[Item, Upd], metaclass=ABCMeta):
     def __init__(self, to_store_dist: bool = True):
-        # Todo: is it better to use id as a key instead of Item?
         self._dist: Dict[Item, Dict[Item, int]] = {}
         self._to_store_dist = to_store_dist
 
@@ -71,9 +70,6 @@ class IDistanceMatrix(Generic[Item, Upd], metaclass=ABCMeta):
         return [list(d.values()) for d in self._dist.values()]
 
 
-# Todo: add somewhere method to find distance between Vertex and Code. Will decide it in the next PR
-#  with algo versions because it's needed only there
-
 # We update 'Vertex' by adding new anon_file, so update type is 'str'
 class VertexDistanceMatrix(IDistanceMatrix[Vertex, str]):
 
@@ -101,11 +97,9 @@ class VertexDistanceMatrix(IDistanceMatrix[Vertex, str]):
 
         return min(canon_dist, anon_dist)
 
-    # Todo: make it better?
     # Singledispatch doesn't work for methods since it notes only the type of the first argument which is always 'self'
     # Multimethod doesn't work, because it raises an error:
     # AttributeError: 'multimethod' object has no attribute 'dispatch', and that's weird
-    # Is it better to split it into two methods with different names?
     def _IDistanceMatrix__find_updated_dist(self, src: [Vertex, str], dst: [Vertex, str]) -> int:
         if isinstance(src, Vertex) and isinstance(dst, str):
             anon_files = src.serialized_code.get_anon_files()

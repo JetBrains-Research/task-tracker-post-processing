@@ -10,12 +10,12 @@ from src.main.solution_space.vertex import Vertex
 from src.main.util.log_util import log_and_raise_error
 from src.main.solution_space.serialized_code import Code
 from src.main.solution_space.data_classes import CodeInfo
-from src.main.util.consts import LOGGER_NAME, TASK, LANGUAGE, TEST_RESULT
 from src.main.util.helper_classes.id_counter import IdCounter
 from src.main.solution_space.distance import VertexDistanceMatrix
 from src.main.util.helper_classes.pretty_string import PrettyString
 from src.main.solution_space import consts as solution_space_consts
 from src.main.util.file_util import remove_directory, create_directory
+from src.main.util.consts import LOGGER_NAME, TASK, LANGUAGE, TEST_RESULT
 from src.main.canonicalization.canonicalization import are_asts_equal, get_code_from_tree
 from src.main.solution_space.consts import VERTEX_TYPE, GRAPH_FOLDER_PREFIX, SOLUTION_SPACE_FOLDER, FILE_PREFIX
 
@@ -105,8 +105,15 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
     def language(self) -> LANGUAGE:
         return self._language
 
+    @property
+    def empty_vertex(self) -> Vertex:
+        return self._empty_vertex
+
     def __iter__(self) -> GraphIterator:
         return GraphIterator(self._start_vertex)
+
+    def is_empty_vertex(self, vertex: Vertex) -> bool:
+        return vertex == self._empty_vertex
 
     def get_traversal(self, to_remove_start: bool = True, to_remove_end: bool = True) -> List[Vertex]:
         traversal = self.__iter__().traversal
