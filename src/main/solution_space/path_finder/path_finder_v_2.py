@@ -73,10 +73,7 @@ class PathFinderV2(IPathFinder):
             return self.__choose_best_vertex(user_vertex, vertex_in_graph.children)
 
         candidates = []
-        vertices = self._graph.get_traversal()
-        vertices.remove(self._graph.start_vertex)
-
-        for vertex in vertices:
+        for vertex in self._graph.get_traversal():
             if self.__get_rollback_probability(user_vertex.canon_tree, vertex.canon_tree) <= ROLLBACK_PROBABILITY:
                 candidates.append(vertex)
             #

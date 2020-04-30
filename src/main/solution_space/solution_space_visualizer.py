@@ -25,18 +25,14 @@ class SolutionSpaceVisualizer:
 
     def __get_labels(self) -> str:
         labels = ''
-        vertices = self._graph.get_traversal()
-        vertices.remove(self._graph.start_vertex)
-        for vertex in vertices:
+        for vertex in self._graph.get_traversal():
             labels += f'{vertex.id} [label="Vertex {vertex.id}"]\n'
 
         labels += f'{self._graph.end_vertex.id} [label="Vertex {self._graph.end_vertex.id}. End vertex"]\n'
         return labels
 
     def __create_vertices_content(self, folder_path: str) -> None:
-        vertices = self._graph.get_traversal()
-        vertices.remove(self._graph.start_vertex)
-        for vertex in vertices:
+        for vertex in self._graph.get_traversal():
             current_path = os.path.join(folder_path, f'vertex_{vertex.id}{consts.EXTENSION.TXT.value}')
             content = self.__class__.__get_vertex_info(vertex)
             create_file(content, current_path)
@@ -49,9 +45,7 @@ class SolutionSpaceVisualizer:
 
     def __get_graph_structure(self) -> str:
         structure = ''
-        vertices = self._graph.get_traversal()
-        vertices.remove(self._graph.start_vertex)
-        for vertex in vertices:
+        for vertex in self._graph.get_traversal():
             if vertex.children:
                 structure += f'{vertex.id} -> {self.__class__.__get_vertices_list(vertex.children)}\n'
         return structure

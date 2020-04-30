@@ -153,7 +153,7 @@ class TestGraph:
         sg.connect_to_end_vertex(vertex_6)
         # With start_vertex, but without end_vertex
         expected_traversal = [sg.start_vertex, vertex_1, vertex_2, vertex_3, vertex_4, vertex_5, vertex_6]
-        actual_traversal = sg.get_traversal()
+        actual_traversal = sg.get_traversal(to_remove_start=False)
         assert actual_traversal == expected_traversal
 
     def test_finding_vertex(self) -> None:

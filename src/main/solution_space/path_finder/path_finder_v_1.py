@@ -64,10 +64,7 @@ class PathFinderV1(IPathFinder):
         """
         user_diffs_to_goal = goal.get_dist(user_vertex)
         candidates = []
-        vertices = self._graph.get_traversal()
-        vertices.remove(self._graph.start_vertex)
-
-        for vertex in vertices:
+        for vertex in self._graph.get_traversal():
             # We don't want to add to result the same vertex
             if are_asts_equal(user_vertex.serialized_code.canon_tree, vertex.serialized_code.canon_tree):
                 continue
