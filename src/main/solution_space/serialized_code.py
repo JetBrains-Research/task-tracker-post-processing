@@ -7,7 +7,9 @@ import ast
 import logging
 from typing import List, Dict, Callable, Optional
 
+from src.main.splitting.tasks_tests_handler import check_tasks, create_in_and_out_dict
 from src.main.util import consts
+from src.main.util.consts import TASK
 from src.main.util.log_util import log_and_raise_error
 from src.main.canonicalization.consts import TREE_TYPE
 from src.main.util.file_util import create_file, is_file
@@ -29,8 +31,13 @@ class Code(PrettyString):
         self._language = language
 
     @classmethod
-    def from_source(cls, source: str, rate: float, language: consts.LANGUAGE = consts.LANGUAGE.PYTHON) -> Code:
+    def from_source(cls, source: str, rate: Optional[float], task: Optional[TASK],
+                    language: consts.LANGUAGE = consts.LANGUAGE.PYTHON) -> Code:
         anon_tree, canon_tree = get_trees(source, {TREE_TYPE.ANON, TREE_TYPE.CANON})
+        if rate is None:
+            if task is None:
+                log_and_raise_error('Cannot find rate without task: both are None', log)
+            rate = check_tasks([task], source, create_in_and_out_dict([task]), language)[0]
         return Code(anon_tree, canon_tree, rate, language)
 
     @property

@@ -113,10 +113,8 @@ class TestSystem:
         return path_finders
 
     def __create_user_vertex(self, test_input: TestInput) -> Vertex:
-        # Todo: find rate
-        rate = 0
-        vertex = Vertex(self._graph, Code.from_source(test_input[TEST_INPUT.SOURCE_CODE], rate))
-        # Todo: init profile of it's None
+        vertex = Vertex(self._graph, Code.from_source(test_input[TEST_INPUT.SOURCE_CODE], None, self._graph.task))
+        # Todo: init profile if it's None
         code_info = CodeInfo(User(Profile(test_input[TEST_INPUT.AGE], test_input[TEST_INPUT.EXPERIENCE])))
         vertex.add_code_info(code_info)
         return vertex

@@ -6,6 +6,7 @@ import logging
 
 import pandas as pd
 
+from src.main.solution_space.consts import TEST_SYSTEM_GRAPH
 from src.main.util import consts
 from src.main.util.file_util import add_slash
 from src.main.util.log_util import configure_logger
@@ -84,14 +85,25 @@ def main() -> None:
     """
     Running test system
     """
-    test_fragments = [{TEST_INPUT.SOURCE_CODE: 'a = int(input())',
-                       TEST_INPUT.AGE: 17,
-                       TEST_INPUT.EXPERIENCE: EXPERIENCE.LESS_THAN_HALF_YEAR},
-                      {TEST_INPUT.SOURCE_CODE: 'a = int(input())\nb = int(input())',
-                       TEST_INPUT.AGE: 12,
-                       TEST_INPUT.EXPERIENCE: EXPERIENCE.FROM_ONE_TO_TWO_YEARS}]
+    # graph = construct_solution_graph(path, TASK.PIES, to_store_dist=False)
+    # SolutionSpaceSerializer.serialize(graph, 'test_system_graph')
+    # test_fragments = [{TEST_INPUT.SOURCE_CODE: 'a = int(input())',
+    #                    TEST_INPUT.AGE: 17,
+    #                    TEST_INPUT.EXPERIENCE: EXPERIENCE.LESS_THAN_HALF_YEAR},
+    #                   {TEST_INPUT.SOURCE_CODE: 'a = int(input())\nb = int(input())',
+    #                    TEST_INPUT.AGE: 12,
+    #                    TEST_INPUT.EXPERIENCE: EXPERIENCE.FROM_ONE_TO_TWO_YEARS}]
+    #
+    # ts = TestSystem(test_fragments)
 
-    ts = TestSystem(test_fragments)
+    graph = SolutionSpaceSerializer.deserialize(TEST_SYSTEM_GRAPH)
+    traversal = graph.get_traversal()
+    s = set(list(traversal))
+    print(len(traversal))
+    print(len(s))
+    print([vertex.id for vertex in traversal])
+
+
 
 
 if __name__ == '__main__':

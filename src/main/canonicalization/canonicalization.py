@@ -62,7 +62,7 @@ def __get_canonical_transformations() -> List[Callable]:
         # But it is important for us to store this kind of fragments fully,
         # because we want to get the most relevant step-by-step solution graph
 
-        # deadCodeRemoval
+        deadCodeRemoval
     ]
 
 
@@ -106,7 +106,7 @@ def __get_canon_tree_from_anon_tree(anon_tree: ast.AST, imports: List[str]) -> a
         # We don't want to fold the functions, because it can remove dead code
         # You can see an example above for deadCodeRemoval why we don't use it
 
-        # helperFolding(canon_tree, None, imports)
+        helperFolding(canon_tree, None, imports)
         for t in transformations:
             canon_tree = t(canon_tree)
     return canon_tree
