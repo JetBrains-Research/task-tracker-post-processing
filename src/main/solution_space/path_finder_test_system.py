@@ -46,9 +46,11 @@ class TestSystem:
     _no_method_sign = '---'
     _spaces_to_crop_in_doc = 8
 
-    def __init__(self, test_inputs: List[TestInput], serialized_graph_path: str = TEST_SYSTEM_GRAPH):
+    def __init__(self, test_inputs: List[TestInput], serialized_graph_path: str = TEST_SYSTEM_GRAPH,
+                 add_same_docs: bool = True):
         graph = SolutionSpaceSerializer.deserialize(serialized_graph_path)
         self._graph = graph
+        self._add_same_docs = add_same_docs
         self._test_inputs = test_inputs
         self._path_finder_subclasses = self.__get_all_subclasses(IPathFinder)
         self._measured_vertex_subclasses = self.__get_all_subclasses(IMeasuredVertex)
@@ -69,18 +71,25 @@ class TestSystem:
     # +---------------+---------------+---------------+
     # methods_to_keep should contain object methods, which should be included in the table.
     # By default, all object methods are removed.
-    @staticmethod
-    def get_methods_doc_table(classes: List[Type[Class]], title: str,
+    def get_methods_doc_table(self, classes: List[Type[Class]], title: str,
                               methods_to_keep: Optional[List[str]]) -> PrettyTable:
-        methods_dict, methods_names = TestSystem.__get_methods_dict_and_names(classes, methods_to_keep)
-        table = PrettyTable(field_names=['class name'] + methods_names, title=title)
-        for c in classes:
-            class_row = [c.__name__]
-            for name in methods_names:
-                method = methods_dict[c].get(name)
-                doc = TestSystem._no_method_sign if method is None else TestSystem.__format_doc_str(method.__doc__)
-                class_row.append(doc)
-            table.add_row(class_row)
+        methods_dict, methods_names = self.__get_methods_dict_and_names(classes, methods_to_keep)
+        table = PrettyTable(title=title)
+        table.add_column('class_name', [c.__name__ for c in classes])
+        for name in methods_names:
+            methods = [methods_dict[c].get(name) for c in classes]
+            docs = [self._no_method_sign if m is None else self.__format_doc_str(m.__doc__) for m in methods]
+            if not self._add_same_docs and len(set(docs)) == 1:
+                continue
+            table.add_column(name, docs)
+        # for c in classes:
+        #     class_row = [c.__name__]
+        #     for name in methods_names:
+        #         method = methods_dict[c].get(name)
+        #         doc = TestSystem._no_method_sign if method is None else TestSystem.__format_doc_str(method.__doc__)
+        #         class_row.append(doc)
+        #     table.add_row(class_row)
+
         return TestSystem.__set_table_style(table)
 
     # Get a table with all path_finder results for a given test_inputs:
