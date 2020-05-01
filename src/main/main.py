@@ -38,7 +38,7 @@ def __get_data_path() -> str:
 
 
 def main() -> None:
-    configure_logger()
+    configure_logger(to_delete_previous_logs=True)
     path = __get_data_path()
 
     """
@@ -87,21 +87,21 @@ def main() -> None:
     """
     # graph = construct_solution_graph(path, TASK.PIES, to_store_dist=False)
     # SolutionSpaceSerializer.serialize(graph, 'test_system_graph')
-    # test_fragments = [{TEST_INPUT.SOURCE_CODE: 'a = int(input())',
-    #                    TEST_INPUT.AGE: 17,
-    #                    TEST_INPUT.EXPERIENCE: EXPERIENCE.LESS_THAN_HALF_YEAR},
-    #                   {TEST_INPUT.SOURCE_CODE: 'a = int(input())\nb = int(input())',
-    #                    TEST_INPUT.AGE: 12,
-    #                    TEST_INPUT.EXPERIENCE: EXPERIENCE.FROM_ONE_TO_TWO_YEARS}]
-    #
-    # ts = TestSystem(test_fragments)
+    test_fragments = [{TEST_INPUT.SOURCE_CODE: 'a = int(input())',
+                       TEST_INPUT.AGE: 17,
+                       TEST_INPUT.EXPERIENCE: EXPERIENCE.LESS_THAN_HALF_YEAR},
+                      {TEST_INPUT.SOURCE_CODE: 'a = int(input())\nb = int(input())',
+                       TEST_INPUT.AGE: 12,
+                       TEST_INPUT.EXPERIENCE: EXPERIENCE.FROM_ONE_TO_TWO_YEARS}]
 
-    graph = SolutionSpaceSerializer.deserialize(TEST_SYSTEM_GRAPH)
-    traversal = graph.get_traversal()
-    s = set(list(traversal))
-    print(len(traversal))
-    print(len(s))
-    print([vertex.id for vertex in traversal])
+    ts = TestSystem(test_fragments)
+
+    # graph = SolutionSpaceSerializer.deserialize(TEST_SYSTEM_GRAPH)
+    # traversal = graph.get_traversal()
+    # s = set(list(traversal))
+    # print(len(traversal))
+    # print(len(s))
+    # print([vertex.id for vertex in traversal])
 
 
 

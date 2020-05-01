@@ -22,11 +22,15 @@ class PathFinderV2(IPathFinder):
         2. Find the closest graph_vertex (__find_closest_vertex_with_path)
         3. Choose between them using __go_through_graph
         """
-        log.info(f'Start finding the next code state for '
-                 f'the user code: {get_code_from_tree(user_vertex.serialized_code.anon_trees[0])} and '
-                 f'the user: {user_vertex.code_info_list[0].user}')
+
+        log.info(f'{self.__class__.__name__}\n'
+                 f'Start finding the next code state for '
+                 f'the user code:\n{get_code_from_tree(user_vertex.serialized_code.anon_trees[0])}\nand '
+                 f'the user:\n{user_vertex.code_info_list[0].user}')
         goal = self.__find_closest_goal(user_vertex)
+        log.info(f'Chosen goal is vertex {goal.id}')
         graph_vertex = self.__find_closest_vertex(user_vertex, goal)
+        log.info(f'Chosen graph_vertex is vertex {graph_vertex.id}')
         # We can have graph_vertex = None
         if graph_vertex and self.__go_through_graph(user_vertex, graph_vertex, goal):
             log.info(f'We are going through graph')
@@ -40,12 +44,11 @@ class PathFinderV2(IPathFinder):
         1. Sort candidates using MeasuredVertex
         2. Return the first candidate
         """
-
+        log.info(f'Number of candidates: {len(vertices)}\nCandidates ids are {([vertex.id for vertex in vertices])}')
         if len(vertices) == 0:
             return None
         candidates = list(map(lambda vertex: self.get_measured_vertex(user_vertex, vertex), vertices))
         candidates.sort()
-        log.info(f'Candidates ids are {([c.vertex.id for c in candidates])}')
         log.info(f'The best vertex id is {candidates[0].vertex.id}')
         return candidates[0].vertex
 
@@ -55,8 +58,9 @@ class PathFinderV2(IPathFinder):
         1. Get list of all goals
         2. Find the closest using __choose_best_vertex()
         """
-        log.info(f'Goals ids are {[p.id for p in self._graph.end_vertex.parents]}')
-        return self.__choose_best_vertex(user_vertex, self._graph.end_vertex.parents)
+        goals = self._graph.end_vertex.parents
+        log.info(f'Number of goals: {len(goals)}\nGoals ids are {[g.id for g in goals]}')
+        return self.__choose_best_vertex(user_vertex, goals)
 
     # Note: we have to remove the 'user_code' from the set
     def __find_closest_vertex(self, user_vertex: Vertex, goal: Vertex) -> Optional[Vertex]:
@@ -66,10 +70,10 @@ class PathFinderV2(IPathFinder):
         2. Consider each vertex with small __get_rollback_probability as candidate
         3. Choose the best vertex from candidates using __choose_best_vertex()
         """
-        user_diffs_to_goal = user_vertex.get_dist(goal)
         # Todo: 14/04 test vertex from graph
         vertex_in_graph = self._graph.find_vertex(user_vertex.canon_tree)
         if vertex_in_graph:
+            log.info('Choosing best vertex from found vertex children')
             return self.__choose_best_vertex(user_vertex, vertex_in_graph.children)
 
         candidates = []
@@ -121,9 +125,11 @@ class PathFinderV2(IPathFinder):
         diffs_from_empty_to_user = self._graph.empty_vertex.get_dist(user_vertex)
         if self.__is_most_of_path_is_done(diffs_from_empty_to_user + diffs_from_user_to_goal,
                                           diffs_from_user_to_goal):
+            log.info('Most of path is done')
             return False
 
         if self.__is_rate_worse(user_vertex.serialized_code.rate, graph_vertex.serialized_code.rate):
+            log.info('Rate is worse')
             return False
 
         diffs_from_user_to_graph_vertex = user_vertex.get_dist(graph_vertex)

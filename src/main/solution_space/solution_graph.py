@@ -166,7 +166,7 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
     def find_vertex(self, canon_tree: ast.AST) -> Optional[Vertex]:
         for vertex in self.get_traversal():
             if are_asts_equal(vertex.serialized_code.canon_tree, canon_tree):
-                log.info(f'Found an existing vertex for canon_tree: {str(get_code_from_tree(canon_tree))}')
+                log.info(f'Found an existing vertex {vertex.id} for canon_tree: {str(get_code_from_tree(canon_tree))}')
                 return vertex
         return None
 
