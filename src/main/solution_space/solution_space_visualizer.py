@@ -27,11 +27,11 @@ class SolutionSpaceVisualizer:
         labels = ''
         for vertex in self._graph.get_traversal():
             if self._graph.is_empty_vertex(vertex):
-                labels += f'{vertex.id} [label="Empty vertex {vertex.id}"]\n'
+                labels += f'{vertex.id} [label="Vertex {vertex.id}. Empty vertex"]\n'
             else:
                 labels += f'{vertex.id} [label="Vertex {vertex.id}"]\n'
 
-        labels += f'{self._graph.end_vertex.id} [label="End vertex {self._graph.end_vertex.id}"]\n'
+        labels += f'{self._graph.end_vertex.id} [label="Vertex {self._graph.end_vertex.id}. End vertex"]\n'
         return labels
 
     def __create_vertices_content(self, folder_path: str) -> None:

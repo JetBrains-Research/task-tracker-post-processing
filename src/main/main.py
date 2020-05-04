@@ -97,8 +97,7 @@ def main() -> None:
     Running test system
     """
     # start = datetime.now()
-    # graph = construct_solution_graph(path, TASK.PIES, to_store_dist=False)
-    # graph.to_store_dist = True
+    # graph = construct_solution_graph(path, TASK.PIES)
     # finish = datetime.now()
     # log.info(f'Creating all graph is taking {finish - start}')
     # SolutionSpaceSerializer.serialize(graph, 'test_system_graph')

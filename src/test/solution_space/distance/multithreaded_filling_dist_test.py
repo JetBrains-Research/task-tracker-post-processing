@@ -20,8 +20,7 @@ expected_dist_matrix = [[0,  22, 15, 20, 1,  13, 21, 56, 61],
                         [56, 83, 64, 69, 51, 43, 35, 0,  5 ],
                         [61, 88, 69, 68, 56, 48, 40, 5,  0 ]]
 
-
-@pytest.mark.skipif(to_skip(current_module_level=TEST_LEVEL.SOLUTION_SPACE), reason=TEST_LEVEL.SOLUTION_SPACE.value)
+@pytest.mark.skip(reason='We don\'t use dist in solution graph anymore')
 class TestMultithreadedFillingDist:
 
     @pytest.mark.skip(reason='Filling expected matrix takes a lot of time, so we compare it with pre-filled one. '
@@ -29,7 +28,7 @@ class TestMultithreadedFillingDist:
     def test_expected_matrix_filled_right(self):
         # Time with storing dist: 0:07:57
         start_time = datetime.now()
-        sg_with_dist = get_solution_graph(TASK.PIES, to_plot_graph=False, to_store_dist=True)
+        sg_with_dist = get_solution_graph(TASK.PIES, to_plot_graph=False)
         end_time = datetime.now()
         sg_with_dist_time = end_time - start_time
         dist_matrix = sg_with_dist._dist._IDistanceMatrix__get_dist_matrix()
@@ -39,7 +38,7 @@ class TestMultithreadedFillingDist:
     def test_filling_dist(self):
         # Time with multithreading: 0:04:50
         start_time = datetime.now()
-        sg_without_dist = get_solution_graph(TASK.PIES, to_plot_graph=False, to_store_dist=False)
+        sg_without_dist = get_solution_graph(TASK.PIES, to_plot_graph=False)
         sg_without_dist.to_store_dist = True
         end_time = datetime.now()
         sg_without_dist_time = end_time - start_time
