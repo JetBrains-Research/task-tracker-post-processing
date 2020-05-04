@@ -6,6 +6,8 @@ import logging
 
 import pandas as pd
 
+from src.main.preprocessing.inefficient_statements_removing import remove_inefficient_statements
+from src.main.preprocessing.intermediate_diffs_removing import remove_intermediate_diffs
 from src.main.util import consts
 from src.main.util.file_util import add_slash
 from src.main.util.log_util import configure_logger
@@ -54,14 +56,14 @@ def main() -> None:
     """
     Graph constructing
     """
-    # graph = construct_solution_graph(path, TASK.PIES)
-    # print('Graph was constructed')
+    graph = construct_solution_graph(path, TASK.PIES)
+    print('Graph was constructed')
 
     """
     Graph serialization
     """
-    # path = SolutionSpaceSerializer.serialize(graph, serialized_file_prefix='serialized_graph_with_dist')
-    # print(f'Serialized path: {path}')
+    path = SolutionSpaceSerializer.serialize(graph, serialized_file_prefix='serialized_graph_with_dist')
+    print(f'Serialized path: {path}')
     # new_graph = SolutionSpaceSerializer.deserialize(path)
     # print(str(graph) == str(new_graph))
 
@@ -84,14 +86,14 @@ def main() -> None:
     """
     Running test system
     """
-    test_fragments = [{TEST_INPUT.SOURCE_CODE: 'a = int(input())',
-                       TEST_INPUT.AGE: 17,
-                       TEST_INPUT.EXPERIENCE: EXPERIENCE.LESS_THAN_HALF_YEAR},
-                      {TEST_INPUT.SOURCE_CODE: 'a = int(input())\nb = int(input())',
-                       TEST_INPUT.AGE: 12,
-                       TEST_INPUT.EXPERIENCE: EXPERIENCE.FROM_ONE_TO_TWO_YEARS}]
-
-    ts = TestSystem(test_fragments)
+    # test_fragments = [{TEST_INPUT.SOURCE_CODE: 'a = int(input())',
+    #                    TEST_INPUT.AGE: 17,
+    #                    TEST_INPUT.EXPERIENCE: EXPERIENCE.LESS_THAN_HALF_YEAR},
+    #                   {TEST_INPUT.SOURCE_CODE: 'a = int(input())\nb = int(input())',
+    #                    TEST_INPUT.AGE: 12,
+    #                    TEST_INPUT.EXPERIENCE: EXPERIENCE.FROM_ONE_TO_TWO_YEARS}]
+    #
+    # ts = TestSystem(test_fragments)
 
 
 if __name__ == '__main__':
