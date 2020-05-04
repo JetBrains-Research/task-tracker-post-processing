@@ -59,10 +59,10 @@ def get_freq_bar_chart(statistics_df: pd.DataFrame, title: str, column: STATISTI
     return fig
 
 
-def plot_freq_chart(statistics_df: pd.DataFrame, title: str, path: str, column: STATISTICS_KEY,
-                    labels: Dict[str, str], plot_name: str, format: consts.EXTENSION = consts.EXTENSION.HTML,
-                    auto_open: bool = False, plot_type: PLOT_TYPE = PLOT_TYPE.BAR,
-                    x_category_order: PLOTTY_CATEGORY_ORDER = PLOTTY_CATEGORY_ORDER.TOTAL_ASCENDING) -> None:
+def plot_and_save_freq_chart(statistics_df: pd.DataFrame, title: str, path: str, column: STATISTICS_KEY,
+                             labels: Dict[str, str], plot_name: str, format: consts.EXTENSION = consts.EXTENSION.HTML,
+                             auto_open: bool = False, plot_type: PLOT_TYPE = PLOT_TYPE.BAR,
+                             x_category_order: PLOTTY_CATEGORY_ORDER = PLOTTY_CATEGORY_ORDER.TOTAL_ASCENDING) -> None:
     fig = get_freq_bar_chart(statistics_df, title, column, labels, x_category_order)
     save_plot(fig, path, plot_type, plot_name, format, auto_open)
 

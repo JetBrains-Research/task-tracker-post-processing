@@ -1,14 +1,14 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
+from typing import Tuple, Dict
 from collections import defaultdict
-from typing import Tuple, Dict, Union, List
 
 from src.main.canonicalization.consts import TREE_TYPE
 from src.main.solution_space.solution_graph import SolutionGraph
 from src.main.canonicalization.ast_tools import get_vertices_number_in_ast
 
 
-def get_general_solution_graph_statistics(solution_graph: SolutionGraph) -> Tuple[Dict[int, int], Dict[int, int]]:
+def get_node_numbers_solution_graph_statistics(solution_graph: SolutionGraph) -> Tuple[Dict[int, int], Dict[int, int]]:
     canon_trees_freqs = defaultdict(int)
     anon_trees_freqs = defaultdict(int)
 
@@ -30,7 +30,7 @@ def __get_default_dict_for_vertex() -> dict:
     }
 
 
-def get_statistics_for_each_vertex(solution_graph: SolutionGraph) -> dict:
+def get_node_numbers_freq_statistics_for_each_vertex(solution_graph: SolutionGraph) -> dict:
     statistics_dict = {}
     vertices = solution_graph.get_traversal()
     vertices.remove(solution_graph.start_vertex)

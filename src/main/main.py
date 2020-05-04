@@ -6,8 +6,6 @@ import logging
 
 import pandas as pd
 
-from src.main.preprocessing.inefficient_statements_removing import remove_inefficient_statements
-from src.main.preprocessing.intermediate_diffs_removing import remove_intermediate_diffs
 from src.main.util import consts
 from src.main.util.file_util import add_slash
 from src.main.util.log_util import configure_logger
@@ -21,7 +19,9 @@ from src.main.solution_space.path_finder_test_system import TestSystem, TEST_INP
 from src.main.solution_space.solution_space_handler import construct_solution_graph
 from src.main.solution_space.solution_space_visualizer import SolutionSpaceVisualizer
 from src.main.solution_space.solution_space_serializer import SolutionSpaceSerializer
+from src.main.preprocessing.intermediate_diffs_removing import remove_intermediate_diffs
 from src.main.solution_space.measured_vertex.measured_vertex_v_1 import MeasuredVertexV1
+from src.main.preprocessing.inefficient_statements_removing import remove_inefficient_statements
 
 pd.set_option('display.max_rows', 250)
 pd.set_option('display.max_columns', 100)
@@ -56,14 +56,14 @@ def main() -> None:
     """
     Graph constructing
     """
-    graph = construct_solution_graph(path, TASK.PIES)
+    graph = construct_solution_graph(path, TASK.PIES, to_store_dist=False)
     print('Graph was constructed')
 
     """
     Graph serialization
-    """
-    path = SolutionSpaceSerializer.serialize(graph, serialized_file_prefix='serialized_graph_with_dist')
-    print(f'Serialized path: {path}')
+    # """
+    # path = SolutionSpaceSerializer.serialize(graph, serialized_file_prefix='serialized_graph_with_dist')
+    # print(f'Serialized path: {path}')
     # new_graph = SolutionSpaceSerializer.deserialize(path)
     # print(str(graph) == str(new_graph))
 
@@ -71,7 +71,7 @@ def main() -> None:
     Graph visualization
     """
     # gv = SolutionSpaceVisualizer(graph)
-    # graph_representation_path = gv.create_graph_representation(name_prefix='graph_all_space_final_version')
+    # graph_representation_path = gv.create_graph_representation(name_prefix='graph_all_space_without_helper_folding')
     # print(graph_representation_path)
 
     """
