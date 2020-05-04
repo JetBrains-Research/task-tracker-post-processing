@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import ast
 from typing import List, Set, Optional
 
 import src.main.solution_space.solution_graph as sg
@@ -40,6 +41,10 @@ class Vertex(IdCounter, PrettyString):
     @property
     def code_info_list(self) -> List[CodeInfo]:
         return self._code_info_list
+
+    @property
+    def canon_tree(self) -> ast.AST:
+        return self._serialized_code.canon_tree
 
     @property
     def serialized_code(self) -> SerializedCode:

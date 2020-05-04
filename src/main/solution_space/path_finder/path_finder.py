@@ -1,78 +1,44 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
+from __future__ import annotations
+
 import logging
-from typing import Optional
 from abc import ABCMeta, abstractmethod
 
 from src.main.util import consts
-from src.main.util.log_util import log_and_raise_error
-from src.main.solution_space.data_classes import User, Profile
-from src.main.canonicalization.diffs.diff_handler import IDiffHandler
+from src.main.util.consts import TEST_RESULT
+from src.main.canonicalization.consts import TREE_TYPE
+from src.main.solution_space.serialized_code import Code
 from src.main.solution_space.solution_graph import SolutionGraph, Vertex
+from src.main.canonicalization.canonicalization import get_trees, Optional, Type
+from src.main.solution_space.measured_vertex.measured_vertex import IMeasuredVertex
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
 
 class IPathFinder(object, metaclass=ABCMeta):
-    def __init__(self, graph: SolutionGraph):
+
+    def __init__(self, graph: SolutionGraph, measured_vertex_subclass: Type[IMeasuredVertex]):
         self._graph = graph
+        self._measured_vertex_subclass = measured_vertex_subclass
+        empty_anon, empty_canon = get_trees('', {TREE_TYPE.ANON, TREE_TYPE.CANON})
+        # Todo: create empty vertex in a graph to not recount dist between empty and goal?
+        self._empty_vertex = Vertex(graph, Code(empty_anon, empty_canon, TEST_RESULT.CORRECT_CODE.value))
 
     @property
     def graph(self) -> SolutionGraph:
         return self._graph
 
-    # Find a next canonicalized code state
+    @property
+    def measured_vertex_subclass(self) -> Type[IMeasuredVertex]:
+        return self._measured_vertex_subclass
+
+    def get_measured_vertex(self, user_vertex: Vertex, vertex: Vertex,
+                            distance_to_user: Optional[int] = None) -> IMeasuredVertex:
+        return self._measured_vertex_subclass(user_vertex, vertex, distance_to_user)
+
+    # Find the next canonicalized code state
+    # Make sure code_info_list of user_vertex has 1 element with code_info
     @abstractmethod
-    def find_next_vertex(self, user_diff_handler: IDiffHandler, user: User) -> Vertex:
+    def find_next_vertex(self, user_vertex: Vertex) -> Vertex:
         raise NotImplementedError
-
-
-# Todo: move somewhere?
-class MeasuredVertex:
-    def __init__(self, user_diff_handler: IDiffHandler, vertex: Vertex, user: User, distance: Optional[int] = None):
-        self._vertex = vertex
-        self._distance = distance if distance else vertex.get_diffs_number_to_vertex(user_diff_handler)
-        # Todo: get actual vertex profile
-        self._profile = self.__init_profile(user)
-        self._users_count = len(vertex.get_unique_users())
-
-    @property
-    def vertex(self) -> Vertex:
-        return self._vertex
-
-    @property
-    def distance(self) -> int:
-        return self._distance
-
-    @property
-    def profile(self) -> Profile:
-        return self._profile
-
-    @property
-    def users_count(self) -> int:
-        return self._users_count
-
-    def __init_profile(self, user: User) -> Profile:
-        # Todo: add user handling
-        return Profile()
-
-    def __eq__(self, o: object) -> bool:
-        if not isinstance(o, MeasuredVertex):
-            return False
-        if self._distance != o.distance or self._profile == o.profile:
-            return False
-        return True
-
-    def __ne__(self, o: object) -> bool:
-        return not self.__eq__(o)
-
-    def __lt__(self, o: object):
-        if not isinstance(o, MeasuredVertex):
-            log_and_raise_error(f'The object {o} is not {self.__class__} class', log)
-        if self._distance < o.distance:
-            return True
-        # Todo: use profile info
-        return self._users_count < o.users_count
-
-
-

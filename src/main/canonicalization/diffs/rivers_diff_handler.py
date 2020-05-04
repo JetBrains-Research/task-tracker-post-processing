@@ -1,6 +1,8 @@
 # Copyright (c) 2017 Kelly Rivers
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
+from __future__ import annotations
+
 import ast
 import logging
 from typing import List, Tuple, Optional
@@ -9,15 +11,34 @@ from src.main.util import consts
 from src.main.canonicalization.consts import TREE_TYPE
 from src.main.util.log_util import log_and_raise_error
 from src.main.canonicalization.diffs.individualize import mapEdit
-from src.main.canonicalization.diffs.diff_handler import IDiffHandler
-from src.main.canonicalization.canonicalization import get_code_from_tree
+from src.main.canonicalization.canonicalization import get_code_from_tree, get_trees
 from src.main.canonicalization.diffs.generate_next_states import updateChangeVectors
 from src.main.canonicalization.diffs.diff_asts import diffAsts, printFunction, ChangeVector, deepcopy
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
 
-class RiversDiffHandler(IDiffHandler):
+# Todo: do we need to store trees here? Maybe it's better to just have a method where src and dst trees will be passed?
+class RiversDiffHandler:
+    def __init__(self, source_code: Optional[str] = None,
+                 anon_tree: Optional[ast.AST] = None,
+                 canon_tree: Optional[ast.AST] = None):
+        if source_code is not None:
+            self._orig_tree, self._anon_tree, self._canon_tree = get_trees(source_code, TREE_TYPE.get_all_types_set())
+        else:
+            self._orig_tree, self._anon_tree, self._canon_tree = None, anon_tree, canon_tree
+
+    @property
+    def orig_tree(self) -> Optional[ast.AST]:
+        return self._orig_tree
+
+    @property
+    def anon_tree(self) -> ast.AST:
+        return self._anon_tree
+
+    @property
+    def canon_tree(self) -> ast.AST:
+        return self._canon_tree
 
     def get_diffs(self, anon_dst_tree: ast.AST, canon_dst_tree: ast.AST) -> Tuple[List[ChangeVector], TREE_TYPE]:
         anon_diffs = diffAsts(self._anon_tree, anon_dst_tree)
@@ -33,7 +54,7 @@ class RiversDiffHandler(IDiffHandler):
         canon_diffs, _ = updateChangeVectors(canon_diffs, self._canon_tree, self._canon_tree)
         return canon_diffs, TREE_TYPE.CANON
 
-    def get_diffs_from_diff_handler(self, diff_handler: IDiffHandler) -> Tuple[List[ChangeVector], TREE_TYPE]:
+    def get_diffs_from_diff_handler(self, diff_handler: RiversDiffHandler) -> Tuple[List[ChangeVector], TREE_TYPE]:
         return self.get_diffs(diff_handler.anon_tree, diff_handler._canon_tree)
 
     def get_diffs_number(self, anon_dst_tree: Optional[ast.AST], canon_dst_tree: Optional[ast.AST]) -> int:

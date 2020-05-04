@@ -14,19 +14,24 @@ from src.main.util.file_util import create_file, is_file
 from src.main.util.helper_classes.id_counter import IdCounter
 from src.main.util.language_util import get_extension_by_language
 from src.main.util.helper_classes.pretty_string import PrettyString
-from src.main.canonicalization.canonicalization import are_asts_equal, get_code_from_tree
+from src.main.canonicalization.canonicalization import are_asts_equal, get_code_from_tree, get_trees
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
 
 class Code(PrettyString):
 
-    def __init__(self, canon_tree: ast.AST, rate: float, anon_tree: ast.AST,
+    def __init__(self, anon_tree: ast.AST, canon_tree: ast.AST, rate: float,
                  language: consts.LANGUAGE = consts.LANGUAGE.PYTHON):
         self._canon_tree = canon_tree
         self._rate = rate
         self._anon_tree = anon_tree
         self._language = language
+
+    @classmethod
+    def from_source(cls, source: str, rate: float, language: consts.LANGUAGE = consts.LANGUAGE.PYTHON) -> Code:
+        anon_tree, canon_tree = get_trees(source, {TREE_TYPE.ANON, TREE_TYPE.CANON})
+        return Code(anon_tree, canon_tree, rate, language)
 
     @property
     def canon_tree(self) -> ast.AST:
@@ -70,6 +75,7 @@ class SerializedCode(IdCounter, PrettyString):
     def from_code(cls, code: Code, folder_with_files: str, file_prefix: str) -> SerializedCode:
         return SerializedCode(code.anon_tree, code.canon_tree, code.rate, folder_with_files, file_prefix, code.language)
 
+
     @property
     def canon_tree(self) -> ast.AST:
         return self._canon_tree
@@ -106,14 +112,19 @@ class SerializedCode(IdCounter, PrettyString):
     def get_canon_file(self) -> str:
         return self.__get_file_by_tree(self._canon_tree)
 
-    def __create_files_for_trees(self) -> None:
-        self.__create_file_for_tree(self._canon_tree, TREE_TYPE.CANON.value)
+    def recreate_files_for_trees(self, new_folder_with_files: str) -> None:
+        self._folder_with_files = new_folder_with_files
+        self.__create_files_for_trees(to_rewrite=True)
+
+    def __create_files_for_trees(self, to_rewrite: bool = False) -> None:
+        self.__create_file_for_tree(self._canon_tree, TREE_TYPE.CANON.value, to_overwrite=to_rewrite)
         for i, anon_tree in enumerate(self._anon_trees):
-            self.__create_file_for_tree(anon_tree, f'{TREE_TYPE.ANON.value}_{i}')
+            self.__create_file_for_tree(anon_tree, f'{TREE_TYPE.ANON.value}_{i}', to_overwrite=to_rewrite)
 
     # If file exists already in graph folder, we don't want to override it
-    def __create_file_for_tree(self, tree: ast.AST, str_tree_type: str) -> str:
-        if self._file_by_tree_dict.get(tree) is not None:
+    def __create_file_for_tree(self, tree: ast.AST, str_tree_type: str,
+                               to_overwrite: bool = False) -> str:
+        if self._file_by_tree_dict.get(tree) is not None and not to_overwrite:
             log_and_raise_error(f'File for tree {get_code_from_tree(tree)} already exists in files dict', log)
 
         extension = get_extension_by_language(self._language)

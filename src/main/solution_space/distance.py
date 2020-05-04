@@ -1,14 +1,15 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
-import itertools
 import logging
+import itertools
 from abc import ABCMeta, abstractmethod
 from typing import TypeVar, List, Generic, Dict, Union
 
 from src.main.util.consts import LOGGER_NAME
 from src.main.util.log_util import log_and_raise_error
 from src.main.solution_space.solution_graph import Vertex
-from src.main.canonicalization.diffs.gumtree_diff_handler import GumTreeDiffHandler
+from src.main.canonicalization.diffs.gumtree import GumTreeDiff
+
 
 log = logging.getLogger(LOGGER_NAME)
 
@@ -91,7 +92,7 @@ class VertexDistanceMatrix(IDistanceMatrix[Vertex, str]):
         dst_anon_files = dst.serialized_code.get_anon_files()
         dst_canon_file = dst.serialized_code.get_canon_file()
         
-        canon_dist = GumTreeDiffHandler.get_diffs_number_with_gumtree(src_canon_file, dst_canon_file)
+        canon_dist = GumTreeDiff.get_diffs_number(src_canon_file, dst_canon_file)
         # If canon_dist is a zero already, we cannot reduce the distance anymore, so we can return it without
         # finding diffs between anon trees
         if canon_dist == 0:
@@ -120,6 +121,6 @@ class VertexDistanceMatrix(IDistanceMatrix[Vertex, str]):
     def __find_dist_between_files(src_files: List[str], dst_files: List[str]) -> int:
         diffs_numbers = []
         for src_file, dst_file in itertools.product(src_files, dst_files):
-            diffs_number = GumTreeDiffHandler.get_diffs_number_with_gumtree(src_file, dst_file)
+            diffs_number = GumTreeDiff.get_diffs_number(src_file, dst_file)
             diffs_numbers.append(diffs_number)
         return min(diffs_numbers)

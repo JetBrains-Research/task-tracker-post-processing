@@ -1,6 +1,7 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import os
+import ast
 import logging
 import collections
 from typing import Optional, List, Tuple
@@ -14,8 +15,8 @@ from src.main.util.helper_classes.id_counter import IdCounter
 from src.main.solution_space.distance import VertexDistanceMatrix
 from src.main.util.helper_classes.pretty_string import PrettyString
 from src.main.solution_space import consts as solution_space_consts
-from src.main.canonicalization.canonicalization import are_asts_equal
 from src.main.util.file_util import remove_directory, create_directory
+from src.main.canonicalization.canonicalization import are_asts_equal, get_code_from_tree
 from src.main.solution_space.consts import VERTEX_TYPE, GRAPH_FOLDER_PREFIX, SOLUTION_SPACE_FOLDER, FILE_PREFIX
 
 
@@ -64,8 +65,7 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
 
         self._graph_folder_prefix = graph_folder_prefix
         self._file_prefix = file_prefix
-        self._graph_directory = os.path.join(self.__class__.solution_space_folder, str(self._task.value),
-                                             f'{self._graph_folder_prefix}_{str(self._id)}')
+        self._graph_directory = self.get_default_graph_directory()
 
         self._start_vertex = Vertex(self, vertex_type=solution_space_consts.VERTEX_TYPE.START)
         self._end_vertex = Vertex(self, vertex_type=solution_space_consts.VERTEX_TYPE.END)
@@ -110,6 +110,20 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
     def get_traversal(self) -> List[Vertex]:
         return self.__iter__().traversal
 
+    def get_default_graph_directory(self) -> str:
+        return os.path.join(self.__class__.solution_space_folder, str(self._task.value),
+                            f'{self._graph_folder_prefix}_{str(self._id)}')
+
+    def recreate_graph_files(self, new_path_for_graph: Optional[str]) -> None:
+        if new_path_for_graph is None:
+            new_path_for_graph = self.get_default_graph_directory()
+        self._graph_directory = new_path_for_graph
+
+        vertices = self.get_traversal()
+        vertices.remove(self.start_vertex)
+        for vertex in vertices:
+            vertex.serialized_code.recreate_files_for_trees(self._graph_directory)
+
     # Todo: add tests
     @staticmethod
     def get_vertices_with_path(goal: Vertex) -> List[Vertex]:
@@ -136,19 +150,19 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
         self._dist.add_dist(vertex)
         return vertex
 
-    def find_vertex(self, code: Code) -> Optional[Vertex]:
+    def find_vertex(self, canon_tree: ast.AST) -> Optional[Vertex]:
         vertices = self.get_traversal()
         vertices.remove(self.start_vertex)
         for vertex in vertices:
-            if are_asts_equal(vertex.serialized_code.canon_tree, code.canon_tree):
-                log.info(f'Found an existing vertex for code: {str(code)}')
+            if are_asts_equal(vertex.serialized_code.canon_tree, canon_tree):
+                log.info(f'Found an existing vertex for canon_tree: {str(get_code_from_tree(canon_tree))}')
                 return vertex
         return None
 
     def find_or_create_vertex(self, code: Optional[Code], code_info: CodeInfo) -> Vertex:
         if code is None:
             log_and_raise_error('Code should not be None', log)
-        vertex = self.find_vertex(code)
+        vertex = self.find_vertex(code.canon_tree)
         if vertex:
             vertex.add_code_info(code_info)
             anon_tree_file = vertex.serialized_code.add_anon_tree(code.anon_tree)

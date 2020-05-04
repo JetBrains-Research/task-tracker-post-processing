@@ -45,8 +45,8 @@ def get_graph_with_loop() -> SolutionGraph:
     simple_graph = get_simple_graph()
     code_for_loop_1 = __get_code_by_source(CODE_FOR_LOOP_1)
     code_for_loop_2 = __get_code_by_source(CODE_FOR_LOOP_2)
-    vertex_for_loop_1 = simple_graph.find_vertex(code_for_loop_1)
-    vertex_for_loop_2 = simple_graph.find_vertex(code_for_loop_2)
+    vertex_for_loop_1 = simple_graph.find_vertex(code_for_loop_1.canon_tree)
+    vertex_for_loop_2 = simple_graph.find_vertex(code_for_loop_2.canon_tree)
     vertex_for_loop_2.add_parent(vertex_for_loop_1)
     vertex_for_loop_1.add_parent(vertex_for_loop_2)
     return simple_graph

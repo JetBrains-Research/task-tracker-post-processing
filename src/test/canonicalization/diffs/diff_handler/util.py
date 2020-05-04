@@ -46,7 +46,7 @@ def __get_sources_and_goals(task: TASK, test_type: TEST_TYPE = TEST_TYPE.DIFF) -
 def __get_code_by_source(source: str, is_goal: bool = False) -> Code:
     anon_tree, canon_tree = get_trees(source, {TREE_TYPE.ANON, TREE_TYPE.CANON})
     rate = 0 if not is_goal else TEST_RESULT.FULL_SOLUTION.value
-    return Code(canon_tree=canon_tree, rate=rate, anon_tree=anon_tree)
+    return Code(anon_tree=anon_tree, canon_tree=canon_tree, rate=rate)
 
 
 def get_solution_graph(task: TASK, to_plot_graph: bool = True, test_prefix: str = 'num_diffs') -> SolutionGraph:
