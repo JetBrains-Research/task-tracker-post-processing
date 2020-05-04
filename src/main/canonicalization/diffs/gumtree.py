@@ -4,6 +4,7 @@ import ast
 import logging
 import tempfile
 from subprocess import check_output, CalledProcessError, STDOUT
+from threading import Lock
 
 from src.main.util import consts
 from src.main.util.log_util import log_and_raise_error
@@ -12,12 +13,14 @@ from src.main.canonicalization.canonicalization import get_code_from_tree
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
+lock = Lock()
 
 # Using GumTreeDiff: https://github.com/GumTreeDiff/gumtree/tree/master
 class GumTreeDiff:
 
     @staticmethod
     def get_diffs_number(src_file: str, dst_file: str) -> int:
+        log.info('Calling GumTreeDiff')
         try:
             args = [consts.GUMTREE_PATH, 'diffn', src_file, dst_file]
             output = check_output(args, text=True, stderr=STDOUT).strip('\n')

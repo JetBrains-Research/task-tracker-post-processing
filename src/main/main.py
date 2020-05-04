@@ -3,6 +3,7 @@
 import os
 import sys
 import logging
+from datetime import datetime
 
 import pandas as pd
 
@@ -85,16 +86,22 @@ def main() -> None:
     """
     Running test system
     """
-    # graph = construct_solution_graph(path, TASK.PIES, to_store_dist=False)
-    # SolutionSpaceSerializer.serialize(graph, 'test_system_graph')
-    test_fragments = [{TEST_INPUT.SOURCE_CODE: 'a = int(input())',
-                       TEST_INPUT.AGE: 17,
-                       TEST_INPUT.EXPERIENCE: EXPERIENCE.LESS_THAN_HALF_YEAR},
-                      {TEST_INPUT.SOURCE_CODE: 'a = int(input())\nb = int(input())',
-                       TEST_INPUT.AGE: 12,
-                       TEST_INPUT.EXPERIENCE: EXPERIENCE.FROM_ONE_TO_TWO_YEARS}]
+    start = datetime.now()
+    graph = construct_solution_graph(path, TASK.PIES, to_store_dist=False)
+    graph.to_store_dist = True
+    finish = datetime.now()
+    log.info(f'Creating all graph is taking {finish - start}')
+    SolutionSpaceSerializer.serialize(graph, 'test_system_graph')
 
-    ts = TestSystem(test_fragments)
+
+    # test_fragments = [{TEST_INPUT.SOURCE_CODE: 'a = int(input())',
+    #                    TEST_INPUT.AGE: 17,
+    #                    TEST_INPUT.EXPERIENCE: EXPERIENCE.LESS_THAN_HALF_YEAR},
+    #                   {TEST_INPUT.SOURCE_CODE: 'a = int(input())\nb = int(input())',
+    #                    TEST_INPUT.AGE: 12,
+    #                    TEST_INPUT.EXPERIENCE: EXPERIENCE.FROM_ONE_TO_TWO_YEARS}]
+    #
+    # ts = TestSystem(test_fragments)
 
     # graph = SolutionSpaceSerializer.deserialize(TEST_SYSTEM_GRAPH)
     # traversal = graph.get_traversal()

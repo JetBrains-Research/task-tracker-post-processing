@@ -69,7 +69,7 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
 
         self._start_vertex = Vertex(self, vertex_type=solution_space_consts.VERTEX_TYPE.START)
         self._end_vertex = Vertex(self, vertex_type=solution_space_consts.VERTEX_TYPE.END)
-        self._empty_vertex = Vertex(self, Code.from_source('', TEST_RESULT.CORRECT_CODE.value, language))
+        self._empty_vertex = Vertex(self, Code.from_source('', TEST_RESULT.CORRECT_CODE.value, language=language))
 
         self._dist = VertexDistanceMatrix(to_store_dist=to_store_dist)
 
@@ -108,6 +108,14 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
     @property
     def empty_vertex(self) -> Vertex:
         return self._empty_vertex
+
+    @property
+    def to_store_dist(self) -> bool:
+        return self._dist.to_store_dist
+
+    @to_store_dist.setter
+    def to_store_dist(self, value) -> None:
+        self._dist.to_store_dist = value
 
     def __iter__(self) -> GraphIterator:
         return GraphIterator(self._start_vertex)
