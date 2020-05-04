@@ -89,9 +89,9 @@ anon_distance = [[0, 8, 12, 20, 33, 21],
                  [24, 21, 27, 16, 24, 0]]
 
 # Distances between all canon trees for all 3 vertices:
-canon_distance = {VERTEX.VERTEX_0: {VERTEX.VERTEX_0: 0, VERTEX.VERTEX_1: 12, VERTEX.VERTEX_2: 4},
+canon_distance = {VERTEX.VERTEX_0: {VERTEX.VERTEX_0: 0, VERTEX.VERTEX_1: 12, VERTEX.VERTEX_2: 16},
                   VERTEX.VERTEX_1: {VERTEX.VERTEX_0: 12, VERTEX.VERTEX_1: 0, VERTEX.VERTEX_2: 14},
-                  VERTEX.VERTEX_2: {VERTEX.VERTEX_0: 4, VERTEX.VERTEX_1: 14, VERTEX.VERTEX_2: 0}}
+                  VERTEX.VERTEX_2: {VERTEX.VERTEX_0: 16, VERTEX.VERTEX_1: 14, VERTEX.VERTEX_2: 0}}
 
 # If we add fragments to the solution graph in that order, vertices will be created or updated like this:
 #  *adding fragment_0*  vertex_0 created
