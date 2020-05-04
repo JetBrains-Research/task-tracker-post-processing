@@ -19,7 +19,7 @@ def get_result_file_name(name_prefix: str, data_path: Optional[str] = None, exte
     return change_extension_to(name_prefix, extension)
 
 
-def get_labels_for_plots(column: STATISTICS_KEY) -> Dict[str, str]:
+def get_labels_for_freq_plots(column: STATISTICS_KEY) -> Dict[str, str]:
     return {
         STATISTICS_FREQ: STATISTICS_SHOWING_KEY.FREQ.value,
         column.value: get_readable_key(column.value)

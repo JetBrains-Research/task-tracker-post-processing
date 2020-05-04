@@ -7,10 +7,10 @@ import pandas as pd
 import plotly.express as px
 
 from src.main.util import consts
-from src.main.plots.util.plotly_util import save_plot
+from src.main.plots.util.plotly_util import save_plot, plot_freq_chart
 from src.main.util.log_util import log_and_raise_error
 from src.main.util.file_util import get_parent_folder, deserialize_data_from_file
-from src.main.plots.util.plots_common import to_filter_rare_values, get_readable_key, get_labels_for_plots
+from src.main.plots.util.plots_common import to_filter_rare_values, get_readable_key, get_labels_for_freq_plots
 from src.main.plots.util.consts import PLOTTY_CATEGORY_ORDER, PLOT_TYPE, STATISTICS_FREQ, STATISTICS_SHOWING_KEY, \
     STATISTICS_KEY, STATISTICS_COLORS
 
@@ -50,43 +50,19 @@ def __plot_pie_chart(statistics_df: pd.DataFrame, title: str, path: str, column:
     save_plot(fig, path, PLOT_TYPE.PIE, plot_name, format, auto_open)
 
 
-def __plot_bar_chart(statistics_df: pd.DataFrame, title: str,  path: str, column: STATISTICS_KEY,
-                     labels: Dict[str, str], plot_name: str = 'distribution_plot',
-                     format: consts.EXTENSION = consts.EXTENSION.HTML, auto_open: bool = False,
-                     x_category_order: PLOTTY_CATEGORY_ORDER = PLOTTY_CATEGORY_ORDER.TOTAL_ASCENDING) -> None:
-    # x_category_order='total ascending' means: in order of increasing values in Y
-    # x_category_order='category ascending' means: in order of increasing values in X
-    fig = px.bar(statistics_df, x=column.value, y=STATISTICS_FREQ, title=title, labels=labels,
-                 hover_data=[column.value, STATISTICS_FREQ])
-    fig.update_layout(
-        yaxis=dict(
-            title_text=STATISTICS_SHOWING_KEY.FREQ.value
-        ),
-        xaxis=dict(
-            title_text=get_readable_key(column.value),
-            # We use type = 'category' because we want to display all values (numbers and strings)
-            type='category',
-            categoryorder=x_category_order.value
-        ),
-        plot_bgcolor=STATISTICS_COLORS.BAR_CHART_BG.value
-    )
-    fig.update_yaxes(automargin=True)
-    save_plot(fig, path, PLOT_TYPE.BAR, plot_name, format, auto_open)
-
-
 def plot_profile_statistics(file: str, column: STATISTICS_KEY, plot_type: PLOT_TYPE, to_union_rare: bool = False,
                             format: consts.EXTENSION = consts.EXTENSION.HTML, auto_open: bool = False,
                             x_category_order: PLOTTY_CATEGORY_ORDER = PLOTTY_CATEGORY_ORDER.TOTAL_ASCENDING) -> None:
     default_value = column.get_default()
     statistics_df = __get_statistics_df_from_file(file, column, default_value, to_union_rare)
     path = get_parent_folder(file)
-    labels = get_labels_for_plots(column)
+    labels = get_labels_for_freq_plots(column)
     title = __get_title_for_plots(column)
     if plot_type == PLOT_TYPE.PIE:
         __plot_pie_chart(statistics_df, title, path, column, labels, plot_name=column.value, format=format,
                          auto_open=auto_open)
     elif plot_type == PLOT_TYPE.BAR:
-        __plot_bar_chart(statistics_df, title, path, column, labels, plot_name=column.value, format=format,
-                         auto_open=auto_open, x_category_order=x_category_order)
+        plot_freq_chart(statistics_df, title, path, column, labels, plot_name=column.value, format=format,
+                        auto_open=auto_open, x_category_order=x_category_order)
     else:
         log_and_raise_error(f'Plot type {plot_type} is incorrect!', log)

@@ -93,7 +93,7 @@ LARGE_SIZE = 50
 class STATISTICS_KEY(Enum):
     AGE = CODE_TRACKER_COLUMN.AGE.value
     EXPERIENCE = CODE_TRACKER_COLUMN.EXPERIENCE.value
-    VERTICES_NUMBER = 'Vertices number'
+    NODES_NUMBER = 'Nodes number'
 
     def get_default(self) -> DEFAULT_VALUE:
         if self == STATISTICS_KEY.AGE:
@@ -139,6 +139,7 @@ class STATISTICS_INFO_FOR_PLOTS(Enum):
 class PLOTTY_CATEGORY_ORDER(Enum):
     TOTAL_ASCENDING = 'total ascending'
     CATEGORY_ASCENDING = 'category ascending'
+    TRACE = 'trace'
 
 
 DEFAULT_PATH_FOR_PLOTS = os.path.join(RESOURCES_PATH, 'plots')
