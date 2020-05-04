@@ -40,12 +40,10 @@ def __get_chains(task: TASK) -> List[Tuple[List[str], str]]:
     return res_chains
 
 
-# Todo: check everywhere if to_store_dist is neede, because it really slows everything down
 def get_solution_graph(task: TASK, to_plot_graph: bool = True,
-                       plot_prefix: str = 'path_finder_test',
-                       to_store_dist: bool = True) -> SolutionGraph:
+                       plot_prefix: str = 'path_finder_test') -> SolutionGraph:
     chains = __get_chains(task)
-    sg = SolutionGraph(task, to_store_dist=to_store_dist)
+    sg = SolutionGraph(task)
     code_info = CodeInfo(User())
     for chain in chains:
         sources, goal = chain

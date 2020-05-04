@@ -11,13 +11,12 @@ from src.main.util.log_util import log_and_raise_error
 from src.main.solution_space.serialized_code import Code
 from src.main.solution_space.data_classes import CodeInfo
 from src.main.util.helper_classes.id_counter import IdCounter
-from src.main.solution_space.distance import VertexDistanceMatrix
 from src.main.util.helper_classes.pretty_string import PrettyString
 from src.main.solution_space import consts as solution_space_consts
 from src.main.util.file_util import remove_directory, create_directory
 from src.main.util.consts import LOGGER_NAME, TASK, LANGUAGE, TEST_RESULT
 from src.main.canonicalization.canonicalization import are_asts_equal, get_code_from_tree
-from src.main.solution_space.consts import VERTEX_TYPE, GRAPH_FOLDER_PREFIX, SOLUTION_SPACE_FOLDER, FILE_PREFIX
+from src.main.solution_space.consts import GRAPH_FOLDER_PREFIX, SOLUTION_SPACE_FOLDER, FILE_PREFIX
 
 
 log = logging.getLogger(LOGGER_NAME)
@@ -55,8 +54,7 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
     solution_space_folder = SOLUTION_SPACE_FOLDER
 
     def __init__(self, task: TASK, language: LANGUAGE = LANGUAGE.PYTHON, to_delete_old_graph: bool = True,
-                 graph_folder_prefix: str = GRAPH_FOLDER_PREFIX, file_prefix: str = FILE_PREFIX,
-                 to_store_dist: bool = True):
+                 graph_folder_prefix: str = GRAPH_FOLDER_PREFIX, file_prefix: str = FILE_PREFIX):
         super().__init__()
         if language == LANGUAGE.NOT_DEFINED:
             log_and_raise_error(f'Error during constructing a solution graph. Language is not defined', log)
@@ -70,8 +68,6 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
         self._start_vertex = Vertex(self, vertex_type=solution_space_consts.VERTEX_TYPE.START)
         self._end_vertex = Vertex(self, vertex_type=solution_space_consts.VERTEX_TYPE.END)
         self._empty_vertex = Vertex(self, Code.from_source('', TEST_RESULT.CORRECT_CODE.value, language=language))
-
-        self._dist = VertexDistanceMatrix(to_store_dist=to_store_dist)
 
         if to_delete_old_graph:
             remove_directory(self._graph_directory)
@@ -109,14 +105,6 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
     def empty_vertex(self) -> Vertex:
         return self._empty_vertex
 
-    @property
-    def to_store_dist(self) -> bool:
-        return self._dist.to_store_dist
-
-    @to_store_dist.setter
-    def to_store_dist(self, value) -> None:
-        self._dist.to_store_dist = value
-
     def __iter__(self) -> GraphIterator:
         return GraphIterator(self._start_vertex)
 
@@ -145,30 +133,12 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
         for vertex in self.get_traversal():
             vertex.serialized_code.recreate_files_for_trees(self._graph_directory)
 
-    # Todo: add tests
-    @staticmethod
-    def get_vertices_with_path(goal: Vertex) -> List[Vertex]:
-        visited = [goal]
-        vertices_queue = collections.deque(visited)
-        while vertices_queue:
-            vertex = vertices_queue.popleft()
-            for parent in vertex.parents:
-                # Todo: move to the foo
-                if parent not in visited \
-                        and parent.vertex_type == VERTEX_TYPE.INTERMEDIATE \
-                        and not parent.code.is_full():
-                    vertices_queue.append(parent)
-                    visited.append(parent)
-        # Remove goal
-        return visited[1:]
-
     def create_vertex(self, code: Code, code_info: CodeInfo) -> Vertex:
         vertex = Vertex(self, code=code)
         vertex.add_code_info(code_info)
         if vertex.serialized_code.is_full():
             log.info(f'Connect full code to the end vertex')
             self.connect_to_end_vertex(vertex)
-        self._dist.add_dist(vertex)
         return vertex
 
     def find_vertex(self, canon_tree: ast.AST) -> Optional[Vertex]:
@@ -185,8 +155,6 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
         if vertex:
             vertex.add_code_info(code_info)
             anon_tree_file = vertex.serialized_code.add_anon_tree(code.anon_tree)
-            if anon_tree_file:
-                self._dist.update_dist(vertex, anon_tree_file)
             return vertex
         log.info(f'Not found any existing vertex for code: {str(code)}, creating a new one')
         return self.create_vertex(code, code_info)
@@ -213,9 +181,6 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
                 prev_vertex.add_child(next_vertex)
                 prev_vertex = next_vertex
         log.info(f'Finish adding code-info chain')
-
-    def get_dist_between_vertices(self, src_vertex: Vertex, dst_vertex: Vertex) -> int:
-        return self._dist.get_dist(src_vertex, dst_vertex)
 
     def __str__(self) -> str:
         vertices_str = ''
