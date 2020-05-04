@@ -84,8 +84,9 @@ class IDistanceMatrix(Generic[Item, Upd], metaclass=ABCMeta):
             return False
 
         for old_item in self._dist.keys():
-            self._dist[new_item][old_item] = self.__find_dist(new_item, old_item)
-            self._dist[old_item][new_item] = self.__find_dist(old_item, new_item)
+            dist = self.__find_dist(new_item, old_item)
+            self._dist[new_item][old_item] = dist
+            self._dist[old_item][new_item] = dist
         return True
 
     def update_dist(self, upd_item: Item, updates: Upd) -> bool:
@@ -97,10 +98,16 @@ class IDistanceMatrix(Generic[Item, Upd], metaclass=ABCMeta):
             log.info('This item doesn\'t exist, so dist cannot be updated')
             return False
         for item in self._dist.keys():
-            upd_dist = self.__find_updated_dist(item, updates)
-            self._dist[item][upd_item] = min(self._dist[item][upd_item], upd_dist)
-            upd_dist = self.__find_updated_dist(updates, item)
-            self._dist[upd_item][item] = min(self._dist[upd_item][item], upd_dist)
+            # We can not get a distance less than 0
+            if self._dist[item][upd_item] == 0:
+                continue
+            upd_dist = min(self._dist[item][upd_item], self.__find_updated_dist(item, updates))
+            self._dist[item][upd_item] = upd_dist
+            self._dist[upd_item][item] = upd_dist
+            # upd_dist = self.__find_updated_dist(item, updates)
+            # self._dist[item][upd_item] = min(self._dist[item][upd_item], upd_dist)
+            # upd_dist = self.__find_updated_dist(updates, item)
+            # self._dist[upd_item][item] = min(self._dist[upd_item][item], upd_dist)
         return True
 
     @abstractmethod
@@ -147,7 +154,7 @@ class VertexDistanceMatrix(IDistanceMatrix[Vertex, str]):
     # "TypeError: Can't instantiate abstract class ... with abstract methods ..." is raised.
     def _IDistanceMatrix__find_dist(self, src: Vertex, dst: Vertex) -> int:
         # Todo: it seems that GumTreeDiff always return 0 on the same fragments, but we need to add tests to be sure
-        if src == dst:
+        if src.id == dst.id:
             return 0
 
         src_anon_files = src.serialized_code.get_anon_files()
@@ -184,5 +191,8 @@ class VertexDistanceMatrix(IDistanceMatrix[Vertex, str]):
 
         for src_file, dst_file in itertools.product(src_files, dst_files):
             diffs_number = GumTreeDiff.get_diffs_number(src_file, dst_file)
+            # If current diffs_number is a zero already, we cannot reduce the distance anymore
+            if diffs_number == 0:
+                return 0
             diffs_numbers.append(diffs_number)
         return min(diffs_numbers)

@@ -4,37 +4,24 @@ node [shape=record fontname=Arial];
 
 3 [label="Vertex 3"]
 4 [label="Vertex 4"]
-12 [label="Vertex 12"]
-5 [label="Vertex 5"]
-13 [label="Vertex 13"]
 6 [label="Vertex 6"]
-8 [label="Vertex 8"]
-14 [label="Vertex 14"]
+5 [label="Vertex 5"]
 7 [label="Vertex 7"]
-10 [label="Vertex 10"]
+8 [label="Vertex 8"]
 9 [label="Vertex 9"]
-15 [label="Vertex 15"]
-11 [label="Vertex 11"]
-16 [label="Vertex 16"]
-17 [label="Vertex 17"]
+10 [label="Vertex 10"]
 1 [label="Vertex 1. End vertex"]
 
 
-3 -> 4, 12
-4 -> 5
-12 -> 13
-5 -> 6, 8
-13 -> 14
-6 -> 7, 10
+2 -> 2, 3, 4, 6
+3 -> 1
+4 -> 2, 5
+6 -> 6, 7
+5 -> 1
+7 -> 8
 8 -> 9
-14 -> 15
-7 -> 1
-10 -> 6, 11
 9 -> 10
-15 -> 16
-11 -> 1
-16 -> 17
-17 -> 1
+10 -> 1
 
 
 }

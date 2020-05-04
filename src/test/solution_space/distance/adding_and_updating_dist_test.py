@@ -30,6 +30,7 @@ class VERTEX(Enum):
     VERTEX_1 = 'vertex_1'
     VERTEX_2 = 'vertex_2'
 
+
 # For each vertex we will store indices of fragments, that belong to it.
 # Fragments with the same canon tree for the vertex_0:
 fragment_0 = "a = 5\n" \
@@ -45,7 +46,6 @@ fragment_2 = "c = 4 + 1\n" \
              "    print(4+1)"
 
 vertex_0_indices = [0, 1, 2]
-
 
 # Fragments with the same canon tree for the vertex_1:
 fragment_3 = "a = int(input())\n" \
@@ -64,7 +64,6 @@ fragment_5 = "a = int(input())\n" \
 
 vertex_2_indices = [5]
 
-
 all_fragments = [fragment_0, fragment_1, fragment_2, fragment_3, fragment_4, fragment_5]
 
 # For each vertex we store indices of fragments (according to all_fragments list), which belong to this vertex:
@@ -79,6 +78,7 @@ def get_vertex_by_index(index: 0) -> VERTEX:
             return vertex
     raise ValueError(f'No vertices found for given index {index}')
 
+
 # Distances between all anon trees for all 6 fragments:
 # (Seems GumTreeDiff distance is not commutative :c )
 anon_distance = [[0, 8, 12, 20, 33, 21],
@@ -89,10 +89,9 @@ anon_distance = [[0, 8, 12, 20, 33, 21],
                  [24, 21, 27, 16, 24, 0]]
 
 # Distances between all canon trees for all 3 vertices:
-canon_distance = {VERTEX.VERTEX_0: {VERTEX.VERTEX_0: 0, VERTEX.VERTEX_1: 18, VERTEX.VERTEX_2: 19},
-                  VERTEX.VERTEX_1: {VERTEX.VERTEX_0: 18, VERTEX.VERTEX_1: 0, VERTEX.VERTEX_2: 16},
-                  VERTEX.VERTEX_2: {VERTEX.VERTEX_0: 19, VERTEX.VERTEX_1: 16, VERTEX.VERTEX_2: 0}}
-
+canon_distance = {VERTEX.VERTEX_0: {VERTEX.VERTEX_0: 0, VERTEX.VERTEX_1: 12, VERTEX.VERTEX_2: 4},
+                  VERTEX.VERTEX_1: {VERTEX.VERTEX_0: 12, VERTEX.VERTEX_1: 0, VERTEX.VERTEX_2: 14},
+                  VERTEX.VERTEX_2: {VERTEX.VERTEX_0: 4, VERTEX.VERTEX_1: 14, VERTEX.VERTEX_2: 0}}
 
 # If we add fragments to the solution graph in that order, vertices will be created or updated like this:
 #  *adding fragment_0*  vertex_0 created

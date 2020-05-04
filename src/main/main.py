@@ -7,13 +7,11 @@ from datetime import datetime
 
 import pandas as pd
 
-from src.main.preprocessing.inefficient_statements_removing import remove_inefficient_statements
-from src.main.preprocessing.intermediate_diffs_removing import remove_intermediate_diffs
-from src.main.solution_space.consts import TEST_SYSTEM_GRAPH
 from src.main.util import consts
 from src.main.util.file_util import add_slash
 from src.main.util.log_util import configure_logger
 from src.main.solution_space.hint import HintHandler
+from src.main.solution_space.consts import TEST_SYSTEM_GRAPH
 from src.main.util.consts import PATH_CMD_ARG, TASK, EXPERIENCE
 from src.main.solution_space.data_classes import User, CodeInfo
 from src.main.preprocessing.preprocessing import preprocess_data
@@ -22,8 +20,9 @@ from src.main.solution_space.path_finder.path_finder_v_2 import PathFinderV2
 from src.main.solution_space.path_finder_test_system import TestSystem, TEST_INPUT
 from src.main.solution_space.solution_space_handler import construct_solution_graph
 from src.main.solution_space.solution_space_visualizer import SolutionSpaceVisualizer
-from src.main.solution_space.solution_space_serializer import SolutionSpaceSerializer
+from src.main.preprocessing.intermediate_diffs_removing import remove_intermediate_diffs
 from src.main.solution_space.measured_vertex.measured_vertex_v_1 import MeasuredVertexV1
+from src.main.preprocessing.inefficient_statements_removing import remove_inefficient_statements
 
 pd.set_option('display.max_rows', 250)
 pd.set_option('display.max_columns', 100)
@@ -66,12 +65,12 @@ def main() -> None:
     """
     Graph constructing
     """
-    # graph = construct_solution_graph(path, TASK.PIES)
-    # print('Graph was constructed')
+    graph = construct_solution_graph(path, TASK.PIES)
+    print('Graph was constructed')
 
     """
     Graph serialization
-    """
+    # """
     # path = SolutionSpaceSerializer.serialize(graph, serialized_file_prefix='serialized_graph_with_dist')
     # print(f'Serialized path: {path}')
     # new_graph = SolutionSpaceSerializer.deserialize(path)
@@ -81,7 +80,7 @@ def main() -> None:
     Graph visualization
     """
     # gv = SolutionSpaceVisualizer(graph)
-    # graph_representation_path = gv.create_graph_representation(name_prefix='graph_all_space_final_version')
+    # graph_representation_path = gv.create_graph_representation(name_prefix='graph_all_space_without_helper_folding')
     # print(graph_representation_path)
 
     """
@@ -96,13 +95,6 @@ def main() -> None:
     """
     Running test system
     """
-    # start = datetime.now()
-    # graph = construct_solution_graph(path, TASK.PIES)
-    # finish = datetime.now()
-    # log.info(f'Creating all graph is taking {finish - start}')
-    # SolutionSpaceSerializer.serialize(graph, 'test_system_graph')
-
-
     # test_fragments = [{TEST_INPUT.SOURCE_CODE: 'a = int(input())',
     #                    TEST_INPUT.AGE: 17,
     #                    TEST_INPUT.EXPERIENCE: EXPERIENCE.LESS_THAN_HALF_YEAR},
@@ -111,15 +103,6 @@ def main() -> None:
     #                    TEST_INPUT.EXPERIENCE: EXPERIENCE.FROM_ONE_TO_TWO_YEARS}]
     #
     # ts = TestSystem(test_fragments)
-
-    # graph = SolutionSpaceSerializer.deserialize(TEST_SYSTEM_GRAPH)
-    # traversal = graph.get_traversal()
-    # s = set(list(traversal))
-    # print(len(traversal))
-    # print(len(s))
-    # print([vertex.id for vertex in traversal])
-
-
 
 
 if __name__ == '__main__':
