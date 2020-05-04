@@ -7,6 +7,8 @@ from datetime import datetime
 
 import pandas as pd
 
+from src.main.preprocessing.inefficient_statements_removing import remove_inefficient_statements
+from src.main.preprocessing.intermediate_diffs_removing import remove_intermediate_diffs
 from src.main.solution_space.consts import TEST_SYSTEM_GRAPH
 from src.main.util import consts
 from src.main.util.file_util import add_slash
@@ -47,11 +49,19 @@ def main() -> None:
     """
     # preprocess_data(path)
 
+    # Todo: add splitting and finding tests results
+
     """
     Tasks separating
     Note: Path should contain files after preprocessing with tests results
     """
     # split_tasks_into_separate_files(path)
+
+    """
+    Removing inefficient statements and intermediate diffs
+    """
+    new_path = remove_intermediate_diffs(path)
+    remove_inefficient_statements(new_path)
 
     """
     Graph constructing
@@ -86,12 +96,12 @@ def main() -> None:
     """
     Running test system
     """
-    start = datetime.now()
-    graph = construct_solution_graph(path, TASK.PIES, to_store_dist=False)
-    graph.to_store_dist = True
-    finish = datetime.now()
-    log.info(f'Creating all graph is taking {finish - start}')
-    SolutionSpaceSerializer.serialize(graph, 'test_system_graph')
+    # start = datetime.now()
+    # graph = construct_solution_graph(path, TASK.PIES, to_store_dist=False)
+    # graph.to_store_dist = True
+    # finish = datetime.now()
+    # log.info(f'Creating all graph is taking {finish - start}')
+    # SolutionSpaceSerializer.serialize(graph, 'test_system_graph')
 
 
     # test_fragments = [{TEST_INPUT.SOURCE_CODE: 'a = int(input())',

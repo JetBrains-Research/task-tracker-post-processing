@@ -23,7 +23,7 @@ def __has_inefficient_statements(source: str) -> bool:
         return False
 
     with tempfile.NamedTemporaryFile() as tmp:
-        tmp.write(bytes(source, encoding=consts.UTF_ENCODING))
+        tmp.write(bytes(str(source), encoding=consts.UTF_ENCODING))
         tmp.seek(0)
 
         args = ['pylint', tmp.name]
