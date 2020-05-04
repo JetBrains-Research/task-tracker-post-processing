@@ -60,7 +60,6 @@ def get_expected_graph_representation(graph_type: GRAPH_TYPE) -> str:
 
 def get_graph_representation(graph: SolutionGraph) -> str:
     visualizer = SolutionSpaceVisualizer(graph)
-    visualizer.create_graph_representation('test_4')
     return visualizer._SolutionSpaceVisualizer__get_graph_representation()
 
 
