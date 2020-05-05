@@ -4,6 +4,7 @@ import os
 import ast
 import logging
 import collections
+from collections import defaultdict
 from typing import Optional, List, Tuple
 
 from src.main.solution_space.vertex import Vertex
@@ -53,6 +54,8 @@ class GraphIterator(collections.abc.Iterator):
 
 class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
     solution_space_folder = SOLUTION_SPACE_FOLDER
+    canon_trees_nodes_number = defaultdict(lambda: [])
+    anon_trees_nodes_number = defaultdict(lambda: [])
 
     def __init__(self, task: TASK, language: LANGUAGE = LANGUAGE.PYTHON, to_delete_old_graph: bool = True,
                  graph_folder_prefix: str = GRAPH_FOLDER_PREFIX, file_prefix: str = FILE_PREFIX,

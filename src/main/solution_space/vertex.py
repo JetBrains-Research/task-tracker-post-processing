@@ -11,6 +11,7 @@ from src.main.solution_space.data_classes import CodeInfo, User
 from src.main.solution_space import consts as solution_space_consts
 from src.main.util.helper_classes.pretty_string import PrettyString
 from src.main.solution_space.serialized_code import Code, SerializedCode
+from src.main.canonicalization.ast_tools import get_vertices_number_in_ast
 
 
 class Vertex(IdCounter, PrettyString):
@@ -25,6 +26,15 @@ class Vertex(IdCounter, PrettyString):
             else SerializedCode.from_code(code, graph.graph_directory, graph.file_prefix)
         self._vertex_type = vertex_type
         super().__init__(self)
+        self.__init_nodes_numbers()
+
+    def __init_nodes_numbers(self):
+        if self._serialized_code is not None:
+            canon_nodes_number = get_vertices_number_in_ast(self._serialized_code.canon_tree)
+            self._graph.canon_trees_nodes_number[canon_nodes_number].append(self.id)
+            for i, a_t in enumerate(self._serialized_code.anon_trees):
+                anon_nodes_number = get_vertices_number_in_ast(self._serialized_code.canon_tree)
+                self._graph.anon_trees_nodes_number[anon_nodes_number].append((self.id, i))
 
     @property
     def graph(self) -> sg.SolutionGraph:
