@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import logging
-from abc import ABCMeta, abstractmethod
 from typing import Type, Optional
+from abc import ABCMeta, abstractmethod
 
 from src.main.util import consts
 from src.main.solution_space.solution_graph import SolutionGraph, Vertex

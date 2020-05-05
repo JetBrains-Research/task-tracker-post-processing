@@ -1,19 +1,17 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import ast
-import logging
 from typing import List, Optional
 
-from src.main.util.consts import LOGGER_NAME
 from src.main.solution_space.solution_graph import Vertex
-from src.main.solution_space.path_finder.path_finder import IPathFinder
+from src.main.solution_space.path_finder_test_system import skip
 from src.main.canonicalization.canonicalization import get_code_from_tree
+from src.main.solution_space.path_finder.path_finder import IPathFinder, log
 from src.main.solution_space.consts import DIFFS_PERCENT_TO_GO_DIRECTLY, DISTANCE_TO_GRAPH_THRESHOLD, \
     ROLLBACK_PROBABILITY
 
-log = logging.getLogger(LOGGER_NAME)
 
-
+@skip(reason='We removed dist between vertices in the graph, because it worked too slow, but this version uses it')
 class PathFinderV2(IPathFinder):
 
     def find_next_vertex(self, user_vertex: Vertex) -> Vertex:

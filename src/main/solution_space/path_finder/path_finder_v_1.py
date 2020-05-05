@@ -3,11 +3,13 @@
 from typing import List, Optional
 
 from src.main.solution_space.solution_graph import Vertex
+from src.main.solution_space.path_finder_test_system import skip
 from src.main.solution_space.path_finder.path_finder import IPathFinder, log
 from src.main.canonicalization.canonicalization import get_code_from_tree, are_asts_equal
 from src.main.solution_space.consts import DISTANCE_TO_GRAPH_THRESHOLD, DIFFS_PERCENT_TO_GO_DIRECTLY
 
 
+@skip(reason='We removed dist between vertices in the graph, because it worked too slow, but this version uses it')
 class PathFinderV1(IPathFinder):
 
     def find_next_vertex(self, user_vertex: Vertex) -> Vertex:

@@ -17,7 +17,6 @@ from src.main.util.consts import PATH_CMD_ARG, TASK, EXPERIENCE
 from src.main.solution_space.data_classes import User, CodeInfo
 from src.main.preprocessing.preprocessing import preprocess_data
 from src.main.splitting.splitting import split_tasks_into_separate_files
-from src.main.solution_space.path_finder.path_finder_v_2 import PathFinderV2
 from src.main.solution_space.path_finder_test_system import TestSystem, TEST_INPUT
 from src.main.solution_space.solution_space_handler import construct_solution_graph
 from src.main.solution_space.solution_space_visualizer import SolutionSpaceVisualizer
@@ -62,14 +61,14 @@ def main() -> None:
     """
     Removing inefficient statements and intermediate diffs
     """
-    new_path = remove_intermediate_diffs(path)
-    remove_inefficient_statements(new_path)
+    # new_path = remove_intermediate_diffs(path)
+    # remove_inefficient_statements(new_path)
 
     """
     Graph constructing
     """
-    graph = construct_solution_graph(path, TASK.PIES)
-    print('Graph was constructed')
+    # graph = construct_solution_graph(path, TASK.PIES)
+    # print('Graph was constructed')
 
     """
     Nodes number statistics
@@ -104,14 +103,14 @@ def main() -> None:
     """
     Running test system
     """
-    # test_fragments = [{TEST_INPUT.SOURCE_CODE: 'a = int(input())',
-    #                    TEST_INPUT.AGE: 17,
-    #                    TEST_INPUT.EXPERIENCE: EXPERIENCE.LESS_THAN_HALF_YEAR},
-    #                   {TEST_INPUT.SOURCE_CODE: 'a = int(input())\nb = int(input())',
-    #                    TEST_INPUT.AGE: 12,
-    #                    TEST_INPUT.EXPERIENCE: EXPERIENCE.FROM_ONE_TO_TWO_YEARS}]
-    #
-    # ts = TestSystem(test_fragments)
+    test_fragments = [{TEST_INPUT.SOURCE_CODE: 'a = int(input())',
+                       TEST_INPUT.AGE: 17,
+                       TEST_INPUT.EXPERIENCE: EXPERIENCE.LESS_THAN_HALF_YEAR},
+                      {TEST_INPUT.SOURCE_CODE: 'a = int(input())\nb = int(input())',
+                       TEST_INPUT.AGE: 12,
+                       TEST_INPUT.EXPERIENCE: EXPERIENCE.FROM_ONE_TO_TWO_YEARS}]
+
+    ts = TestSystem(test_fragments, add_same_docs=True)
 
 
 if __name__ == '__main__':
