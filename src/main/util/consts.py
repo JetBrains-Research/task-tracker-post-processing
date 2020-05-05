@@ -192,7 +192,7 @@ class SPLIT(Enum):
     TASKS = 'tasks'
 
 
-LOGGER_FILE = ROOT_DIR + '../../../../logs_1.log'
+LOGGER_FILE = ROOT_DIR + '../../../../logs.log'
 LOGGER_NAME = 'main_logger'
 
 LOGGER_TEST_FILE = ROOT_DIR + '../../../../test_logs.log'

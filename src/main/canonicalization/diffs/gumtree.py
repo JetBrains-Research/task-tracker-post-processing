@@ -4,7 +4,6 @@ import ast
 import logging
 import tempfile
 from subprocess import check_output, CalledProcessError, STDOUT
-from threading import Lock
 
 from src.main.util import consts
 from src.main.util.log_util import log_and_raise_error
@@ -13,7 +12,6 @@ from src.main.canonicalization.canonicalization import get_code_from_tree
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
-lock = Lock()
 
 # Using GumTreeDiff: https://github.com/GumTreeDiff/gumtree/tree/master
 class GumTreeDiff:

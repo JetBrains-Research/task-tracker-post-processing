@@ -5,19 +5,18 @@ from __future__ import annotations
 import logging
 import itertools
 from queue import Queue
-from threading import Thread, Lock
+from threading import Thread
 from abc import ABCMeta, abstractmethod
 from typing import TypeVar, List, Generic, Dict, Union
 
 from src.main.util.consts import LOGGER_NAME
-from src.main.util.helper_classes.id_counter import IdCounter
 from src.main.util.log_util import log_and_raise_error
 from src.main.solution_space.solution_graph import Vertex
+from src.main.util.helper_classes.id_counter import IdCounter
 from src.main.canonicalization.diffs.gumtree import GumTreeDiff
 
 
 log = logging.getLogger(LOGGER_NAME)
-lock = Lock()
 
 Item = TypeVar('Item', bound=IdCounter)
 Upd = TypeVar('Upd')
@@ -26,10 +25,12 @@ Upd = TypeVar('Upd')
 class IDistanceMatrix(Generic[Item, Upd], metaclass=ABCMeta):
     _thread_number = 8
 
+    # Todo: We should use multiprocessing (or Parallel), not multithreading.
+    #  See https://timber.io/blog/multiprocessing-vs-multithreading-in-python-what-you-need-to-know/
+    #  We'll change it as soon as we start using DistanceMatrix again
     class DistFiller(Thread, IdCounter):
         def __init__(self, queue: Queue, distance_matrix: IDistanceMatrix):
-            Thread.__init__(self)
-            IdCounter.__init__(self)
+            super().__init__()
             log.info(f'Init {self.__class__.__name__} {self.id}')
             self._queue = queue
             self._dist_matrix = distance_matrix
@@ -43,6 +44,7 @@ class IDistanceMatrix(Generic[Item, Upd], metaclass=ABCMeta):
                     dist = self._dist_matrix._IDistanceMatrix__find_dist(src_item, dst_item)
                     log.info(f'Found dist for src {src_item.id}, dst {dst_item.id} is {dist}')
                     self._dist_matrix._dist[src_item][dst_item] = dist
+                    self._dist_matrix._dist[dst_item][src_item] = dist
                 finally:
                     log.info(f'Task done by {self.__class__.__name__} {self.id}')
                     self._queue.task_done()
@@ -104,10 +106,6 @@ class IDistanceMatrix(Generic[Item, Upd], metaclass=ABCMeta):
             upd_dist = min(self._dist[item][upd_item], self.__find_updated_dist(item, updates))
             self._dist[item][upd_item] = upd_dist
             self._dist[upd_item][item] = upd_dist
-            # upd_dist = self.__find_updated_dist(item, updates)
-            # self._dist[item][upd_item] = min(self._dist[item][upd_item], upd_dist)
-            # upd_dist = self.__find_updated_dist(updates, item)
-            # self._dist[upd_item][item] = min(self._dist[upd_item][item], upd_dist)
         return True
 
     @abstractmethod
@@ -121,26 +119,21 @@ class IDistanceMatrix(Generic[Item, Upd], metaclass=ABCMeta):
     def __fill_dist(self) -> None:
         log.info(f'Start filling dist matrix, dict contains {len(self._dist.keys())} items')
         queue = Queue()
-        for x in range(self._thread_number):
+        for _ in range(self._thread_number):
             dist_finder = IDistanceMatrix.DistFiller(queue, self)
             dist_finder.daemon = True
             dist_finder.start()
 
         # Even if we didn't store dist, we added items as keys, so now we can fill dict
-        for src_item, dst_item in itertools.product(self._dist.keys(), repeat=2):
+        for src_item, dst_item in itertools.combinations(self._dist.keys(), 2):
             queue.put((src_item, dst_item))
-            # dist = self.__find_dist(src_item, dst_item)
-            # self._dist[src_item][dst_item] = dist
         queue.join()
 
     # Get matrix sorted according vertex ids
     def __get_dist_matrix(self) -> List[List[int]]:
         matrix = []
-        for src_vertex, dst_vertices in sorted(self._dist.items(), key=(lambda item: item[0].id)):
-            row = []
-            for dst_vertex, dist in sorted(dst_vertices.items(), key = (lambda item: item[0].id)):
-                row.append(dist)
-            matrix.append(row)
+        for _, dst_vertices in sorted(self._dist.items(), key=(lambda item: item[0].id)):
+            matrix.append([dist for _, dist in sorted(dst_vertices.items(), key=(lambda item: item[0].id))])
         return matrix
 
 

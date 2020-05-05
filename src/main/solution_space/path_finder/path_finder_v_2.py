@@ -11,7 +11,7 @@ from src.main.solution_space.consts import DIFFS_PERCENT_TO_GO_DIRECTLY, DISTANC
     ROLLBACK_PROBABILITY
 
 
-@skip(reason='We removed dist between vertices in the graph, because it worked too slow, but this version uses it')
+@skip(reason='We removed dist between vertices in the graph because it worked too slow, but this version uses it')
 class PathFinderV2(IPathFinder):
 
     def find_next_vertex(self, user_vertex: Vertex) -> Vertex:

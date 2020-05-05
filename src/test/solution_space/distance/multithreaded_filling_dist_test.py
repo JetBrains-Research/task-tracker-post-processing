@@ -1,4 +1,5 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
+
 import logging
 from datetime import datetime
 
@@ -19,6 +20,7 @@ expected_dist_matrix = [[0,  22, 15, 20, 1,  13, 21, 56, 61],
                         [21, 49, 41, 46, 16, 8,  0,  35, 40],
                         [56, 83, 64, 69, 51, 43, 35, 0,  5 ],
                         [61, 88, 69, 68, 56, 48, 40, 5,  0 ]]
+
 
 @pytest.mark.skip(reason='We don\'t use dist in solution graph anymore')
 class TestMultithreadedFillingDist:
