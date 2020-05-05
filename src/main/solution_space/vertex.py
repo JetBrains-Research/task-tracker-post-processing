@@ -36,6 +36,11 @@ class Vertex(IdCounter, PrettyString):
                 anon_nodes_number = get_vertices_number_in_ast(self._serialized_code.canon_tree)
                 self._graph.anon_trees_nodes_number[anon_nodes_number].append((self.id, i))
 
+    def add_anon_tree_nodes_number(self) -> None:
+        last_index = len(self.serialized_code.anon_trees) - 1
+        anon_nodes_number = get_vertices_number_in_ast(self.serialized_code.anon_trees[last_index])
+        self.graph.anon_trees_nodes_number[anon_nodes_number].append((self.id, last_index))
+
     @property
     def graph(self) -> sg.SolutionGraph:
         return self._graph
