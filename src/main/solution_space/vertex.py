@@ -17,7 +17,6 @@ class Vertex(IdCounter, PrettyString):
 
     def __init__(self, graph: sg.SolutionGraph, code: Optional[Code] = None,
                  vertex_type: solution_space_consts.VERTEX_TYPE = solution_space_consts.VERTEX_TYPE.INTERMEDIATE):
-        super().__init__()
         self._parents = []
         self._children = []
         self._code_info_list = []
@@ -25,6 +24,7 @@ class Vertex(IdCounter, PrettyString):
         self._serialized_code = None if code is None \
             else SerializedCode.from_code(code, graph.graph_directory, graph.file_prefix)
         self._vertex_type = vertex_type
+        super().__init__(self)
 
     @property
     def graph(self) -> sg.SolutionGraph:

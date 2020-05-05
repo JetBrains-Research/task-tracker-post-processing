@@ -16,6 +16,11 @@ class B(IdCounter):
     pass
 
 
+class C(IdCounter):
+    def __init__(self):
+        super().__init__(self)
+
+
 def get_last_id_from_id_counter(class_name: str) -> int:
     return IdCounter._instances[class_name]
 
@@ -52,3 +57,15 @@ class TestIdCounter:
     def test_reset_all(self, i: int):
         run_reset_all_test_for_class(A)
         run_reset_all_test_for_class(B)
+
+    def test_empty_id_from_item_dict(self):
+        IdCounter.reset_all()
+        a = A()
+        with pytest.raises(ValueError):
+            A.get_item_by_id(a.id)
+
+    def test_getting_item_by_id(self):
+        IdCounter.reset_all()
+        c = C()
+        item = C.get_item_by_id(c.id)
+        assert c == item
