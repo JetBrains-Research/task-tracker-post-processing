@@ -6,14 +6,14 @@ from collections import defaultdict
 
 from src.main.util.consts import LOGGER_NAME
 from src.main.util.log_util import log_and_raise_error
-from src.main.util.default_dict_util import get_default_dict_with_default_dict_with_none, get_none
+from src.main.util.default_dict_util import get_default_dict_with_none
 
 log = logging.getLogger(LOGGER_NAME)
 
 
 class IdCounter:
     _instances: Dict[str, int] = defaultdict(int)
-    _id_item_dict_by_class: Dict[str, Dict[int, Any]] = defaultdict(get_default_dict_with_default_dict_with_none)
+    _id_item_dict_by_class: Dict[str, Dict[int, Type['IdCounter']]] = defaultdict(get_default_dict_with_none)
     _last_id = 0
 
     def __init__(self, to_store_items: bool = False):
