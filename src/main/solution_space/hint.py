@@ -38,9 +38,7 @@ class HintHandler:
 
     def get_hint(self, source_code: str, code_info: CodeInfo) -> Hint:
         diff_handler = RiversDiffHandler(source_code=source_code)
-        # Todo: find rate
-        rate = 0
-        user_vertex = Vertex(self._graph, Code.from_source(source_code, rate))
+        user_vertex = Vertex(self._graph, Code.from_source(source_code, rate=None, task=self._graph.task))
         user_vertex.add_code_info(code_info)
 
         next_vertex = self.path_finder.find_next_vertex(user_vertex)

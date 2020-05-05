@@ -18,6 +18,7 @@ class GumTreeDiff:
 
     @staticmethod
     def get_diffs_number(src_file: str, dst_file: str) -> int:
+        log.info('Calling GumTreeDiff')
         try:
             args = [consts.GUMTREE_PATH, 'diffn', src_file, dst_file]
             output = check_output(args, text=True, stderr=STDOUT).strip('\n')

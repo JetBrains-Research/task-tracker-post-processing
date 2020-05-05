@@ -130,7 +130,7 @@ def get_code_info_chain(sources: List[str]) -> List[Tuple[Code, CodeInfo]]:
     return [(Code.from_source(s, TEST_RESULT.CORRECT_CODE.value), CodeInfo(user)) for s in sources]
 
 
-@pytest.mark.skipif(to_skip(current_module_level=TEST_LEVEL.SOLUTION_SPACE), reason=TEST_LEVEL.SOLUTION_SPACE.value)
+@pytest.mark.skip(reason='We don\'t use dist in solution graph anymore')
 class TestDistBetweenVertices:
 
     # Check all fragments in same vertices have the same canon trees

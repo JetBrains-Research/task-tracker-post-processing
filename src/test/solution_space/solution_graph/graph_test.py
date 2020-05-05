@@ -36,25 +36,24 @@ VertexStructure = Dict[VERTEX_STRUCTURE, Union[str, int]]
 
 
 def create_graph_with_code() -> (SolutionGraph, List[Vertex], List[str]):
-    source_0 = ''
-    source_1 = 'print(\'Hello\')'
-    source_2 = 'a = int(input())\nprint(a)'
-    source_3 = 'x = 5\nif(x > 4):\n    print(x)'
+    empty_source = ''
+    source_0 = 'print(\'Hello\')'
+    source_1 = 'a = int(input())\nprint(a)'
+    source_2 = 'x = 5\nif(x > 4):\n    print(x)'
 
-    sources = [source_0, source_1, source_2, source_3]
+    sources = [source_0, source_1, source_2]
 
     sg = SolutionGraph(CURRENT_TASK)
     #           START_VERTEX
     #         /             \
-    #      vertex_0       vertex_1
+    #  empty vertex       vertex_0
     #         |           /    \
-    #      vertex_2     /   END_VERTEX
+    #      vertex_1     /   END_VERTEX
     #           \     /
-    #           vertex_3
+    #           vertex_2
 
     # Vertex_1 has to have a full_solution code since this vertex is connected with end_vertex
-    rates = [TEST_RESULT.CORRECT_CODE.value, TEST_RESULT.FULL_SOLUTION.value, TEST_RESULT.CORRECT_CODE.value,
-             TEST_RESULT.CORRECT_CODE.value]
+    rates = [TEST_RESULT.FULL_SOLUTION.value, TEST_RESULT.CORRECT_CODE.value, TEST_RESULT.CORRECT_CODE.value]
 
     vertices = [Vertex(sg, code=Code.from_source(s, rates[i])) for i, s in enumerate(sources)]
 
@@ -62,15 +61,14 @@ def create_graph_with_code() -> (SolutionGraph, List[Vertex], List[str]):
     list(map(lambda v: v.add_code_info(CodeInfo(User())), vertices))
 
     sg.connect_to_start_vertex(vertices[0])
-    sg.connect_to_start_vertex(vertices[1])
 
+    sg.empty_vertex.add_child(vertices[1])
     vertices[0].add_child(vertices[2])
-    vertices[1].add_child(vertices[3])
-    vertices[2].add_child(vertices[3])
+    vertices[1].add_child(vertices[2])
 
-    sg.connect_to_end_vertex(vertices[1])
+    sg.connect_to_end_vertex(vertices[0])
 
-    return sg, vertices, sources
+    return sg, [sg.empty_vertex] + vertices, [empty_source] + sources
 
 
 def find_or_create_vertex_with_code_info_and_rate_check(sg: SolutionGraph, source: str,
@@ -127,9 +125,9 @@ class TestGraph:
         init_default_ids()
         # A simple graph without any code just to check bfs
         sg = SolutionGraph(CURRENT_TASK)
-        #          START_VERTEX
-        #               |
-        #            vertex_1
+        #               START_VERTEX
+        #               |          \
+        #            vertex_1     empty_vertex
         #          /    |     \
         # vertex_2   vertex_3   vertex_4
         #       \    /      \    /
@@ -152,8 +150,8 @@ class TestGraph:
 
         sg.connect_to_end_vertex(vertex_6)
         # With start_vertex, but without end_vertex
-        expected_traversal = [sg.start_vertex, vertex_1, vertex_2, vertex_3, vertex_4, vertex_5, vertex_6]
-        actual_traversal = sg.get_traversal()
+        expected_traversal = [sg.start_vertex, sg.empty_vertex, vertex_1, vertex_2, vertex_3, vertex_4, vertex_5, vertex_6]
+        actual_traversal = sg.get_traversal(to_remove_start=False)
         assert actual_traversal == expected_traversal
 
     def test_finding_vertex(self) -> None:
@@ -185,7 +183,7 @@ class TestGraph:
         #
         #           START_VERTEX
         #         /             \
-        #      vertex_0       vertex_1
+        #     empty_vertex       vertex_1
         #         |           /    \
         #      vertex_2     /   END_VERTEX
         #           \     /
@@ -197,7 +195,7 @@ class TestGraph:
         #
         #                   START_VERTEX
         #               /      |          \
-        #         chain_0    vertex_0     vertex_1
+        #         chain_0  empty_vertex  vertex_1
         #              |       |          /    |
         #       [chain_1, vertex_2]      /     /
         #               \       \       /     /

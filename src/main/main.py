@@ -3,6 +3,7 @@
 import os
 import sys
 import logging
+from datetime import datetime
 
 import pandas as pd
 
@@ -10,16 +11,15 @@ from src.main.util import consts
 from src.main.util.file_util import add_slash
 from src.main.util.log_util import configure_logger
 from src.main.solution_space.hint import HintHandler
+from src.main.solution_space.consts import TEST_SYSTEM_GRAPH
 from src.main.plots.util.consts import PLOTTY_CATEGORY_ORDER
 from src.main.util.consts import PATH_CMD_ARG, TASK, EXPERIENCE
 from src.main.solution_space.data_classes import User, CodeInfo
 from src.main.preprocessing.preprocessing import preprocess_data
 from src.main.splitting.splitting import split_tasks_into_separate_files
-from src.main.solution_space.path_finder.path_finder_v_2 import PathFinderV2
 from src.main.solution_space.path_finder_test_system import TestSystem, TEST_INPUT
 from src.main.solution_space.solution_space_handler import construct_solution_graph
 from src.main.solution_space.solution_space_visualizer import SolutionSpaceVisualizer
-from src.main.solution_space.solution_space_serializer import SolutionSpaceSerializer
 from src.main.preprocessing.intermediate_diffs_removing import remove_intermediate_diffs
 from src.main.solution_space.measured_vertex.measured_vertex_v_1 import MeasuredVertexV1
 from src.main.preprocessing.inefficient_statements_removing import remove_inefficient_statements
@@ -42,13 +42,15 @@ def __get_data_path() -> str:
 
 
 def main() -> None:
-    configure_logger()
+    configure_logger(to_delete_previous_logs=True)
     path = __get_data_path()
 
     """
     Data preprocessing
     """
     # preprocess_data(path)
+
+    # Todo: add splitting and finding tests results
 
     """
     Tasks separating
@@ -57,10 +59,16 @@ def main() -> None:
     # split_tasks_into_separate_files(path)
 
     """
+    Removing inefficient statements and intermediate diffs
+    """
+    # new_path = remove_intermediate_diffs(path)
+    # remove_inefficient_statements(new_path)
+
+    """
     Graph constructing
     """
-    graph = construct_solution_graph(path, TASK.PIES, to_store_dist=False)
-    print('Graph was constructed')
+    # graph = construct_solution_graph(path, TASK.PIES)
+    # print('Graph was constructed')
 
     """
     Nodes number statistics
@@ -80,8 +88,8 @@ def main() -> None:
     Graph visualization
     """
     # gv = SolutionSpaceVisualizer(graph)
-    # graph_representation_path = gv.create_graph_representation(name_prefix='graph_all_space_without_helper_folding')
-    # print(graph_representation_path)
+    # graph_visualization_path = gv.visualize_graph(name_prefix='graph_all_space_without_helper_folding')
+    # print(graph_visualization_path)
 
     """
     Getting hint
@@ -102,7 +110,7 @@ def main() -> None:
     #                    TEST_INPUT.AGE: 12,
     #                    TEST_INPUT.EXPERIENCE: EXPERIENCE.FROM_ONE_TO_TWO_YEARS}]
     #
-    # ts = TestSystem(test_fragments)
+    # ts = TestSystem(test_fragments, add_same_docs=True)
 
 
 if __name__ == '__main__':

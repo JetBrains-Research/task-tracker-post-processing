@@ -15,16 +15,11 @@ def create_code_from_source(source: str, rate: float = TEST_RESULT.CORRECT_CODE.
     return Code(anon_tree, canon_tree, rate)
 
 
-def __get_two_sources_and_rates() -> Tuple[List[str], List[int]]:
+def get_two_vertices(sg: SolutionGraph) -> List[Vertex]:
     source_0 = 'print(\'Hi\')'
     source_1 = 'x = 6\nif x > 5:\n    x = 5\nprint(x)'
     sources = [source_0, source_1]
     rates = [TEST_RESULT.CORRECT_CODE.value] * len(sources)
-    return sources, rates
-
-
-def get_two_vertices(sg: SolutionGraph) -> List[Vertex]:
-    sources, rates = __get_two_sources_and_rates()
     return [Vertex(sg, code=Code.from_source(s, rates[i])) for i, s in enumerate(sources)]
 
 

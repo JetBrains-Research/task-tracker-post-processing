@@ -18,9 +18,9 @@ def get_graph() -> SolutionGraph:
 
 
 @pytest.mark.skipif(to_skip(current_module_level=TEST_LEVEL.SOLUTION_SPACE), reason=TEST_LEVEL.SOLUTION_SPACE.value)
-class TestRunGraphRepresentation:
+class TestRunGraphVisualization:
 
-    def test_run_graph_representation(self) -> None:
+    def test_run_graph_visualization(self) -> None:
         graph = get_graph()
         visualizer = SolutionSpaceVisualizer(graph)
-        visualizer.create_graph_representation()
+        visualizer.visualize_graph()

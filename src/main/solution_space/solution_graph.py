@@ -12,14 +12,13 @@ from src.main.util.log_util import log_and_raise_error
 from src.main.solution_space.serialized_code import Code
 from src.main.solution_space.data_classes import CodeInfo
 from src.main.util.default_dict_util import get_empty_list
-from src.main.util.consts import LOGGER_NAME, TASK, LANGUAGE
 from src.main.util.helper_classes.id_counter import IdCounter
-from src.main.solution_space.distance import VertexDistanceMatrix
 from src.main.util.helper_classes.pretty_string import PrettyString
 from src.main.solution_space import consts as solution_space_consts
 from src.main.util.file_util import remove_directory, create_directory
+from src.main.util.consts import LOGGER_NAME, TASK, LANGUAGE, TEST_RESULT
 from src.main.canonicalization.canonicalization import are_asts_equal, get_code_from_tree
-from src.main.solution_space.consts import VERTEX_TYPE, GRAPH_FOLDER_PREFIX, SOLUTION_SPACE_FOLDER, FILE_PREFIX
+from src.main.solution_space.consts import GRAPH_FOLDER_PREFIX, SOLUTION_SPACE_FOLDER, FILE_PREFIX
 
 
 log = logging.getLogger(LOGGER_NAME)
@@ -41,7 +40,7 @@ class GraphIterator(collections.abc.Iterator):
         while vertices_queue:
             vertex = vertices_queue.popleft()
             for child in vertex.children:
-                if child not in visited and child.vertex_type != VERTEX_TYPE.END:
+                if child not in visited:
                     vertices_queue.append(child)
                     visited.append(child)
         return visited
@@ -57,8 +56,7 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
     solution_space_folder = SOLUTION_SPACE_FOLDER
 
     def __init__(self, task: TASK, language: LANGUAGE = LANGUAGE.PYTHON, to_delete_old_graph: bool = True,
-                 graph_folder_prefix: str = GRAPH_FOLDER_PREFIX, file_prefix: str = FILE_PREFIX,
-                 to_store_dist: bool = True):
+                 graph_folder_prefix: str = GRAPH_FOLDER_PREFIX, file_prefix: str = FILE_PREFIX):
         super().__init__()
         if language == LANGUAGE.NOT_DEFINED:
             log_and_raise_error(f'Error during constructing a solution graph. Language is not defined', log)
@@ -74,8 +72,8 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
 
         self._start_vertex = Vertex(self, vertex_type=solution_space_consts.VERTEX_TYPE.START)
         self._end_vertex = Vertex(self, vertex_type=solution_space_consts.VERTEX_TYPE.END)
-
-        self._dist = VertexDistanceMatrix(to_store_dist=to_store_dist)
+        self._empty_vertex = Vertex(self, Code.from_source('', TEST_RESULT.CORRECT_CODE.value, language=language))
+        self.connect_to_start_vertex(self._empty_vertex)
 
         if to_delete_old_graph:
             remove_directory(self._graph_directory)
@@ -109,11 +107,25 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
     def language(self) -> LANGUAGE:
         return self._language
 
+    @property
+    def empty_vertex(self) -> Vertex:
+        return self._empty_vertex
+
     def __iter__(self) -> GraphIterator:
         return GraphIterator(self._start_vertex)
 
-    def get_traversal(self) -> List[Vertex]:
-        return self.__iter__().traversal
+    def is_empty_vertex(self, vertex: Vertex) -> bool:
+        return vertex == self._empty_vertex
+
+    def get_traversal(self, to_remove_start: bool = True, to_remove_end: bool = True) -> List[Vertex]:
+        traversal = self.__iter__().traversal
+        # Traversal always contains START_VERTEX, because it's a root for GraphIterator
+        if to_remove_start:
+            traversal.remove(self._start_vertex)
+        # However, it may not contain END_VERTEX if there is no path from the root to it:
+        if to_remove_end and self._end_vertex in traversal:
+            traversal.remove(self._end_vertex)
+        return traversal
 
     def get_default_graph_directory(self) -> str:
         return os.path.join(self.__class__.solution_space_folder, str(self._task.value),
@@ -124,27 +136,8 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
             new_path_for_graph = self.get_default_graph_directory()
         self._graph_directory = new_path_for_graph
 
-        vertices = self.get_traversal()
-        vertices.remove(self.start_vertex)
-        for vertex in vertices:
+        for vertex in self.get_traversal():
             vertex.serialized_code.recreate_files_for_trees(self._graph_directory)
-
-    # Todo: add tests
-    @staticmethod
-    def get_vertices_with_path(goal: Vertex) -> List[Vertex]:
-        visited = [goal]
-        vertices_queue = collections.deque(visited)
-        while vertices_queue:
-            vertex = vertices_queue.popleft()
-            for parent in vertex.parents:
-                # Todo: move to the foo
-                if parent not in visited \
-                        and parent.vertex_type == VERTEX_TYPE.INTERMEDIATE \
-                        and not parent.code.is_full():
-                    vertices_queue.append(parent)
-                    visited.append(parent)
-        # Remove goal
-        return visited[1:]
 
     def create_vertex(self, code: Code, code_info: CodeInfo) -> Vertex:
         vertex = Vertex(self, code=code)
@@ -152,15 +145,12 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
         if vertex.serialized_code.is_full():
             log.info(f'Connect full code to the end vertex')
             self.connect_to_end_vertex(vertex)
-        self._dist.add_dist(vertex)
         return vertex
 
     def find_vertex(self, canon_tree: ast.AST) -> Optional[Vertex]:
-        vertices = self.get_traversal()
-        vertices.remove(self.start_vertex)
-        for vertex in vertices:
+        for vertex in self.get_traversal():
             if are_asts_equal(vertex.serialized_code.canon_tree, canon_tree):
-                log.info(f'Found an existing vertex for canon_tree: {str(get_code_from_tree(canon_tree))}')
+                log.info(f'Found an existing vertex {vertex.id} for canon_tree: {str(get_code_from_tree(canon_tree))}')
                 return vertex
         return None
 
@@ -172,7 +162,6 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
             vertex.add_code_info(code_info)
             anon_tree_file = vertex.serialized_code.add_anon_tree(code.anon_tree)
             if anon_tree_file:
-                self._dist.update_dist(vertex, anon_tree_file)
                 vertex.add_anon_tree_nodes_number()
             return vertex
         log.info(f'Not found any existing vertex for code: {str(code)}, creating a new one')
@@ -201,16 +190,12 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
                 prev_vertex = next_vertex
         log.info(f'Finish adding code-info chain')
 
-    def get_dist_between_vertices(self, src_vertex: Vertex, dst_vertex: Vertex) -> int:
-        return self._dist.get_dist(src_vertex, dst_vertex)
-
     def __str__(self) -> str:
         vertices_str = ''
-        vertices = self.get_traversal()
-        vertices_str += str(self.start_vertex) + '\n'
-        vertices.remove(self.start_vertex)
-        for vertex in vertices:
+        vertices_str += f'Start vertex:\n{str(self.start_vertex)}\n'
+        for vertex in self.get_traversal():
             vertices_str += str(vertex) + '\n'
+        vertices_str += f'End vertex:\n{str(self.start_vertex)}\n'
         return f'Task: {self._task.value}\n' \
                f'Language: {self._language.value}\n' \
                f'Vertices:\n{vertices_str}\n'

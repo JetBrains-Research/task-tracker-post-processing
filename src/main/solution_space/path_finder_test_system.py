@@ -15,19 +15,19 @@ from typing import Type, TypeVar, List, Dict, Any, Tuple, Optional
 
 from prettytable import PrettyTable, ALL
 
-from src.main.util.consts import EXPERIENCE, LOGGER_NAME
+from src.main.util.consts import LOGGER_NAME
 from src.main.solution_space.serialized_code import Code
 from src.main.solution_space.solution_graph import Vertex
 from src.main.util.file_util import get_class_parent_package
 from src.main.solution_space.consts import TEST_SYSTEM_GRAPH
 from src.main.solution_space.path_finder.path_finder import IPathFinder
 from src.main.solution_space.data_classes import CodeInfo, User, Profile
-from src.main.util.log_util import log_and_raise_error, configure_logger
 from src.main.canonicalization.canonicalization import get_code_from_tree, logging
 from src.main.solution_space.measured_vertex.measured_vertex import IMeasuredVertex
 from src.main.solution_space.solution_space_serializer import SolutionSpaceSerializer
 
 log = logging.getLogger(LOGGER_NAME)
+
 
 class TEST_INPUT(Enum):
     SOURCE_CODE = 'source'
@@ -41,21 +41,31 @@ TestInput = Dict[TEST_INPUT, Any]
 MethodsDict = Dict[Type[Class], Dict[str, FunctionType]]
 
 
+def skip(reason: str):
+    def wrap(clazz: Type[Class]) -> None:
+        clazz.is_skipped = True
+        clazz.skipped_reason = reason
+    return wrap
+
+
 # Print results of running all possible PathFinder and MeasuredVertex versions, using https://github.com/kxxoling/PTable
 class TestSystem:
     _no_method_sign = '---'
     _spaces_to_crop_in_doc = 8
 
-    def __init__(self, test_inputs: List[TestInput], serialized_graph_path: str = TEST_SYSTEM_GRAPH):
+    def __init__(self, test_inputs: List[TestInput], serialized_graph_path: str = TEST_SYSTEM_GRAPH,
+                 add_same_docs: bool = True):
         graph = SolutionSpaceSerializer.deserialize(serialized_graph_path)
         self._graph = graph
+        self._add_same_docs = add_same_docs
         self._test_inputs = test_inputs
         self._path_finder_subclasses = self.__get_all_subclasses(IPathFinder)
         self._measured_vertex_subclasses = self.__get_all_subclasses(IMeasuredVertex)
-        print(self.get_methods_doc_table(self._measured_vertex_subclasses, 'MeasuredVertex description', ['__lt__']))
-        print('\n')
-        print(self.get_methods_doc_table(self._path_finder_subclasses, 'PathFinder description', None))
-        print(self.get_result_table('Results of running find_next_vertex'))
+        TestSystem.__print_output(self.get_methods_doc_table(self._measured_vertex_subclasses,
+                                                             'MeasuredVertex description',
+                                                             ['__lt__']))
+        TestSystem.__print_output(self.get_methods_doc_table(self._path_finder_subclasses, 'PathFinder description'))
+        TestSystem.__print_output(self.get_result_table('Results of running find_next_vertex'))
 
     # Get a table with all methods docs collected from given classes.
     # If some class doesn't have a method, there is self._no_method_sign (for example, '---') in a corresponding cell.
@@ -69,18 +79,20 @@ class TestSystem:
     # +---------------+---------------+---------------+
     # methods_to_keep should contain object methods, which should be included in the table.
     # By default, all object methods are removed.
-    @staticmethod
-    def get_methods_doc_table(classes: List[Type[Class]], title: str,
-                              methods_to_keep: Optional[List[str]]) -> PrettyTable:
-        methods_dict, methods_names = TestSystem.__get_methods_dict_and_names(classes, methods_to_keep)
-        table = PrettyTable(field_names=['class name'] + methods_names, title=title)
-        for c in classes:
-            class_row = [c.__name__]
-            for name in methods_names:
-                method = methods_dict[c].get(name)
-                doc = TestSystem._no_method_sign if method is None else TestSystem.__format_doc_str(method.__doc__)
-                class_row.append(doc)
-            table.add_row(class_row)
+    def get_methods_doc_table(self, classes: List[Type[Class]], title: str,
+                              methods_to_keep: Optional[List[str]] = None) -> Optional[PrettyTable]:
+        if not classes:
+            return None
+        methods_dict, methods_names = self.__get_methods_dict_and_names(classes, methods_to_keep)
+        table = PrettyTable(title=title)
+        table.add_column('class_name', [c.__name__ for c in classes])
+        for name in methods_names:
+            methods = [methods_dict[c].get(name) for c in classes]
+            docs = [self._no_method_sign if m is None else self.__format_doc_str(m.__doc__) for m in methods]
+            if not self._add_same_docs and len(set(docs)) == 1:
+                continue
+            table.add_column(name, docs)
+
         return TestSystem.__set_table_style(table)
 
     # Get a table with all path_finder results for a given test_inputs:
@@ -91,8 +103,11 @@ class TestSystem:
     # +---------+-----+-------+---------------+---------------+
     # |     test_input_2      |   *result*    |   *result*    |
     # +---------+-----+-------+---------------+---------------+
-    def get_result_table(self, title: str) -> PrettyTable:
+    def get_result_table(self, title: str) -> Optional[PrettyTable]:
         path_finders = self.__get_all_possible_path_finders()
+        if not path_finders:
+            TestSystem.__print_output('There are no path_finders')
+            return None
         # Set table headers: first go test_input headers, then path_finder versions
         table = PrettyTable(field_names=[e.value for e in TEST_INPUT] +
                                         [self.__get_path_finder_version(pf) for pf in path_finders], title=title)
@@ -113,13 +128,12 @@ class TestSystem:
         return path_finders
 
     def __create_user_vertex(self, test_input: TestInput) -> Vertex:
-        # Todo: find rate
-        rate = 0
-        vertex = Vertex(self._graph, Code.from_source(test_input[TEST_INPUT.SOURCE_CODE], rate))
-        # Todo: init profile of it's None
+        vertex = Vertex(self._graph, Code.from_source(test_input[TEST_INPUT.SOURCE_CODE], None, self._graph.task))
+        # Todo: init profile if it's None
         code_info = CodeInfo(User(Profile(test_input[TEST_INPUT.AGE], test_input[TEST_INPUT.EXPERIENCE])))
         vertex.add_code_info(code_info)
         return vertex
+
 
     @staticmethod
     def __run_path_finder(path_finder: IPathFinder, user_vertex: Vertex) -> str:
@@ -186,4 +200,16 @@ class TestSystem:
         class_parent_dir = os.path.dirname(inspect.getfile(clazz))
         for (_, name, _) in pkgutil.iter_modules([class_parent_dir]):
             importlib.import_module(f'.{name}', class_parent_package)
-        return clazz.__subclasses__()
+        subclasses: list = clazz.__subclasses__()
+        not_skipped_subclasses = subclasses.copy()
+        for c in subclasses:
+            if hasattr(c, 'is_skipped') and c.is_skipped:
+                not_skipped_subclasses.remove(c)
+                TestSystem.__print_output(f'{c.__name__} is skipped, reason: {c.skipped_reason}')
+        return not_skipped_subclasses
+
+    # Todo: add ability to print output to file?
+    @staticmethod
+    def __print_output(output: Optional[Any]) -> None:
+        if output is not None:
+            print(f'{output}\n')

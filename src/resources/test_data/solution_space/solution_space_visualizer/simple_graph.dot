@@ -2,7 +2,7 @@ digraph  D {
 
 node [shape=record fontname=Arial];
 
-2 [label="Vertex 2"]
+2 [label="Vertex 2. Empty vertex"]
 3 [label="Vertex 3"]
 4 [label="Vertex 4"]
 6 [label="Vertex 6"]

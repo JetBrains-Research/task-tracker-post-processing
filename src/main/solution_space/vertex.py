@@ -90,9 +90,6 @@ class Vertex(IdCounter, PrettyString):
         users = [code_info.user for code_info in self._code_info_list]
         return set(users)
 
-    def get_dist(self, dst_vertex: Vertex) -> int:
-        return self._graph.get_dist_between_vertices(self, dst_vertex)
-
     def __str__(self) -> str:
         return f'Vertex id: {self._id}\n' \
                f'Vertex type: {self._vertex_type.value}\n' \

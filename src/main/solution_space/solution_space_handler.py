@@ -159,10 +159,9 @@ def __create_code_info_chain(file: str, task: TASK) -> List[Tuple[Code, CodeInfo
     return code_info_chain
 
 
-def construct_solution_graph(path: str, task: TASK, language: LANGUAGE = LANGUAGE.PYTHON,
-                             to_store_dist: bool = True) -> SolutionGraph:
+def construct_solution_graph(path: str, task: TASK, language: LANGUAGE = LANGUAGE.PYTHON) -> SolutionGraph:
     files = get_all_file_system_items(path, extension_file_condition(EXTENSION.CSV))
-    sg = SolutionGraph(task, language, to_store_dist=to_store_dist)
+    sg = SolutionGraph(task, language)
     log.info(f'Start creating of solution space')
     for file in files:
         log.info(f'Start handling file {file}')
