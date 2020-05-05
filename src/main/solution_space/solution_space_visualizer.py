@@ -87,9 +87,9 @@ class SolutionSpaceVisualizer:
                f'\n\n}}'
 
     # Returns result's folder path
-    def create_graph_representation(self, name_prefix: str = 'graph',
-                                    to_create_vertices_content: bool = True,
-                                    output_format: consts.EXTENSION = consts.EXTENSION.PNG) -> str:
+    def visualize_graph(self, name_prefix: str = 'graph',
+                        to_create_vertices_content: bool = True,
+                        output_format: consts.EXTENSION = consts.EXTENSION.PNG) -> str:
         graph_representation = self.__get_graph_representation()
         folder_path = os.path.join(consts.GRAPH_REPRESENTATION_PATH, f'{name_prefix}_{self._graph.id}')
         # Remove older graph with the same name

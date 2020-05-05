@@ -68,6 +68,7 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
         self._start_vertex = Vertex(self, vertex_type=solution_space_consts.VERTEX_TYPE.START)
         self._end_vertex = Vertex(self, vertex_type=solution_space_consts.VERTEX_TYPE.END)
         self._empty_vertex = Vertex(self, Code.from_source('', TEST_RESULT.CORRECT_CODE.value, language=language))
+        self.connect_to_start_vertex(self._empty_vertex)
 
         if to_delete_old_graph:
             remove_directory(self._graph_directory)

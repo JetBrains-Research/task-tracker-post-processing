@@ -80,8 +80,8 @@ def main() -> None:
     Graph visualization
     """
     # gv = SolutionSpaceVisualizer(graph)
-    # graph_representation_path = gv.create_graph_representation(name_prefix='graph_all_space_without_helper_folding')
-    # print(graph_representation_path)
+    # graph_visualization_path = gv.visualize_graph(name_prefix='graph_all_space_without_helper_folding')
+    # print(graph_visualization_path)
 
     """
     Getting hint

@@ -66,4 +66,4 @@ def get_solution_graph(task: TASK, to_plot_graph: bool = True, test_prefix: str 
 
 def __plot_graph(task: TASK, sg: SolutionGraph, test_prefix: str) -> str:
     gv = SolutionSpaceVisualizer(sg)
-    return gv.create_graph_representation(name_prefix=f'test_graph_{test_prefix}_{task.value}')
+    return gv.visualize_graph(name_prefix=f'test_graph_{test_prefix}_{task.value}')
