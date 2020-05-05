@@ -18,7 +18,7 @@ class B(IdCounter):
 
 class C(IdCounter):
     def __init__(self):
-        super().__init__(self)
+        super().__init__(to_store_items=True)
 
 
 def get_last_id_from_id_counter(class_name: str) -> int:

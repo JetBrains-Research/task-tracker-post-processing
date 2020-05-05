@@ -12,12 +12,14 @@ log = logging.getLogger(LOGGER_NAME)
 
 class IdCounter:
     _instances: Dict[str, int] = defaultdict(int)
-    _form_id_to_item_dict: Dict[str, Dict[int, Any]] = defaultdict(lambda: defaultdict(lambda: None))
+    _id_item_dict_by_class: Dict[str, Dict[int, Any]] = defaultdict(lambda: defaultdict(lambda: None))
     _last_id = 0
 
-    def __init__(self, class_item: Optional[Any] = None):
+    def __init__(self, to_store_items: bool = False):
         self._id = self.__class__._instances[self.__class__.__name__]
-        self.__class__._form_id_to_item_dict[self.__class__.__name__][self._id] = class_item
+        self.id_item_dict_by_class = defaultdict(lambda: None)
+        if to_store_items:
+            self.__class__._id_item_dict_by_class[self.__class__.__name__][self._id] = self
         self.__class__._instances[self.__class__.__name__] += 1
 
     @property
@@ -30,7 +32,7 @@ class IdCounter:
 
     @classmethod
     def get_item_by_id(cls: Type['IdCounter'], id: int) -> Any:
-        item = cls._form_id_to_item_dict[cls.__name__][id]
+        item = cls._id_item_dict_by_class[cls.__name__][id]
         if item is None:
             log_and_raise_error(f'Item with id {id} does not exist in the class {cls.__name__}', log)
         return item

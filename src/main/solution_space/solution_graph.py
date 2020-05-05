@@ -54,8 +54,6 @@ class GraphIterator(collections.abc.Iterator):
 
 class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
     solution_space_folder = SOLUTION_SPACE_FOLDER
-    canon_trees_nodes_number = defaultdict(lambda: [])
-    anon_trees_nodes_number = defaultdict(lambda: [])
 
     def __init__(self, task: TASK, language: LANGUAGE = LANGUAGE.PYTHON, to_delete_old_graph: bool = True,
                  graph_folder_prefix: str = GRAPH_FOLDER_PREFIX, file_prefix: str = FILE_PREFIX,
@@ -69,6 +67,9 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
         self._graph_folder_prefix = graph_folder_prefix
         self._file_prefix = file_prefix
         self._graph_directory = self.get_default_graph_directory()
+
+        self.canon_trees_nodes_number = defaultdict(lambda: [])
+        self.anon_trees_nodes_number = defaultdict(lambda: [])
 
         self._start_vertex = Vertex(self, vertex_type=solution_space_consts.VERTEX_TYPE.START)
         self._end_vertex = Vertex(self, vertex_type=solution_space_consts.VERTEX_TYPE.END)
