@@ -210,6 +210,6 @@ class TestSystem:
 
     # Todo: add ability to print output to file?
     @staticmethod
-    def __print_output(output: Any) -> None:
+    def __print_output(output: Optional[Any]) -> None:
         if output is not None:
             print(f'{output}\n')
