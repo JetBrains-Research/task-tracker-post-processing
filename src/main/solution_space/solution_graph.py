@@ -11,6 +11,7 @@ from src.main.solution_space.vertex import Vertex
 from src.main.util.log_util import log_and_raise_error
 from src.main.solution_space.serialized_code import Code
 from src.main.solution_space.data_classes import CodeInfo
+from src.main.util.default_dict_util import get_empty_list
 from src.main.util.consts import LOGGER_NAME, TASK, LANGUAGE
 from src.main.util.helper_classes.id_counter import IdCounter
 from src.main.solution_space.distance import VertexDistanceMatrix
@@ -68,8 +69,8 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
         self._file_prefix = file_prefix
         self._graph_directory = self.get_default_graph_directory()
 
-        self.canon_trees_nodes_number = defaultdict(lambda: [])
-        self.anon_trees_nodes_number = defaultdict(lambda: [])
+        self.canon_trees_nodes_number = defaultdict(get_empty_list)
+        self.anon_trees_nodes_number = defaultdict(get_empty_list)
 
         self._start_vertex = Vertex(self, vertex_type=solution_space_consts.VERTEX_TYPE.START)
         self._end_vertex = Vertex(self, vertex_type=solution_space_consts.VERTEX_TYPE.END)
