@@ -31,7 +31,7 @@ class IdCounter:
         IdCounter._instances = defaultdict(int)
 
     @classmethod
-    def get_item_by_id(cls: Type['IdCounter'], id: int) -> Any:
+    def get_item_by_id(cls: Type['IdCounter'], id: int) -> Type['IdCounter']:
         item = IdCounter._id_item_dict_by_class[cls.__name__][id]
         if item is None:
             log_and_raise_error(f'Item with id {id} does not exist in the class {cls.__name__}', log)
