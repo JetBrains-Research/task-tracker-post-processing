@@ -30,11 +30,11 @@ class TestSolutionSpaceSerializer:
     @pytest.fixture(scope="function",
                     params=[
                         SolutionGraph(CURRENT_TASK),
-                        # get_solution_graph(CURRENT_TASK, to_store_dist=False)
+                        get_solution_graph(CURRENT_TASK, to_store_dist=False)
                     ],
                     ids=[
                         'Empty SolutionGraph',
-                        # 'Simple graph'
+                        'Simple graph'
                     ]
                     )
     def param_solution_space_serializer_test(request) -> SolutionGraph:
