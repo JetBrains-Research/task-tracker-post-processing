@@ -12,6 +12,7 @@ from src.main.util.file_util import add_slash
 from src.main.util.log_util import configure_logger
 from src.main.solution_space.hint import HintHandler
 from src.main.solution_space.consts import TEST_SYSTEM_GRAPH
+from src.main.plots.util.consts import PLOTTY_CATEGORY_ORDER
 from src.main.util.consts import PATH_CMD_ARG, TASK, EXPERIENCE
 from src.main.solution_space.data_classes import User, CodeInfo
 from src.main.preprocessing.preprocessing import preprocess_data
@@ -23,6 +24,8 @@ from src.main.solution_space.solution_space_visualizer import SolutionSpaceVisua
 from src.main.preprocessing.intermediate_diffs_removing import remove_intermediate_diffs
 from src.main.solution_space.measured_vertex.measured_vertex_v_1 import MeasuredVertexV1
 from src.main.preprocessing.inefficient_statements_removing import remove_inefficient_statements
+from src.main.plots.solution_graph_statistics_plots import plot_node_numbers_statistics, \
+    plot_node_numbers_freq_for_each_vertex
 
 pd.set_option('display.max_rows', 250)
 pd.set_option('display.max_columns', 100)
@@ -69,8 +72,14 @@ def main() -> None:
     print('Graph was constructed')
 
     """
+    Nodes number statistics
+    """
+    # plot_node_numbers_statistics(graph)
+    # plot_node_numbers_freq_for_each_vertex(graph)
+
+    """
     Graph serialization
-    # """
+    """
     # path = SolutionSpaceSerializer.serialize(graph, serialized_file_prefix='serialized_graph_with_dist')
     # print(f'Serialized path: {path}')
     # new_graph = SolutionSpaceSerializer.deserialize(path)
