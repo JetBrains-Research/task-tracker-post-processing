@@ -16,4 +16,4 @@ def get_empty_list() -> list:
 
 
 def get_default_dict_with_default_dict_with_none() -> dict:
-    return defaultdict(get_none())
+    return defaultdict(get_none)

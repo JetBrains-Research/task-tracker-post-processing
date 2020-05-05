@@ -18,7 +18,6 @@ class IdCounter:
 
     def __init__(self, to_store_items: bool = False):
         self._id = self.__class__._instances[self.__class__.__name__]
-        self.id_item_dict_by_class = defaultdict(get_none)
         if to_store_items:
             self.__class__._id_item_dict_by_class[self.__class__.__name__][self._id] = self
         self.__class__._instances[self.__class__.__name__] += 1
@@ -33,7 +32,7 @@ class IdCounter:
 
     @classmethod
     def get_item_by_id(cls: Type['IdCounter'], id: int) -> Any:
-        item = cls._id_item_dict_by_class[cls.__name__][id]
+        item = IdCounter._id_item_dict_by_class[cls.__name__][id]
         if item is None:
             log_and_raise_error(f'Item with id {id} does not exist in the class {cls.__name__}', log)
         return item
