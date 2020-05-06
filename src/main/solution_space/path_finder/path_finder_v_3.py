@@ -74,12 +74,12 @@ class PathFinderV3(IPathFinder):
         2. Consider each vertex with similar nodes number as candidate (chose at least TOP_N_CANON candidates)
         """
 
-        graph_vertex = self._graph.find_vertex(user_canon_tree)
-        # Todo: find a better way
-        if graph_vertex:
-            graph_anon_tree = graph_vertex.serialized_code.find_anon_tree(user_anon_tree.tree)
-            if graph_anon_tree:
-                return self.__find_closest_tree_from_equal_tree(user_anon_tree, graph_anon_tree)
+        # graph_vertex = self._graph.find_vertex(user_canon_tree)
+        # # Todo: find a better way
+        # if graph_vertex:
+        #     graph_anon_tree = graph_vertex.serialized_code.find_anon_tree(user_anon_tree.tree)
+        #     if graph_anon_tree:
+        #         return self.__find_closest_tree_from_equal_tree(user_anon_tree, graph_anon_tree)
 
         canon_nodes_number = get_nodes_number_in_ast(user_canon_tree)
         anon_nodes_number = user_anon_tree.nodes_number

@@ -17,6 +17,7 @@ from typing import Type, TypeVar, List, Dict, Any, Tuple, Optional
 
 from prettytable import PrettyTable, ALL
 
+from src.main.solution_space.solution_graph import SolutionGraph
 from src.main.util.consts import LOGGER_NAME
 from src.main.util.file_util import get_class_parent_package
 from src.main.solution_space.consts import TEST_SYSTEM_GRAPH
@@ -54,10 +55,10 @@ class TestSystem:
     _no_method_sign = '---'
     _spaces_to_crop_in_doc = 8
 
-    def __init__(self, test_inputs: List[TestInput], serialized_graph_path: str = TEST_SYSTEM_GRAPH,
+    def __init__(self, test_inputs: List[TestInput], graph: Optional[SolutionGraph] = None,
+                 serialized_graph_path: Optional[str] = TEST_SYSTEM_GRAPH,
                  add_same_docs: bool = True):
-        graph = SolutionSpaceSerializer.deserialize(serialized_graph_path)
-        self._graph = graph
+        self._graph = graph if graph is not None else SolutionSpaceSerializer.deserialize(serialized_graph_path)
         self._add_same_docs = add_same_docs
         self._test_inputs = test_inputs
         self._path_finder_subclasses = self.__get_all_subclasses(IPathFinder)

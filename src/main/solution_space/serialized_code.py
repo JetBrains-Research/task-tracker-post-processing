@@ -222,7 +222,9 @@ class SerializedCode(IdCounter, PrettyString, ISerializedObject):
         current_nodes_number = get_nodes_number_in_ast(anon_tree)
         for a_t in self._anon_trees:
             # It will work faster
-            if current_nodes_number != a_t.nodes_number or are_asts_equal(a_t.tree, anon_tree):
+            if current_nodes_number != a_t.nodes_number:
+                continue
+            elif are_asts_equal(a_t.tree, anon_tree):
                 return a_t
         return None
 

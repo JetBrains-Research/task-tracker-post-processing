@@ -9,7 +9,7 @@ from src.main.solution_space.measured_vertex.measured_tree import IMeasuredTree
 
 class MeasuredTreeV1(IMeasuredTree):
 
-    def __calculate_distance_to_user(self) -> float:
+    def _IMeasuredTree__calculate_distance_to_user(self) -> float:
         return self._diffs_number
 
     # Todo: use profile info for vertex and user_profile

@@ -71,16 +71,16 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
         self.canon_trees_nodes_number = defaultdict(get_empty_list)
         self.anon_trees_nodes_number = defaultdict(get_empty_list)
 
+        if to_delete_old_graph:
+            remove_directory(self._graph_directory)
+        create_directory(self._graph_directory)
+
         self._start_vertex = Vertex(self, vertex_type=solution_space_consts.VERTEX_TYPE.START)
         self._end_vertex = Vertex(self, vertex_type=solution_space_consts.VERTEX_TYPE.END)
         self._empty_vertex = Vertex(self, Code.from_source('', TEST_RESULT.CORRECT_CODE.value, language=language))
         self.connect_to_start_vertex(self._empty_vertex)
 
         self.dist = VertexDistanceMatrix(to_store_dist=False)
-
-        if to_delete_old_graph:
-            remove_directory(self._graph_directory)
-        create_directory(self._graph_directory)
 
     @property
     def graph_directory(self) -> str:

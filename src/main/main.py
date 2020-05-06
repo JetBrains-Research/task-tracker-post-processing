@@ -77,8 +77,11 @@ def main() -> None:
     """
     Nodes number statistics
     """
-    plot_node_numbers_statistics(graph)
-    plot_node_numbers_freq_for_each_vertex(graph)
+    # plot_node_numbers_statistics(graph)
+    # print('Created plot with node numbers statistics')
+    # plot_node_numbers_freq_for_each_vertex(graph)
+    # print('Created plots with node numbers freq for each vertex')
+
 
     """
     Graph serialization
@@ -107,14 +110,14 @@ def main() -> None:
     """
     Running test system
     """
-    # test_fragments = [{TEST_INPUT.SOURCE_CODE: 'a = int(input())',
-    #                    TEST_INPUT.AGE: 17,
-    #                    TEST_INPUT.EXPERIENCE: EXPERIENCE.LESS_THAN_HALF_YEAR},
-    #                   {TEST_INPUT.SOURCE_CODE: 'a = int(input())\nb = int(input())',
-    #                    TEST_INPUT.AGE: 12,
-    #                    TEST_INPUT.EXPERIENCE: EXPERIENCE.FROM_ONE_TO_TWO_YEARS}]
-    #
-    # ts = TestSystem(test_fragments, add_same_docs=True)
+    test_fragments = [{TEST_INPUT.SOURCE_CODE: 'a = int(input())',
+                       TEST_INPUT.AGE: 17,
+                       TEST_INPUT.EXPERIENCE: EXPERIENCE.LESS_THAN_HALF_YEAR},
+                      {TEST_INPUT.SOURCE_CODE: 'a = int(input())\nb = int(input())',
+                       TEST_INPUT.AGE: 12,
+                       TEST_INPUT.EXPERIENCE: EXPERIENCE.FROM_ONE_TO_TWO_YEARS}]
+
+    ts = TestSystem(test_fragments, graph=graph, add_same_docs=True)
 
 
 if __name__ == '__main__':
