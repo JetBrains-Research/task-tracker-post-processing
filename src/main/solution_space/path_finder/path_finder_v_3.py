@@ -23,8 +23,8 @@ class PathFinderV3(IPathFinder):
 
         log.info(f'{self.__class__.__name__}\n'
                  f'Start finding the next code state for '
-                 f'the user code:\n{get_code_from_tree(user_vertex.serialized_code.anon_trees[0])}\nand '
-                 f'the user:\n{user_vertex.code_info_list[0].user}')
+                 f'the user code:\n{get_code_from_tree(user_vertex.serialized_code.anon_trees[0].tree)}\nand '
+                 f'the user:\n{user_vertex.serialized_code.anon_trees[0].code_info_list[0].user}')
         goal = self.__find_closest_goal(user_vertex)
         log.info(f'Chosen goal is vertex {goal.id}')
         graph_vertex = self.__find_closest_vertex(user_vertex, goal)
@@ -70,7 +70,7 @@ class PathFinderV3(IPathFinder):
 
         vertex_in_graph = self._graph.find_vertex(user_vertex.canon_tree)
         # Todo: find a better way
-        if vertex_in_graph and vertex_in_graph.serialized_code.does_contain_anon_tree(user_vertex.serialized_code.anon_trees[0]):
+        if vertex_in_graph and vertex_in_graph.serialized_code.find_anon_tree(user_vertex.serialized_code.anon_trees[0].tree):
             # Todo: what to do if there is the exact vertex? Find a path to the goal?
             log.info('Choosing best vertex from found vertex children')
             return self.__choose_best_vertex(user_vertex, vertex_in_graph.children)

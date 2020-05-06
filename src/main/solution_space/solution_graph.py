@@ -143,8 +143,7 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
             vertex.serialized_code.recreate_files_for_trees(self._graph_directory)
 
     def create_vertex(self, code: Code, code_info: CodeInfo) -> Vertex:
-        vertex = Vertex(self, code=code)
-        vertex.add_code_info(code_info)
+        vertex = Vertex(self, code=code, code_info=code_info)
         if vertex.serialized_code.is_full():
             log.info(f'Connect full code to the end vertex')
             self.connect_to_end_vertex(vertex)
@@ -152,7 +151,7 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
 
     def find_vertex(self, canon_tree: ast.AST) -> Optional[Vertex]:
         for vertex in self.get_traversal():
-            if are_asts_equal(vertex.serialized_code.canon_tree, canon_tree):
+            if are_asts_equal(vertex.canon_tree, canon_tree):
                 log.info(f'Found an existing vertex {vertex.id} for canon_tree: {str(get_code_from_tree(canon_tree))}')
                 return vertex
         return None
@@ -162,8 +161,7 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
             log_and_raise_error('Code should not be None', log)
         vertex = self.find_vertex(code.canon_tree)
         if vertex:
-            vertex.add_code_info(code_info)
-            anon_tree_file = vertex.serialized_code.add_anon_tree(code.anon_tree)
+            anon_tree_file = vertex.serialized_code.add_anon_tree(code.anon_tree, code_info)
             if anon_tree_file:
                 vertex.add_anon_tree_nodes_number()
             return vertex
