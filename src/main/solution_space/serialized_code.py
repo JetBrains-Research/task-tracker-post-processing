@@ -87,6 +87,7 @@ class AnonTree(IdCounter, PrettyString, SerializedTree):
     def __init__(self, anon_tree: ast.AST, file_path: str, code_info: Optional[CodeInfo] = None,
                  to_create_file: bool = True):
         self._code_info_list = [] if code_info is None else [code_info]
+        self._nodes_number = get_nodes_number_in_ast(anon_tree)
         IdCounter.__init__(self, to_store_items=True)
         PrettyString.__init__(self)
         SerializedTree.__init__(self, file_path, anon_tree, self.id, to_create_file)

@@ -14,7 +14,7 @@ from src.main.solution_space.consts import DIFFS_PERCENT_TO_GO_DIRECTLY, DISTANC
 @skip(reason='We removed dist between vertices in the graph because it worked too slow, but this version uses it')
 class PathFinderV2(IPathFinder):
 
-    def find_next_vertex(self, user_vertex: Vertex) -> Vertex:
+    def find_next_anon_tree(self, user_vertex: Vertex) -> Vertex:
         """
         1. Find the closest goal (__find_closest_goal)
         2. Find the closest graph_vertex (__find_closest_vertex_with_path)
@@ -45,7 +45,7 @@ class PathFinderV2(IPathFinder):
         log.info(f'Number of candidates: {len(vertices)}\nCandidates ids are {([vertex.id for vertex in vertices])}')
         if len(vertices) == 0:
             return None
-        candidates = list(map(lambda vertex: self.get_measured_vertex(user_vertex, vertex), vertices))
+        candidates = list(map(lambda vertex: self.get_measured_tree(user_vertex, vertex), vertices))
         candidates.sort()
         log.info(f'The best vertex id is {candidates[0].vertex.id}')
         return candidates[0].vertex
