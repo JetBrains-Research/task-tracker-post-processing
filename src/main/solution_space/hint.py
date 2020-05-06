@@ -9,7 +9,7 @@ from src.main.solution_space.path_finder.path_finder import IPathFinder
 from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 from src.main.canonicalization.canonicalization import get_code_from_tree, Type
 from src.main.canonicalization.diffs.rivers_diff_handler import RiversDiffHandler
-from src.main.solution_space.measured_vertex.measured_vertex import IMeasuredVertex
+from src.main.solution_space.measured_vertex.measured_tree import IMeasuredTree
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -24,7 +24,7 @@ class Hint:
 
 
 class HintHandler:
-    def __init__(self, graph: SolutionGraph, path_finder: Type[IPathFinder], measured_vertex: Type[IMeasuredVertex]):
+    def __init__(self, graph: SolutionGraph, path_finder: Type[IPathFinder], measured_vertex: Type[IMeasuredTree]):
         self._graph = graph
         self._path_finder = path_finder(graph, measured_vertex)
 

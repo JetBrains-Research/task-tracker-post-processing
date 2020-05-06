@@ -23,7 +23,7 @@ from src.main.solution_space.consts import TEST_SYSTEM_GRAPH
 from src.main.solution_space.path_finder.path_finder import IPathFinder
 from src.main.solution_space.data_classes import CodeInfo, User, Profile
 from src.main.canonicalization.canonicalization import get_code_from_tree, logging
-from src.main.solution_space.measured_vertex.measured_vertex import IMeasuredVertex
+from src.main.solution_space.measured_vertex.measured_tree import IMeasuredTree
 from src.main.solution_space.solution_space_serializer import SolutionSpaceSerializer
 
 log = logging.getLogger(LOGGER_NAME)
@@ -60,7 +60,7 @@ class TestSystem:
         self._add_same_docs = add_same_docs
         self._test_inputs = test_inputs
         self._path_finder_subclasses = self.__get_all_subclasses(IPathFinder)
-        self._measured_vertex_subclasses = self.__get_all_subclasses(IMeasuredVertex)
+        self._measured_vertex_subclasses = self.__get_all_subclasses(IMeasuredTree)
         TestSystem.__print_output(self.get_methods_doc_table(self._measured_vertex_subclasses,
                                                              'MeasuredVertex description',
                                                              ['__lt__']))

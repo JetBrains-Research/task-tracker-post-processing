@@ -3,12 +3,11 @@
 from __future__ import annotations
 
 from src.main.util.log_util import log_and_raise_error
-from src.main.solution_space.data_classes import Profile, User
 from src.main.solution_space.path_finder.path_finder import log
-from src.main.solution_space.measured_vertex.measured_vertex import IMeasuredVertex
+from src.main.solution_space.measured_vertex.measured_tree import IMeasuredTree
 
 
-class MeasuredVertexV1(IMeasuredVertex):
+class MeasuredTreeV1(IMeasuredTree):
 
     # Todo: use profile info for vertex and user_profile
     # Todo: 14/04 penalize for rollback
@@ -18,7 +17,7 @@ class MeasuredVertexV1(IMeasuredVertex):
         2. Compare distance
         3. Compare users_count
         """
-        if not isinstance(o, MeasuredVertexV1):
+        if not isinstance(o, MeasuredTreeV1):
             log_and_raise_error(f'The object {o} is not {self.__class__} class', log)
         if self._distance_to_user < o.distance_to_user:
             return True

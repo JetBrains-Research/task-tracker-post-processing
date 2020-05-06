@@ -25,7 +25,7 @@ from src.main.solution_space.solution_space_handler import construct_solution_gr
 from src.main.solution_space.solution_space_serializer import SolutionSpaceSerializer
 from src.main.solution_space.solution_space_visualizer import SolutionSpaceVisualizer
 from src.main.preprocessing.intermediate_diffs_removing import remove_intermediate_diffs
-from src.main.solution_space.measured_vertex.measured_vertex_v_1 import MeasuredVertexV1
+from src.main.solution_space.measured_vertex.measured_tree_v_1 import MeasuredTreeV1
 from src.main.preprocessing.inefficient_statements_removing import remove_inefficient_statements
 from src.main.plots.solution_graph_statistics_plots import plot_node_numbers_statistics, \
     plot_node_numbers_freq_for_each_vertex
