@@ -3,8 +3,8 @@
 import ast
 import logging
 import tempfile
-from subprocess import check_output, CalledProcessError, STDOUT
 from typing import Tuple
+from subprocess import check_output, CalledProcessError, STDOUT
 
 from src.main.util import consts
 from src.main.util.log_util import log_and_raise_error

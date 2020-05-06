@@ -5,17 +5,17 @@ from __future__ import annotations
 import os
 import ast
 import logging
-from typing import List, Dict, Callable, Optional, Set
+from typing import List, Callable, Optional, Set
 
 from src.main.util import consts
 from src.main.util.consts import TASK
 from src.main.util.log_util import log_and_raise_error
 from src.main.canonicalization.consts import TREE_TYPE
-from src.main.util.file_util import create_file, is_file, add_suffix_to_file
 from src.main.util.helper_classes.id_counter import IdCounter
 from src.main.solution_space.data_classes import CodeInfo, User
 from src.main.util.language_util import get_extension_by_language
 from src.main.util.helper_classes.pretty_string import PrettyString
+from src.main.util.file_util import create_file, is_file, add_suffix_to_file
 from src.main.splitting.tasks_tests_handler import check_tasks, create_in_and_out_dict
 from src.main.canonicalization.canonicalization import are_asts_equal, get_code_from_tree, get_trees, \
     get_nodes_number_in_ast
