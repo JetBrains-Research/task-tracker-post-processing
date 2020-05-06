@@ -79,12 +79,10 @@ class PathFinderV3(IPathFinder):
         if graph_vertex:
             graph_anon_tree = graph_vertex.serialized_code.find_anon_tree(user_anon_tree.tree)
             if graph_anon_tree:
-                log.info('Found the same anon tree')
-                # Todo: what to do if there is the exact vertex? Find a path to the goal? Now just returning it
-                return graph_anon_tree
+                return self.__find_closest_tree_from_equal_tree(user_anon_tree, graph_anon_tree)
 
         canon_nodes_number = get_nodes_number_in_ast(user_canon_tree)
-        anon_nodes_number = get_nodes_number_in_ast(user_anon_tree.tree)
+        anon_nodes_number = user_anon_tree.nodes_number
 
         # Get vertices ids with canon trees, which have nodes number similar to user canon_nodes_number
         vertices_ids = self.__get_top_n_candidates(CANON_TOP_N, canon_nodes_number, self._graph.canon_trees_nodes_number)
@@ -96,6 +94,12 @@ class PathFinderV3(IPathFinder):
 
         return self.__choose_best_anon_tree(user_anon_tree, anon_candidates)
 
+    def __find_closest_tree_from_equal_tree(self, user_anon_tree: AnonTree, equal_anon_tree: AnonTree) -> AnonTree:
+        log.info('Found the same anon tree')
+        # Todo: what to do if there is the exact vertex? Find a path to the goal? Now just returning it
+        return equal_anon_tree
+
+    # Todo: speed it up due to sparse node_numbers dict
     @staticmethod
     def __get_top_n_candidates(top_n: int, nodes_number: int, nodes_numbers_dict: Dict[int, List[Any]]) -> List[Any]:
         """
