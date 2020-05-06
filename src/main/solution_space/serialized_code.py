@@ -159,25 +159,15 @@ class Code(PrettyString):
 
 class SerializedCode(IdCounter, PrettyString, ISerializedObject):
 
-    def __init__(self, anon_tree: Optional[AnonTree], canon_tree: ast.AST, rate: float, folder_with_files: str,
-                 file_prefix: str, language: consts.LANGUAGE = consts.LANGUAGE.PYTHON):
-        # super(ISerializedObject, self).__init__(folder_with_files=folder_with_files, file_prefix=file_prefix,
-        #                                         language=language)
+    def __init__(self, code: Code, code_info: CodeInfo, folder_with_files: str, file_prefix: str):
         PrettyString.__init__(self)
         IdCounter.__init__(self)
-        ISerializedObject.__init__(self, folder_with_files=folder_with_files, file_prefix=file_prefix, language=language)
-        # Todo: do we have to change the anon tree file path??
-        self._anon_trees = [] if anon_tree is None else [anon_tree]
-        self._canon_tree = canon_tree
-        self._rate = rate
-
-    @classmethod
-    def from_code_with_code_info(cls, code: Code, code_info: CodeInfo,
-                                 folder_with_files: str, file_prefix: str) -> SerializedCode:
-        s_c = SerializedCode(None, code.canon_tree, code.rate, folder_with_files, file_prefix, code.language)
-        anon_tree = AnonTree(code.anon_tree, s_c.get_file_path(f'{TREE_TYPE.ANON.value}', s_c.id), code_info)
-        s_c._anon_trees.append(anon_tree)
-        return s_c
+        ISerializedObject.__init__(self, folder_with_files=folder_with_files, file_prefix=file_prefix,
+                                   language=code.language)
+        anon_tree = AnonTree(code.anon_tree, self.get_file_path(f'{TREE_TYPE.ANON.value}', self.id), code_info)
+        self._anon_trees = [anon_tree]
+        self._canon_tree = code.canon_tree
+        self._rate = code.rate
 
     @property
     def canon_tree(self) -> ast.AST:
