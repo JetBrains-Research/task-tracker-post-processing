@@ -7,13 +7,13 @@ import ast
 import logging
 from typing import List, Dict, Callable, Optional, Set
 
-from src.main.solution_space.data_classes import CodeInfo, User
 from src.main.util import consts
 from src.main.util.consts import TASK
 from src.main.util.log_util import log_and_raise_error
 from src.main.canonicalization.consts import TREE_TYPE
 from src.main.util.file_util import create_file, is_file
 from src.main.util.helper_classes.id_counter import IdCounter
+from src.main.solution_space.data_classes import CodeInfo, User
 from src.main.util.language_util import get_extension_by_language
 from src.main.util.helper_classes.pretty_string import PrettyString
 from src.main.splitting.tasks_tests_handler import check_tasks, create_in_and_out_dict
@@ -22,7 +22,7 @@ from src.main.canonicalization.canonicalization import are_asts_equal, get_code_
 log = logging.getLogger(consts.LOGGER_NAME)
 
 
-class AnonTree(IdCounter):
+class AnonTree(IdCounter, PrettyString):
     def __init__(self, anon_tree: ast.AST, code_info: Optional[CodeInfo] = None):
         self._tree = anon_tree
         self._code_info_list = [] if code_info is None else [code_info]
@@ -136,9 +136,9 @@ class SerializedCode(IdCounter, PrettyString):
             return None
 
         new_anon_tree = AnonTree(anon_tree, code_info)
+        index_of_new_tree = len(self._anon_trees)
         self._anon_trees.append(new_anon_tree)
-        index_of_tree = self._anon_trees.index(new_anon_tree)
-        return self.__create_file_for_tree(new_anon_tree.tree, f'{TREE_TYPE.ANON.value}_{index_of_tree}')
+        return self.__create_file_for_tree(new_anon_tree.tree, f'{TREE_TYPE.ANON.value}_{index_of_new_tree}')
 
     def get_anon_files(self, filter_anon_trees: Callable[[AnonTree], bool] = (lambda tree: True)) -> List[str]:
         anon_tree_files = []

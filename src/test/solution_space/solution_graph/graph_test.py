@@ -102,10 +102,8 @@ def create_code_info_chain() -> (List[Tuple[Code, CodeInfo]], List[str]):
 
 def get_vertex_structure(vertex: Vertex) -> VertexStructure:
     source = get_code_from_tree(vertex.serialized_code.canon_tree).strip('\n') if vertex.serialized_code else None
-    if vertex.serialized_code is None:
-        code_info_list_len = 0
-    else:
-        code_info_list_len = sum([len(a_t.code_info_list) for a_t in vertex.serialized_code.anon_trees])
+    code_info_list_len = 0 if vertex.serialized_code is None \
+        else sum([len(a_t.code_info_list) for a_t in vertex.serialized_code.anon_trees])
     return {VERTEX_STRUCTURE.SOURCE: source, VERTEX_STRUCTURE.CODE_INFO_LIST_LEN: code_info_list_len}
 
 
