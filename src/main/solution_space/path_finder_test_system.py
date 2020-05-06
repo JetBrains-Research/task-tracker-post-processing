@@ -20,7 +20,7 @@ from prettytable import PrettyTable, ALL
 from src.main.util.consts import LOGGER_NAME
 from src.main.util.file_util import get_class_parent_package
 from src.main.solution_space.consts import TEST_SYSTEM_GRAPH
-from src.main.solution_space.serialized_code import Code, AnonTree
+from src.main.solution_space.serialized_code import Code, AnonTree, SerializedCode
 from src.main.solution_space.path_finder.path_finder import IPathFinder
 from src.main.solution_space.data_classes import CodeInfo, User, Profile
 from src.main.canonicalization.canonicalization import get_code_from_tree
@@ -131,7 +131,8 @@ class TestSystem:
     def __create_user_trees(self, test_input: TestInput) -> Tuple[AnonTree, ast.AST]:
         code_info = CodeInfo(User(Profile(test_input[TEST_INPUT.AGE], test_input[TEST_INPUT.EXPERIENCE])))
         code = Code.from_source(test_input[TEST_INPUT.SOURCE_CODE], rate=None, task=self._graph.task)
-        anon_tree = AnonTree(code.anon_tree, code_info)
+        serialized_code = SerializedCode(code, code_info, self._graph.graph_directory, self._graph.file_prefix)
+        anon_tree = serialized_code.anon_trees[0]
         return anon_tree, code.canon_tree
 
     @staticmethod

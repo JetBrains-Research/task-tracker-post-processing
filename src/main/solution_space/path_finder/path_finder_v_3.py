@@ -155,9 +155,8 @@ class PathFinderV3(IPathFinder):
         3. Return not __is_far_from_graph
         """
         empty_anon = self._graph.empty_vertex.serialized_code.anon_trees[0]
-        # Todo: use anon files after merging
-        diffs_from_user_to_goal = GumTreeDiff.create_tmp_files_and_get_diffs_number(user_anon.tree, goal_anon.tree)
-        diffs_from_empty_to_user = GumTreeDiff.create_tmp_files_and_get_diffs_number(empty_anon.tree, user_anon.tree)
+        diffs_from_user_to_goal = GumTreeDiff.get_diffs_number(user_anon.tree_file, goal_anon.tree_file)
+        diffs_from_empty_to_user = GumTreeDiff.get_diffs_number(empty_anon.tree_file, user_anon.tree_file)
         if self.__is_most_of_path_is_done(diffs_from_empty_to_user + diffs_from_user_to_goal,
                                           diffs_from_user_to_goal):
             log.info('Most of path is done')
@@ -165,5 +164,5 @@ class PathFinderV3(IPathFinder):
 
         # Todo: add is_rate_worse
 
-        diffs_from_user_to_graph_vertex = GumTreeDiff.create_tmp_files_and_get_diffs_number(user_anon.tree, graph_anon.tree)
+        diffs_from_user_to_graph_vertex = GumTreeDiff.get_diffs_number(user_anon.tree_file, graph_anon.tree_file)
         return not self.__is_far_from_graph(diffs_from_user_to_goal, diffs_from_user_to_graph_vertex)

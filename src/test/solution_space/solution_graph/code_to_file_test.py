@@ -45,13 +45,14 @@ def get_actual_code_files(graph_folder_name: str) -> List[str]:
     return get_all_file_system_items(os.path.join(GRAPHS_PARENT_FOLDER, graph_folder_name))
 
 
-def get_expected_files(graph_id: int, code_id: int, graph_prefix: str = GRAPH_FOLDER_PREFIX, file_prefix: str = FILE_PREFIX,
+def get_expected_files(graph_id: int, code_id: int, anon_tree_id: int, graph_prefix: str = GRAPH_FOLDER_PREFIX,
+                       file_prefix: str = FILE_PREFIX,
                        language: LANGUAGE = LANGUAGE.PYTHON) -> List[str]:
     ext = get_extension_by_language(language).value
     graph_folder_name = f'{graph_prefix}_{graph_id}'
     code_file_prefix = f'{file_prefix}_{code_id}'
-    return [os.path.join(GRAPHS_PARENT_FOLDER, graph_folder_name, f'{code_file_prefix}_{TREE_TYPE.CANON.value}{ext}'),
-            os.path.join(GRAPHS_PARENT_FOLDER, graph_folder_name, f'{code_file_prefix}_{TREE_TYPE.ANON.value}_0{ext}')]
+    return [os.path.join(GRAPHS_PARENT_FOLDER, graph_folder_name,
+                         f'{code_file_prefix}_{TREE_TYPE.ANON.value}_{anon_tree_id}{ext}')]
 
 
 def delete_graphs_parent_folder() -> None:
@@ -80,7 +81,7 @@ class TestCodeToFile:
         # Since {graph_number} graphs were created, several empty_vertices were created also,
         # so first {graph_number} code ids are already taken.
         # All next vertices will have code ids started from {graph_number}
-        expected_files_names = sum([get_expected_files(sg_0.id, i + graph_number) for i in range(len(vertices))], [])
+        expected_files_names = sum([get_expected_files(sg_0.id, i + graph_number, i + graph_number) for i in range(len(vertices))], [])
         actual_files_names = get_actual_code_files(f'{GRAPH_FOLDER_PREFIX}_{sg_0.id}')
         case = unittest.TestCase()
         case.assertCountEqual(expected_files_names, actual_files_names)
@@ -89,7 +90,8 @@ class TestCodeToFile:
         init_default_ids()
         graph_number, _, sg_1, _ = create_three_graphs()
         vertices = get_two_vertices(sg_1)
-        expected_files_names = sum([get_expected_files(sg_1.id, i + graph_number, file_prefix=NOT_DEFAULT_FILE_PREFIX)
+        expected_files_names = sum([get_expected_files(sg_1.id, i + graph_number, i + graph_number,
+                                                       file_prefix=NOT_DEFAULT_FILE_PREFIX)
                                     for i in range(len(vertices))], [])
         actual_files_names = get_actual_code_files(f'{GRAPH_FOLDER_PREFIX}_{sg_1.id}')
         case = unittest.TestCase()
@@ -99,7 +101,7 @@ class TestCodeToFile:
         init_default_ids()
         graph_number, _, _, sg_2 = create_three_graphs()
         vertices = get_two_vertices(sg_2)
-        expected_files_names = sum([get_expected_files(sg_2.id, i, NOT_DEFAULT_GRAPH_PREFIX, NOT_DEFAULT_FILE_PREFIX)
+        expected_files_names = sum([get_expected_files(sg_2.id, i, i, NOT_DEFAULT_GRAPH_PREFIX, NOT_DEFAULT_FILE_PREFIX)
                                     for i in range(graph_number, len(vertices) + graph_number)], [])
         actual_files_names = get_actual_code_files(f'{NOT_DEFAULT_GRAPH_PREFIX}_{sg_2.id}')
         case = unittest.TestCase()
