@@ -9,8 +9,8 @@ from src.main.solution_space.measured_vertex.measured_tree import IMeasuredTree
 
 class MeasuredTreeV1(IMeasuredTree):
 
-    def __init_distance_to_user(self) -> None:
-        self._distance_to_user = self._diffs_number
+    def __calculate_distance_to_user(self) -> float:
+        return self._diffs_number
 
     # Todo: use profile info for vertex and user_profile
     # Todo: 14/04 penalize for rollback
