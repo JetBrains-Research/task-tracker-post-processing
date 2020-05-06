@@ -7,7 +7,7 @@ workflows:
 jobs:
   build:
     docker:
-      - image:  nastyabirillo/codetracker:1.3
+      - image:  alyonalyulina/codetracker:1.2
     working_directory: ~/codetracker-data
     steps:
       - checkout
