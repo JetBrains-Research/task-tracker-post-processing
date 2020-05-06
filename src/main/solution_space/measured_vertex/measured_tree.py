@@ -15,19 +15,15 @@ class IMeasuredTree(object, metaclass=ABCMeta):
         self._candidate_tree = candidate_tree
         self.__init_diffs_number_and_rollback_probability()
         self._users_count = len(candidate_tree.get_unique_users())
-        self.__init_distance_to_user()
+        self._distance_to_user = self.__calculate_distance_to_user()
 
     def __init_diffs_number_and_rollback_probability(self) -> None:
         self._diffs_number, delete_edits = GumTreeDiff \
-            .get_diffs_and_delete_edits_numbers(self.user_tree.file_path, self.candidate_tree.file_path)
+            .get_diffs_and_delete_edits_numbers(self.user_tree.tree_file, self.candidate_tree.tree_file)
         self._rollback_probability = delete_edits / self._diffs_number
 
-    @abstractmethod
-    def __init_distance_to_user(self) -> None:
-        self._distance_to_user = 0
-
     @property
-    def distance_to_user(self) -> int:
+    def distance_to_user(self) -> float:
         return self._distance_to_user
 
     @property
@@ -49,6 +45,10 @@ class IMeasuredTree(object, metaclass=ABCMeta):
     @property
     def users_count(self) -> int:
         return self._users_count
+
+    @abstractmethod
+    def __calculate_distance_to_user(self) -> float:
+        raise NotImplementedError
 
     @abstractmethod
     def __lt__(self, o: object):

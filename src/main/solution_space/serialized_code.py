@@ -54,9 +54,8 @@ class ISerializedObject:
 
 class SerializedTree:
     def __init__(self, file_path: str, tree: ast.AST, tree_id: int, to_create_file: bool = True):
-        self._file_path = add_suffix_to_file(file_path, str(tree_id))
         self._tree = tree
-        self._tree_file = None
+        self._tree_file = add_suffix_to_file(file_path, str(tree_id))
         if to_create_file:
             self.create_file_for_tree(to_overwrite=True)
 
@@ -64,13 +63,9 @@ class SerializedTree:
     def tree_file(self) -> str:
         return self._tree_file
 
-    @property
-    def file_path(self) -> str:
-        return self._file_path
-
-    @file_path.setter
-    def file_path(self, file_path) -> None:
-        self._file_path = file_path
+    @tree_file.setter
+    def tree_file(self, tree_file) -> None:
+        self._tree_file = tree_file
 
     @property
     def tree(self) -> ast.AST:
@@ -80,12 +75,12 @@ class SerializedTree:
         if self._tree_file is not None and not to_overwrite:
             log_and_raise_error(f'File for tree {get_code_from_tree(self.tree)} already exists in files dict', log)
 
-        if not is_file(self.file_path):
+        if not is_file(self.tree_file):
             code = get_code_from_tree(self.tree)
-            create_file(code, self.file_path)
+            create_file(code, self.tree_file)
 
-        self._tree_file = self.file_path
-        return self.file_path
+        self._tree_file = self.tree_file
+        return self.tree_file
 
 
 class AnonTree(IdCounter, PrettyString, SerializedTree):
@@ -211,12 +206,12 @@ class SerializedCode(IdCounter, PrettyString, ISerializedObject):
 
         new_anon_tree = AnonTree(anon_tree, self.get_file_path(f'{TREE_TYPE.ANON.value}', self.id), code_info)
         self._anon_trees.append(new_anon_tree)
-        return new_anon_tree.file_path
+        return new_anon_tree.tree_file
 
     def get_anon_files(self, filter_anon_trees: Callable[[AnonTree], bool] = (lambda tree: True)) -> List[str]:
         anon_tree_files = []
         for anon_tree in list(filter(filter_anon_trees, self._anon_trees)):
-            anon_tree_files.append(anon_tree.file_path)
+            anon_tree_files.append(anon_tree.tree_file)
         return anon_tree_files
 
     # Todo: We don't use it anymore, but while we have Distance class, we have not to delete it
@@ -225,12 +220,12 @@ class SerializedCode(IdCounter, PrettyString, ISerializedObject):
 
     def recreate_files_for_trees(self, new_folder_with_files: str) -> None:
         self._folder_with_files = new_folder_with_files
-        self.__create_files_for_trees(to_rewrite=True)
+        self.__create_files_for_trees(to_overwrite=True)
 
-    def __create_files_for_trees(self, to_rewrite: bool = False) -> None:
+    def __create_files_for_trees(self, to_overwrite: bool = False) -> None:
         for i, anon_tree in enumerate(self._anon_trees):
-            anon_tree.file_path = self.get_file_path(f'{TREE_TYPE.ANON.value}_{i}', anon_tree.id)
-            anon_tree._tree_file = anon_tree.create_file_for_tree(to_overwrite=to_rewrite)
+            anon_tree.tree_file = self.get_file_path(f'{TREE_TYPE.ANON.value}_{i}', anon_tree.id)
+            anon_tree._tree_file = anon_tree.create_file_for_tree(to_overwrite=to_overwrite)
 
     def find_anon_tree(self, anon_tree: ast.AST) -> Optional[AnonTree]:
         current_nodes_number = get_nodes_number_in_ast(anon_tree)
