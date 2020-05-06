@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import ast
 import os
+import logging
 import inspect
 import pkgutil
 import importlib
@@ -16,13 +18,12 @@ from typing import Type, TypeVar, List, Dict, Any, Tuple, Optional
 from prettytable import PrettyTable, ALL
 
 from src.main.util.consts import LOGGER_NAME
-from src.main.solution_space.serialized_code import Code
-from src.main.solution_space.solution_graph import Vertex
 from src.main.util.file_util import get_class_parent_package
 from src.main.solution_space.consts import TEST_SYSTEM_GRAPH
+from src.main.solution_space.serialized_code import Code, AnonTree
 from src.main.solution_space.path_finder.path_finder import IPathFinder
 from src.main.solution_space.data_classes import CodeInfo, User, Profile
-from src.main.canonicalization.canonicalization import get_code_from_tree, logging
+from src.main.canonicalization.canonicalization import get_code_from_tree
 from src.main.solution_space.measured_vertex.measured_tree import IMeasuredTree
 from src.main.solution_space.solution_space_serializer import SolutionSpaceSerializer
 
@@ -113,10 +114,10 @@ class TestSystem:
                                         [self.__get_path_finder_version(pf) for pf in path_finders], title=title)
 
         for test_input in self._test_inputs:
-            user_vertex = self.__create_user_vertex(test_input)
+            user_anon_tree, user_canon_tree = self.__create_user_trees(test_input)
             row = [test_input[key] for key in TEST_INPUT]
             for path_finder in path_finders:
-                row.append(self.__run_path_finder(path_finder, user_vertex))
+                row.append(self.__run_path_finder(path_finder, user_anon_tree, user_canon_tree))
             table.add_row(row)
 
         return TestSystem.__set_table_style(table)
@@ -127,22 +128,20 @@ class TestSystem:
             path_finders.append(pf_subclass(self._graph, mv_subclass))
         return path_finders
 
-    def __create_user_vertex(self, test_input: TestInput) -> Vertex:
-        vertex = Vertex(self._graph, Code.from_source(test_input[TEST_INPUT.SOURCE_CODE], None, self._graph.task))
-        # Todo: init profile if it's None
+    def __create_user_trees(self, test_input: TestInput) -> Tuple[AnonTree, ast.AST]:
         code_info = CodeInfo(User(Profile(test_input[TEST_INPUT.AGE], test_input[TEST_INPUT.EXPERIENCE])))
-        vertex.add_code_info(code_info)
-        return vertex
-
+        code = Code.from_source(test_input[TEST_INPUT.SOURCE_CODE], rate=None, task=self._graph.task)
+        anon_tree = AnonTree(code.anon_tree, code_info)
+        return anon_tree, code.canon_tree
 
     @staticmethod
-    def __run_path_finder(path_finder: IPathFinder, user_vertex: Vertex) -> str:
+    def __run_path_finder(path_finder: IPathFinder, user_anon_tree: AnonTree, user_canon_tree: ast.AST) -> str:
         start_time = datetime.now()
-        next_vertex = path_finder.find_next_vertex(user_vertex)
+        next_anon_tree = path_finder.find_next_anon_tree(user_anon_tree, user_canon_tree)
         end_time = datetime.now()
         return f'time: {end_time - start_time}\n\n' \
-               f'vertex id: {next_vertex.id}\n\n' \
-               f'canon code:\n{get_code_from_tree(next_vertex.canon_tree)}'
+               f'vertex id: {next_anon_tree.id}\n\n' \
+               f'anon code:\n{get_code_from_tree(next_anon_tree.tree)}'
 
     # Gets path_finder version in format like this: 'PathFinderV1, MeasuredVertexV1'
     @staticmethod

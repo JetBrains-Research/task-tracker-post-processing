@@ -17,7 +17,8 @@ from src.main.solution_space.data_classes import CodeInfo, User
 from src.main.util.language_util import get_extension_by_language
 from src.main.util.helper_classes.pretty_string import PrettyString
 from src.main.splitting.tasks_tests_handler import check_tasks, create_in_and_out_dict
-from src.main.canonicalization.canonicalization import are_asts_equal, get_code_from_tree, get_trees
+from src.main.canonicalization.canonicalization import are_asts_equal, get_code_from_tree, get_trees, \
+    get_nodes_number_in_ast
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -26,6 +27,7 @@ class AnonTree(IdCounter, PrettyString):
     def __init__(self, anon_tree: ast.AST, code_info: Optional[CodeInfo] = None):
         self._tree = anon_tree
         self._code_info_list = [] if code_info is None else [code_info]
+        self._nodes_number = get_nodes_number_in_ast(anon_tree)
         super().__init__(to_store_items=True)
 
     @property
@@ -35,6 +37,10 @@ class AnonTree(IdCounter, PrettyString):
     @property
     def code_info_list(self) -> List[CodeInfo]:
         return self._code_info_list
+
+    @property
+    def nodes_number(self) -> int:
+        return self._nodes_number
 
     def add_code_info(self, code_info: CodeInfo) -> None:
         self._code_info_list.append(code_info)

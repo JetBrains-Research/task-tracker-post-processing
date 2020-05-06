@@ -96,7 +96,7 @@ def __get_anon_tree_from_orig_tree(orig_tree: ast.AST, imports: List[str], to_si
     return anon_tree
 
 
-def __get_canon_tree_from_anon_tree(anon_tree: ast.AST, imports: List[str]) -> ast.AST:
+def get_canon_tree_from_anon_tree(anon_tree: ast.AST, imports: List[str]) -> ast.AST:
     transformations = __get_canonical_transformations()
     canon_tree = deepcopy(anon_tree)
     old_tree = None
@@ -145,7 +145,7 @@ def get_trees(source: str, tree_types_to_get: Set[TREE_TYPE], to_simplify: bool 
     if not bool(tree_types_to_get):
         return gotten_trees
 
-    canon_tree = __get_canon_tree_from_anon_tree(anon_tree, imports)
+    canon_tree = get_canon_tree_from_anon_tree(anon_tree, imports)
 
     # After getting the third tree (canon tree), we should raise an error if there are still tree types to get
     gotten_trees = __update_gotten_trees(canon_tree, TREE_TYPE.CANON, gotten_trees, tree_types_to_get)
