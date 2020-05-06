@@ -103,7 +103,7 @@ class SerializedCode(IdCounter, PrettyString):
         return self._rate == consts.TEST_RESULT.FULL_SOLUTION.value
 
     def add_anon_tree(self, anon_tree) -> Optional[str]:
-        if self.__does_contain_anon_tree(anon_tree):
+        if self.does_contain_anon_tree(anon_tree):
             return None
 
         self._anon_trees.append(anon_tree)
@@ -145,7 +145,7 @@ class SerializedCode(IdCounter, PrettyString):
         self._file_by_tree_dict[tree] = file_path
         return file_path
 
-    def __does_contain_anon_tree(self, anon_tree: ast.AST) -> bool:
+    def does_contain_anon_tree(self, anon_tree: ast.AST) -> bool:
         for a_t in self._anon_trees:
             if are_asts_equal(a_t, anon_tree):
                 return True

@@ -1,5 +1,7 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
+
+
 import os
 import sys
 import logging
@@ -7,6 +9,7 @@ from datetime import datetime
 
 import pandas as pd
 
+sys.path.append('.')
 from src.main.util import consts
 from src.main.util.file_util import add_slash
 from src.main.util.log_util import configure_logger
@@ -19,6 +22,7 @@ from src.main.preprocessing.preprocessing import preprocess_data
 from src.main.splitting.splitting import split_tasks_into_separate_files
 from src.main.solution_space.path_finder_test_system import TestSystem, TEST_INPUT
 from src.main.solution_space.solution_space_handler import construct_solution_graph
+from src.main.solution_space.solution_space_serializer import SolutionSpaceSerializer
 from src.main.solution_space.solution_space_visualizer import SolutionSpaceVisualizer
 from src.main.preprocessing.intermediate_diffs_removing import remove_intermediate_diffs
 from src.main.solution_space.measured_vertex.measured_vertex_v_1 import MeasuredVertexV1
@@ -67,19 +71,19 @@ def main() -> None:
     """
     Graph constructing
     """
-    # graph = construct_solution_graph(path, TASK.PIES)
-    # print('Graph was constructed')
+    graph = construct_solution_graph(path, TASK.PIES)
+    print('Graph was constructed')
 
     """
     Nodes number statistics
     """
-    # plot_node_numbers_statistics(graph)
-    # plot_node_numbers_freq_for_each_vertex(graph)
+    plot_node_numbers_statistics(graph)
+    plot_node_numbers_freq_for_each_vertex(graph)
 
     """
     Graph serialization
     """
-    # path = SolutionSpaceSerializer.serialize(graph, serialized_file_prefix='serialized_graph_with_dist')
+    # path = SolutionSpaceSerializer.serialize(graph, serialized_file_prefix='serialized_graph_with_nodes_number')
     # print(f'Serialized path: {path}')
     # new_graph = SolutionSpaceSerializer.deserialize(path)
     # print(str(graph) == str(new_graph))
@@ -88,7 +92,7 @@ def main() -> None:
     Graph visualization
     """
     # gv = SolutionSpaceVisualizer(graph)
-    # graph_visualization_path = gv.visualize_graph(name_prefix='graph_all_space_without_helper_folding')
+    # graph_visualization_path = gv.visualize_graph(name_prefix='graph_with_nodes_number')
     # print(graph_visualization_path)
 
     """

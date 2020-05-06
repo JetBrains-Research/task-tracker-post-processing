@@ -50,10 +50,10 @@ def __get_ati_data(solutions: pd.DataFrame, index: int) -> AtiItem:
     return AtiItem(timestamp=timestamp, event_type=event_type, event_data=event_data)
 
 
-def __are_same_fragments(current_tree: ast.AST, solutions: pd.DataFrame, next_index: int) -> bool:
+def __are_same_fragments(current_anon_tree: ast.AST, solutions: pd.DataFrame, next_index: int) -> bool:
     fragment = __get_column_value(solutions, next_index, consts.CODE_TRACKER_COLUMN.FRAGMENT)
-    next_canon_tree, = get_trees(fragment, {TREE_TYPE.CANON})
-    return are_asts_equal(current_tree, next_canon_tree)
+    next_anon_tree, = get_trees(fragment, {TREE_TYPE.ANON})
+    return are_asts_equal(current_anon_tree, next_anon_tree)
 
 
 # Get ati data and add it to the ati_elements list if it is not empty
@@ -71,7 +71,7 @@ def __find_same_fragments(solutions: pd.DataFrame, start_index: int) -> Tuple[in
     current_fragment = __get_column_value(solutions, start_index, consts.CODE_TRACKER_COLUMN.FRAGMENT)
     current_anon_tree, current_canon_tree = get_trees(current_fragment, {TREE_TYPE.ANON, TREE_TYPE.CANON})
 
-    while i < solutions.shape[0] and __are_same_fragments(current_canon_tree, solutions, i):
+    while i < solutions.shape[0] and __are_same_fragments(current_anon_tree, solutions, i):
         __handle_current_ati(ati_elements, solutions, i)
         i += 1
     return i, ati_elements, current_anon_tree, current_canon_tree

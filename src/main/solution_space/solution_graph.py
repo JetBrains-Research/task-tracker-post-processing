@@ -13,6 +13,7 @@ from src.main.solution_space.serialized_code import Code
 from src.main.solution_space.data_classes import CodeInfo
 from src.main.util.default_dict_util import get_empty_list
 from src.main.util.helper_classes.id_counter import IdCounter
+from src.main.solution_space.distance import VertexDistanceMatrix
 from src.main.util.helper_classes.pretty_string import PrettyString
 from src.main.solution_space import consts as solution_space_consts
 from src.main.util.file_util import remove_directory, create_directory
@@ -74,6 +75,8 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
         self._end_vertex = Vertex(self, vertex_type=solution_space_consts.VERTEX_TYPE.END)
         self._empty_vertex = Vertex(self, Code.from_source('', TEST_RESULT.CORRECT_CODE.value, language=language))
         self.connect_to_start_vertex(self._empty_vertex)
+
+        self.dist = VertexDistanceMatrix(to_store_dist=False)
 
         if to_delete_old_graph:
             remove_directory(self._graph_directory)
