@@ -22,7 +22,7 @@ class Vertex(IdCounter, PrettyString):
         self._children = []
         self._graph = graph
         self._serialized_code = None if code is None \
-            else SerializedCode.from_code_with_code_info(code, code_info, graph.graph_directory, graph.file_prefix)
+            else SerializedCode(code, code_info, graph.graph_directory, graph.file_prefix)
         self._vertex_type = vertex_type
         super().__init__(to_store_items=True)
         self.__init_nodes_numbers()
