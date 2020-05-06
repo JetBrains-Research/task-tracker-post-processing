@@ -38,13 +38,12 @@ class HintHandler:
 
     def get_hint(self, source_code: str, code_info: CodeInfo) -> Hint:
         diff_handler = RiversDiffHandler(source_code=source_code)
-        user_vertex = Vertex(self._graph, Code.from_source(source_code, rate=None, task=self._graph.task))
-        user_vertex.add_code_info(code_info)
+        user_vertex = Vertex(self._graph, Code.from_source(source_code, rate=None, task=self._graph.task), code_info)
 
         next_vertex = self.path_finder.find_next_vertex(user_vertex)
         log.info(f'Next vertex id is {next_vertex.id}')
 
-        diffs_and_types_list = [diff_handler.get_diffs(a_t, next_vertex.serialized_code.canon_tree)
+        diffs_and_types_list = [diff_handler.get_diffs(a_t.tree, next_vertex.serialized_code.canon_tree)
                                 for a_t in next_vertex.serialized_code.anon_trees]
         diffs_len_list = list(map(lambda diff_and_type: len(diff_and_type[0]), diffs_and_types_list))
         diffs, type = diffs_and_types_list[diffs_len_list.index(min(diffs_len_list))]

@@ -17,7 +17,7 @@ def get_node_numbers_solution_graph_statistics(solution_graph: SolutionGraph) ->
         vertices_number = get_nodes_number_in_ast(vertex.serialized_code.canon_tree)
         canon_trees_freqs[vertices_number] += 1
         for anon_tree in vertex.serialized_code.anon_trees:
-            vertices_number = get_nodes_number_in_ast(anon_tree)
+            vertices_number = get_nodes_number_in_ast(anon_tree.tree)
             anon_trees_freqs[vertices_number] += 1
     return canon_trees_freqs, anon_trees_freqs
 
@@ -36,6 +36,6 @@ def get_node_numbers_freq_statistics_for_each_vertex(solution_graph: SolutionGra
         statistics_dict[vertex.id] = __get_default_dict_for_vertex()
         statistics_dict[vertex.id][TREE_TYPE.CANON] = get_nodes_number_in_ast(vertex.serialized_code.canon_tree)
         for anon_tree in vertex.serialized_code.anon_trees:
-            statistics_dict[vertex.id][TREE_TYPE.ANON].append(get_nodes_number_in_ast(anon_tree))
+            statistics_dict[vertex.id][TREE_TYPE.ANON].append(get_nodes_number_in_ast(anon_tree.tree))
         statistics_dict[vertex.id][TREE_TYPE.ANON].sort()
     return statistics_dict

@@ -35,6 +35,7 @@ class TestVertex:
             assert child.parents == [parent]
         assert parent.children == children
 
+    @pytest.mark.skip(reason='There is no code info in the vertex now')
     def test_adding_code_info(self) -> None:
         sg = SolutionGraph(CURRENT_TASK)
         vertex = Vertex(sg)
@@ -44,6 +45,7 @@ class TestVertex:
             vertex.add_code_info(code_info)
         assert vertex.code_info_list == code_info_list
 
+    @pytest.mark.skip(reason='There is no code info in the vertex now')
     def test_getting_unique_users(self) -> None:
         users = [User(), User(), User()]
         users_dist = [3, 0, 20]
