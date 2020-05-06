@@ -9,6 +9,9 @@ from src.main.solution_space.measured_vertex.measured_tree import IMeasuredTree
 
 class MeasuredTreeV1(IMeasuredTree):
 
+    def __init_distance_to_user(self) -> None:
+        self._distance_to_user = self._diffs_number
+
     # Todo: use profile info for vertex and user_profile
     # Todo: 14/04 penalize for rollback
     def __lt__(self, o: object):
@@ -19,6 +22,6 @@ class MeasuredTreeV1(IMeasuredTree):
         """
         if not isinstance(o, MeasuredTreeV1):
             log_and_raise_error(f'The object {o} is not {self.__class__} class', log)
-        if self._distance_to_user < o.distance_to_user:
+        if self.distance_to_user < o.distance_to_user:
             return True
         return self._users_count < o.users_count

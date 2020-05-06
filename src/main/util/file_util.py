@@ -77,6 +77,12 @@ def add_dot_to_not_empty_extension(extension: EXTENSION) -> str:
     return new_extension
 
 
+# Todo: add tests
+def add_suffix_to_file(file: str, suffix: str) -> str:
+    base, extension = os.path.splitext(file)
+    return f'{base}_{suffix}{extension}'
+
+
 # If need_to_rename, it works only for real files because os.rename is called
 def change_extension_to(file: str, new_extension: EXTENSION, need_to_rename: bool = False) -> str:
     new_extension = add_dot_to_not_empty_extension(new_extension)
