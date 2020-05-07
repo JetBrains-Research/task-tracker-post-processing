@@ -4,11 +4,11 @@ import os
 import ast
 import logging
 import collections
-from statistics import median
 from collections import defaultdict
 from typing import Optional, List, Tuple
 
 from src.main.solution_space.vertex import Vertex
+from src.main.util.math_util import get_safety_median
 from src.main.util.log_util import log_and_raise_error
 from src.main.solution_space.serialized_code import Code
 from src.main.solution_space.data_classes import CodeInfo
@@ -19,9 +19,8 @@ from src.main.util.helper_classes.pretty_string import PrettyString
 from src.main.solution_space import consts as solution_space_consts
 from src.main.util.file_util import remove_directory, create_directory
 from src.main.util.consts import LOGGER_NAME, TASK, LANGUAGE, TEST_RESULT
-from src.main.canonicalization.canonicalization import are_asts_equal, get_code_from_tree, get_nodes_number_in_ast
 from src.main.solution_space.consts import GRAPH_FOLDER_PREFIX, SOLUTION_SPACE_FOLDER, FILE_PREFIX
-
+from src.main.canonicalization.canonicalization import are_asts_equal, get_code_from_tree, get_nodes_number_in_ast
 
 log = logging.getLogger(LOGGER_NAME)
 
@@ -122,7 +121,7 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
         return self._empty_vertex
 
     def get_median_goals_nodes_numbers(self):
-        return median(self._goals_nodes_number)
+        return get_safety_median(self._goals_nodes_number, 0)
 
     def __iter__(self) -> GraphIterator:
         return GraphIterator(self._start_vertex)
@@ -199,7 +198,7 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
             for next_code, next_code_info in code_info_chain[1:]:
                 next_vertex = self.find_or_create_vertex(next_code, next_code_info)
                 prev_vertex.add_child(next_vertex)
-                next_anon_tree = next_vertex.serialized_code.get_last_anon_tree()
+                next_anon_tree = next_vertex.serialized_code.find_anon_tree(next_code.anon_tree)
                 if next_anon_tree:
                     prev_vertex.serialized_code.get_last_anon_tree().add_next_anon_tree(next_anon_tree)
                 prev_vertex = next_vertex

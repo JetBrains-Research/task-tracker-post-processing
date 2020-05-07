@@ -11,7 +11,7 @@ from src.main.canonicalization.diffs.gumtree import GumTreeDiff
 from src.main.solution_space.path_finder.path_finder import IPathFinder, log
 from src.main.canonicalization.canonicalization import get_code_from_tree, get_nodes_number_in_ast
 from src.main.solution_space.consts import DISTANCE_TO_GRAPH_THRESHOLD, CANON_TOP_N, ANON_TOP_N, \
-    NODES_NUMBER_PERCENT_TO_GO_DIRECTLY
+    NODES_NUMBER_PERCENT_TO_GO_DIRECTLY, DIFFS_PERCENT_TO_GO_DIRECTLY
 
 
 class PathFinderV3(IPathFinder):
@@ -21,7 +21,7 @@ class PathFinderV3(IPathFinder):
         1. Find the same tree SAME_TREE in the graph and get the best tree from next trees (__find_same_tree_in_graph)
         2. If SAME_TREE is not None, return SAME_TREE
         2. Find the closest tree CLOSEST_TREE in graph (__find_closest_tree with graph.canon_trees_nodes_number)
-        3. If __is_most_of_path_is_done, return CLOSEST_TREE
+        3. If not _is_close_to_goals, return CLOSEST_TREE
         4. Find the closest goal CLOSEST_GOAL in graph (__find_closest_goal_tree)
         5. Choose between CLOSEST_TREE and CLOSEST_GOAL using __go_through_graph
         """
@@ -33,14 +33,18 @@ class PathFinderV3(IPathFinder):
 
         same_tree = self.__find_same_tree_in_graph(user_anon_tree, user_canon_tree)
         if same_tree is not None:
+            log.info(f'Found the same tree. Chosen anon tree:\n{get_code_from_tree(same_tree.tree)}')
             return same_tree
 
         canon_nodes_number = get_nodes_number_in_ast(user_canon_tree)
-        anon_nodes_number = user_anon_tree.nodes_number
         graph_anon_tree = self.__find_closest_tree(user_anon_tree, canon_nodes_number,
-                                                   anon_nodes_number, self.graph.canon_trees_nodes_number)
+                                                   self.graph.canon_trees_nodes_number)
         log.info(f'Chosen anon tree in graph:\n{get_code_from_tree(graph_anon_tree.tree)}')
-        goal_anon_tree = self.__find_closest_goal_tree(user_anon_tree, canon_nodes_number, anon_nodes_number)
+        if not self._is_close_to_goals(graph_anon_tree):
+            log.info(f'The most of path is not done. Go through graph')
+            return graph_anon_tree
+
+        goal_anon_tree = self.__find_closest_goal_tree(user_anon_tree, canon_nodes_number)
         log.info(f'Chosen goal anon tree:\n{get_code_from_tree(goal_anon_tree.tree)}')
 
         # We can have graph_anon_tree = None
@@ -53,8 +57,8 @@ class PathFinderV3(IPathFinder):
 
     def __find_same_tree_in_graph(self, user_anon_tree: AnonTree, user_canon_tree: ast.AST) -> Optional[AnonTree]:
         """
-        1. Find the user anon tree in the graph Tree
-        2. Sort Tree.next_anon_trees using MeasuredTree
+        1. Find the user anon tree ANON_TREE in the graph
+        2. Sort ANON_TREE.next_anon_trees using MeasuredTree
         2. Return the first candidate
         """
         graph_vertex = self._graph.find_vertex(user_canon_tree)
@@ -66,43 +70,41 @@ class PathFinderV3(IPathFinder):
         return None
 
     @staticmethod
-    def __get_nodes_number_dict(nodes_number: List[Any], filter_foo: Callable = lambda x: x) -> Dict[int, list]:
-        return {k: list(v) for k, v in groupby(nodes_number, filter_foo)}
+    def __get_nodes_number_dict(nodes_number: List[Any], filter: Callable = lambda x: x) -> Dict[int, list]:
+        return {k: list(v) for k, v in groupby(nodes_number, filter)}
 
     # Note: we have to remove the 'user_code' from the set
     def __find_closest_tree(self, user_anon_tree: AnonTree, user_canon_nodes_number: int,
-                            user_anon_tree_nodes_number: int,
-                            canon_trees_nodes_number: Dict[int, list]) -> Optional[AnonTree]:
+                            canon_nodes_numbers_dict: Dict[int, list]) -> Optional[AnonTree]:
         """
         1. Consider each vertex with similar nodes number as candidate (chose at least TOP_N_CANON candidates)
+        2. Choose at least TOP_N_ANON anon trees from canon candidates and run __choose_best_anon_tree
         """
 
         # Get vertices ids with canon trees, which have nodes number similar to user canon_nodes_number
-        vertices_ids = self.__get_top_n_candidates(CANON_TOP_N, user_canon_nodes_number, canon_trees_nodes_number)
+        vertices_ids = self.__get_top_n_candidates(CANON_TOP_N, user_canon_nodes_number, canon_nodes_numbers_dict)
         vertices: List[Vertex] = [Vertex.get_item_by_id(id) for id in vertices_ids]
 
         anon_trees = sum([v.serialized_code.anon_trees for v in vertices], [])
-        anon_nodes_numbers_dict = self.__class__.__get_nodes_number_dict(anon_trees, lambda a_t: a_t.nodes_number)
-        anon_candidates = self.__get_top_n_candidates(ANON_TOP_N, user_anon_tree_nodes_number, anon_nodes_numbers_dict)
+        anon_nodes_numbers_dict = self.__get_nodes_number_dict(anon_trees, lambda a_t: a_t.nodes_number)
+        anon_candidates = self.__get_top_n_candidates(ANON_TOP_N, user_anon_tree.nodes_number, anon_nodes_numbers_dict)
         return self.__choose_best_anon_tree(user_anon_tree, anon_candidates)
 
-    def __is_most_of_path_is_done(self, closest_tree: AnonTree) -> bool:
+    def _is_close_to_goals(self, closest_tree: AnonTree) -> bool:
         """
         1. Use only nodes number info. Use median for goals nodes number
         """
         return closest_tree.nodes_number <= \
                self.graph.get_median_goals_nodes_numbers() * NODES_NUMBER_PERCENT_TO_GO_DIRECTLY
 
-    def __find_closest_goal_tree(self, user_anon_tree: AnonTree, user_canon_nodes_number: int,
-                                 user_anon_tree_nodes_number: int, ) -> AnonTree:
+    def __find_closest_goal_tree(self, user_anon_tree: AnonTree, user_canon_nodes_number: int) -> AnonTree:
         """
         1. Get list of all goals
         2. Chose at least TOP_N_CANON candidates
         2. Find the closest using __choose_best_vertex()
         """
-        canon_nodes_numbers_dict = self.__class__.__get_nodes_number_dict(self.graph.goals_nodes_number)
-        return self.__find_closest_tree(user_anon_tree, user_canon_nodes_number, user_anon_tree_nodes_number,
-                                        canon_nodes_numbers_dict)
+        canon_nodes_numbers_dict = self.__get_nodes_number_dict(self.graph.goals_nodes_number)
+        return self.__find_closest_tree(user_anon_tree, user_canon_nodes_number, canon_nodes_numbers_dict)
 
     # Todo: speed it up due to sparse node_numbers dict
     @staticmethod
@@ -154,22 +156,34 @@ class PathFinderV3(IPathFinder):
 
     @staticmethod
     def __is_far_from_graph(diffs_from_user_to_goal: int, diffs_from_user_to_graph_vertex: int) -> bool:
-        return diffs_from_user_to_graph_vertex / diffs_from_user_to_goal > DISTANCE_TO_GRAPH_THRESHOLD
+        return diffs_from_user_to_graph_vertex / diffs_from_user_to_goal > DIFFS_PERCENT_TO_GO_DIRECTLY
 
     @staticmethod
     def __is_rate_worse(user_rate: float, graph_vertex_rate: float) -> bool:
         # TODO: 14/04 or If number of passed tests > 0 then True???
         return user_rate > 0 and graph_vertex_rate == 0
 
+    @staticmethod
+    def __is_most_of_path_is_done(diffs_from_empty_to_goal: int, diffs_from_user_to_goal: int) -> bool:
+        return diffs_from_user_to_goal <= diffs_from_empty_to_goal * NODES_NUMBER_PERCENT_TO_GO_DIRECTLY
+
     # Returns should we go through graph or directly to the goal
     def __go_through_graph(self, user_anon: AnonTree, graph_anon: AnonTree, goal_anon: AnonTree) -> bool:
         """
         1. If __is_rate_worse, return False
+        2. If __is_most_of_path_is_done, return False
         2. Return not __is_far_from_graph
         """
-        # empty_anon = self._graph.empty_vertex.serialized_code.anon_trees[0]
-        # diffs_from_empty_to_user = GumTreeDiff.get_diffs_number(empty_anon.tree_file, user_anon.tree_file)
-        # Todo: add is_rate_worse
+        empty_anon = self._graph.empty_vertex.serialized_code.anon_trees[0]
+        diffs_from_empty_to_user = GumTreeDiff.get_diffs_number(empty_anon.tree_file, user_anon.tree_file)
         diffs_from_user_to_goal = GumTreeDiff.get_diffs_number(user_anon.tree_file, goal_anon.tree_file)
+
+        if self.__is_most_of_path_is_done(diffs_from_empty_to_user + diffs_from_user_to_goal,
+                                          diffs_from_user_to_goal):
+            log.info('Most of path is done')
+            return False
+
+        # Todo: add is_rate_worse
+        
         diffs_from_user_to_graph_vertex = GumTreeDiff.get_diffs_number(user_anon.tree_file, graph_anon.tree_file)
         return not self.__is_far_from_graph(diffs_from_user_to_goal, diffs_from_user_to_graph_vertex)

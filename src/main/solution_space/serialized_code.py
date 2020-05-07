@@ -111,7 +111,8 @@ class AnonTree(IdCounter, PrettyString, SerializedTree):
         return self._code_info_list
 
     def add_next_anon_tree(self, next_anon_tree: 'AnonTree') -> bool:
-        if next_anon_tree.id in self._next_anon_trees_ids:
+        if next_anon_tree.id in self._next_anon_trees_ids \
+                or next_anon_tree.id == self.id:
             return False
         self._next_anon_trees_ids.append(next_anon_tree.id)
         return True
@@ -203,7 +204,7 @@ class SerializedCode(IdCounter, PrettyString, ISerializedObject):
     def get_last_anon_tree(self) -> Optional[AnonTree]:
         if not self.anon_trees:
             return None
-        return self.anon_trees[len(self.anon_trees) - 1]
+        return self.anon_trees[-1]
 
     def add_anon_tree(self, anon_tree: ast.AST, code_info: CodeInfo) -> Optional[str]:
         found_anon_tree = self.find_anon_tree(anon_tree)
