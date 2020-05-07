@@ -204,18 +204,21 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
             log_and_raise_error(f'Code-info chain should not be None', log)
         if code_info_chain:
             log.info(f'Connect the first vertex in a chain to the start vertex')
-            code, code_info = code_info_chain[0]
-            first_vertex = self.find_or_create_vertex(code, code_info)
+            first_code, first_code_info = code_info_chain[0]
+            first_vertex = self.find_or_create_vertex(first_code, first_code_info)
             self.connect_to_start_vertex(first_vertex)
 
             prev_vertex = first_vertex
+            prev_anon_tree = prev_vertex.serialized_code.find_anon_tree(first_code.anon_tree)
             for next_code, next_code_info in code_info_chain[1:]:
                 next_vertex = self.find_or_create_vertex(next_code, next_code_info)
                 prev_vertex.add_child(next_vertex)
+
                 next_anon_tree = next_vertex.serialized_code.find_anon_tree(next_code.anon_tree)
-                if next_anon_tree:
-                    prev_vertex.serialized_code.get_last_anon_tree().add_next_anon_tree(next_anon_tree)
+                prev_anon_tree.add_next_anon_tree(next_anon_tree)
+
                 prev_vertex = next_vertex
+                prev_anon_tree = next_anon_tree
         log.info(f'Finish adding code-info chain')
 
     def find_all_medians(self) -> None:

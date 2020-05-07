@@ -147,7 +147,7 @@ class AnonTree(IdCounter, PrettyString, SerializedTree):
                 return False
         return True
 
-    def add_next_anon_tree(self, next_anon_tree: 'AnonTree') -> bool:
+    def add_next_anon_tree(self, next_anon_tree: AnonTree) -> bool:
         if next_anon_tree.id in self._next_anon_trees_ids \
                 or next_anon_tree.id == self.id:
             return False
@@ -251,11 +251,6 @@ class SerializedCode(IdCounter, PrettyString, ISerializedObject):
 
     def is_full(self) -> bool:
         return self._rate == consts.TEST_RESULT.FULL_SOLUTION.value
-
-    def get_last_anon_tree(self) -> Optional[AnonTree]:
-        if not self.anon_trees:
-            return None
-        return self.anon_trees[-1]
 
     def add_anon_tree(self, anon_tree: ast.AST, rate: float, code_info: CodeInfo) -> Optional[str]:
         if rate != self._rate:
