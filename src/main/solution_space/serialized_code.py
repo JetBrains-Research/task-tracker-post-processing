@@ -8,11 +8,11 @@ import logging
 from statistics import median, StatisticsError
 from typing import List, Callable, Optional, Set
 
-from src.main.solution_space.consts import EMPTY_MEDIAN
 from src.main.util import consts
 from src.main.util.consts import TASK, DEFAULT_VALUE
 from src.main.util.log_util import log_and_raise_error
 from src.main.canonicalization.consts import TREE_TYPE
+from src.main.solution_space.consts import EMPTY_MEDIAN
 from src.main.util.helper_classes.id_counter import IdCounter
 from src.main.solution_space.data_classes import CodeInfo, User
 from src.main.util.language_util import get_extension_by_language
@@ -133,11 +133,13 @@ class AnonTree(IdCounter, PrettyString, SerializedTree):
             log_and_raise_error('Median is not found yet, you should call find_medians first', log)
         return self._experience_median
 
-    def has_empty_age(self) -> bool:
-        return self.age_median == EMPTY_MEDIAN
-
-    def has_empty_experience(self) -> bool:
-        return self.experience_median == EMPTY_MEDIAN
+    # Returns True if all anon_trees have non-empty attribute
+    @staticmethod
+    def have_non_empty_attr(attr: str, anon_trees: List[AnonTree]) -> bool:
+        for anon_tree in anon_trees:
+            if getattr(anon_tree, attr) == EMPTY_MEDIAN:
+                return False
+        return True
 
     def add_code_info(self, code_info: CodeInfo) -> None:
         self._code_info_list.append(code_info)

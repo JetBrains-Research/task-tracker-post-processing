@@ -18,16 +18,15 @@ from src.main.util.log_util import configure_logger
 from src.main.solution_space.hint import HintHandler
 from src.main.solution_space.consts import TEST_SYSTEM_GRAPH
 from src.main.plots.util.consts import PLOTTY_CATEGORY_ORDER
-from src.main.util.consts import PATH_CMD_ARG, TASK, EXPERIENCE, INT_EXPERIENCE
 from src.main.solution_space.data_classes import User, CodeInfo
 from src.main.preprocessing.preprocessing import preprocess_data
+from src.main.util.consts import PATH_CMD_ARG, TASK, INT_EXPERIENCE
 from src.main.splitting.splitting import split_tasks_into_separate_files
 from src.main.solution_space.path_finder_test_system import TestSystem, TEST_INPUT
 from src.main.solution_space.solution_space_handler import construct_solution_graph
 from src.main.solution_space.solution_space_serializer import SolutionSpaceSerializer
 from src.main.solution_space.solution_space_visualizer import SolutionSpaceVisualizer
 from src.main.preprocessing.intermediate_diffs_removing import remove_intermediate_diffs
-from src.main.solution_space.measured_tree.measured_tree_v_1 import MeasuredTreeV1
 from src.main.preprocessing.inefficient_statements_removing import remove_inefficient_statements
 from src.main.plots.solution_graph_statistics_plots import plot_node_numbers_statistics, \
     plot_node_numbers_freq_for_each_vertex

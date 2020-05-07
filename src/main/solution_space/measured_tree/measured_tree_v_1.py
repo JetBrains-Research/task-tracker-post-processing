@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from src.main.solution_space.consts import EMPTY_MEDIAN
-from src.main.solution_space.path_finder_test_system import doc_param
+from src.main.solution_space.serialized_code import AnonTree
 from src.main.util.log_util import log_and_raise_error
 from src.main.solution_space.path_finder.path_finder import log
+from src.main.solution_space.path_finder_test_system import doc_param
 from src.main.solution_space.measured_tree.measured_tree import IMeasuredTree
 
 
@@ -34,14 +34,13 @@ class MeasuredTreeV1(IMeasuredTree):
                    + self._rate_w * (self.user_tree.rate - self.candidate_tree.rate)\
                    + self._rollback_w * self.rollback_probability
 
-        if not (self.user_tree.has_empty_age() or self.candidate_tree.has_empty_age()):
+        trees = [self.user_tree, self.candidate_tree]
+        if AnonTree.have_non_empty_attr('_age_median', trees):
             distance += self._age_w * abs(self.user_tree.age_median - self.candidate_tree.age_median)
-        if not (self.user_tree.has_empty_experience() or self.candidate_tree.has_empty_experience()):
+        if AnonTree.have_non_empty_attr('_experience_median', trees):
             distance += self._exp_w * abs(self.user_tree.experience_median - self.candidate_tree.experience_median)
         return distance
 
-    # Todo: use profile info for vertex and user_profile
-    # Todo: 14/04 penalize for rollback
     def __lt__(self, o: object):
         """
         1. If o is not an instance of class, raise an error
@@ -50,4 +49,3 @@ class MeasuredTreeV1(IMeasuredTree):
         if not isinstance(o, MeasuredTreeV1):
             log_and_raise_error(f'The object {o} is not {self.__class__} class', log)
         return self._distance_to_user < o._distance_to_user
-

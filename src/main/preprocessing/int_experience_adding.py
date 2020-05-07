@@ -1,8 +1,8 @@
 
 import pandas as pd
 
-from src.main.util.consts import ISO_ENCODING, CODE_TRACKER_COLUMN, EXPERIENCE, INT_EXPERIENCE, DEFAULT_VALUE
 from src.main.util.file_util import get_all_file_system_items, get_result_folder, write_result
+from src.main.util.consts import ISO_ENCODING, CODE_TRACKER_COLUMN, INT_EXPERIENCE, DEFAULT_VALUE
 
 
 def convert_to_int_experience(experience: str) -> int:
@@ -22,8 +22,3 @@ def add_int_experience(path: str, result_folder_prefix: str = 'int_exp') -> str:
             df[CODE_TRACKER_COLUMN.EXPERIENCE.value].apply(convert_to_int_experience)
         write_result(result_folder, path, file, df)
     return result_folder
-
-
-
-
-# print(INT_EXPERIENCE['None'])
