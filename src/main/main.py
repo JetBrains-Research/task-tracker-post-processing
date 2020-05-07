@@ -9,6 +9,8 @@ from datetime import datetime
 
 import pandas as pd
 
+from src.main.preprocessing.int_experience_adding import add_int_experience
+
 sys.path.append('.')
 from src.main.util import consts
 from src.main.util.file_util import add_slash
@@ -69,10 +71,16 @@ def main() -> None:
     # remove_inefficient_statements(new_path)
 
     """
+    Adding int experience
+    """
+    result_path = add_int_experience(path)
+    print(result_path)
+
+    """
     Graph constructing
     """
-    graph = construct_solution_graph(path, TASK.PIES)
-    print('Graph was constructed')
+    # graph = construct_solution_graph(path, TASK.PIES)
+    # print('Graph was constructed')
 
     """
     Nodes number statistics
@@ -110,14 +118,14 @@ def main() -> None:
     """
     Running test system
     """
-    test_fragments = [{TEST_INPUT.SOURCE_CODE: 'a = int(input())',
-                       TEST_INPUT.AGE: 17,
-                       TEST_INPUT.EXPERIENCE: EXPERIENCE.LESS_THAN_HALF_YEAR},
-                      {TEST_INPUT.SOURCE_CODE: 'a = int(input())\nb = int(input())',
-                       TEST_INPUT.AGE: 12,
-                       TEST_INPUT.EXPERIENCE: EXPERIENCE.FROM_ONE_TO_TWO_YEARS}]
-
-    ts = TestSystem(test_fragments, graph=graph, add_same_docs=True)
+    # test_fragments = [{TEST_INPUT.SOURCE_CODE: 'a = int(input())',
+    #                    TEST_INPUT.AGE: 17,
+    #                    TEST_INPUT.EXPERIENCE: EXPERIENCE.LESS_THAN_HALF_YEAR},
+    #                   {TEST_INPUT.SOURCE_CODE: 'a = int(input())\nb = int(input())',
+    #                    TEST_INPUT.AGE: 12,
+    #                    TEST_INPUT.EXPERIENCE: EXPERIENCE.FROM_ONE_TO_TWO_YEARS}]
+    #
+    # ts = TestSystem(test_fragments, graph=graph, add_same_docs=True)
 
 
 if __name__ == '__main__':
