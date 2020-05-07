@@ -92,10 +92,15 @@ class AnonTree(IdCounter, PrettyString, SerializedTree):
         PrettyString.__init__(self)
         SerializedTree.__init__(self, file_path, anon_tree, self.id, to_create_file)
         self._nodes_number = get_nodes_number_in_ast(anon_tree)
+        self._next_anon_trees_ids = []
 
     @property
     def nodes_number(self) -> int:
         return self._nodes_number
+
+    @property
+    def next_anon_trees_ids(self) -> List[int]:
+        return self._next_anon_trees_ids
 
     @property
     def tree(self) -> ast.AST:
@@ -104,6 +109,12 @@ class AnonTree(IdCounter, PrettyString, SerializedTree):
     @property
     def code_info_list(self) -> List[CodeInfo]:
         return self._code_info_list
+
+    def add_next_anon_tree(self, next_anon_tree: 'AnonTree') -> bool:
+        if next_anon_tree.id in self._next_anon_trees_ids:
+            return False
+        self._next_anon_trees_ids.append(next_anon_tree.id)
+        return True
 
     def add_code_info(self, code_info: CodeInfo) -> None:
         self._code_info_list.append(code_info)
