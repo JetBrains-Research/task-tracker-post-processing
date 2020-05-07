@@ -200,6 +200,11 @@ class SerializedCode(IdCounter, PrettyString, ISerializedObject):
     def is_full(self) -> bool:
         return self._rate == consts.TEST_RESULT.FULL_SOLUTION.value
 
+    def get_last_anon_tree(self) -> Optional[AnonTree]:
+        if not self.anon_trees:
+            return None
+        return self.anon_trees[len(self.anon_trees) - 1]
+
     def add_anon_tree(self, anon_tree: ast.AST, code_info: CodeInfo) -> Optional[str]:
         found_anon_tree = self.find_anon_tree(anon_tree)
         if found_anon_tree:
