@@ -36,6 +36,8 @@ class PathFinderV3(IPathFinder):
             log.info(f'Found the same tree. Chosen anon tree:\n{get_code_from_tree(same_tree.tree)}')
             return same_tree
 
+        log.info('Same tree not found')
+
         canon_nodes_number = get_nodes_number_in_ast(user_canon_tree)
         graph_anon_tree = self.__find_closest_tree(user_anon_tree, canon_nodes_number,
                                                    self.graph.canon_nodes_number_dict)
@@ -83,6 +85,7 @@ class PathFinderV3(IPathFinder):
 
         # Get vertices ids with canon trees, which have nodes number similar to user canon_nodes_number
         vertices_ids = self.__get_top_n_candidates(CANON_TOP_N, user_canon_nodes_number, canon_nodes_numbers_dict)
+        log.info(f'CANON_TOP_N vertices ids are {vertices_ids}')
         vertices: List[Vertex] = [Vertex.get_item_by_id(id) for id in vertices_ids]
 
         anon_trees = sum([v.serialized_code.anon_trees for v in vertices], [])
@@ -120,6 +123,7 @@ class PathFinderV3(IPathFinder):
         4. ....
         until we reach top_n or have no more node_numbers to add
         """
+        log.info(f'Start getting top_n candidates, top_n is {top_n}, nodes number is {nodes_number}')
         candidates = []
         nodes_numbers_queue = collections.deque([nodes_number])
 
@@ -129,18 +133,26 @@ class PathFinderV3(IPathFinder):
         min_nodes_number = min(nodes_numbers_dict.keys())
 
         while len(candidates) < top_n and nodes_numbers_queue:
+            log.info(f'Start adding candidates.\n'
+                     f'Candidates len is {len(candidates)}, queue have {len(nodes_numbers_queue)} nodes numbers')
             while nodes_numbers_queue:
                 nodes_number = nodes_numbers_queue.pop()
                 candidates += nodes_numbers_dict.get(nodes_number, [])
 
+            log.info(f'Finish adding candidates.\n'
+                     f'Candidates len is {len(candidates)}, queue have {len(nodes_numbers_queue)} nodes numbers')
+
             lower_bound -= 1
             if lower_bound >= min_nodes_number:
+                log.info(f'Append lower_bound to queue: {lower_bound}, min nodes number is {min_nodes_number}')
                 nodes_numbers_queue.append(lower_bound)
-            upper_bound += 1
 
-            if lower_bound <= max_nodes_number:
+            upper_bound += 1
+            if upper_bound <= max_nodes_number:
+                log.info(f'Append upper_bound to queue: {upper_bound}, max nodes number is {max_nodes_number}')
                 nodes_numbers_queue.append(upper_bound)
 
+        log.info(f'Finish getting top_n candidates, top_n is {top_n}, candidates len is {len(candidates)}')
         return candidates
 
     def __choose_best_anon_tree(self, user_anon_tree: AnonTree, anon_trees: List[AnonTree]) -> Optional[AnonTree]:
