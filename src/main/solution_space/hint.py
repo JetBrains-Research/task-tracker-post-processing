@@ -6,7 +6,7 @@ from src.main.util import consts
 from src.main.solution_space.data_classes import CodeInfo
 from src.main.solution_space.solution_graph import SolutionGraph
 from src.main.solution_space.path_finder.path_finder import IPathFinder
-from src.main.solution_space.measured_vertex.measured_tree import IMeasuredTree
+from src.main.solution_space.measured_tree.measured_tree import IMeasuredTree
 from src.main.canonicalization.diffs.rivers_diff_handler import RiversDiffHandler
 from src.main.solution_space.serialized_code import Code, AnonTree, SerializedCode
 from src.main.canonicalization.canonicalization import get_code_from_tree, Type, get_canon_tree_from_anon_tree, \
@@ -41,6 +41,7 @@ class HintHandler:
         code = Code.from_source(source_code, rate=None, task=self._graph.task)
         serialized_code = SerializedCode(code, code_info, self._graph.graph_directory, self._graph.file_prefix)
         anon_tree = serialized_code.anon_trees[0]
+        anon_tree.find_medians()
 
         next_anon_tree = self.path_finder.find_next_anon_tree(anon_tree, code.canon_tree)
         diff_handler = RiversDiffHandler(source_code=source_code)
