@@ -191,6 +191,11 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
                 prev_vertex = next_vertex
         log.info(f'Finish adding code-info chain')
 
+    def find_all_medians(self) -> None:
+        for vertex in self.get_traversal():
+            for anon_tree in vertex.serialized_code.anon_trees:
+                anon_tree.find_medians()
+
     def __str__(self) -> str:
         vertices_str = ''
         vertices_str += f'Start vertex:\n{str(self.start_vertex)}\n'

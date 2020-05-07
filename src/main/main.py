@@ -73,14 +73,14 @@ def main() -> None:
     """
     Adding int experience
     """
-    result_path = add_int_experience(path)
-    print(result_path)
+    # result_path = add_int_experience(path)
+    # print(result_path)
 
     """
     Graph constructing
     """
-    # graph = construct_solution_graph(path, TASK.PIES)
-    # print('Graph was constructed')
+    graph = construct_solution_graph(path, TASK.PIES)
+    print('Graph was constructed')
 
     """
     Nodes number statistics

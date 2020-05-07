@@ -5,10 +5,11 @@ from __future__ import annotations
 import os
 import ast
 import logging
+from statistics import median
 from typing import List, Callable, Optional, Set
 
 from src.main.util import consts
-from src.main.util.consts import TASK
+from src.main.util.consts import TASK, DEFAULT_VALUE
 from src.main.util.log_util import log_and_raise_error
 from src.main.canonicalization.consts import TREE_TYPE
 from src.main.util.helper_classes.id_counter import IdCounter
@@ -88,10 +89,11 @@ class AnonTree(IdCounter, PrettyString, SerializedTree):
                  to_create_file: bool = True):
         self._code_info_list = [] if code_info is None else [code_info]
         self._nodes_number = get_nodes_number_in_ast(anon_tree)
+        self._age_median = None
+        self._experience_median = None
         IdCounter.__init__(self, to_store_items=True)
         PrettyString.__init__(self)
         SerializedTree.__init__(self, file_path, anon_tree, self.id, to_create_file)
-        self._nodes_number = get_nodes_number_in_ast(anon_tree)
 
     @property
     def nodes_number(self) -> int:
@@ -105,11 +107,45 @@ class AnonTree(IdCounter, PrettyString, SerializedTree):
     def code_info_list(self) -> List[CodeInfo]:
         return self._code_info_list
 
+    @property
+    def age_median(self) -> Optional[int]:
+        return self._age_median
+
+    @property
+    def experience_median(self) -> Optional[int]:
+        return self._experience_median
+
+    @age_median.getter
+    def age_median(self) -> int:
+        if self._age_median is None:
+            log_and_raise_error('Median is not found yet, you should call find_medians first', log)
+        return self._age_median
+
+    @experience_median.getter
+    def experience_median(self) -> int:
+        if self._experience_median is None:
+            log_and_raise_error('Median is not found yet, you should call find_medians first', log)
+        return self._experience_median
+
     def add_code_info(self, code_info: CodeInfo) -> None:
         self._code_info_list.append(code_info)
 
     def get_unique_users(self) -> Set[User]:
         return set([code_info.user for code_info in self._code_info_list])
+
+    def find_medians(self) -> None:
+        unique_users = self.get_unique_users()
+        ages: List[int] = [u.profile.age for u in unique_users]
+        non_default_ages = list(filter(lambda a: a != DEFAULT_VALUE.AGE.value, ages))
+        self._age_median = median(non_default_ages)
+
+        experiences: List[int] = [u.profile.experience.value for u in unique_users]
+        non_default_experiences = list(filter(lambda e: e != DEFAULT_VALUE.INT_EXPERIENCE.value, experiences))
+        self._experience_median = median(non_default_experiences)
+
+        log.info(f'Found medians for AnonTree {self.id}, unique users number is {len(unique_users)}, '
+                 f'non-default ages number is {len(non_default_ages)}, age median is {self._age_median}, '
+                 f'non-default exp number is {len(non_default_experiences)}, exp median is {self._experience_median}')
 
     def __str__(self):
         return f'Anon_tree: {get_code_from_tree(self._tree)}\n' \
