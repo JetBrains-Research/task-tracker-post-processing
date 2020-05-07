@@ -9,8 +9,8 @@ import pytest
 
 from src.test.test_config import to_skip, TEST_LEVEL
 from src.main.canonicalization.consts import TREE_TYPE
-from src.main.solution_space.solution_graph import SolutionGraph
 from src.main.util.language_util import get_extension_by_language
+from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 from src.main.util.consts import LOGGER_NAME, TASK, FILE_SYSTEM_ITEM, LANGUAGE
 from src.main.util.file_util import get_all_file_system_items, remove_directory
 from src.test.solution_space.solution_graph.util import get_two_vertices, init_default_ids
@@ -37,6 +37,13 @@ def create_three_graphs() -> Tuple[int, SolutionGraph, SolutionGraph, SolutionGr
     return 3, sg_0, sg_1, sg_2
 
 
+# Since {graph_n} graphs were created, several empty_vertices were created also,
+# so first {graph_n} code ids are already taken.
+# All next vertices will have code ids started from {graph_n}
+def get_range(graph_n: int, vertices: List[Vertex]) -> range:
+    return range(graph_n, len(vertices) + graph_n)
+
+
 def get_actual_graph_folders() -> List[str]:
     return get_all_file_system_items(GRAPHS_PARENT_FOLDER, item_type=FILE_SYSTEM_ITEM.SUBDIR)
 
@@ -55,6 +62,18 @@ def get_expected_files(graph_id: int, code_id: int, anon_tree_id: int, graph_pre
                          f'{code_file_prefix}_{TREE_TYPE.ANON.value}_{anon_tree_id}{ext}')]
 
 
+def get_expected_empty_file(graph_id: int, graph_prefix: str = GRAPH_FOLDER_PREFIX, file_prefix: str = FILE_PREFIX,
+                            language: LANGUAGE = LANGUAGE.PYTHON) -> str:
+    # Empty vertex is created together with graph, so its code_id and anon_tree_id are equal to graph_id.
+    # Example:
+    # 1. First graph (graph_id is 0) is created -> SerializedCode (code_id is 0) for empty vertex is created ->
+    #    -> AnonTree (anon_tree_id is 0) for empty vertex is created
+    # 2. Second graph (graph_id is 1) is created -> SerializedCode (code_id is 1) for empty vertex is created ->
+    #    -> AnonTree (anon_tree_id is 1) for empty vertex is created
+    # 3. ... and so on
+    return get_expected_files(graph_id, graph_id, graph_id, graph_prefix, file_prefix, language)[0]
+
+
 def delete_graphs_parent_folder() -> None:
     remove_directory(GRAPHS_PARENT_FOLDER)
 
@@ -66,7 +85,7 @@ class TestCodeToFile:
     def test_folders_names(self) -> None:
         delete_graphs_parent_folder()
         init_default_ids()
-        graph_number, sg_0, sg_1, sg_2 = create_three_graphs()
+        create_three_graphs()
 
         expected_folders_names = get_full_paths([f'{GRAPH_FOLDER_PREFIX}_0',
                                                  f'{GRAPH_FOLDER_PREFIX}_1',
@@ -76,33 +95,32 @@ class TestCodeToFile:
 
     def test_folder_structure_with_default_files_names(self) -> None:
         init_default_ids()
-        graph_number, sg_0, _, _ = create_three_graphs()
+        graph_n, sg_0, _, _ = create_three_graphs()
         vertices = get_two_vertices(sg_0)
-        # Since {graph_number} graphs were created, several empty_vertices were created also,
-        # so first {graph_number} code ids are already taken.
-        # All next vertices will have code ids started from {graph_number}
-        expected_files_names = sum([get_expected_files(sg_0.id, i + graph_number, i + graph_number) for i in range(len(vertices))], [])
-        actual_files_names = get_actual_code_files(f'{GRAPH_FOLDER_PREFIX}_{sg_0.id}')
+        expected_files = sum([get_expected_files(sg_0.id, i, i) for i in get_range(graph_n, vertices)], [])
+        expected_files.append(get_expected_empty_file(sg_0.id))
+        actual_files = get_actual_code_files(f'{GRAPH_FOLDER_PREFIX}_{sg_0.id}')
         case = unittest.TestCase()
-        case.assertCountEqual(expected_files_names, actual_files_names)
+        case.assertCountEqual(expected_files, actual_files)
 
     def test_folder_structure_with_not_default_files_names(self) -> None:
         init_default_ids()
-        graph_number, _, sg_1, _ = create_three_graphs()
+        graph_n, _, sg_1, _ = create_three_graphs()
         vertices = get_two_vertices(sg_1)
-        expected_files_names = sum([get_expected_files(sg_1.id, i + graph_number, i + graph_number,
-                                                       file_prefix=NOT_DEFAULT_FILE_PREFIX)
-                                    for i in range(len(vertices))], [])
-        actual_files_names = get_actual_code_files(f'{GRAPH_FOLDER_PREFIX}_{sg_1.id}')
+        expected_files = sum([get_expected_files(sg_1.id, i, i, file_prefix=NOT_DEFAULT_FILE_PREFIX)
+                              for i in get_range(graph_n, vertices)], [])
+        expected_files.append(get_expected_empty_file(sg_1.id, file_prefix=NOT_DEFAULT_FILE_PREFIX))
+        actual_files = get_actual_code_files(f'{GRAPH_FOLDER_PREFIX}_{sg_1.id}')
         case = unittest.TestCase()
-        case.assertCountEqual(expected_files_names, actual_files_names)
+        case.assertCountEqual(expected_files, actual_files)
 
     def test_folder_structure_with_all_not_default_names(self) -> None:
         init_default_ids()
-        graph_number, _, _, sg_2 = create_three_graphs()
+        graph_n, _, _, sg_2 = create_three_graphs()
         vertices = get_two_vertices(sg_2)
-        expected_files_names = sum([get_expected_files(sg_2.id, i, i, NOT_DEFAULT_GRAPH_PREFIX, NOT_DEFAULT_FILE_PREFIX)
-                                    for i in range(graph_number, len(vertices) + graph_number)], [])
+        expected_files = sum([get_expected_files(sg_2.id, i, i, NOT_DEFAULT_GRAPH_PREFIX, NOT_DEFAULT_FILE_PREFIX)
+                              for i in get_range(graph_n, vertices)], [])
+        expected_files.append(get_expected_empty_file(sg_2.id, NOT_DEFAULT_GRAPH_PREFIX, NOT_DEFAULT_FILE_PREFIX))
         actual_files_names = get_actual_code_files(f'{NOT_DEFAULT_GRAPH_PREFIX}_{sg_2.id}')
         case = unittest.TestCase()
-        case.assertCountEqual(expected_files_names, actual_files_names)
+        case.assertCountEqual(expected_files, actual_files_names)

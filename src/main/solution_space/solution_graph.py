@@ -171,7 +171,7 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
             log_and_raise_error('Code should not be None', log)
         vertex = self.find_vertex(code.canon_tree)
         if vertex:
-            anon_tree_file = vertex.serialized_code.add_anon_tree(code.anon_tree, code_info)
+            anon_tree_file = vertex.serialized_code.add_anon_tree(code.anon_tree, code.rate, code_info)
             if anon_tree_file:
                 vertex.add_anon_tree_nodes_number()
             return vertex
@@ -203,6 +203,11 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
                     prev_vertex.serialized_code.get_last_anon_tree().add_next_anon_tree(next_anon_tree)
                 prev_vertex = next_vertex
         log.info(f'Finish adding code-info chain')
+
+    def find_all_medians(self) -> None:
+        for vertex in self.get_traversal():
+            for anon_tree in vertex.serialized_code.anon_trees:
+                anon_tree.find_medians()
 
     def __str__(self) -> str:
         vertices_str = ''

@@ -5,12 +5,14 @@ from __future__ import annotations
 import os
 import ast
 import logging
+from statistics import median, StatisticsError
 from typing import List, Callable, Optional, Set
 
 from src.main.util import consts
-from src.main.util.consts import TASK
+from src.main.util.consts import TASK, DEFAULT_VALUE
 from src.main.util.log_util import log_and_raise_error
 from src.main.canonicalization.consts import TREE_TYPE
+from src.main.solution_space.consts import EMPTY_MEDIAN
 from src.main.util.helper_classes.id_counter import IdCounter
 from src.main.solution_space.data_classes import CodeInfo, User
 from src.main.util.language_util import get_extension_by_language
@@ -84,10 +86,13 @@ class SerializedTree:
 
 
 class AnonTree(IdCounter, PrettyString, SerializedTree):
-    def __init__(self, anon_tree: ast.AST, file_path: str, code_info: Optional[CodeInfo] = None,
+    def __init__(self, anon_tree: ast.AST, rate: float, file_path: str, code_info: Optional[CodeInfo] = None,
                  to_create_file: bool = True):
         self._code_info_list = [] if code_info is None else [code_info]
         self._nodes_number = get_nodes_number_in_ast(anon_tree)
+        self._age_median = None
+        self._experience_median = None
+        self._rate = rate
         IdCounter.__init__(self, to_store_items=True)
         PrettyString.__init__(self)
         SerializedTree.__init__(self, file_path, anon_tree, self.id, to_create_file)
@@ -110,6 +115,38 @@ class AnonTree(IdCounter, PrettyString, SerializedTree):
     def code_info_list(self) -> List[CodeInfo]:
         return self._code_info_list
 
+    @property
+    def rate(self) -> float:
+        return self._rate
+
+    @property
+    def age_median(self) -> Optional[int]:
+        return self._age_median
+
+    @property
+    def experience_median(self) -> Optional[int]:
+        return self._experience_median
+
+    @age_median.getter
+    def age_median(self) -> int:
+        if self._age_median is None:
+            log_and_raise_error('Median is not found yet, you should call find_medians first', log)
+        return self._age_median
+
+    @experience_median.getter
+    def experience_median(self) -> int:
+        if self._experience_median is None:
+            log_and_raise_error('Median is not found yet, you should call find_medians first', log)
+        return self._experience_median
+
+    # Returns True if all anon_trees have non-empty attribute
+    @staticmethod
+    def have_non_empty_attr(attr: str, anon_trees: List[AnonTree]) -> bool:
+        for anon_tree in anon_trees:
+            if getattr(anon_tree, attr) == EMPTY_MEDIAN:
+                return False
+        return True
+
     def add_next_anon_tree(self, next_anon_tree: 'AnonTree') -> bool:
         if next_anon_tree.id in self._next_anon_trees_ids \
                 or next_anon_tree.id == self.id:
@@ -122,6 +159,27 @@ class AnonTree(IdCounter, PrettyString, SerializedTree):
 
     def get_unique_users(self) -> Set[User]:
         return set([code_info.user for code_info in self._code_info_list])
+
+    @staticmethod
+    def __find_median(default_value: int, all_values: List[int]) -> int:
+        non_default_values = list(filter(lambda v: v != default_value, all_values))
+        try:
+            return median(non_default_values)
+        except StatisticsError:
+            log.info('There is no non-default values, cannot find a median for empty list')
+            return EMPTY_MEDIAN
+
+    def find_medians(self) -> None:
+        unique_users = self.get_unique_users()
+
+        ages: List[int] = [u.profile.age for u in unique_users]
+        self._age_median = self.__find_median(DEFAULT_VALUE.AGE.value, ages)
+
+        experiences: List[int] = [u.profile.experience.value for u in unique_users]
+        self._experience_median = self.__find_median(DEFAULT_VALUE.INT_EXPERIENCE.value, experiences)
+
+        log.info(f'Found medians for AnonTree {self.id}, unique users number is {len(unique_users)}, '
+                 f'age median is {self._age_median}, experience median is {self._experience_median}')
 
     def __str__(self):
         return f'Anon_tree: {get_code_from_tree(self._tree)}\n' \
@@ -177,7 +235,8 @@ class SerializedCode(IdCounter, PrettyString, ISerializedObject):
         IdCounter.__init__(self)
         ISerializedObject.__init__(self, folder_with_files=folder_with_files, file_prefix=file_prefix,
                                    language=code.language)
-        anon_tree = AnonTree(code.anon_tree, self.get_file_path(f'{TREE_TYPE.ANON.value}', self.id), code_info)
+        anon_tree = AnonTree(code.anon_tree, code.rate,
+                             self.get_file_path(f'{TREE_TYPE.ANON.value}', self.id), code_info)
         self._anon_trees = [anon_tree]
         self._canon_tree = code.canon_tree
         self._rate = code.rate
@@ -191,10 +250,6 @@ class SerializedCode(IdCounter, PrettyString, ISerializedObject):
         return self._anon_trees
 
     @property
-    def rate(self) -> float:
-        return self._rate
-
-    @property
     def language(self) -> consts.LANGUAGE:
         return self._language
 
@@ -206,13 +261,18 @@ class SerializedCode(IdCounter, PrettyString, ISerializedObject):
             return None
         return self.anon_trees[-1]
 
-    def add_anon_tree(self, anon_tree: ast.AST, code_info: CodeInfo) -> Optional[str]:
+    def add_anon_tree(self, anon_tree: ast.AST, rate: float, code_info: CodeInfo) -> Optional[str]:
+        if rate != self._rate:
+            log_and_raise_error(f'Different rates in SerializedCode: {self._rate} and in new AnonTree: {rate}\n'
+                                f'canon_tree:\n{get_code_from_tree(self._canon_tree)}\n'
+                                f'first anon_tree:\n{get_code_from_tree(self.anon_trees[0].tree)}\n'
+                                f'new anon_tree:\n{get_code_from_tree(anon_tree)}\n', log)
         found_anon_tree = self.find_anon_tree(anon_tree)
         if found_anon_tree:
             found_anon_tree.add_code_info(code_info)
             return None
 
-        new_anon_tree = AnonTree(anon_tree, self.get_file_path(f'{TREE_TYPE.ANON.value}', self.id), code_info)
+        new_anon_tree = AnonTree(anon_tree, rate, self.get_file_path(f'{TREE_TYPE.ANON.value}', self.id), code_info)
         self._anon_trees.append(new_anon_tree)
         return new_anon_tree.tree_file
 

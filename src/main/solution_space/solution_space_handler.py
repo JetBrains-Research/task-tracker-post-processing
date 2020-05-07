@@ -16,8 +16,8 @@ from src.main.splitting.splitting import unpack_tests_results
 from src.main.solution_space.solution_graph import SolutionGraph
 from src.main.canonicalization.canonicalization import are_asts_equal, get_trees
 from src.main.solution_space.data_classes import AtiItem, Profile, User, CodeInfo
-from src.main.util.consts import EXPERIENCE, DEFAULT_VALUE, TASK, LANGUAGE, EXTENSION
 from src.main.util.file_util import get_all_file_system_items, extension_file_condition
+from src.main.util.consts import DEFAULT_VALUE, TASK, LANGUAGE, EXTENSION, INT_EXPERIENCE
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -80,9 +80,9 @@ def __find_same_fragments(solutions: pd.DataFrame, start_index: int) -> Tuple[in
 def __get_profile(solutions: pd.DataFrame) -> Profile:
     # Data should be preprocessed so in 'age' and 'experience' columns should be only 1 unique value for each column
     age = __get_column_unique_value(solutions, consts.CODE_TRACKER_COLUMN.AGE, consts.DEFAULT_VALUE.AGE.value)
-    str_experience = __get_column_unique_value(solutions, consts.CODE_TRACKER_COLUMN.EXPERIENCE,
-                                               consts.DEFAULT_VALUE.EXPERIENCE.value)
-    experience = __get_enum_or_default(EXPERIENCE, str_experience, DEFAULT_VALUE.EXPERIENCE)
+    str_experience = __get_column_unique_value(solutions, consts.CODE_TRACKER_COLUMN.INT_EXPERIENCE,
+                                               consts.DEFAULT_VALUE.INT_EXPERIENCE.value)
+    experience = __get_enum_or_default(INT_EXPERIENCE, str_experience, DEFAULT_VALUE.INT_EXPERIENCE)
     return Profile(age=age, experience=experience)
 
 
@@ -162,10 +162,13 @@ def __create_code_info_chain(file: str, task: TASK) -> List[Tuple[Code, CodeInfo
 def construct_solution_graph(path: str, task: TASK, language: LANGUAGE = LANGUAGE.PYTHON) -> SolutionGraph:
     files = get_all_file_system_items(path, extension_file_condition(EXTENSION.CSV))
     sg = SolutionGraph(task, language)
-    log.info(f'Start creating of solution space')
+    log.info(f'Start creating solution space')
     for file in files:
         log.info(f'Start handling file {file}')
         code_info_chain = __create_code_info_chain(file, task)
         sg.add_code_info_chain(code_info_chain)
-    log.info(f'Finish creating of solution space')
+    log.info(f'Finish creating solution space')
+    log.info('Start finding medians')
+    sg.find_all_medians()
+    log.info('Finish finding medians')
     return sg
