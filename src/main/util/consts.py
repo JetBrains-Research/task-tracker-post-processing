@@ -21,6 +21,7 @@ class CODE_TRACKER_COLUMN(Enum):
     CHOSEN_TASK = 'chosenTask'
     TASK_STATUS = 'taskStatus'
     TESTS_RESULTS = 'testsResults'
+    INT_EXPERIENCE = 'intExperience'
 
     def fits_restrictions(self, value: Any) -> bool:
         if self is CODE_TRACKER_COLUMN.AGE:
@@ -74,6 +75,7 @@ class ACTIVITY_TRACKER_EVENTS(Enum):
 class DEFAULT_VALUE(Enum):
     AGE = 0
     EXPERIENCE = None
+    INT_EXPERIENCE = -1
     TASK = None
     TASK_STATUS = None
     DATE = datetime64('NaT')
@@ -103,6 +105,19 @@ class EXPERIENCE(Enum):
     @classmethod
     def values(cls) -> List[str]:
         return [member.value for _, member in EXPERIENCE.__members__.items()]
+
+
+class INT_EXPERIENCE(Enum):
+    LESS_THAN_HALF_YEAR = 0
+    FROM_HALF_TO_ONE_YEAR = 1
+    FROM_ONE_TO_TWO_YEARS = 2
+    FROM_TWO_TO_FOUR_YEARS = 3
+    FROM_FOUR_TO_SIX_YEARS = 4
+    MORE_THAN_SIX = 5
+
+    @classmethod
+    def values(cls) -> List[str]:
+        return [member.value for _, member in INT_EXPERIENCE.__members__.items()]
 
 
 class TASK(Enum):

@@ -35,7 +35,7 @@ class VERTEX_STRUCTURE(Enum):
 VertexStructure = Dict[VERTEX_STRUCTURE, Union[str, int]]
 
 
-def create_graph_with_code() -> (SolutionGraph, List[Vertex], List[str]):
+def create_graph_with_code() -> (SolutionGraph, List[Vertex], List[str], List[float]):
     empty_source = ''
     source_0 = 'print(\'Hello\')'
     source_1 = 'a = int(input())\nprint(a)'
@@ -68,7 +68,7 @@ def create_graph_with_code() -> (SolutionGraph, List[Vertex], List[str]):
 
     sg.connect_to_end_vertex(vertices[0])
 
-    return sg, [sg.empty_vertex] + vertices, [empty_source] + sources
+    return sg, [sg.empty_vertex] + vertices, [empty_source] + sources, [TEST_RESULT.CORRECT_CODE.value] + rates
 
 
 def find_or_create_vertex_with_code_info_and_rate_check(sg: SolutionGraph, source: str,
@@ -159,28 +159,28 @@ class TestGraph:
 
     def test_finding_vertex(self) -> None:
         init_default_ids()
-        sg, vertices, sources = create_graph_with_code()
+        sg, vertices, sources, rates = create_graph_with_code()
         for i, vertex in enumerate(vertices):
-            found_vertex = find_or_create_vertex_with_code_info_and_rate_check(sg, sources[i])
+            found_vertex = find_or_create_vertex_with_code_info_and_rate_check(sg, sources[i], rates[i])
             assert found_vertex == vertex
 
     def test_creating_vertex(self) -> None:
         init_default_ids()
-        sg, vertices, sources = create_graph_with_code()
+        sg, vertices, sources, _ = create_graph_with_code()
         source = 'while(True):\n    print(\'Hi\')'
         found_vertex = find_or_create_vertex_with_code_info_and_rate_check(sg, source, TEST_RESULT.FULL_SOLUTION.value)
         assert found_vertex not in vertices
 
     def test_finding_or_creating_vertex_with_none(self) -> None:
         init_default_ids()
-        sg, vertices, sources = create_graph_with_code()
+        sg, vertices, sources, _ = create_graph_with_code()
         user = User()
         with pytest.raises(ValueError):
             sg.find_or_create_vertex(None, CodeInfo(user=user))
 
     def test_adding_code_info_chain(self) -> None:
         init_default_ids()
-        sg, vertices, vertex_sources = create_graph_with_code()
+        sg, vertices, vertex_sources, _ = create_graph_with_code()
 
         # Graph with code:
         #

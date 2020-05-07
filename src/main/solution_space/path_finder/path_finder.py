@@ -10,7 +10,7 @@ from abc import ABCMeta, abstractmethod
 from src.main.util import consts
 from src.main.solution_space.serialized_code import AnonTree
 from src.main.solution_space.solution_graph import SolutionGraph
-from src.main.solution_space.measured_vertex.measured_tree import IMeasuredTree
+from src.main.solution_space.measured_tree.measured_tree import IMeasuredTree
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
