@@ -20,8 +20,8 @@ from src.main.solution_space.consts import TEST_SYSTEM_GRAPH
 from src.main.plots.util.consts import PLOTTY_CATEGORY_ORDER
 from src.main.solution_space.data_classes import User, CodeInfo
 from src.main.preprocessing.preprocessing import preprocess_data
-from src.main.util.consts import PATH_CMD_ARG, TASK, INT_EXPERIENCE
 from src.main.splitting.splitting import split_tasks_into_separate_files
+from src.main.util.consts import PATH_CMD_ARG, TASK, INT_EXPERIENCE, TEST_RESULT
 from src.main.solution_space.path_finder_test_system import TestSystem, TEST_INPUT
 from src.main.solution_space.solution_space_handler import construct_solution_graph
 from src.main.solution_space.solution_space_serializer import SolutionSpaceSerializer
@@ -117,17 +117,24 @@ def main() -> None:
     """
     Running test system
     """
+    # It's possible not to include TEST_INPUT.RATE in dict, in this case it will be found by
+    # running tests on TEST_INPUT.SOURCE_CODE.
+    # However, to speed up the process, one may include TEST_INPUT.RATE.
     test_fragments = [{TEST_INPUT.SOURCE_CODE: 'a = int(input())',
                        TEST_INPUT.AGE: 17,
+                       TEST_INPUT.RATE: TEST_RESULT.CORRECT_CODE.value,
                        TEST_INPUT.INT_EXPERIENCE: INT_EXPERIENCE.MORE_THAN_SIX},
                       {TEST_INPUT.SOURCE_CODE: 'a = int(input())\nb = int(input())',
                        TEST_INPUT.AGE: 12,
+                       TEST_INPUT.RATE: TEST_RESULT.CORRECT_CODE.value,
                        TEST_INPUT.INT_EXPERIENCE: INT_EXPERIENCE.FROM_ONE_TO_TWO_YEARS},
                       {TEST_INPUT.SOURCE_CODE: 'a = input()\nb = input()',
                        TEST_INPUT.AGE: 10,
+                       TEST_INPUT.RATE: TEST_RESULT.CORRECT_CODE.value,
                        TEST_INPUT.INT_EXPERIENCE: INT_EXPERIENCE.LESS_THAN_HALF_YEAR},
                       {TEST_INPUT.SOURCE_CODE: 'a = 10\nb = 5\nn = 14\nprint(a * n,  b * n)',
                        TEST_INPUT.AGE: 10,
+                       TEST_INPUT.RATE: TEST_RESULT.CORRECT_CODE.value,
                        TEST_INPUT.INT_EXPERIENCE: INT_EXPERIENCE.LESS_THAN_HALF_YEAR}]
 
     ts = TestSystem(test_fragments, graph, add_same_docs=True)
