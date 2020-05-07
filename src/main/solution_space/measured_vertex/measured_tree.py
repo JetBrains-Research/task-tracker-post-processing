@@ -20,7 +20,7 @@ class IMeasuredTree(object, metaclass=ABCMeta):
     def __init_diffs_number_and_rollback_probability(self) -> None:
         self._diffs_number, delete_edits = GumTreeDiff \
             .get_diffs_and_delete_edits_numbers(self.user_tree.tree_file, self.candidate_tree.tree_file)
-        self._rollback_probability = delete_edits / self._diffs_number
+        self._rollback_probability = 0 if self._diffs_number == 0 else delete_edits / self._diffs_number
 
     @property
     def distance_to_user(self) -> float:
