@@ -5,11 +5,11 @@ from __future__ import annotations
 import os
 import ast
 import logging
-from statistics import median, StatisticsError
 from typing import List, Callable, Optional, Set
 
 from src.main.util import consts
 from src.main.util.consts import TASK, DEFAULT_VALUE
+from src.main.util.math_util import get_safety_median
 from src.main.util.log_util import log_and_raise_error
 from src.main.canonicalization.consts import TREE_TYPE
 from src.main.solution_space.consts import EMPTY_MEDIAN
@@ -163,11 +163,7 @@ class AnonTree(IdCounter, PrettyString, SerializedTree):
     @staticmethod
     def __find_median(default_value: int, all_values: List[int]) -> int:
         non_default_values = list(filter(lambda v: v != default_value, all_values))
-        try:
-            return median(non_default_values)
-        except StatisticsError:
-            log.info('There is no non-default values, cannot find a median for empty list')
-            return EMPTY_MEDIAN
+        return get_safety_median(non_default_values, EMPTY_MEDIAN)
 
     def find_medians(self) -> None:
         unique_users = self.get_unique_users()
