@@ -13,5 +13,5 @@ def get_safety_median(values: List[Any], default_value: Optional[Any] = None) ->
     try:
         return median(values)
     except StatisticsError:
-        log.info(f'Hane gotten empty list to calculate median. Return default value:{default_value}')
+        log.info(f'Have gotten empty list to calculate median. Return default value:{default_value}')
         return default_value
