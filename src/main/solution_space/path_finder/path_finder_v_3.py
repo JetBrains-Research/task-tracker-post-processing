@@ -184,6 +184,6 @@ class PathFinderV3(IPathFinder):
             return False
 
         # Todo: add is_rate_worse
-        
+
         diffs_from_user_to_graph_vertex = GumTreeDiff.get_diffs_number(user_anon.tree_file, graph_anon.tree_file)
         return not self.__is_far_from_graph(diffs_from_user_to_goal, diffs_from_user_to_graph_vertex)
