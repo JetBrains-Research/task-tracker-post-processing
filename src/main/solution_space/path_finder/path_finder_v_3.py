@@ -40,7 +40,8 @@ class PathFinderV3(IPathFinder):
 
         canon_nodes_number = get_nodes_number_in_ast(user_canon_tree)
         graph_anon_tree = self.__find_closest_tree(user_anon_tree, canon_nodes_number,
-                                                   self.graph.canon_nodes_number_dict)
+                                                   self.graph.canon_nodes_number_dict,
+                                                   candidates_file_name='graph_candidates')
         log.info(f'Chosen anon tree in graph:\n{get_code_from_tree(graph_anon_tree.tree)}')
         if not self._is_close_to_goals(graph_anon_tree):
             log.info(f'The most of path is not done. Go through graph')
@@ -77,7 +78,8 @@ class PathFinderV3(IPathFinder):
 
     # Note: we have to remove the 'user_code' from the set
     def __find_closest_tree(self, user_anon_tree: AnonTree, user_canon_nodes_number: int,
-                            canon_nodes_numbers_dict: Dict[int, list]) -> Optional[AnonTree]:
+                            canon_nodes_numbers_dict: Dict[int, list],
+                            candidates_file_name: str) -> Optional[AnonTree]:
         """
         1. Consider each vertex with similar nodes number as candidate (chose at least TOP_N_CANON candidates)
         2. Choose at least TOP_N_ANON anon trees from canon candidates and run __choose_best_anon_tree
@@ -91,6 +93,7 @@ class PathFinderV3(IPathFinder):
         anon_trees = sum([v.serialized_code.anon_trees for v in vertices], [])
         anon_nodes_numbers_dict = self.__get_items_nodes_number_dict(anon_trees)
         anon_candidates = self.__get_top_n_candidates(ANON_TOP_N, user_anon_tree.nodes_number, anon_nodes_numbers_dict)
+        self.write_candidates_info_to_file(anon_candidates, candidates_file_name)
         return self.__choose_best_anon_tree(user_anon_tree, anon_candidates)
 
     def _is_close_to_goals(self, closest_tree: AnonTree) -> bool:
@@ -109,7 +112,8 @@ class PathFinderV3(IPathFinder):
         2. Chose at least TOP_N_CANON candidates
         2. Find the closest using __choose_best_vertex()
         """
-        return self.__find_closest_tree(user_anon_tree, user_canon_nodes_number, self.graph.goals_nodes_number_dict)
+        return self.__find_closest_tree(user_anon_tree, user_canon_nodes_number, self.graph.goals_nodes_number_dict,
+                                        candidates_file_name='goal_candidates')
 
     # Todo: speed it up due to sparse node_numbers dict
     @staticmethod
