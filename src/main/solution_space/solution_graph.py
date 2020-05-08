@@ -8,6 +8,7 @@ from collections import defaultdict
 from typing import Optional, List, Tuple
 
 from src.main.solution_space.vertex import Vertex
+from src.main.util.math_util import get_safety_median
 from src.main.util.log_util import log_and_raise_error
 from src.main.solution_space.serialized_code import Code
 from src.main.solution_space.data_classes import CodeInfo
@@ -18,9 +19,8 @@ from src.main.util.helper_classes.pretty_string import PrettyString
 from src.main.solution_space import consts as solution_space_consts
 from src.main.util.file_util import remove_directory, create_directory
 from src.main.util.consts import LOGGER_NAME, TASK, LANGUAGE, TEST_RESULT
-from src.main.canonicalization.canonicalization import are_asts_equal, get_code_from_tree
-from src.main.solution_space.consts import GRAPH_FOLDER_PREFIX, SOLUTION_SPACE_FOLDER, FILE_PREFIX
-
+from src.main.solution_space.consts import GRAPH_FOLDER_PREFIX, SOLUTION_SPACE_FOLDER, FILE_PREFIX, EMPTY_MEDIAN
+from src.main.canonicalization.canonicalization import are_asts_equal, get_code_from_tree, get_nodes_number_in_ast
 
 log = logging.getLogger(LOGGER_NAME)
 
@@ -68,8 +68,11 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
         self._file_prefix = file_prefix
         self._graph_directory = self.get_default_graph_directory()
 
-        self.canon_trees_nodes_number = defaultdict(get_empty_list)
-        self.anon_trees_nodes_number = defaultdict(get_empty_list)
+        self.canon_nodes_number_dict = defaultdict(get_empty_list)
+        self.anon_nodes_number_dict = defaultdict(get_empty_list)
+        self.goals_nodes_number_dict = defaultdict(get_empty_list)
+
+        self._goals_median = None
 
         if to_delete_old_graph:
             remove_directory(self._graph_directory)
@@ -114,6 +117,26 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
     def empty_vertex(self) -> Vertex:
         return self._empty_vertex
 
+    # Todo: make something with all these median methods (and with same methods in AnonTree)
+    @property
+    def goals_median(self) -> int:
+        return self._goals_median
+
+    @goals_median.getter
+    def goals_median(self) -> int:
+        if self._goals_median is None:
+            log_and_raise_error('Goal median is not found yet, you should call find_goal_median first', log)
+        return self._goals_median
+
+    def find_goals_median(self) -> None:
+        goals_nodes_number = sum([[k] * len(v) for k, v in self.goals_nodes_number_dict.items()], [])
+        self._goals_median = get_safety_median(goals_nodes_number, EMPTY_MEDIAN)
+
+    def is_goals_median_empty(self) -> bool:
+        if self._goals_median is None:
+            log_and_raise_error('Goal median is not found yet, you should call find_goal_median first', log)
+        return self._goals_median == EMPTY_MEDIAN
+
     def __iter__(self) -> GraphIterator:
         return GraphIterator(self._start_vertex)
 
@@ -147,6 +170,7 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
         if vertex.serialized_code.is_full():
             log.info(f'Connect full code to the end vertex')
             self.connect_to_end_vertex(vertex)
+            self.goals_nodes_number_dict[get_nodes_number_in_ast(vertex.serialized_code.canon_tree)].append(vertex.id)
         return vertex
 
     def find_vertex(self, canon_tree: ast.AST) -> Optional[Vertex]:
@@ -180,18 +204,25 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
             log_and_raise_error(f'Code-info chain should not be None', log)
         if code_info_chain:
             log.info(f'Connect the first vertex in a chain to the start vertex')
-            code, code_info = code_info_chain[0]
-            first_vertex = self.find_or_create_vertex(code, code_info)
+            first_code, first_code_info = code_info_chain[0]
+            first_vertex = self.find_or_create_vertex(first_code, first_code_info)
             self.connect_to_start_vertex(first_vertex)
 
             prev_vertex = first_vertex
+            prev_anon_tree = prev_vertex.serialized_code.find_anon_tree(first_code.anon_tree)
             for next_code, next_code_info in code_info_chain[1:]:
                 next_vertex = self.find_or_create_vertex(next_code, next_code_info)
                 prev_vertex.add_child(next_vertex)
+
+                next_anon_tree = next_vertex.serialized_code.find_anon_tree(next_code.anon_tree)
+                prev_anon_tree.add_next_anon_tree(next_anon_tree)
+
                 prev_vertex = next_vertex
+                prev_anon_tree = next_anon_tree
         log.info(f'Finish adding code-info chain')
 
     def find_all_medians(self) -> None:
+        self.find_goals_median()
         for vertex in self.get_traversal():
             for anon_tree in vertex.serialized_code.anon_trees:
                 anon_tree.find_medians()

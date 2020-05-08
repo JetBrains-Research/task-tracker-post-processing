@@ -5,11 +5,11 @@ from __future__ import annotations
 import os
 import ast
 import logging
-from statistics import median, StatisticsError
 from typing import List, Callable, Optional, Set
 
 from src.main.util import consts
 from src.main.util.consts import TASK, DEFAULT_VALUE
+from src.main.util.math_util import get_safety_median
 from src.main.util.log_util import log_and_raise_error
 from src.main.canonicalization.consts import TREE_TYPE
 from src.main.solution_space.consts import EMPTY_MEDIAN
@@ -96,10 +96,16 @@ class AnonTree(IdCounter, PrettyString, SerializedTree):
         IdCounter.__init__(self, to_store_items=True)
         PrettyString.__init__(self)
         SerializedTree.__init__(self, file_path, anon_tree, self.id, to_create_file)
+        self._nodes_number = get_nodes_number_in_ast(anon_tree)
+        self._next_anon_trees_ids = []
 
     @property
     def nodes_number(self) -> int:
         return self._nodes_number
+
+    @property
+    def next_anon_trees_ids(self) -> List[int]:
+        return self._next_anon_trees_ids
 
     @property
     def tree(self) -> ast.AST:
@@ -141,6 +147,13 @@ class AnonTree(IdCounter, PrettyString, SerializedTree):
                 return False
         return True
 
+    def add_next_anon_tree(self, next_anon_tree: AnonTree) -> bool:
+        if next_anon_tree.id in self._next_anon_trees_ids \
+                or next_anon_tree.id == self.id:
+            return False
+        self._next_anon_trees_ids.append(next_anon_tree.id)
+        return True
+
     def add_code_info(self, code_info: CodeInfo) -> None:
         self._code_info_list.append(code_info)
 
@@ -150,11 +163,7 @@ class AnonTree(IdCounter, PrettyString, SerializedTree):
     @staticmethod
     def __find_median(default_value: int, all_values: List[int]) -> int:
         non_default_values = list(filter(lambda v: v != default_value, all_values))
-        try:
-            return median(non_default_values)
-        except StatisticsError:
-            log.info('There is no non-default values, cannot find a median for empty list')
-            return EMPTY_MEDIAN
+        return get_safety_median(non_default_values, EMPTY_MEDIAN)
 
     def find_medians(self) -> None:
         unique_users = self.get_unique_users()
@@ -171,6 +180,7 @@ class AnonTree(IdCounter, PrettyString, SerializedTree):
     def __str__(self):
         return f'Anon_tree: {get_code_from_tree(self._tree)}\n' \
                f'Code info:\n{list(map(str, self._code_info_list))}\n' \
+
 
 
 class Code(PrettyString):
