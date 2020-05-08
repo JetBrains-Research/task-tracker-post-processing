@@ -9,8 +9,6 @@ from datetime import datetime
 
 import pandas as pd
 
-from src.main.preprocessing.int_experience_adding import add_int_experience
-
 sys.path.append('.')
 from src.main.util import consts
 from src.main.util.file_util import add_slash
@@ -21,6 +19,7 @@ from src.main.plots.util.consts import PLOTTY_CATEGORY_ORDER
 from src.main.solution_space.data_classes import User, CodeInfo
 from src.main.preprocessing.preprocessing import preprocess_data
 from src.main.splitting.splitting import split_tasks_into_separate_files
+from src.main.preprocessing.int_experience_adding import add_int_experience
 from src.main.util.consts import PATH_CMD_ARG, TASK, INT_EXPERIENCE, TEST_RESULT
 from src.main.solution_space.path_finder_test_system import TestSystem, TEST_INPUT
 from src.main.solution_space.solution_space_handler import construct_solution_graph
@@ -78,7 +77,8 @@ def main() -> None:
     """
     Graph constructing
     """
-    graph = construct_solution_graph(path, TASK.PIES)
+    task = TASK.BRACKETS
+    graph = construct_solution_graph(path, task)
     print('Graph was constructed')
 
     """
@@ -101,9 +101,9 @@ def main() -> None:
     """
     Graph visualization
     """
-    # gv = SolutionSpaceVisualizer(graph)
-    # graph_visualization_path = gv.visualize_graph(name_prefix='graph_with_nodes_number')
-    # print(graph_visualization_path)
+    gv = SolutionSpaceVisualizer(graph)
+    graph_visualization_path = gv.visualize_graph(name_prefix='graph_with_nodes_number')
+    print(graph_visualization_path)
 
     """
     Getting hint
@@ -122,15 +122,7 @@ def main() -> None:
     # However, to speed up the process, one may include TEST_INPUT.RATE.
     ages = [12]
     experiences = [INT_EXPERIENCE.LESS_THAN_HALF_YEAR, INT_EXPERIENCE.FROM_ONE_TO_TWO_YEARS]
-    pies_fragments = ['a = int(input())',
-                      'a = int(input())\nb = int(input())',
-                      'a = int(input())\nb = int(input())\nn = int(input())',
-                      'a = input()\nb = input()',
-                      'a = 10\nb = 5\nn = 14\nprint(a * n,  b * n)',
-                      'a = int(input())\nb = int(input())\nn = int(input())\nrub = a * n\ncop = b * n',
-                      'a = int(input())\nb = int(input())\nn = int(input())\nrub = a * n\ncop = b * n\nprint(rub + " " + cop)',
-                      'a = int(input())\nb = int(input())\nn = int(input())\nrub = a * n\ncop = b * n\nprint(str(rub) + " " + str(cop))']
-    test_fragments = TestSystem.generate_all_test_fragments(ages, experiences, pies_fragments)
+    test_fragments = TestSystem.generate_all_test_fragments(ages, experiences, TestSystem.get_fragments_for_task(task))
     ts = TestSystem(test_fragments, graph, add_same_docs=True)
 
 

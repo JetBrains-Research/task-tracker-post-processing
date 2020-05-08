@@ -19,7 +19,7 @@ from typing import Type, TypeVar, List, Dict, Any, Tuple, Optional
 from prettytable import PrettyTable, ALL
 
 from src.main.solution_space.solution_space_visualizer import SolutionSpaceVisualizer
-from src.main.util.consts import LOGGER_NAME, INT_EXPERIENCE, TEST_RESULT
+from src.main.util.consts import LOGGER_NAME, INT_EXPERIENCE, TEST_RESULT, TASK
 from src.main.solution_space.hint import HintHandler
 from src.main.solution_space.data_classes import Profile
 from src.main.util.file_util import get_class_parent_package
@@ -137,7 +137,8 @@ class TestSystem:
             user_anon_tree, user_canon_tree = self.__create_user_trees(test_input)
             row = [test_input[key] for key in TEST_INPUT]
             for j, path_finder in enumerate(path_finders):
-                row.append(self.__run_path_finder(path_finder, user_anon_tree, user_canon_tree, f'{i}_{path_finder.__class__.__name__}_{path_finder.measured_vertex_subclass.__name__}'))
+                row.append(self.__run_path_finder(path_finder, user_anon_tree, user_canon_tree,
+                                                  f'{i}_{path_finder.__class__.__name__}_{path_finder.measured_vertex_subclass.__name__}'))
             table.add_row(row)
 
         return TestSystem.__set_table_style(table)
@@ -240,3 +241,22 @@ class TestSystem:
         return [{TEST_INPUT.SOURCE_CODE: f, TEST_INPUT.AGE: a,
                  TEST_INPUT.RATE: TEST_RESULT.CORRECT_CODE.value,
                  TEST_INPUT.INT_EXPERIENCE: e} for a, e, f in itertools.product(ages, experiences, fragments)]
+
+    @staticmethod
+    def get_fragments_for_task(task: TASK) -> List[str]:
+        if task == TASK.PIES:
+            return ['a = int(input())',
+                    'a = int(input())\nb = int(input())',
+                    'a = int(input())\nb = int(input())\nn = int(input())',
+                    'a = input()\nb = input()',
+                    'a = 10\nb = 5\nn = 14\nprint(a * n,  b * n)',
+                    'a = int(input())\nb = int(input())\nn = int(input())\nrub = a * n\ncop = b * n',
+                    'a = int(input())\nb = int(input())\nn = int(input())\nrub = a * n\ncop = b * n\nprint(rub + " " + cop)',
+                    'a = int(input())\nb = int(input())\nn = int(input())\nrub = a * n\ncop = b * n\nprint(str(rub) + " " + str(cop))']
+        elif task == TASK.BRACKETS:
+            return ['s = input()',
+                    's = input()\nres = ""',
+                    's = input()\nres = ""\nif len(s) % 2 == 0:\n    print(s)',
+                    's = input()\nres = ""\nif len(s) % 2 == 0:\n    print(s)\nelse:\n    print(s)']
+        else:
+            raise NotImplemented
