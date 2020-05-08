@@ -5,10 +5,11 @@ from typing import Callable, Tuple, Optional
 
 import pytest
 
-from src.test.util import to_skip, TEST_LEVEL
 from src.main.util.consts import LOGGER_NAME, TASK
+from src.test.test_config import to_skip, TEST_LEVEL
 from src.main.canonicalization.consts import TREE_TYPE
 from src.main.util.file_util import get_content_from_file
+from src.test.canonicalization.diffs.diff_handler.util import FAIL_REASON
 from src.test.canonicalization.util import run_test, CANONICALIZATION_TESTS_TYPES
 from src.main.canonicalization.canonicalization import get_cleaned_code, get_code_from_tree, get_trees
 
@@ -34,6 +35,7 @@ def get_canonicalized_code_from_file(file: str) -> str:
 
 @pytest.mark.skipif(to_skip(current_module_level=TEST_LEVEL.CANONICALIZATION),
                     reason=TEST_LEVEL.CANONICALIZATION.value)
+@pytest.mark.xfail(reason=FAIL_REASON)
 class TestCanonicalizationTool:
 
     @staticmethod

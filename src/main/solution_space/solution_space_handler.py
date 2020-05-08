@@ -11,12 +11,13 @@ from src.main.util import consts
 from src.main.util.data_util import Column
 from src.main.canonicalization.consts import TREE_TYPE
 from src.main.util.log_util import log_and_raise_error
+from src.main.solution_space.serialized_code import Code
 from src.main.splitting.splitting import unpack_tests_results
 from src.main.solution_space.solution_graph import SolutionGraph
 from src.main.canonicalization.canonicalization import are_asts_equal, get_trees
-from src.main.util.consts import EXPERIENCE, DEFAULT_VALUE, TASK, LANGUAGE, EXTENSION
+from src.main.solution_space.data_classes import AtiItem, Profile, User, CodeInfo
 from src.main.util.file_util import get_all_file_system_items, extension_file_condition
-from src.main.solution_space.data_classes import AtiItem, Profile, User, Code, CodeInfo
+from src.main.util.consts import DEFAULT_VALUE, TASK, LANGUAGE, EXTENSION, INT_EXPERIENCE
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -49,10 +50,10 @@ def __get_ati_data(solutions: pd.DataFrame, index: int) -> AtiItem:
     return AtiItem(timestamp=timestamp, event_type=event_type, event_data=event_data)
 
 
-def __are_same_fragments(current_tree: ast.AST, solutions: pd.DataFrame, next_index: int) -> bool:
+def __are_same_fragments(current_anon_tree: ast.AST, solutions: pd.DataFrame, next_index: int) -> bool:
     fragment = __get_column_value(solutions, next_index, consts.CODE_TRACKER_COLUMN.FRAGMENT)
-    next_canon_tree, = get_trees(fragment, {TREE_TYPE.CANON})
-    return are_asts_equal(current_tree, next_canon_tree)
+    next_anon_tree, = get_trees(fragment, {TREE_TYPE.ANON})
+    return are_asts_equal(current_anon_tree, next_anon_tree)
 
 
 # Get ati data and add it to the ati_elements list if it is not empty
@@ -64,24 +65,24 @@ def __handle_current_ati(ati_elements: List[AtiItem], solutions: pd.DataFrame, i
 
 
 # Find the same code fragments in data and construct list of ati items for this fragment
-def __find_same_fragments(solutions: pd.DataFrame, start_index: int) -> Tuple[int, List[AtiItem], ast.AST]:
+def __find_same_fragments(solutions: pd.DataFrame, start_index: int) -> Tuple[int, List[AtiItem], ast.AST, ast.AST]:
     i, ati_elements = start_index + 1, []
     __handle_current_ati(ati_elements, solutions, start_index)
     current_fragment = __get_column_value(solutions, start_index, consts.CODE_TRACKER_COLUMN.FRAGMENT)
-    current_canon_tree, = get_trees(current_fragment, {TREE_TYPE.CANON})
+    current_anon_tree, current_canon_tree = get_trees(current_fragment, {TREE_TYPE.ANON, TREE_TYPE.CANON})
 
-    while i < solutions.shape[0] and __are_same_fragments(current_canon_tree, solutions, i):
+    while i < solutions.shape[0] and __are_same_fragments(current_anon_tree, solutions, i):
         __handle_current_ati(ati_elements, solutions, i)
         i += 1
-    return i, ati_elements, current_canon_tree
+    return i, ati_elements, current_anon_tree, current_canon_tree
 
 
 def __get_profile(solutions: pd.DataFrame) -> Profile:
     # Data should be preprocessed so in 'age' and 'experience' columns should be only 1 unique value for each column
     age = __get_column_unique_value(solutions, consts.CODE_TRACKER_COLUMN.AGE, consts.DEFAULT_VALUE.AGE.value)
-    str_experience = __get_column_unique_value(solutions, consts.CODE_TRACKER_COLUMN.EXPERIENCE,
-                                               consts.DEFAULT_VALUE.EXPERIENCE.value)
-    experience = __get_enum_or_default(EXPERIENCE, str_experience, DEFAULT_VALUE.EXPERIENCE)
+    str_experience = __get_column_unique_value(solutions, consts.CODE_TRACKER_COLUMN.INT_EXPERIENCE,
+                                               consts.DEFAULT_VALUE.INT_EXPERIENCE.value)
+    experience = __get_enum_or_default(INT_EXPERIENCE, str_experience, DEFAULT_VALUE.INT_EXPERIENCE)
     return Profile(age=age, experience=experience)
 
 
@@ -89,7 +90,8 @@ def __get_user(solutions: pd.DataFrame) -> User:
     return User(__get_profile(solutions))
 
 
-def __get_code_info(solutions: pd.DataFrame, user: User, index: int, ati_actions: List[AtiItem]) -> CodeInfo:
+def __get_code_info(solutions: pd.DataFrame, user: User, index: int,
+                    ati_actions: List[AtiItem]) -> CodeInfo:
     date = __get_column_value(solutions, index, consts.CODE_TRACKER_COLUMN.DATE)
     timestamp = __get_column_value(solutions, index, consts.CODE_TRACKER_COLUMN.TIMESTAMP)
     return CodeInfo(user, timestamp, date, ati_actions)
@@ -115,7 +117,7 @@ def __filter_incorrect_fragments(solutions: pd.DataFrame) -> pd.DataFrame:
 
 
 def __get_task_index(task: TASK) -> int:
-    return consts.TASK.index(task)
+    return consts.TASK.tasks().index(task)
 
 
 def __get_rate(tests_results: str, task_index: int) -> float:
@@ -126,11 +128,11 @@ def __get_rate(tests_results: str, task_index: int) -> float:
     return tests_results[task_index]
 
 
-def __get_code(solutions: pd.DataFrame, index: int, task_index: int, tree: ast.AST) -> Code:
+def __get_code(solutions: pd.DataFrame, index: int, task_index: int, canon_tree: ast.AST, anon_tree: ast.AST) -> Code:
     tests_results = __get_column_value(solutions, index, consts.CODE_TRACKER_COLUMN.TESTS_RESULTS)
     rate = __get_rate(tests_results, task_index)
     log.info(f'Task index is :{task_index}, rate is: {rate}')
-    return Code(ast=tree, rate=rate)
+    return Code(anon_tree, canon_tree, rate)
 
 
 def __convert_to_datetime(df: pd.DataFrame) -> None:
@@ -138,7 +140,7 @@ def __convert_to_datetime(df: pd.DataFrame) -> None:
         df[column.value] = pd.to_datetime(df[column.value], errors='ignore')
 
 
-def __create_code_user_chain(file: str, task: TASK) -> List[Tuple[Code, CodeInfo]]:
+def __create_code_info_chain(file: str, task: TASK) -> List[Tuple[Code, CodeInfo]]:
     log.info(f'Start solution space creating for file {file} for task {task}')
     data = pd.read_csv(file, encoding=consts.ISO_ENCODING)
     __convert_to_datetime(data)
@@ -149,8 +151,8 @@ def __create_code_user_chain(file: str, task: TASK) -> List[Tuple[Code, CodeInfo
     user = __get_user(solutions)
     while i < solutions.shape[0]:
         old_index = i
-        i, ati_actions, tree = __find_same_fragments(solutions, i)
-        code = __get_code(solutions, old_index, task_index, tree)
+        i, ati_actions, anon_tree, canon_tree = __find_same_fragments(solutions, i)
+        code = __get_code(solutions, old_index, task_index, canon_tree, anon_tree)
         code_info = __get_code_info(solutions, user, old_index, ati_actions)
         code_info_chain.append((code, code_info))
     log.info(f'Finish solution space creating for file {file} for task {task}')
@@ -158,13 +160,15 @@ def __create_code_user_chain(file: str, task: TASK) -> List[Tuple[Code, CodeInfo
 
 
 def construct_solution_graph(path: str, task: TASK, language: LANGUAGE = LANGUAGE.PYTHON) -> SolutionGraph:
-    files = get_all_file_system_items(path, extension_file_condition(EXTENSION.CSV),
-                                      consts.FILE_SYSTEM_ITEM.FILE)
+    files = get_all_file_system_items(path, extension_file_condition(EXTENSION.CSV))
     sg = SolutionGraph(task, language)
-    log.info(f'Start creating of solution space')
+    log.info(f'Start creating solution space')
     for file in files:
         log.info(f'Start handling file {file}')
-        code_info_chain = __create_code_user_chain(file, task)
+        code_info_chain = __create_code_info_chain(file, task)
         sg.add_code_info_chain(code_info_chain)
-    log.info(f'Finish creating of solution space')
+    log.info(f'Finish creating solution space')
+    log.info('Start finding medians')
+    sg.find_all_medians()
+    log.info('Finish finding medians')
     return sg

@@ -7,7 +7,7 @@ import pytest
 import pandas as pd
 
 from src.main.util import consts
-from src.test.util import to_skip, TEST_LEVEL
+from src.test.test_config import to_skip, TEST_LEVEL
 from src.main.preprocessing import activity_tracker_handler as ath
 
 ath_test_folder = os.path.join(consts.TEST_DATA_PATH, 'preprocessing/activity_tracker_handler')

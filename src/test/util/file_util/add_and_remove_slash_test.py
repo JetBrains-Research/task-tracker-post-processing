@@ -4,7 +4,7 @@ from typing import Callable, Tuple
 
 import pytest
 
-from src.test.util import to_skip, TEST_LEVEL
+from src.test.test_config import to_skip, TEST_LEVEL
 from src.main.util.file_util import add_slash, remove_slash
 
 path_with_slash = 'home/data/src/'

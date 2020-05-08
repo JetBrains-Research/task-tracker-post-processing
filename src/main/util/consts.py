@@ -22,6 +22,7 @@ class CODE_TRACKER_COLUMN(Enum):
     CHOSEN_TASK = 'chosenTask'
     TASK_STATUS = 'taskStatus'
     TESTS_RESULTS = 'testsResults'
+    INT_EXPERIENCE = 'intExperience'
 
     def fits_restrictions(self, value: Any) -> bool:
         if self is CODE_TRACKER_COLUMN.AGE:
@@ -74,13 +75,14 @@ class ACTIVITY_TRACKER_EVENTS(Enum):
 
 class DEFAULT_VALUE(Enum):
     AGE = 0
-    EXPERIENCE = nan
-    TASK = nan
-    TASK_STATUS = nan
+    EXPERIENCE = None
+    INT_EXPERIENCE = -1
+    TASK = None
+    TASK_STATUS = None
     DATE = datetime64('NaT')
-    EVENT_TYPE = nan
-    EVENT_DATA = nan
-    FRAGMENT = nan
+    EVENT_TYPE = None
+    EVENT_DATA = None
+    FRAGMENT = None
 
     # todo: add tests
     def is_equal(self, value) -> bool:
@@ -104,6 +106,19 @@ class EXPERIENCE(Enum):
     @classmethod
     def values(cls) -> List[str]:
         return [member.value for _, member in EXPERIENCE.__members__.items()]
+
+
+class INT_EXPERIENCE(Enum):
+    LESS_THAN_HALF_YEAR = 0
+    FROM_HALF_TO_ONE_YEAR = 1
+    FROM_ONE_TO_TWO_YEARS = 2
+    FROM_TWO_TO_FOUR_YEARS = 3
+    FROM_FOUR_TO_SIX_YEARS = 4
+    MORE_THAN_SIX = 5
+
+    @classmethod
+    def values(cls) -> List[str]:
+        return [member.value for _, member in INT_EXPERIENCE.__members__.items()]
 
 
 class TASK(Enum):
@@ -175,6 +190,7 @@ class EXTENSION(Enum):
     JAVA = '.java'
     KT = '.kt'
     CPP = '.cpp'
+    DOT = '.dot'
 
 
 EXTENSION_TO_LANGUAGE_DICT: Dict[EXTENSION, LANGUAGE] = {
@@ -212,12 +228,19 @@ ACTIVITY_TRACKER_FILE_NAME = 'ide-events'
 DATE_TIME_FORMAT = '%Y-%m-%dT%H:%M:%S.%f%z'
 MAX_DIF_SEC = 0.5
 
-TEST_DATA_PATH = ROOT_DIR + '/../../resources/test_data'
+RESOURCES_PATH = ROOT_DIR + '/../../resources/'
+TEST_DATA_PATH = RESOURCES_PATH + 'test_data'
 TEST_PATH = ROOT_DIR + '/../../test'
-RESOURCES_PATH = ROOT_DIR + '/../../resources'
+
+GRAPH_REPRESENTATION_PATH = os.path.join(RESOURCES_PATH, 'graph_representation')
+SERIALIZED_GRAPH_PATH = os.path.join(RESOURCES_PATH, 'serialized_graph')
+SOLUTION_SPACE_TEST_RESULT_PATH = os.path.join(RESOURCES_PATH, 'solution_space')
 
 PREPROCESSING_RESULT_FOLDER = 'preprocessing_result'
 STATISTICS_RESULT_FOLDER = 'statistics_result'
+
+# Todo: use zip
+GUMTREE_PATH = os.path.join(RESOURCES_PATH, 'gumtree/bin/gumtree')
 
 # v 2.0 - with stopping after the first break
 # v 3.0 - with java package detecting

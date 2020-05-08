@@ -4,7 +4,7 @@ import os
 import re
 import pickle
 import shutil
-from typing import Callable, Any, List, Tuple
+from typing import Callable, Any, List, Tuple, Type
 
 import pandas as pd
 
@@ -36,7 +36,7 @@ def remove_slash(path: str) -> str:
 def serialize_data_and_write_to_file(path: str, data: Any) -> None:
     create_directory(get_parent_folder(path))
     with open(path, 'wb') as f:
-        pickle.dump(data, f)
+        pickle.dump(data, f, pickle.HIGHEST_PROTOCOL)
 
 
 def deserialize_data_from_file(path: str) -> Any:
@@ -77,6 +77,12 @@ def add_dot_to_not_empty_extension(extension: EXTENSION) -> str:
     return new_extension
 
 
+# Todo: add tests
+def add_suffix_to_file(file: str, suffix: str) -> str:
+    base, extension = os.path.splitext(file)
+    return f'{base}_{suffix}{extension}'
+
+
 # If need_to_rename, it works only for real files because os.rename is called
 def change_extension_to(file: str, new_extension: EXTENSION, need_to_rename: bool = False) -> str:
     new_extension = add_dot_to_not_empty_extension(new_extension)
@@ -92,6 +98,20 @@ def get_parent_folder(path: str, to_add_slash: bool = False) -> str:
     if to_add_slash:
         parent_folder = add_slash(parent_folder)
     return parent_folder
+
+
+# For given directory structure:
+#  /root
+#  -- /foo
+#  ---- /bar
+#  ------ /class_file.py
+#  -------- class A
+# returns 'root.foo.bar'
+def get_class_parent_package(clazz: Type[object]) -> str:
+    # For example from comment above, class_module is 'root.foo.bar.class_file'
+    class_module = clazz.__module__
+    # Cut everything after the last dot to get parent package:
+    return class_module.rsplit(sep='.', maxsplit=1)[0]
 
 
 def get_parent_folder_name(path: str) -> str:
@@ -119,8 +139,12 @@ def create_file(content: str, file: str) -> None:
         f.write(content)
 
 
+def is_file(file: str) -> bool:
+    return os.path.isfile(file)
+
+
 def remove_file(file: str) -> None:
-    if os.path.isfile(file):
+    if is_file(file):
         os.remove(file)
 
 

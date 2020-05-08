@@ -1,22 +1,18 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
-import os
-import ast
 import logging
 from datetime import datetime
 from typing import List, Union, Optional
 
 from src.main.util import consts
-from src.main.util.file_util import create_file
-from src.main.util.log_util import log_and_raise_error
-from src.main.util.language_util import get_extension_by_language
-from src.main.canonicalization.canonicalization import get_code_from_tree
-from src.main.util.consts import EXPERIENCE, DEFAULT_VALUE, ACTIVITY_TRACKER_EVENTS
+from src.main.util.helper_classes.id_counter import IdCounter
+from src.main.util.helper_classes.pretty_string import PrettyString
+from src.main.util.consts import DEFAULT_VALUE, ACTIVITY_TRACKER_EVENTS, INT_EXPERIENCE
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
 
-class AtiItem:
+class AtiItem(PrettyString):
     def __init__(self, timestamp: datetime = DEFAULT_VALUE.DATE.value,
                  event_type: Union[ACTIVITY_TRACKER_EVENTS, DEFAULT_VALUE] = DEFAULT_VALUE.EVENT_TYPE,
                  event_data: str = DEFAULT_VALUE.EVENT_DATA.value):
@@ -36,6 +32,7 @@ class AtiItem:
     def event_data(self) -> str:
         return self._event_data
 
+    # Todo: add tests
     def is_empty(self) -> bool:
         return DEFAULT_VALUE.DATE.is_equal(self._timestamp) and DEFAULT_VALUE.EVENT_DATA.is_equal(
             self._event_type.value) \
@@ -52,9 +49,9 @@ class AtiItem:
                self._event_data == o._event_data
 
 
-class Profile:
+class Profile(PrettyString):
     def __init__(self, age: int = consts.DEFAULT_VALUE.AGE.value,
-                 experience: Union[EXPERIENCE, DEFAULT_VALUE] = DEFAULT_VALUE.EXPERIENCE):
+                 experience: Union[INT_EXPERIENCE, DEFAULT_VALUE] = DEFAULT_VALUE.INT_EXPERIENCE):
         self._age = age
         self._experience = experience
 
@@ -63,36 +60,30 @@ class Profile:
         return self._age
 
     @property
-    def experience(self) -> Union[EXPERIENCE, DEFAULT_VALUE]:
+    def experience(self) -> Union[INT_EXPERIENCE, DEFAULT_VALUE]:
         return self._experience
 
     def __str__(self) -> str:
         return f'Experience: {self._experience}, age: {self._age}'
 
 
-class User:
-    _last_id = 0
+class User(IdCounter, PrettyString):
 
     def __init__(self, profile: Profile = None):
+        super().__init__()
         self._profile = profile
-        self._id = self._last_id
-        self.__class__._last_id += 1
 
     @property
     def profile(self) -> Profile:
         return self._profile
 
-    @property
-    def id(self) -> int:
-        return self._id
-
     def __str__(self) -> str:
         return f'Id: {self._id}, profile: {self._profile}'
 
 
-class CodeInfo:
+class CodeInfo(PrettyString):
     def __init__(self, user: User, timestamp: int = 0, date: datetime = DEFAULT_VALUE.DATE.value,
-                 ati_actions: List[AtiItem] = None):
+                 ati_actions: Optional[List[AtiItem]] = None):
         self._user = user
         self._ati_actions = ati_actions if ati_actions else []
         self._timestamp = timestamp
@@ -115,50 +106,7 @@ class CodeInfo:
         return self._date
 
     def __str__(self) -> str:
-        return f'User: {self._user}, timestamp: {self._timestamp}, date: {self._date}. Length of ' \
-               f'ati actions is {len(self._ati_actions)}'
+        return f'User: {self._user}, timestamp: {self._timestamp}, date: {self._date}. ' \
+               f'Length of ati actions is {len(self._ati_actions)}\n' \
+               f'Ati actions:\n{list(map(str, self.ati_actions))}'
 
-
-class Code:
-    _last_id = 0
-
-    def __init__(self, ast: ast.AST = None, rate: float = 0.0, file_with_code: Optional[str] = None):
-        self._ast = ast
-        self._file_with_code = file_with_code
-        self._rate = rate
-
-        self._id = self._last_id
-        self.__class__._last_id += 1
-
-    @property
-    def ast(self) -> ast.AST:
-        return self._ast
-
-    @property
-    def rate(self) -> float:
-        return self._rate
-
-    @property
-    def file_with_code(self) -> Optional[str]:
-        return self._file_with_code
-
-    @file_with_code.setter
-    def file_with_code(self, file_with_code: str) -> None:
-        self._file_with_code = file_with_code
-
-    def create_file_with_code(self, folder_to_write: str, name_prefix: str,
-                              language: consts.LANGUAGE = consts.LANGUAGE.PYTHON) -> None:
-        if not self._ast:
-            log_and_raise_error(f'Ast in the code {self} is None', log)
-
-        extension = get_extension_by_language(language)
-        file_path = os.path.join(folder_to_write, name_prefix + str(self._id) + str(extension.value))
-        code = get_code_from_tree(self._ast)
-        create_file(code, file_path)
-        self._file_with_code = file_path
-
-    def __str__(self) -> str:
-        return f'Id: {self._id}, rate: {self._rate}\nCode:\n{get_code_from_tree(self._ast)}\n'
-
-    def is_full(self) -> bool:
-        return self._rate == consts.TEST_RESULT.FULL_SOLUTION.value

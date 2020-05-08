@@ -12,11 +12,25 @@ class VERTEX_TYPE(Enum):
     INTERMEDIATE = 'intermediate'
 
 
-FOLDER_WITH_CODE_FILES = ROOT_DIR + '/../../resources/solution_space'
-FOLDER_WITH_CODE_FILES_FOR_TESTS = ROOT_DIR + '/../../resources/test_data/solution_space'
+SOLUTION_SPACE_FOLDER = ROOT_DIR + '/../../resources/solution_space'
+TEST_SYSTEM_GRAPH = ROOT_DIR + '/../../resources/test_system/test_system_graph.pickle'
+SOLUTION_SPACE_TEST_FOLDER = ROOT_DIR + '/../../resources/test_data/solution_space'
 EMPTY_CODE_FILE = ROOT_DIR + '/../../resources/solution_space/empty_code.py'
-GRAPH_FOLDER_PREFIX = 'graph_'
-FILE_PREFIX = 'code_'
+HINT_FOLDER = ROOT_DIR + '/../../resources/hint'
 
+GRAPH_FOLDER_PREFIX = 'graph'
+FILE_PREFIX = 'code'
+USER_FILE_PREFIX = 'user_code'
+
+NODES_NUMBER_PERCENT_TO_GO_DIRECTLY = 0.2
 DIFFS_PERCENT_TO_GO_DIRECTLY = 0.2
 DISTANCE_TO_GRAPH_THRESHOLD = 2
+ROLLBACK_PROBABILITY = 0.7
+
+NODE_NUMBERS_RATE = 0.2
+CANON_TOP_N = 5
+ANON_TOP_N = 10
+
+EMPTY_MEDIAN = -1
+
+

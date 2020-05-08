@@ -6,19 +6,20 @@ from typing import List, Tuple, Dict, Union
 
 import pytest
 
-from src.test.util import to_skip, TEST_LEVEL
+from src.test.test_config import to_skip, TEST_LEVEL
+from src.main.solution_space.serialized_code import Code
 from src.main.util.consts import TEST_RESULT, LOGGER_NAME, TASK
-from src.main.solution_space.data_classes import Code, User, CodeInfo
-from src.main.solution_space.solution_graph import Vertex, SolutionGraph
+from src.main.solution_space.data_classes import User, CodeInfo
+from src.main.solution_space.consts import SOLUTION_SPACE_TEST_FOLDER
+from src.main.solution_space.solution_graph import SolutionGraph, Vertex
+from src.test.solution_space.solution_graph.util import init_default_ids
 from src.main.canonicalization.canonicalization import get_code_from_tree
-from src.main.solution_space.consts import FOLDER_WITH_CODE_FILES_FOR_TESTS
-from src.test.solution_space.solution_graph.util import create_code_from_source, init_default_ids
 
 log = logging.getLogger(LOGGER_NAME)
 
 
 CURRENT_TASK = TASK.PIES
-SolutionGraph.folder_with_code_files = FOLDER_WITH_CODE_FILES_FOR_TESTS
+SolutionGraph.solution_space_folder = SOLUTION_SPACE_TEST_FOLDER
 
 
 class ADJACENT_VERTEX_TYPE(Enum):
@@ -34,50 +35,49 @@ class VERTEX_STRUCTURE(Enum):
 VertexStructure = Dict[VERTEX_STRUCTURE, Union[str, int]]
 
 
-def create_graph_with_code() -> (SolutionGraph, List[Vertex], List[str]):
-    source_0 = ''
-    source_1 = 'print(\'Hello\')'
-    source_2 = 'a = 5'
-    source_3 = 'x = True\nif(x):\n    x = False'
+def create_graph_with_code() -> (SolutionGraph, List[Vertex], List[str], List[float]):
+    empty_source = ''
+    source_0 = 'print(\'Hello\')'
+    source_1 = 'a = int(input())\nprint(a)'
+    source_2 = 'x = 5\nif(x > 4):\n    print(x)'
 
-    sources = [source_0, source_1, source_2, source_3]
+    sources = [source_0, source_1, source_2]
 
     sg = SolutionGraph(CURRENT_TASK)
     #           START_VERTEX
     #         /             \
-    #      vertex_0       vertex_1
+    #  empty vertex       vertex_0
     #         |           /    \
-    #      vertex_2     /   END_VERTEX
+    #      vertex_1     /   END_VERTEX
     #           \     /
-    #           vertex_3
+    #           vertex_2
 
     # Vertex_1 has to have a full_solution code since this vertex is connected with end_vertex
-    rates = [TEST_RESULT.CORRECT_CODE.value, TEST_RESULT.FULL_SOLUTION.value, TEST_RESULT.CORRECT_CODE.value,
-             TEST_RESULT.CORRECT_CODE.value]
+    rates = [TEST_RESULT.FULL_SOLUTION.value, TEST_RESULT.CORRECT_CODE.value, TEST_RESULT.CORRECT_CODE.value]
 
-    vertices = [Vertex(sg, code=create_code_from_source(s, rates[i])) for i, s in enumerate(sources)]
+    vertices = [Vertex(sg, code=Code.from_source(s, rates[i])) for i, s in enumerate(sources)]
 
     # Add code infos with different users
-    list(map(lambda v: v.add_code_info(CodeInfo(User())), vertices))
+    list(map(lambda v: v.serialized_code.anon_trees[0].add_code_info(CodeInfo(User())), vertices))
 
     sg.connect_to_start_vertex(vertices[0])
-    sg.connect_to_start_vertex(vertices[1])
 
+    sg.empty_vertex.add_child(vertices[1])
     vertices[0].add_child(vertices[2])
-    vertices[1].add_child(vertices[3])
-    vertices[2].add_child(vertices[3])
+    vertices[1].add_child(vertices[2])
 
-    sg.connect_to_end_vertex(vertices[1])
+    sg.connect_to_end_vertex(vertices[0])
 
-    return sg, vertices, sources
+    return sg, [sg.empty_vertex] + vertices, [empty_source] + sources, [TEST_RESULT.CORRECT_CODE.value] + rates
 
 
 def find_or_create_vertex_with_code_info_and_rate_check(sg: SolutionGraph, source: str,
                                                         rate: float = TEST_RESULT.CORRECT_CODE.value) -> Vertex:
     code_info = CodeInfo(User())
-    found_vertex = sg.find_or_create_vertex(create_code_from_source(source, rate), code_info)
+    code = Code.from_source(source, rate)
+    found_vertex = sg.find_or_create_vertex(code, code_info)
     # Check if user is added to user list
-    assert code_info in found_vertex.code_info_list
+    assert code_info in found_vertex.serialized_code.find_anon_tree(code.anon_tree).code_info_list
     # Check if vertex is connected with end_vertex if it has 'full_solution'-code
     if rate == TEST_RESULT.FULL_SOLUTION.value:
         assert sg.end_vertex in found_vertex.children
@@ -85,24 +85,26 @@ def find_or_create_vertex_with_code_info_and_rate_check(sg: SolutionGraph, sourc
 
 
 def create_code_info_chain() -> (List[Tuple[Code, CodeInfo]], List[str]):
-    source_1 = 'a = 3'
-    source_2 = 'a = 5'
-    source_3 = 'a = 5\nb = 3'
-    source_4 = 'a = 5\nb = 3\nc = 4'
+    source_1 = 'a = 3\nprint(a)'
+    source_2 = 'a = int(input())\nprint(a)'
+    source_3 = 'a = 5\nb = 3\nprint(a - b)'
+    source_4 = 'a = 5\nb = 3\nc = 4\nprint(a - b - c)'
     rated_sources = [(source_1, TEST_RESULT.CORRECT_CODE.value),
                      (source_2, TEST_RESULT.CORRECT_CODE.value),
                      (source_3, TEST_RESULT.CORRECT_CODE.value),
                      (source_4, TEST_RESULT.FULL_SOLUTION.value)]
     # User is the same for all chain elements
     user = User()
-    chain = [(create_code_from_source(rs[0], rs[1]), CodeInfo(user)) for rs in rated_sources]
-    sources = [rs[0] for rs in rated_sources]
-    return chain, sources
+    chain = [(Code.from_source(s, r), CodeInfo(user)) for s, r in rated_sources]
+    canon_sources = [get_code_from_tree(code.canon_tree).rstrip('\n') for code, _ in chain]
+    return chain, canon_sources
 
 
 def get_vertex_structure(vertex: Vertex) -> VertexStructure:
-    source = get_code_from_tree(vertex.code.ast).strip('\n') if vertex.code else None
-    return {VERTEX_STRUCTURE.SOURCE: source, VERTEX_STRUCTURE.CODE_INFO_LIST_LEN: len(vertex.code_info_list)}
+    source = get_code_from_tree(vertex.serialized_code.canon_tree).strip('\n') if vertex.serialized_code else None
+    code_info_list_len = 0 if vertex.serialized_code is None \
+        else sum([len(a_t.code_info_list) for a_t in vertex.serialized_code.anon_trees])
+    return {VERTEX_STRUCTURE.SOURCE: source, VERTEX_STRUCTURE.CODE_INFO_LIST_LEN: code_info_list_len}
 
 
 def check_adjacent_vertices_structure(adjacent_vertex_type: ADJACENT_VERTEX_TYPE, vertex: Vertex,
@@ -126,9 +128,9 @@ class TestGraph:
         init_default_ids()
         # A simple graph without any code just to check bfs
         sg = SolutionGraph(CURRENT_TASK)
-        #          START_VERTEX
-        #               |
-        #            vertex_1
+        #               START_VERTEX
+        #               |          \
+        #            vertex_1     empty_vertex
         #          /    |     \
         # vertex_2   vertex_3   vertex_4
         #       \    /      \    /
@@ -151,40 +153,40 @@ class TestGraph:
 
         sg.connect_to_end_vertex(vertex_6)
         # With start_vertex, but without end_vertex
-        expected_traversal = [sg.start_vertex, vertex_1, vertex_2, vertex_3, vertex_4, vertex_5, vertex_6]
-        actual_traversal = sg.get_traversal()
+        expected_traversal = [sg.start_vertex, sg.empty_vertex, vertex_1, vertex_2, vertex_3, vertex_4, vertex_5, vertex_6]
+        actual_traversal = sg.get_traversal(to_remove_start=False)
         assert actual_traversal == expected_traversal
 
     def test_finding_vertex(self) -> None:
         init_default_ids()
-        sg, vertices, sources = create_graph_with_code()
+        sg, vertices, sources, rates = create_graph_with_code()
         for i, vertex in enumerate(vertices):
-            found_vertex = find_or_create_vertex_with_code_info_and_rate_check(sg, sources[i])
+            found_vertex = find_or_create_vertex_with_code_info_and_rate_check(sg, sources[i], rates[i])
             assert found_vertex == vertex
 
     def test_creating_vertex(self) -> None:
         init_default_ids()
-        sg, vertices, sources = create_graph_with_code()
+        sg, vertices, sources, _ = create_graph_with_code()
         source = 'while(True):\n    print(\'Hi\')'
         found_vertex = find_or_create_vertex_with_code_info_and_rate_check(sg, source, TEST_RESULT.FULL_SOLUTION.value)
         assert found_vertex not in vertices
 
     def test_finding_or_creating_vertex_with_none(self) -> None:
         init_default_ids()
-        sg, vertices, sources = create_graph_with_code()
+        sg, vertices, sources, _ = create_graph_with_code()
         user = User()
         with pytest.raises(ValueError):
             sg.find_or_create_vertex(None, CodeInfo(user=user))
 
     def test_adding_code_info_chain(self) -> None:
         init_default_ids()
-        sg, vertices, vertex_sources = create_graph_with_code()
+        sg, vertices, vertex_sources, _ = create_graph_with_code()
 
         # Graph with code:
         #
         #           START_VERTEX
         #         /             \
-        #      vertex_0       vertex_1
+        #     empty_vertex       vertex_1
         #         |           /    \
         #      vertex_2     /   END_VERTEX
         #           \     /
@@ -196,7 +198,7 @@ class TestGraph:
         #
         #                   START_VERTEX
         #               /      |          \
-        #         chain_0    vertex_0     vertex_1
+        #         chain_0  empty_vertex  vertex_1
         #              |       |          /    |
         #       [chain_1, vertex_2]      /     /
         #               \       \       /     /

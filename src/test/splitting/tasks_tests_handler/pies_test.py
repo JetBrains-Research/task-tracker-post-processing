@@ -4,8 +4,8 @@ from typing import Callable, Tuple, Dict
 
 import pytest
 
-from src.test.util import to_skip, TEST_LEVEL
 from src.main.util.consts import LANGUAGE, TASK
+from src.test.test_config import to_skip, TEST_LEVEL
 from src.test.splitting.tasks_tests_handler.util import run_test_task, SOLUTION
 
 python_actual_pairs = {

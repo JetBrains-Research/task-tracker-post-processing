@@ -27,7 +27,7 @@ def get_cleaned_code(source: str) -> str:
     return printFunction(get_ast(source))
 
 
-def get_code_from_tree(tree: ast.AST) -> str:
+def get_code_from_tree(tree: Optional[ast.AST]) -> str:
     return printFunction(tree)
 
 
@@ -51,6 +51,16 @@ def __get_canonical_transformations() -> List[Callable]:
 
         deMorganize,
         orderCommutativeOperations,
+
+        # Using this transformation, we will remove a lot of fragments with dead code, which we don't want to remove.
+        # For example:
+        # a = int(input())
+        # b = a + 5
+        # print()
+        #
+        # In this case code b = a + 5 and print() is dead code, and we will get canon state without it.
+        # But it is important for us to store this kind of fragments fully,
+        # because we want to get the most relevant step-by-step solution graph
 
         deadCodeRemoval
     ]
@@ -86,12 +96,16 @@ def __get_anon_tree_from_orig_tree(orig_tree: ast.AST, imports: List[str], to_si
     return anon_tree
 
 
-def __get_canon_tree_from_anon_tree(anon_tree: ast.AST, imports: List[str]) -> ast.AST:
+def get_canon_tree_from_anon_tree(anon_tree: ast.AST, imports: List[str]) -> ast.AST:
     transformations = __get_canonical_transformations()
     canon_tree = deepcopy(anon_tree)
     old_tree = None
     while compareASTs(old_tree, canon_tree, checkEquality=True) != 0:
         old_tree = deepcopy(canon_tree)
+
+        # We don't want to fold the functions, because it can remove dead code
+        # You can see an example above for deadCodeRemoval why we don't use it
+
         helperFolding(canon_tree, None, imports)
         for t in transformations:
             canon_tree = t(canon_tree)
@@ -131,7 +145,7 @@ def get_trees(source: str, tree_types_to_get: Set[TREE_TYPE], to_simplify: bool 
     if not bool(tree_types_to_get):
         return gotten_trees
 
-    canon_tree = __get_canon_tree_from_anon_tree(anon_tree, imports)
+    canon_tree = get_canon_tree_from_anon_tree(anon_tree, imports)
 
     # After getting the third tree (canon tree), we should raise an error if there are still tree types to get
     gotten_trees = __update_gotten_trees(canon_tree, TREE_TYPE.CANON, gotten_trees, tree_types_to_get)

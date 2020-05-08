@@ -5,8 +5,8 @@ import os
 import pytest
 
 from src.test.plots.util import TO_OPEN_PLOTS
-from src.test.util import to_skip, TEST_LEVEL
 from src.main.util.consts import TEST_DATA_PATH
+from src.test.test_config import to_skip, TEST_LEVEL
 from src.main.plots.util.consts import STATISTICS_KEY, PLOT_TYPE
 from src.main.plots.profile_statistics_plots import plot_profile_statistics
 from src.main.statistics_gathering.statistics_gathering import get_profile_statistics

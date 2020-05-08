@@ -4,6 +4,7 @@ import logging
 from typing import Optional
 
 import pandas as pd
+from pandas import isna
 
 from src.main.util import consts
 from src.main.util.data_util import handle_folder
@@ -21,8 +22,7 @@ SHIFTED_DIFFS = TMP_COLUMN.SHIFTED_DIFFS.value
 def __get_diffs_line_number(current_fragment: str, next_fragment: str) -> Optional[int]:
     # If one of the fragments is nan
     # Then diffs were not in the same lines
-    if consts.DEFAULT_VALUE.FRAGMENT.is_equal(current_fragment) \
-            or consts.DEFAULT_VALUE.FRAGMENT.is_equal(next_fragment):
+    if isna(current_fragment) or isna(next_fragment):
         return None
 
     current_fragment_lines = current_fragment.strip('\n').split('\n')

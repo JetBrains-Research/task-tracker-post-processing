@@ -1,4 +1,5 @@
 # Copyright (c) 2017 Kelly Rivers
+# Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import logging
 from typing import *
@@ -9,6 +10,16 @@ from .display import printFunction
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
+
+def get_nodes_number_in_ast(tree: ast.AST) -> int:
+    count = 0
+    for node in ast.walk(tree):
+        # Todo: separate operators\variables and others??
+        count += 1
+    return count
+
+
+#################### Kelly Rivers part ####################
 
 def cmp(a, b):
     if type(a) == type(b) == complex:

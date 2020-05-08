@@ -7,7 +7,7 @@ from typing import List, Tuple, Callable
 import pytest
 import pandas as pd
 
-from src.test.util import to_skip, TEST_LEVEL
+from src.test.test_config import to_skip, TEST_LEVEL
 from src.main.canonicalization.consts import TREE_TYPE
 from src.main.solution_space.data_classes import AtiItem
 from src.main.canonicalization.canonicalization import get_trees, are_asts_equal
@@ -15,7 +15,6 @@ from src.main.util.consts import LOGGER_NAME, CODE_TRACKER_COLUMN, ACTIVITY_TRAC
 from src.main.solution_space.solution_space_handler import __find_same_fragments, __get_ati_data, __get_column_value
 
 log = logging.getLogger(LOGGER_NAME)
-
 
 SOURCE_1 = 'print(\'Hello\')'
 SOURCE_2 = 'print(\'Hello\')\nprint(\'Hello\')'
@@ -62,13 +61,13 @@ def create_solutions() -> pd.DataFrame:
                          ACTIVITY_TRACKER_COLUMN.EVENT_TYPE.value: __get_ati_event_types()})
 
 
-def get_expected_out(solutions: pd.DataFrame, start_index: int, end_index: int) -> Tuple[int, List[AtiItem], ast.AST]:
+def get_expected_out(solutions: pd.DataFrame, start_index: int, end_index: int) -> Tuple[int, List[AtiItem], ast.AST, ast.AST]:
     ati_elements = []
     fragment = __get_column_value(solutions, start_index, CODE_TRACKER_COLUMN.FRAGMENT)
-    canon_tree, = get_trees(fragment, {TREE_TYPE.CANON})
+    anon_tree, canon_tree = get_trees(fragment, {TREE_TYPE.ANON, TREE_TYPE.CANON})
     for i in range(start_index, end_index):
         ati_elements.append(__get_ati_data(solutions, i))
-    return end_index, ati_elements, canon_tree
+    return end_index, ati_elements, anon_tree, canon_tree
 
 
 def __are_equal_ati_items_lists(expected_ati_items: List[AtiItem], actual_ati_items: List[AtiItem]) -> bool:
@@ -80,18 +79,19 @@ def __are_equal_ati_items_lists(expected_ati_items: List[AtiItem], actual_ati_it
     return True
 
 
-def are_equal(expected_out: Tuple[int, List[AtiItem], ast.AST],
-              actual_out: Tuple[int, List[AtiItem], ast.AST]) -> bool:
-    expected_index, expected_ati_items, expected_tree = expected_out
-    actual_index, actual_ati_items, actual_tree = actual_out
+def are_equal(expected_out: Tuple[int, List[AtiItem], ast.AST, ast.AST],
+              actual_out: Tuple[int, List[AtiItem], ast.AST, ast.AST]) -> bool:
+    expected_index, expected_ati_items, expected_anon_tree, expected_canon_tree = expected_out
+    actual_index, actual_ati_items, actual_anon_tree, actual_canon_tree = actual_out
     return expected_index == actual_index and \
            __are_equal_ati_items_lists(expected_ati_items, actual_ati_items) and \
-           are_asts_equal(expected_tree, actual_tree)
+           are_asts_equal(expected_anon_tree, actual_anon_tree) and \
+           are_asts_equal(expected_canon_tree, actual_canon_tree)
 
 
-def get_actual_out(solutions: pd.DataFrame, index: int) -> Tuple[int, List[AtiItem], ast.AST]:
-    i, ati_elements, current_tree = __find_same_fragments(solutions, index)
-    return i, ati_elements, current_tree
+# Todo: do we need an additional function for that?
+def get_actual_out(solutions: pd.DataFrame, index: int) -> Tuple[int, List[AtiItem], ast.AST, ast.AST]:
+    return __find_same_fragments(solutions, index)
 
 
 @pytest.mark.skipif(to_skip(current_module_level=TEST_LEVEL.SOLUTION_SPACE), reason=TEST_LEVEL.SOLUTION_SPACE.value)
@@ -111,11 +111,11 @@ class TestFindSomeFragments:
                         'test_middle_index_with_other_fragment',
                         'test_last_index'
                     ])
-    def param_find_some_fragments_test(request) -> Tuple[int, int]:
+    def param_find_same_fragments_test(request) -> Tuple[int, int]:
         return request.param
 
-    def test_find_some_fragments(self, param_find_some_fragments_test: Callable) -> None:
-        (index, end_index) = param_find_some_fragments_test
+    def test_find_some_fragments(self, param_find_same_fragments_test: Callable) -> None:
+        (index, end_index) = param_find_same_fragments_test
         solutions = create_solutions()
         actual_out = get_actual_out(solutions, index)
         expected_out = get_expected_out(solutions, index, end_index)

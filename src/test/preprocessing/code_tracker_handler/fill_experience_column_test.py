@@ -3,7 +3,7 @@
 import pytest
 import pandas as pd
 
-from src.test.util import to_skip, TEST_LEVEL
+from src.test.test_config import to_skip, TEST_LEVEL
 from src.main.preprocessing.code_tracker_handler import fill_column
 from src.main.util.consts import CODE_TRACKER_COLUMN, EXPERIENCE, DEFAULT_VALUE, INVALID_FILE_FOR_PREPROCESSING
 
@@ -29,7 +29,7 @@ INVALID_DF_WITH_NONE_AND_DEFAULT = pd.DataFrame(
     {CODE_TRACKER_COLUMN.EXPERIENCE.value: [EXPERIENCE.FROM_FOUR_TO_SIX_YEARS.value,
                                             EXPERIENCE.FROM_FOUR_TO_SIX_YEARS.value,
                                             None,
-                                            EXPERIENCE.FROM_FOUR_TO_SIX_YEARS.value,
+                                            EXPERIENCE.FROM_HALF_TO_ONE_YEAR.value,
                                             DEFAULT_VALUE.EXPERIENCE.value,
                                             None,
                                             DEFAULT_VALUE.EXPERIENCE.value]})

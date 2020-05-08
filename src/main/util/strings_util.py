@@ -1,7 +1,7 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import re
-from typing import List
+from typing import List, Any
 
 
 def contains_any_of_substrings(string: str, substrings: List[str]) -> bool:
