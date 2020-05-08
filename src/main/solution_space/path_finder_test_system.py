@@ -17,6 +17,7 @@ from typing import Type, TypeVar, List, Dict, Any, Tuple, Optional
 
 from prettytable import PrettyTable, ALL
 
+from src.main.solution_space.solution_space_visualizer import SolutionSpaceVisualizer
 from src.main.util.consts import LOGGER_NAME
 from src.main.solution_space.hint import HintHandler
 from src.main.solution_space.data_classes import Profile
@@ -66,8 +67,12 @@ class TestSystem:
 
     def __init__(self, test_inputs: List[TestInput], graph: Optional[SolutionGraph] = None,
                  serialized_graph_path: Optional[str] = TEST_SYSTEM_GRAPH,
-                 add_same_docs: bool = True):
+                 add_same_docs: bool = True, to_visualize_graph: bool = True):
         self._graph = graph if graph is not None else SolutionSpaceSerializer.deserialize(serialized_graph_path)
+        if to_visualize_graph:
+            s_v = SolutionSpaceVisualizer(self._graph)
+            path = s_v.visualize_graph()
+            log.info(f'Visualized graph path is {path}')
         # Maybe in the future we will be testing not only nex_anon_tree, but also the hints
         self._hint_handler = HintHandler(graph)
         self._add_same_docs = add_same_docs
