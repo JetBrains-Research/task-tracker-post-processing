@@ -7,6 +7,7 @@ import sys
 import logging
 from datetime import datetime
 
+import dill
 import pandas as pd
 
 from src.main.preprocessing.int_experience_adding import add_int_experience
@@ -78,8 +79,8 @@ def main() -> None:
     """
     Graph constructing
     """
-    graph = construct_solution_graph(path, TASK.PIES)
-    print('Graph was constructed')
+    # graph = construct_solution_graph(path, TASK.PIES)
+    # print('Graph was constructed')
 
     """
     Nodes number statistics
@@ -95,8 +96,13 @@ def main() -> None:
     """
     # path = SolutionSpaceSerializer.serialize(graph, serialized_file_prefix='serialized_graph_with_nodes_number')
     # print(f'Serialized path: {path}')
-    # new_graph = SolutionSpaceSerializer.deserialize(path)
+    # ser_path = '/home/elena/workspaces/python/codetracker-data/src/main/util/../../resources/serialized_graph/graph_0_serialized_graph_with_nodes_number.pickle'
+    # new_graph = SolutionSpaceSerializer.deserialize(ser_path)
     # print(str(graph) == str(new_graph))
+
+    # test_system_graph = SolutionSpaceSerializer.deserialize(TEST_SYSTEM_GRAPH)
+    # print('done')
+    # print(str(graph) == str(test_system_graph))
 
     """
     Graph visualization
@@ -120,6 +126,7 @@ def main() -> None:
     # It's possible not to include TEST_INPUT.RATE in dict, in this case it will be found by
     # running tests on TEST_INPUT.SOURCE_CODE.
     # However, to speed up the process, one may include TEST_INPUT.RATE.
+
     test_fragments = [{TEST_INPUT.SOURCE_CODE: 'a = int(input())',
                        TEST_INPUT.AGE: 17,
                        TEST_INPUT.RATE: TEST_RESULT.CORRECT_CODE.value,
@@ -137,7 +144,7 @@ def main() -> None:
                        TEST_INPUT.RATE: TEST_RESULT.CORRECT_CODE.value,
                        TEST_INPUT.INT_EXPERIENCE: INT_EXPERIENCE.LESS_THAN_HALF_YEAR}]
 
-    ts = TestSystem(test_fragments, graph, add_same_docs=True)
+    ts = TestSystem(test_fragments, add_same_docs=True)
 
 
 if __name__ == '__main__':

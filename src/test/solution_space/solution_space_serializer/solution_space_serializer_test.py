@@ -1,18 +1,21 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
-
+import os
 from typing import Callable
 
 import pytest
 
-from src.main.util.consts import TASK
 from src.test.test_config import to_skip, TEST_LEVEL
+from src.main.util.consts import TASK, TEST_DATA_PATH
 from src.test.solution_space.util import get_solution_graph
 from src.main.util.file_util import get_all_file_system_items
+from src.main.util.helper_classes.id_counter import IdCounter
 from src.main.solution_space.solution_graph import SolutionGraph
 from src.main.solution_space.solution_space_serializer import SolutionSpaceSerializer
 
 
 CURRENT_TASK = TASK.PIES
+
+TEST_SERIALIZED_GRAPH = os.path.join(TEST_DATA_PATH, 'solution_space/solution_space_serializer/graph.pickle')
 
 
 def are_graph_folder_structures_equal(old_graph_folder: str, new_graph_folder: str):
@@ -46,3 +49,9 @@ class TestSolutionSpaceSerializer:
         deserialized_graph = SolutionSpaceSerializer.deserialize(serialized_path)
         assert are_graph_folder_structures_equal(graph.graph_directory, deserialized_graph.graph_directory)
         assert graph.get_pretty_string() == deserialized_graph.get_pretty_string()
+
+    def test_id_counter_serialization(self) -> None:
+        IdCounter.reset_all()
+        deserialized_graph = SolutionSpaceSerializer.deserialize(TEST_SERIALIZED_GRAPH)
+        for vertex in deserialized_graph.get_traversal(to_remove_start=False, to_remove_end=False):
+            vertex.set_item_by_id()
