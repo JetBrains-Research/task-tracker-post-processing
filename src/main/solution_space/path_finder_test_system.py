@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import os
+import ast
+import logging
 import inspect
 import pkgutil
 import importlib
@@ -15,15 +17,17 @@ from typing import Type, TypeVar, List, Dict, Any, Tuple, Optional
 
 from prettytable import PrettyTable, ALL
 
+from src.main.solution_space.solution_space_visualizer import SolutionSpaceVisualizer
 from src.main.util.consts import LOGGER_NAME
-from src.main.solution_space.serialized_code import Code
-from src.main.solution_space.solution_graph import Vertex
+from src.main.solution_space.hint import HintHandler
+from src.main.solution_space.data_classes import Profile
 from src.main.util.file_util import get_class_parent_package
+from src.main.solution_space.serialized_code import AnonTree
 from src.main.solution_space.consts import TEST_SYSTEM_GRAPH
+from src.main.solution_space.solution_graph import SolutionGraph
 from src.main.solution_space.path_finder.path_finder import IPathFinder
-from src.main.solution_space.data_classes import CodeInfo, User, Profile
-from src.main.canonicalization.canonicalization import get_code_from_tree, logging
-from src.main.solution_space.measured_vertex.measured_vertex import IMeasuredVertex
+from src.main.canonicalization.canonicalization import get_code_from_tree
+from src.main.solution_space.measured_tree.measured_tree import IMeasuredTree
 from src.main.solution_space.solution_space_serializer import SolutionSpaceSerializer
 
 log = logging.getLogger(LOGGER_NAME)
@@ -32,7 +36,8 @@ log = logging.getLogger(LOGGER_NAME)
 class TEST_INPUT(Enum):
     SOURCE_CODE = 'source'
     AGE = 'age'
-    EXPERIENCE = 'experience'
+    INT_EXPERIENCE = 'int_experience'
+    RATE = 'rate'
 
 
 Class = TypeVar('Class')
@@ -48,19 +53,32 @@ def skip(reason: str):
     return wrap
 
 
+def doc_param(*sub):
+    def wrap(obj):
+        obj.__doc__ = obj.__doc__.format(*sub)
+        return obj
+    return wrap
+
+
 # Print results of running all possible PathFinder and MeasuredVertex versions, using https://github.com/kxxoling/PTable
 class TestSystem:
     _no_method_sign = '---'
     _spaces_to_crop_in_doc = 8
 
-    def __init__(self, test_inputs: List[TestInput], serialized_graph_path: str = TEST_SYSTEM_GRAPH,
-                 add_same_docs: bool = True):
-        graph = SolutionSpaceSerializer.deserialize(serialized_graph_path)
-        self._graph = graph
+    def __init__(self, test_inputs: List[TestInput], graph: Optional[SolutionGraph] = None,
+                 serialized_graph_path: Optional[str] = TEST_SYSTEM_GRAPH,
+                 add_same_docs: bool = True, to_visualize_graph: bool = True):
+        self._graph = graph if graph is not None else SolutionSpaceSerializer.deserialize(serialized_graph_path)
+        if to_visualize_graph:
+            s_v = SolutionSpaceVisualizer(self._graph)
+            path = s_v.visualize_graph()
+            log.info(f'Visualized graph path is {path}')
+        # Maybe in the future we will be testing not only nex_anon_tree, but also the hints
+        self._hint_handler = HintHandler(graph)
         self._add_same_docs = add_same_docs
         self._test_inputs = test_inputs
         self._path_finder_subclasses = self.__get_all_subclasses(IPathFinder)
-        self._measured_vertex_subclasses = self.__get_all_subclasses(IMeasuredVertex)
+        self._measured_vertex_subclasses = self.__get_all_subclasses(IMeasuredTree)
         TestSystem.__print_output(self.get_methods_doc_table(self._measured_vertex_subclasses,
                                                              'MeasuredVertex description',
                                                              ['__lt__']))
@@ -113,10 +131,10 @@ class TestSystem:
                                         [self.__get_path_finder_version(pf) for pf in path_finders], title=title)
 
         for test_input in self._test_inputs:
-            user_vertex = self.__create_user_vertex(test_input)
+            user_anon_tree, user_canon_tree = self.__create_user_trees(test_input)
             row = [test_input[key] for key in TEST_INPUT]
             for path_finder in path_finders:
-                row.append(self.__run_path_finder(path_finder, user_vertex))
+                row.append(self.__run_path_finder(path_finder, user_anon_tree, user_canon_tree))
             table.add_row(row)
 
         return TestSystem.__set_table_style(table)
@@ -127,22 +145,20 @@ class TestSystem:
             path_finders.append(pf_subclass(self._graph, mv_subclass))
         return path_finders
 
-    def __create_user_vertex(self, test_input: TestInput) -> Vertex:
-        vertex = Vertex(self._graph, Code.from_source(test_input[TEST_INPUT.SOURCE_CODE], None, self._graph.task))
-        # Todo: init profile if it's None
-        code_info = CodeInfo(User(Profile(test_input[TEST_INPUT.AGE], test_input[TEST_INPUT.EXPERIENCE])))
-        vertex.add_code_info(code_info)
-        return vertex
-
+    def __create_user_trees(self, test_input: TestInput) -> Tuple[AnonTree, ast.AST]:
+        profile = Profile(test_input[TEST_INPUT.AGE], test_input[TEST_INPUT.INT_EXPERIENCE])
+        # If rate is None, it's okay, it will be found further
+        rate = test_input.get(TEST_INPUT.RATE)
+        return self._hint_handler.create_user_trees(test_input[TEST_INPUT.SOURCE_CODE], profile, rate)
 
     @staticmethod
-    def __run_path_finder(path_finder: IPathFinder, user_vertex: Vertex) -> str:
+    def __run_path_finder(path_finder: IPathFinder, user_anon_tree: AnonTree, user_canon_tree: ast.AST) -> str:
         start_time = datetime.now()
-        next_vertex = path_finder.find_next_vertex(user_vertex)
+        next_anon_tree = path_finder.find_next_anon_tree(user_anon_tree, user_canon_tree)
         end_time = datetime.now()
         return f'time: {end_time - start_time}\n\n' \
-               f'vertex id: {next_vertex.id}\n\n' \
-               f'canon code:\n{get_code_from_tree(next_vertex.canon_tree)}'
+               f'vertex id: {next_anon_tree.id}\n\n' \
+               f'anon code:\n{get_code_from_tree(next_anon_tree.tree)}'
 
     # Gets path_finder version in format like this: 'PathFinderV1, MeasuredVertexV1'
     @staticmethod
@@ -165,16 +181,16 @@ class TestSystem:
     # Filter all object methods like __new__,  __setattr__ except methods passed as argument
     # Filter ABCMeta class methods
     @staticmethod
-    def __filter_method(method: FunctionType, object_methods_to_keep: Optional[List[str]]) -> bool:
-        object_methods_to_filter = [m for m in dir(object) if callable(getattr(object, m))]
-        if object_methods_to_keep:
-            object_methods_to_filter = [m for m in object_methods_to_filter if m not in object_methods_to_keep]
+    def __filter_method(method: FunctionType, object_methods_to_filter: Optional[List[str]]) -> bool:
         return not (method.__name__ in ABCMeta.__name__ or method.__name__ in object_methods_to_filter)
 
     @staticmethod
     def __get_class_methods_with_doc(clazz: Type[Class], methods_to_keep: Optional[List[str]]) -> List[FunctionType]:
         class_methods = [getattr(clazz, m) for m in dir(clazz) if callable(getattr(clazz, m))]
-        filtered_class_methods = [m for m in class_methods if TestSystem.__filter_method(m, methods_to_keep)]
+        object_methods_to_filter = [m for m in dir(object) if callable(getattr(object, m))]
+        if methods_to_keep:
+            object_methods_to_filter = [m for m in object_methods_to_filter if m not in methods_to_keep]
+        filtered_class_methods = [m for m in class_methods if TestSystem.__filter_method(m, object_methods_to_filter)]
         return [m for m in filtered_class_methods if m.__doc__]
 
     # Get dict, that for each class stores a 'method by method name' dict, and list off all methods names

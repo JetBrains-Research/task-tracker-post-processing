@@ -3,43 +3,42 @@
 from __future__ import annotations
 
 import ast
-from typing import List, Set, Optional
+from typing import List, Optional
 
 import src.main.solution_space.solution_graph as sg
+from src.main.solution_space.data_classes import CodeInfo
 from src.main.util.helper_classes.id_counter import IdCounter
-from src.main.solution_space.data_classes import CodeInfo, User
 from src.main.solution_space import consts as solution_space_consts
 from src.main.util.helper_classes.pretty_string import PrettyString
 from src.main.solution_space.serialized_code import Code, SerializedCode
-from src.main.canonicalization.ast_tools import get_vertices_number_in_ast
+from src.main.canonicalization.ast_tools import get_nodes_number_in_ast
 
 
 class Vertex(IdCounter, PrettyString):
 
-    def __init__(self, graph: sg.SolutionGraph, code: Optional[Code] = None,
+    def __init__(self, graph: sg.SolutionGraph, code: Optional[Code] = None, code_info: Optional[CodeInfo] = None,
                  vertex_type: solution_space_consts.VERTEX_TYPE = solution_space_consts.VERTEX_TYPE.INTERMEDIATE):
         self._parents = []
         self._children = []
-        self._code_info_list = []
         self._graph = graph
         self._serialized_code = None if code is None \
-            else SerializedCode.from_code(code, graph.graph_directory, graph.file_prefix)
+            else SerializedCode(code, code_info, graph.graph_directory, graph.file_prefix)
         self._vertex_type = vertex_type
         super().__init__(to_store_items=True)
         self.__init_nodes_numbers()
 
     def __init_nodes_numbers(self):
         if self._serialized_code is not None:
-            canon_nodes_number = get_vertices_number_in_ast(self._serialized_code.canon_tree)
-            self._graph.canon_trees_nodes_number[canon_nodes_number].append(self.id)
+            canon_nodes_number = get_nodes_number_in_ast(self._serialized_code.canon_tree)
+            self._graph.canon_nodes_number_dict[canon_nodes_number].append(self.id)
             for i, a_t in enumerate(self._serialized_code.anon_trees):
-                anon_nodes_number = get_vertices_number_in_ast(self._serialized_code.canon_tree)
-                self._graph.anon_trees_nodes_number[anon_nodes_number].append((self.id, i))
+                anon_nodes_number = get_nodes_number_in_ast(a_t.tree)
+                self._graph.anon_nodes_number_dict[anon_nodes_number].append((self.id, i))
 
     def add_anon_tree_nodes_number(self) -> None:
         last_index = len(self.serialized_code.anon_trees) - 1
-        anon_nodes_number = get_vertices_number_in_ast(self.serialized_code.anon_trees[last_index])
-        self.graph.anon_trees_nodes_number[anon_nodes_number].append((self.id, last_index))
+        anon_nodes_number = get_nodes_number_in_ast(self.serialized_code.anon_trees[last_index].tree)
+        self.graph.anon_nodes_number_dict[anon_nodes_number].append((self.id, last_index))
 
     @property
     def graph(self) -> sg.SolutionGraph:
@@ -52,10 +51,6 @@ class Vertex(IdCounter, PrettyString):
     @property
     def children(self) -> List[Vertex]:
         return self._children
-
-    @property
-    def code_info_list(self) -> List[CodeInfo]:
-        return self._code_info_list
 
     @property
     def canon_tree(self) -> ast.AST:
@@ -83,17 +78,12 @@ class Vertex(IdCounter, PrettyString):
         self.__add_parent_to_list(parent)
         parent.__add_child_to_list(self)
 
-    def add_code_info(self, code_info: CodeInfo) -> None:
-        self._code_info_list.append(code_info)
-
-    def get_unique_users(self) -> Set[User]:
-        users = [code_info.user for code_info in self._code_info_list]
-        return set(users)
+    def get_dist(self, vertex: Vertex) -> int:
+        return self._graph.dist.get_dist(self, vertex)
 
     def __str__(self) -> str:
         return f'Vertex id: {self._id}\n' \
                f'Vertex type: {self._vertex_type.value}\n' \
                f'Serialized_code: {self._serialized_code}\n' \
-               f'Code info:\n{list(map(str, self._code_info_list))}\n' \
                f'Parents ids:\n{list(map(lambda parent: parent.id, self._parents))}\n' \
                f'Children:\n{list(map(lambda parent: parent.id, self._children))}'

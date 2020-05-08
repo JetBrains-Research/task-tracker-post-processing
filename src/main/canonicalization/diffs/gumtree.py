@@ -3,6 +3,7 @@
 import ast
 import logging
 import tempfile
+from typing import Tuple
 from subprocess import check_output, CalledProcessError, STDOUT
 
 from src.main.util import consts
@@ -23,6 +24,17 @@ class GumTreeDiff:
             args = [consts.GUMTREE_PATH, 'diffn', src_file, dst_file]
             output = check_output(args, text=True, stderr=STDOUT).strip('\n')
             return int(output)
+        except CalledProcessError as e:
+            log_and_raise_error(f'Error during GumTreeDiff running: {e}, src: {src_file}, dst: {dst_file}', log)
+            exit(1)
+
+    @staticmethod
+    def get_diffs_and_delete_edits_numbers(src_file: str, dst_file: str) -> Tuple[int, int]:
+        log.info(f'Calling GumTreeDiff. Src file {src_file}, dst file: {dst_file}')
+        try:
+            args = [consts.GUMTREE_PATH, 'deln', src_file, dst_file]
+            delete_edits, diffs = check_output(args, text=True, stderr=STDOUT).strip('\n').split()
+            return int(diffs), int(delete_edits)
         except CalledProcessError as e:
             log_and_raise_error(f'Error during GumTreeDiff running: {e}, src: {src_file}, dst: {dst_file}', log)
             exit(1)

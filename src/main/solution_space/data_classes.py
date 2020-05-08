@@ -7,7 +7,7 @@ from typing import List, Union, Optional
 from src.main.util import consts
 from src.main.util.helper_classes.id_counter import IdCounter
 from src.main.util.helper_classes.pretty_string import PrettyString
-from src.main.util.consts import EXPERIENCE, DEFAULT_VALUE, ACTIVITY_TRACKER_EVENTS
+from src.main.util.consts import DEFAULT_VALUE, ACTIVITY_TRACKER_EVENTS, INT_EXPERIENCE
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -51,7 +51,7 @@ class AtiItem(PrettyString):
 
 class Profile(PrettyString):
     def __init__(self, age: int = consts.DEFAULT_VALUE.AGE.value,
-                 experience: Union[EXPERIENCE, DEFAULT_VALUE] = DEFAULT_VALUE.EXPERIENCE):
+                 experience: Union[INT_EXPERIENCE, DEFAULT_VALUE] = DEFAULT_VALUE.INT_EXPERIENCE):
         self._age = age
         self._experience = experience
 
@@ -60,7 +60,7 @@ class Profile(PrettyString):
         return self._age
 
     @property
-    def experience(self) -> Union[EXPERIENCE, DEFAULT_VALUE]:
+    def experience(self) -> Union[INT_EXPERIENCE, DEFAULT_VALUE]:
         return self._experience
 
     def __str__(self) -> str:

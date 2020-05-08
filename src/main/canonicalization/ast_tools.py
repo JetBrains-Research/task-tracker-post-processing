@@ -11,7 +11,7 @@ from .display import printFunction
 log = logging.getLogger(consts.LOGGER_NAME)
 
 
-def get_vertices_number_in_ast(tree: ast.AST) -> int:
+def get_nodes_number_in_ast(tree: ast.AST) -> int:
     count = 0
     for node in ast.walk(tree):
         # Todo: separate operators\variables and others??

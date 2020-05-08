@@ -20,7 +20,7 @@ class SolutionSpaceVisualizer:
         info = ''
         info += f'Canon code:\n{get_code_from_tree(vertex.serialized_code.canon_tree)}\n\n'
         for i, a_t in enumerate(vertex.serialized_code.anon_trees):
-            info += f'Anon code {i}:\n{get_code_from_tree(a_t)}\n'
+            info += f'Anon code {i}:\n{get_code_from_tree(a_t.tree)}\n'
         return info
 
     def __get_labels(self) -> str:

@@ -1,7 +1,7 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import logging
-from typing import Dict, Any, Type
+from typing import Dict, Type
 from collections import defaultdict
 
 from src.main.util.consts import LOGGER_NAME
@@ -13,7 +13,7 @@ log = logging.getLogger(LOGGER_NAME)
 
 class IdCounter:
     _instances: Dict[str, int] = defaultdict(int)
-    _id_item_dict_by_class: Dict[str, Dict[int, Type['IdCounter']]] = defaultdict(get_default_dict_with_none)
+    _id_item_dict_by_class: Dict[str, Dict[int, 'IdCounter']] = defaultdict(get_default_dict_with_none)
     _last_id = 0
 
     def __init__(self, to_store_items: bool = False):
@@ -31,7 +31,7 @@ class IdCounter:
         IdCounter._instances = defaultdict(int)
 
     @classmethod
-    def get_item_by_id(cls: Type['IdCounter'], id: int) -> Type['IdCounter']:
+    def get_item_by_id(cls: 'IdCounter', id: int) -> 'IdCounter':
         item = IdCounter._id_item_dict_by_class[cls.__name__][id]
         if item is None:
             log_and_raise_error(f'Item with id {id} does not exist in the class {cls.__name__}', log)
