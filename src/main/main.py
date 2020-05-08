@@ -120,23 +120,17 @@ def main() -> None:
     # It's possible not to include TEST_INPUT.RATE in dict, in this case it will be found by
     # running tests on TEST_INPUT.SOURCE_CODE.
     # However, to speed up the process, one may include TEST_INPUT.RATE.
-    test_fragments = [{TEST_INPUT.SOURCE_CODE: 'a = int(input())',
-                       TEST_INPUT.AGE: 17,
-                       TEST_INPUT.RATE: TEST_RESULT.CORRECT_CODE.value,
-                       TEST_INPUT.INT_EXPERIENCE: INT_EXPERIENCE.MORE_THAN_SIX},
-                      {TEST_INPUT.SOURCE_CODE: 'a = int(input())\nb = int(input())',
-                       TEST_INPUT.AGE: 12,
-                       TEST_INPUT.RATE: TEST_RESULT.CORRECT_CODE.value,
-                       TEST_INPUT.INT_EXPERIENCE: INT_EXPERIENCE.FROM_ONE_TO_TWO_YEARS},
-                      {TEST_INPUT.SOURCE_CODE: 'a = input()\nb = input()',
-                       TEST_INPUT.AGE: 10,
-                       TEST_INPUT.RATE: TEST_RESULT.CORRECT_CODE.value,
-                       TEST_INPUT.INT_EXPERIENCE: INT_EXPERIENCE.LESS_THAN_HALF_YEAR},
-                      {TEST_INPUT.SOURCE_CODE: 'a = 10\nb = 5\nn = 14\nprint(a * n,  b * n)',
-                       TEST_INPUT.AGE: 10,
-                       TEST_INPUT.RATE: TEST_RESULT.CORRECT_CODE.value,
-                       TEST_INPUT.INT_EXPERIENCE: INT_EXPERIENCE.LESS_THAN_HALF_YEAR}]
-
+    ages = [12]
+    experiences = [INT_EXPERIENCE.LESS_THAN_HALF_YEAR, INT_EXPERIENCE.FROM_ONE_TO_TWO_YEARS]
+    pies_fragments = ['a = int(input())',
+                      'a = int(input())\nb = int(input())',
+                      'a = int(input())\nb = int(input())\nn = int(input())',
+                      'a = input()\nb = input()',
+                      'a = 10\nb = 5\nn = 14\nprint(a * n,  b * n)',
+                      'a = int(input())\nb = int(input())\nn = int(input())\nrub = a * n\ncop = b * n',
+                      'a = int(input())\nb = int(input())\nn = int(input())\nrub = a * n\ncop = b * n\nprint(rub + " " + cop)',
+                      'a = int(input())\nb = int(input())\nn = int(input())\nrub = a * n\ncop = b * n\nprint(str(rub) + " " + str(cop))']
+    test_fragments = TestSystem.generate_all_test_fragments(ages, experiences, pies_fragments)
     ts = TestSystem(test_fragments, graph, add_same_docs=True)
 
 

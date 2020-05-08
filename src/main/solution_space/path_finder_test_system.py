@@ -8,6 +8,7 @@ import logging
 import inspect
 import pkgutil
 import importlib
+import itertools
 from enum import Enum
 from abc import ABCMeta
 from datetime import datetime
@@ -18,7 +19,7 @@ from typing import Type, TypeVar, List, Dict, Any, Tuple, Optional
 from prettytable import PrettyTable, ALL
 
 from src.main.solution_space.solution_space_visualizer import SolutionSpaceVisualizer
-from src.main.util.consts import LOGGER_NAME
+from src.main.util.consts import LOGGER_NAME, INT_EXPERIENCE, TEST_RESULT
 from src.main.solution_space.hint import HintHandler
 from src.main.solution_space.data_classes import Profile
 from src.main.util.file_util import get_class_parent_package
@@ -50,6 +51,7 @@ def skip(reason: str):
     def wrap(clazz: Type[Class]) -> None:
         clazz.is_skipped = True
         clazz.skipped_reason = reason
+
     return wrap
 
 
@@ -57,6 +59,7 @@ def doc_param(*sub):
     def wrap(obj):
         obj.__doc__ = obj.__doc__.format(*sub)
         return obj
+
     return wrap
 
 
@@ -130,11 +133,11 @@ class TestSystem:
         table = PrettyTable(field_names=[e.value for e in TEST_INPUT] +
                                         [self.__get_path_finder_version(pf) for pf in path_finders], title=title)
 
-        for test_input in self._test_inputs:
+        for i, test_input in enumerate(self._test_inputs):
             user_anon_tree, user_canon_tree = self.__create_user_trees(test_input)
             row = [test_input[key] for key in TEST_INPUT]
-            for path_finder in path_finders:
-                row.append(self.__run_path_finder(path_finder, user_anon_tree, user_canon_tree))
+            for j, path_finder in enumerate(path_finders):
+                row.append(self.__run_path_finder(path_finder, user_anon_tree, user_canon_tree, f'{i}_{path_finder.__class__.__name__}_{path_finder.measured_vertex_subclass.__name__}'))
             table.add_row(row)
 
         return TestSystem.__set_table_style(table)
@@ -152,9 +155,10 @@ class TestSystem:
         return self._hint_handler.create_user_trees(test_input[TEST_INPUT.SOURCE_CODE], profile, rate)
 
     @staticmethod
-    def __run_path_finder(path_finder: IPathFinder, user_anon_tree: AnonTree, user_canon_tree: ast.AST) -> str:
+    def __run_path_finder(path_finder: IPathFinder, user_anon_tree: AnonTree, user_canon_tree: ast.AST,
+                          test_input_prefix: str) -> str:
         start_time = datetime.now()
-        next_anon_tree = path_finder.find_next_anon_tree(user_anon_tree, user_canon_tree)
+        next_anon_tree = path_finder.find_next_anon_tree(user_anon_tree, user_canon_tree, test_input_prefix)
         end_time = datetime.now()
         return f'time: {end_time - start_time}\n\n' \
                f'vertex id: {next_anon_tree.id}\n\n' \
@@ -229,3 +233,10 @@ class TestSystem:
     def __print_output(output: Optional[Any]) -> None:
         if output is not None:
             print(f'{output}\n')
+
+    @staticmethod
+    def generate_all_test_fragments(ages: List[int], experiences: List[INT_EXPERIENCE],
+                                    fragments: List[str]) -> List[Dict[TEST_INPUT, Any]]:
+        return [{TEST_INPUT.SOURCE_CODE: f, TEST_INPUT.AGE: a,
+                 TEST_INPUT.RATE: TEST_RESULT.CORRECT_CODE.value,
+                 TEST_INPUT.INT_EXPERIENCE: e} for a, e, f in itertools.product(ages, experiences, fragments)]
