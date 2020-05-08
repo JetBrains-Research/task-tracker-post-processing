@@ -30,7 +30,7 @@ class GumTreeDiff:
 
     @staticmethod
     def get_diffs_and_delete_edits_numbers(src_file: str, dst_file: str) -> Tuple[int, int]:
-        log.info('Calling GumTreeDiff')
+        log.info(f'Calling GumTreeDiff. Src file {src_file}, dst file: {dst_file}')
         try:
             args = [consts.GUMTREE_PATH, 'deln', src_file, dst_file]
             delete_edits, diffs = check_output(args, text=True, stderr=STDOUT).strip('\n').split()
