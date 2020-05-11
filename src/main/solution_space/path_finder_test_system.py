@@ -8,6 +8,7 @@ import logging
 import inspect
 import pkgutil
 import importlib
+import itertools
 from enum import Enum
 from abc import ABCMeta
 from datetime import datetime
@@ -17,7 +18,6 @@ from typing import Type, TypeVar, List, Dict, Any, Tuple, Optional
 
 from prettytable import PrettyTable, ALL
 
-from src.main.util.consts import LOGGER_NAME
 from src.main.solution_space.hint import HintHandler
 from src.main.solution_space.data_classes import Profile
 from src.main.util.file_util import get_class_parent_package
@@ -27,6 +27,7 @@ from src.main.solution_space.solution_graph import SolutionGraph
 from src.main.solution_space.path_finder.path_finder import IPathFinder
 from src.main.canonicalization.canonicalization import get_code_from_tree
 from src.main.solution_space.measured_tree.measured_tree import IMeasuredTree
+from src.main.util.consts import LOGGER_NAME, INT_EXPERIENCE, TEST_RESULT, TASK
 from src.main.solution_space.solution_space_serializer import SolutionSpaceSerializer
 from src.main.solution_space.solution_space_visualizer import SolutionSpaceVisualizer
 
@@ -127,14 +128,14 @@ class TestSystem:
             TestSystem.__print_output('There are no path_finders')
             return None
         # Set table headers: first go test_input headers, then path_finder versions
-        table = PrettyTable(field_names=[e.value for e in TEST_INPUT] +
+        table = PrettyTable(field_names=['index'] + [e.value for e in TEST_INPUT] +
                                         [self.__get_path_finder_version(pf) for pf in path_finders], title=title)
 
-        for test_input in self._test_inputs:
+        for i, test_input in enumerate(self._test_inputs):
             user_anon_tree, user_canon_tree = self.__create_user_trees(test_input)
-            row = [test_input[key] for key in TEST_INPUT]
+            row = [i] + [test_input[key] for key in TEST_INPUT]
             for path_finder in path_finders:
-                row.append(self.__run_path_finder(path_finder, user_anon_tree, user_canon_tree))
+                row.append(self.__run_path_finder(path_finder, user_anon_tree, user_canon_tree, i))
             table.add_row(row)
 
         return TestSystem.__set_table_style(table)
@@ -152,9 +153,10 @@ class TestSystem:
         return self._hint_handler.create_user_trees(test_input[TEST_INPUT.SOURCE_CODE], profile, rate)
 
     @staticmethod
-    def __run_path_finder(path_finder: IPathFinder, user_anon_tree: AnonTree, user_canon_tree: ast.AST) -> str:
+    def __run_path_finder(path_finder: IPathFinder, user_anon_tree: AnonTree, user_canon_tree: ast.AST,
+                          candidates_file_id: int) -> str:
         start_time = datetime.now()
-        next_anon_tree = path_finder.find_next_anon_tree(user_anon_tree, user_canon_tree)
+        next_anon_tree = path_finder.find_next_anon_tree(user_anon_tree, user_canon_tree, candidates_file_id)
         end_time = datetime.now()
         return f'time: {end_time - start_time}\n\n' \
                f'vertex id: {next_anon_tree.id}\n\n' \
@@ -229,3 +231,29 @@ class TestSystem:
     def __print_output(output: Optional[Any]) -> None:
         if output is not None:
             print(f'{output}\n')
+
+    @staticmethod
+    def generate_all_test_fragments(ages: List[int], experiences: List[INT_EXPERIENCE],
+                                    fragments: List[str]) -> List[Dict[TEST_INPUT, Any]]:
+        return [{TEST_INPUT.SOURCE_CODE: f, TEST_INPUT.AGE: a,
+                 TEST_INPUT.RATE: TEST_RESULT.CORRECT_CODE.value,
+                 TEST_INPUT.INT_EXPERIENCE: e} for a, e, f in itertools.product(ages, experiences, fragments)]
+
+    @staticmethod
+    def get_fragments_for_task(task: TASK) -> List[str]:
+        if task == TASK.PIES:
+            return ['a = int(input())',
+                    'a = int(input())\nb = int(input())',
+                    'a = int(input())\nb = int(input())\nn = int(input())',
+                    'a = input()\nb = input()',
+                    'a = 10\nb = 5\nn = 14\nprint(a * n,  b * n)',
+                    'a = int(input())\nb = int(input())\nn = int(input())\nrub = a * n\ncop = b * n',
+                    'a = int(input())\nb = int(input())\nn = int(input())\nrub = a * n\ncop = b * n\nprint(rub + " " + cop)',
+                    'a = int(input())\nb = int(input())\nn = int(input())\nrub = a * n\ncop = b * n\nprint(str(rub) + " " + str(cop))']
+        elif task == TASK.BRACKETS:
+            return ['s = input()',
+                    's = input()\nres = ""',
+                    's = input()\nres = ""\nif len(s) % 2 == 0:\n    print(s)',
+                    's = input()\nres = ""\nif len(s) % 2 == 0:\n    print(s)\nelse:\n    print(s)']
+        else:
+            raise NotImplemented

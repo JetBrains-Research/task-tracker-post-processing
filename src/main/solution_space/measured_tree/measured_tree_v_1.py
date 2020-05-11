@@ -13,8 +13,8 @@ class MeasuredTreeV1(IMeasuredTree):
     _age_w = 0.5
     _exp_w = 0.5
     _diffs_w = 7
-    _users_w = 1
-    _rollback_w = 1
+    _users_w = -7
+    _rollback_w = 15
     _rate_w = 1
 
     @doc_param(_diffs_w, _users_w, _rate_w, _rollback_w, _age_w, _exp_w)
@@ -30,7 +30,7 @@ class MeasuredTreeV1(IMeasuredTree):
         """
 
         distance = self._diffs_w * self._diffs_number\
-                   - self._users_w * self.users_count\
+                   + self._users_w * self.users_count\
                    + self._rate_w * (self.user_tree.rate - self.candidate_tree.rate)\
                    + self._rollback_w * self.rollback_probability
 

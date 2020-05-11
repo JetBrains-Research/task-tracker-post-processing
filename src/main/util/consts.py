@@ -120,6 +120,9 @@ class INT_EXPERIENCE(Enum):
     def values(cls) -> List[str]:
         return [member.value for _, member in INT_EXPERIENCE.__members__.items()]
 
+    def get_str_experience(self) -> str:
+        return EXPERIENCE.values()[self.value]
+
 
 class TASK(Enum):
     PIES = 'pies'

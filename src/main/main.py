@@ -75,8 +75,9 @@ def main() -> None:
     """
     Graph constructing
     """
-    # graph = construct_solution_graph(path, TASK.PIES)
-    # print('Graph was constructed')
+    task = TASK.PIES
+    graph = construct_solution_graph(path, task)
+    print('Graph was constructed')
 
     """
     Nodes number statistics
@@ -92,8 +93,7 @@ def main() -> None:
     """
     # path = SolutionSpaceSerializer.serialize(graph, serialized_file_prefix='serialized_graph_with_nodes_number')
     # print(f'Serialized path: {path}')
-    # ser_path = '/home/elena/workspaces/python/codetracker-data/src/main/util/../../resources/serialized_graph/graph_0_serialized_graph_with_nodes_number.pickle'
-    # new_graph = SolutionSpaceSerializer.deserialize(ser_path)
+    # new_graph = SolutionSpaceSerializer.deserialize(path)
     # print(str(graph) == str(new_graph))
 
     # test_system_graph = SolutionSpaceSerializer.deserialize(TEST_SYSTEM_GRAPH)
@@ -103,9 +103,9 @@ def main() -> None:
     """
     Graph visualization
     """
-    # gv = SolutionSpaceVisualizer(graph)
-    # graph_visualization_path = gv.visualize_graph(name_prefix='graph_with_nodes_number')
-    # print(graph_visualization_path)
+    gv = SolutionSpaceVisualizer(graph)
+    graph_visualization_path = gv.visualize_graph(name_prefix='graph_with_nodes_number')
+    print(graph_visualization_path)
 
     """
     Getting hint
@@ -122,25 +122,10 @@ def main() -> None:
     # It's possible not to include TEST_INPUT.RATE in dict, in this case it will be found by
     # running tests on TEST_INPUT.SOURCE_CODE.
     # However, to speed up the process, one may include TEST_INPUT.RATE.
-
-    test_fragments = [{TEST_INPUT.SOURCE_CODE: 'a = int(input())',
-                       TEST_INPUT.AGE: 17,
-                       TEST_INPUT.RATE: TEST_RESULT.CORRECT_CODE.value,
-                       TEST_INPUT.INT_EXPERIENCE: INT_EXPERIENCE.MORE_THAN_SIX},
-                      {TEST_INPUT.SOURCE_CODE: 'a = int(input())\nb = int(input())',
-                       TEST_INPUT.AGE: 12,
-                       TEST_INPUT.RATE: TEST_RESULT.CORRECT_CODE.value,
-                       TEST_INPUT.INT_EXPERIENCE: INT_EXPERIENCE.FROM_ONE_TO_TWO_YEARS},
-                      {TEST_INPUT.SOURCE_CODE: 'a = input()\nb = input()',
-                       TEST_INPUT.AGE: 10,
-                       TEST_INPUT.RATE: TEST_RESULT.CORRECT_CODE.value,
-                       TEST_INPUT.INT_EXPERIENCE: INT_EXPERIENCE.LESS_THAN_HALF_YEAR},
-                      {TEST_INPUT.SOURCE_CODE: 'a = 10\nb = 5\nn = 14\nprint(a * n,  b * n)',
-                       TEST_INPUT.AGE: 10,
-                       TEST_INPUT.RATE: TEST_RESULT.CORRECT_CODE.value,
-                       TEST_INPUT.INT_EXPERIENCE: INT_EXPERIENCE.LESS_THAN_HALF_YEAR}]
-
-    ts = TestSystem(test_fragments, add_same_docs=True)
+    ages = [12]
+    experiences = [INT_EXPERIENCE.LESS_THAN_HALF_YEAR, INT_EXPERIENCE.FROM_ONE_TO_TWO_YEARS]
+    test_fragments = TestSystem.generate_all_test_fragments(ages, experiences, TestSystem.get_fragments_for_task(task))
+    ts = TestSystem(test_fragments, graph, add_same_docs=True)
 
 
 if __name__ == '__main__':
