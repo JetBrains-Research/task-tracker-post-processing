@@ -53,8 +53,9 @@ class IPathFinder(object, metaclass=ABCMeta):
         log.info(f'Candidates were written in the file {file_path}')
         return file_path
 
-    @staticmethod
-    def get_file_prefix_by_user_tree(user_tree: AnonTree, file_id: Optional[int]) -> str:
+    def get_file_prefix_by_user_tree(self, user_tree: AnonTree, file_id: Optional[int]) -> str:
         res = str(file_id) if file_id else ''
         return f'{res}_{user_tree.code_info_list[0].user.profile.age}' \
-               f'_{user_tree.code_info_list[0].user.profile.experience}'
+               f'_{user_tree.code_info_list[0].user.profile.experience.get_str_experience().lower()}' \
+               f'_{self.__class__.__name__}' \
+               f'_{self.measured_vertex_subclass.__name__}'

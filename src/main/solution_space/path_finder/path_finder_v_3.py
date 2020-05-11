@@ -73,7 +73,7 @@ class PathFinderV3(IPathFinder):
             if graph_anon_tree:
                 next_anon_trees = [AnonTree.get_item_by_id(id) for id in graph_anon_tree.next_anon_trees_ids]
                 self.write_candidates_info_to_file(next_anon_trees,
-                                                   f'{IPathFinder.get_file_prefix_by_user_tree(user_anon_tree, self.candidates_file_id)}_same_tree_candidates')
+                                                   f'{self.get_file_prefix_by_user_tree(user_anon_tree, self.candidates_file_id)}_same_tree_candidates')
                 return self.__choose_best_anon_tree(user_anon_tree, next_anon_trees)
         return None
 
@@ -99,7 +99,7 @@ class PathFinderV3(IPathFinder):
         anon_nodes_numbers_dict = self.__get_items_nodes_number_dict(anon_trees)
         anon_candidates = self.__get_top_n_candidates(ANON_TOP_N, user_anon_tree.nodes_number, anon_nodes_numbers_dict)
 
-        self.write_candidates_info_to_file(anon_candidates, f'{IPathFinder.get_file_prefix_by_user_tree(user_anon_tree, self.candidates_file_id)}_{candidates_file_name}')
+        self.write_candidates_info_to_file(anon_candidates, f'{self.get_file_prefix_by_user_tree(user_anon_tree, self.candidates_file_id)}_{candidates_file_name}')
         return self.__choose_best_anon_tree(user_anon_tree, anon_candidates)
 
     def _is_close_to_goals(self, closest_tree: AnonTree) -> bool:

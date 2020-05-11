@@ -77,7 +77,7 @@ def main() -> None:
     """
     Graph constructing
     """
-    task = TASK.BRACKETS
+    task = TASK.PIES
     graph = construct_solution_graph(path, task)
     print('Graph was constructed')
 
