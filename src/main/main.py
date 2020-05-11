@@ -1,7 +1,5 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
-
-
 import os
 import sys
 import logging
@@ -97,6 +95,10 @@ def main() -> None:
     # print(f'Serialized path: {path}')
     # new_graph = SolutionSpaceSerializer.deserialize(path)
     # print(str(graph) == str(new_graph))
+
+    # test_system_graph = SolutionSpaceSerializer.deserialize(TEST_SYSTEM_GRAPH)
+    # print('done')
+    # print(str(graph) == str(test_system_graph))
 
     """
     Graph visualization

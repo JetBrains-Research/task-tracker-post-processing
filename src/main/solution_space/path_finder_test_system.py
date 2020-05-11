@@ -18,8 +18,6 @@ from typing import Type, TypeVar, List, Dict, Any, Tuple, Optional
 
 from prettytable import PrettyTable, ALL
 
-from src.main.solution_space.solution_space_visualizer import SolutionSpaceVisualizer
-from src.main.util.consts import LOGGER_NAME, INT_EXPERIENCE, TEST_RESULT, TASK
 from src.main.solution_space.hint import HintHandler
 from src.main.solution_space.data_classes import Profile
 from src.main.util.file_util import get_class_parent_package
@@ -29,7 +27,9 @@ from src.main.solution_space.solution_graph import SolutionGraph
 from src.main.solution_space.path_finder.path_finder import IPathFinder
 from src.main.canonicalization.canonicalization import get_code_from_tree
 from src.main.solution_space.measured_tree.measured_tree import IMeasuredTree
+from src.main.util.consts import LOGGER_NAME, INT_EXPERIENCE, TEST_RESULT, TASK
 from src.main.solution_space.solution_space_serializer import SolutionSpaceSerializer
+from src.main.solution_space.solution_space_visualizer import SolutionSpaceVisualizer
 
 log = logging.getLogger(LOGGER_NAME)
 
@@ -52,7 +52,6 @@ def skip(reason: str):
     def wrap(clazz: Type[Class]) -> None:
         clazz.is_skipped = True
         clazz.skipped_reason = reason
-
     return wrap
 
 
@@ -60,7 +59,6 @@ def doc_param(*sub):
     def wrap(obj):
         obj.__doc__ = obj.__doc__.format(*sub)
         return obj
-
     return wrap
 
 
@@ -78,7 +76,7 @@ class TestSystem:
             path = s_v.visualize_graph()
             log.info(f'Visualized graph path is {path}')
         # Maybe in the future we will be testing not only nex_anon_tree, but also the hints
-        self._hint_handler = HintHandler(graph)
+        self._hint_handler = HintHandler(self._graph)
         self._add_same_docs = add_same_docs
         self._test_inputs = test_inputs
         self._path_finder_subclasses = self.__get_all_subclasses(IPathFinder)
@@ -138,7 +136,7 @@ class TestSystem:
             user_anon_tree, user_canon_tree = self.__create_user_trees(test_input)
             test_input[TEST_INPUT.INDEX] = i
             row = [test_input[key] for key in TEST_INPUT]
-            for j, path_finder in enumerate(path_finders):
+            for path_finder in path_finders:
                 row.append(self.__run_path_finder(path_finder, user_anon_tree, user_canon_tree, f'{i}'))
             table.add_row(row)
 
