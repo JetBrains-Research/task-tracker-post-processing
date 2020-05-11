@@ -1,7 +1,7 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import logging
-from typing import Dict, Type
+from typing import Dict
 from collections import defaultdict
 
 from src.main.util.consts import LOGGER_NAME
@@ -35,11 +35,3 @@ class IdCounter:
         if item is None:
             log_and_raise_error(f'Item with id {id} does not exist in the class {cls.__name__}', log)
         return item
-
-    def set_item_by_id(self) -> None:
-        cur_item = IdCounter._id_item_dict_by_class[self.__class__.__name__][self._id]
-        if cur_item is None:
-            IdCounter._id_item_dict_by_class[self.__class__.__name__][self._id] = self
-            log.info(f'Set nonexistent item {self}')
-        elif cur_item != self:
-            log_and_raise_error(f'There is two items with same indices', log)

@@ -1,16 +1,11 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
-
-
 import os
 import sys
 import logging
 from datetime import datetime
 
-import dill
 import pandas as pd
-
-from src.main.preprocessing.int_experience_adding import add_int_experience
 
 sys.path.append('.')
 from src.main.util import consts
@@ -22,6 +17,7 @@ from src.main.plots.util.consts import PLOTTY_CATEGORY_ORDER
 from src.main.solution_space.data_classes import User, CodeInfo
 from src.main.preprocessing.preprocessing import preprocess_data
 from src.main.splitting.splitting import split_tasks_into_separate_files
+from src.main.preprocessing.int_experience_adding import add_int_experience
 from src.main.util.consts import PATH_CMD_ARG, TASK, INT_EXPERIENCE, TEST_RESULT
 from src.main.solution_space.path_finder_test_system import TestSystem, TEST_INPUT
 from src.main.solution_space.solution_space_handler import construct_solution_graph

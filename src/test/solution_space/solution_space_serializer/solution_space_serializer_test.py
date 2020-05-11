@@ -9,7 +9,7 @@ from src.main.util.consts import TASK, TEST_DATA_PATH
 from src.test.solution_space.util import get_solution_graph
 from src.main.util.file_util import get_all_file_system_items
 from src.main.util.helper_classes.id_counter import IdCounter
-from src.main.solution_space.solution_graph import SolutionGraph
+from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 from src.main.solution_space.solution_space_serializer import SolutionSpaceSerializer
 
 
@@ -54,4 +54,4 @@ class TestSolutionSpaceSerializer:
         IdCounter.reset_all()
         deserialized_graph = SolutionSpaceSerializer.deserialize(TEST_SERIALIZED_GRAPH)
         for vertex in deserialized_graph.get_traversal(to_remove_start=False, to_remove_end=False):
-            vertex.set_item_by_id()
+            assert vertex == Vertex.get_item_by_id(vertex.id)
