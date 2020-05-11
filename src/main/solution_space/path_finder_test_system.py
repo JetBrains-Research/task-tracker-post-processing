@@ -17,7 +17,6 @@ from typing import Type, TypeVar, List, Dict, Any, Tuple, Optional
 
 from prettytable import PrettyTable, ALL
 
-from src.main.solution_space.solution_space_visualizer import SolutionSpaceVisualizer
 from src.main.util.consts import LOGGER_NAME
 from src.main.solution_space.hint import HintHandler
 from src.main.solution_space.data_classes import Profile
@@ -29,6 +28,7 @@ from src.main.solution_space.path_finder.path_finder import IPathFinder
 from src.main.canonicalization.canonicalization import get_code_from_tree
 from src.main.solution_space.measured_tree.measured_tree import IMeasuredTree
 from src.main.solution_space.solution_space_serializer import SolutionSpaceSerializer
+from src.main.solution_space.solution_space_visualizer import SolutionSpaceVisualizer
 
 log = logging.getLogger(LOGGER_NAME)
 
@@ -74,7 +74,7 @@ class TestSystem:
             path = s_v.visualize_graph()
             log.info(f'Visualized graph path is {path}')
         # Maybe in the future we will be testing not only nex_anon_tree, but also the hints
-        self._hint_handler = HintHandler(graph)
+        self._hint_handler = HintHandler(self._graph)
         self._add_same_docs = add_same_docs
         self._test_inputs = test_inputs
         self._path_finder_subclasses = self.__get_all_subclasses(IPathFinder)

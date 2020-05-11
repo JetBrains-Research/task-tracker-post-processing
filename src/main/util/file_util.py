@@ -36,12 +36,14 @@ def remove_slash(path: str) -> str:
 def serialize_data_and_write_to_file(path: str, data: Any) -> None:
     create_directory(get_parent_folder(path))
     with open(path, 'wb') as f:
-        pickle.dump(data, f, pickle.HIGHEST_PROTOCOL)
+        p = pickle.Pickler(f)
+        p.dump(data)
 
 
 def deserialize_data_from_file(path: str) -> Any:
     with open(path, 'rb') as f:
-        return pickle.load(f)
+        u = pickle.Unpickler(f)
+        return u.load()
 
 
 def add_slash(path: str) -> str:
