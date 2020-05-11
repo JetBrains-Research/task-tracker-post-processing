@@ -15,10 +15,10 @@ from src.main.solution_space.consts import DISTANCE_TO_GRAPH_THRESHOLD, CANON_TO
 
 
 class PathFinderV3(IPathFinder):
-    candidates_file_id: Optional[str] = None
+    candidates_file_prefix: Optional[str] = None
 
     def find_next_anon_tree(self, user_anon_tree: AnonTree, user_canon_tree: ast.AST,
-                            candidates_file_id: Optional[str] = None) -> AnonTree:
+                            candidates_file_id: Optional[int] = None) -> AnonTree:
         """
         1. Find the same tree SAME_TREE in the graph and get the best tree from next trees (__find_same_tree_in_graph)
         2. If SAME_TREE is not None, return SAME_TREE
@@ -33,7 +33,7 @@ class PathFinderV3(IPathFinder):
                  f'the user code:\n{get_code_from_tree(user_anon_tree.tree)}\nand '
                  f'the user:\n{user_anon_tree.code_info_list[0].user}')
 
-        self.candidates_file_id = candidates_file_id
+        self.candidates_file_prefix = f'{self.get_file_prefix_by_user_tree(user_anon_tree, candidates_file_id)}'
         same_tree = self.__find_same_tree_in_graph(user_anon_tree, user_canon_tree)
         if same_tree is not None:
             log.info(f'Found the same tree. Chosen anon tree:\n{get_code_from_tree(same_tree.tree)}')
@@ -73,7 +73,7 @@ class PathFinderV3(IPathFinder):
             if graph_anon_tree:
                 next_anon_trees = [AnonTree.get_item_by_id(id) for id in graph_anon_tree.next_anon_trees_ids]
                 self.write_candidates_info_to_file(next_anon_trees,
-                                                   f'{self.get_file_prefix_by_user_tree(user_anon_tree, self.candidates_file_id)}_same_tree_candidates')
+                                                   f'{self.candidates_file_prefix}_same_tree_candidates')
                 return self.__choose_best_anon_tree(user_anon_tree, next_anon_trees)
         return None
 
@@ -99,7 +99,7 @@ class PathFinderV3(IPathFinder):
         anon_nodes_numbers_dict = self.__get_items_nodes_number_dict(anon_trees)
         anon_candidates = self.__get_top_n_candidates(ANON_TOP_N, user_anon_tree.nodes_number, anon_nodes_numbers_dict)
 
-        self.write_candidates_info_to_file(anon_candidates, f'{self.get_file_prefix_by_user_tree(user_anon_tree, self.candidates_file_id)}_{candidates_file_name}')
+        self.write_candidates_info_to_file(anon_candidates, f'{self.candidates_file_prefix}_{candidates_file_name}')
         return self.__choose_best_anon_tree(user_anon_tree, anon_candidates)
 
     def _is_close_to_goals(self, closest_tree: AnonTree) -> bool:

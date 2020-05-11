@@ -35,7 +35,6 @@ log = logging.getLogger(LOGGER_NAME)
 
 
 class TEST_INPUT(Enum):
-    INDEX = 'index'
     SOURCE_CODE = 'source'
     AGE = 'age'
     INT_EXPERIENCE = 'int_experience'
@@ -129,15 +128,14 @@ class TestSystem:
             TestSystem.__print_output('There are no path_finders')
             return None
         # Set table headers: first go test_input headers, then path_finder versions
-        table = PrettyTable(field_names=[e.value for e in TEST_INPUT] +
+        table = PrettyTable(field_names=['index'] + [e.value for e in TEST_INPUT] +
                                         [self.__get_path_finder_version(pf) for pf in path_finders], title=title)
 
         for i, test_input in enumerate(self._test_inputs):
             user_anon_tree, user_canon_tree = self.__create_user_trees(test_input)
-            test_input[TEST_INPUT.INDEX] = i
-            row = [test_input[key] for key in TEST_INPUT]
+            row = [i] + [test_input[key] for key in TEST_INPUT]
             for path_finder in path_finders:
-                row.append(self.__run_path_finder(path_finder, user_anon_tree, user_canon_tree, f'{i}'))
+                row.append(self.__run_path_finder(path_finder, user_anon_tree, user_canon_tree, i))
             table.add_row(row)
 
         return TestSystem.__set_table_style(table)
@@ -156,7 +154,7 @@ class TestSystem:
 
     @staticmethod
     def __run_path_finder(path_finder: IPathFinder, user_anon_tree: AnonTree, user_canon_tree: ast.AST,
-                          candidates_file_id: str) -> str:
+                          candidates_file_id: int) -> str:
         start_time = datetime.now()
         next_anon_tree = path_finder.find_next_anon_tree(user_anon_tree, user_canon_tree, candidates_file_id)
         end_time = datetime.now()

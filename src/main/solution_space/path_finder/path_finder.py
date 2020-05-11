@@ -39,7 +39,7 @@ class IPathFinder(object, metaclass=ABCMeta):
     # Make sure code_info_list from user_anon_tree contains one code_info
     @abstractmethod
     def find_next_anon_tree(self, user_anon_tree: AnonTree, user_canon_tree: ast.AST,
-                            candidates_file_id: Optional[str] = None) -> AnonTree:
+                            candidates_file_id: Optional[int] = None) -> AnonTree:
         raise NotImplementedError
 
     def write_candidates_info_to_file(self, candidates: List[AnonTree], file_prefix: str = 'candidates',
