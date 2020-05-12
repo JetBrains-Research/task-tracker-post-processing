@@ -194,6 +194,7 @@ class EXTENSION(Enum):
     KT = '.kt'
     CPP = '.cpp'
     DOT = '.dot'
+    MD = '.md'
 
 
 EXTENSION_TO_LANGUAGE_DICT: Dict[EXTENSION, LANGUAGE] = {
