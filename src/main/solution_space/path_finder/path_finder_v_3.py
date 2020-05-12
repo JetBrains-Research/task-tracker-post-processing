@@ -75,6 +75,7 @@ class PathFinderV3(IPathFinder):
             graph_anon_tree = graph_vertex.serialized_code.find_anon_tree(user_anon_tree.tree)
             if graph_anon_tree:
                 next_anon_trees = [AnonTree.get_item_by_id(id) for id in graph_anon_tree.next_anon_trees_ids]
+                next_anon_trees = [tree for tree in next_anon_trees if tree.nodes_number >= user_anon_tree.nodes_number]
                 self.write_candidates_info_to_file(next_anon_trees,
                                                    f'{self.candidates_file_prefix}_same_tree_candidates')
                 return self.__choose_best_anon_tree(user_anon_tree, next_anon_trees)
@@ -88,7 +89,8 @@ class PathFinderV3(IPathFinder):
     def __find_closest_tree(self, user_anon_tree: AnonTree, user_canon_nodes_number: int,
                             canon_nodes_numbers_dict: Dict[int, list],
                             candidates_file_name: str,
-                            can_stop_earlier: bool = True) -> Optional[AnonTree]:
+                            can_stop_earlier: bool = True,
+                            to_use_lower_bound=True) -> Optional[AnonTree]:
         """
         1. Consider each vertex with similar nodes number as candidate (chose at least TOP_N_CANON candidates)
         2. Choose at least TOP_N_ANON anon trees from canon candidates and run __choose_best_anon_tree
@@ -96,7 +98,7 @@ class PathFinderV3(IPathFinder):
 
         # Get vertices ids with canon trees, which have nodes number similar to user canon_nodes_number
         vertices_ids = self.__get_top_n_candidates(CANON_TOP_N, user_canon_nodes_number, canon_nodes_numbers_dict,
-                                                   can_stop_earlier)
+                                                   can_stop_earlier, to_use_lower_bound)
         log.info(f'CANON_TOP_N vertices ids are {vertices_ids}')
         if len(vertices_ids) == 0:
             return None
@@ -106,7 +108,7 @@ class PathFinderV3(IPathFinder):
         anon_trees = sum([v.serialized_code.anon_trees for v in vertices], [])
         anon_nodes_numbers_dict = self.__get_items_nodes_number_dict(anon_trees)
         anon_candidates = self.__get_top_n_candidates(ANON_TOP_N, user_anon_tree.nodes_number, anon_nodes_numbers_dict,
-                                                      can_stop_earlier)
+                                                      can_stop_earlier, to_use_lower_bound)
 
         self.write_candidates_info_to_file(anon_candidates, f'{self.candidates_file_prefix}_{candidates_file_name}')
         return self.__choose_best_anon_tree(user_anon_tree, anon_candidates)
@@ -122,7 +124,8 @@ class PathFinderV3(IPathFinder):
         goals_nodes_number = sum([[k] * len(v) for k, v in self.graph.goals_nodes_number_dict.items()], [])
         count_less_trees = 0
         for g_n in goals_nodes_number:
-            if g_n - MAX_DIFFS_NUMBER_FOR_SAME_GOAL_TREE <= closest_tree.nodes_number <= g_n + MAX_DIFFS_NUMBER_FOR_SAME_GOAL_TREE:
+            if g_n - MAX_DIFFS_NUMBER_FOR_SAME_GOAL_TREE <= closest_tree.nodes_number \
+                    <= g_n + MAX_DIFFS_NUMBER_FOR_SAME_GOAL_TREE:
                 count_less_trees += 1
         return count_less_trees / len(goals_nodes_number) >= 1 - NODES_NUMBER_PERCENT_TO_GO_DIRECTLY
         # return closest_tree.nodes_number >= self.graph.goals_median * NODES_NUMBER_PERCENT_TO_GO_DIRECTLY
@@ -134,12 +137,13 @@ class PathFinderV3(IPathFinder):
         2. Find the closest using __choose_best_vertex()
         """
         return self.__find_closest_tree(user_anon_tree, user_canon_nodes_number, self.graph.goals_nodes_number_dict,
-                                        candidates_file_name='goal_candidates', can_stop_earlier=False)
+                                        candidates_file_name='goal_candidates', can_stop_earlier=False,
+                                        to_use_lower_bound=True)
 
     # Todo: speed it up due to sparse node_numbers dict
     @staticmethod
     def __get_top_n_candidates(top_n: int, nodes_number: int, nodes_numbers_dict: Dict[int, List[Any]],
-                               can_stop_earlier: bool = True) -> List[Any]:
+                               can_stop_earlier: bool = True, to_use_lower_bound: bool = False) -> List[Any]:
         """
         We want to have top_n trees with nodes number, that is close to the given nodes_number.
         So we consequently add vertices with node numbers equal:
@@ -169,10 +173,11 @@ class PathFinderV3(IPathFinder):
             log.info(f'Finish adding candidates.\n'
                      f'Candidates len is {len(candidates)}, queue have {len(nodes_numbers_queue)} nodes numbers')
 
-            lower_bound -= 1
-            if lower_bound >= min_nodes_number:
-                log.info(f'Append lower_bound to queue: {lower_bound}, min nodes number is {min_nodes_number}')
-                nodes_numbers_queue.append(lower_bound)
+            if to_use_lower_bound:
+                lower_bound -= 1
+                if lower_bound >= min_nodes_number:
+                    log.info(f'Append lower_bound to queue: {lower_bound}, min nodes number is {min_nodes_number}')
+                    nodes_numbers_queue.append(lower_bound)
 
             upper_bound += 1
             if upper_bound <= max_nodes_number:

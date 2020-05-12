@@ -11,7 +11,7 @@ import importlib
 import itertools
 from enum import Enum
 from abc import ABCMeta
-from datetime import datetime
+from datetime import datetime, timedelta
 from itertools import product
 from types import FunctionType
 from typing import Type, TypeVar, List, Dict, Any, Tuple, Optional
@@ -86,7 +86,7 @@ class TestSystem:
                                                              'MeasuredVertex description',
                                                              ['__lt__']))
         TestSystem.__print_output(self.get_methods_doc_table(self._path_finder_subclasses, 'PathFinder description'))
-        TestSystem.__print_output(self.get_result_table('Results of running find_next_vertex'),
+        TestSystem.__print_output(self.get_result_table('Results of running find_next_vertex').get_string(),
                                   f'{self._graph.task.value}_result_table', True)
 
     # Get a table with all methods docs collected from given classes.
@@ -139,7 +139,12 @@ class TestSystem:
             row = [i] + [test_input[key] for key in TEST_INPUT if key != TEST_INPUT.INT_EXPERIENCE] \
                   + [test_input[TEST_INPUT.INT_EXPERIENCE].get_str_experience()]
             for path_finder in path_finders:
-                row.append(self.__run_path_finder(path_finder, user_anon_tree, user_canon_tree, i))
+                time, next_anon_tree = self.__run_path_finder(path_finder, user_anon_tree, user_canon_tree, i)
+                hint = HintHandler.get_hint_by_anon_tree(test_input[TEST_INPUT.SOURCE_CODE], next_anon_tree)
+                row.append(f'time: {time}'
+                           f'\n\nnext anon tree id: {next_anon_tree.id}'
+                           f'\n\nanon code:\n{get_code_from_tree(next_anon_tree.tree)}'
+                           f'\n\napply diffs:\n{hint.recommended_code}')
             table.add_row(row)
 
         return TestSystem.__set_table_style(table)
@@ -158,13 +163,11 @@ class TestSystem:
 
     @staticmethod
     def __run_path_finder(path_finder: IPathFinder, user_anon_tree: AnonTree, user_canon_tree: ast.AST,
-                          candidates_file_id: int) -> str:
+                          candidates_file_id: int) -> Tuple[timedelta, AnonTree]:
         start_time = datetime.now()
         next_anon_tree = path_finder.find_next_anon_tree(user_anon_tree, user_canon_tree, candidates_file_id)
         end_time = datetime.now()
-        return f'time: {end_time - start_time}\n\n' \
-               f'vertex id: {next_anon_tree.id}\n\n' \
-               f'anon code:\n{get_code_from_tree(next_anon_tree.tree)}'
+        return end_time - start_time, next_anon_tree
 
     # Gets path_finder version in format like this: 'PathFinderV1, MeasuredVertexV1'
     @staticmethod
@@ -240,7 +243,7 @@ class TestSystem:
             if to_write_to_file:
                 path = os.path.join(SOLUTION_SPACE_FOLDER, 'path_finder_test_system_output',
                                     file_name + EXTENSION.TXT.value)
-                create_file(str(output), path)
+                create_file(output, path)
 
     @staticmethod
     def generate_all_test_fragments(ages: List[int], experiences: List[INT_EXPERIENCE],
@@ -276,6 +279,15 @@ class TestSystem:
                 'N = int(input())\nfor i in range(N):\n    a = int(input())\n    if a == 0:\n        print("YES")\nprint("NO")',
                 'N = int(input())\nc = 0\nfor i in range(N):\n    a = int(input())\n    if a == 0:\n        c += 1\nprint("NO")',
                 'N = int(input())\nc = 0\nfor i in range(N):\n    a = int(input())\n    if a == 0:\n        c += 1\nif c > 0:\n    print("YES")'
+            ]
+        elif task == TASK.MAX_3:
+            return [
+                'a = int(input())',
+                'a = int(input())\nb = int(input())',
+                'a = int(input())\nb = int(input())\nc = int(input())',
+                'a = int(input())\nb = int(input())\nc = int(input())\nif a > b and a > c:\n    print(a)',
+                'a = int(input())\nb = int(input())\nc = int(input())\nm = a',
+                'a = int(input())\nb = int(input())\nc = int(input())\nm = a\nif b > m:\n    m = b\nif c > m:\n    m = c',
             ]
         else:
             raise NotImplemented

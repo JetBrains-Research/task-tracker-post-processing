@@ -75,7 +75,7 @@ def main() -> None:
     """
     Graph constructing
     """
-    task = TASK.ZERO
+    task = TASK.PIES
     graph = construct_solution_graph(path, task)
     print('Graph was constructed')
 
@@ -104,7 +104,7 @@ def main() -> None:
     Graph visualization
     """
     gv = SolutionSpaceVisualizer(graph)
-    graph_visualization_path = gv.visualize_graph(name_prefix='graph_with_nodes_number')
+    graph_visualization_path = gv.visualize_graph(name_prefix=f'{task.value}')
     print(graph_visualization_path)
 
     """
