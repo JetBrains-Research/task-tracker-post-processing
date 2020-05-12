@@ -20,14 +20,14 @@ from prettytable import PrettyTable, ALL
 
 from src.main.solution_space.hint import HintHandler
 from src.main.solution_space.data_classes import Profile
-from src.main.util.file_util import get_class_parent_package
+from src.main.util.file_util import get_class_parent_package, create_file
 from src.main.solution_space.serialized_code import AnonTree
-from src.main.solution_space.consts import TEST_SYSTEM_GRAPH
+from src.main.solution_space.consts import TEST_SYSTEM_GRAPH, SOLUTION_SPACE_FOLDER
 from src.main.solution_space.solution_graph import SolutionGraph
 from src.main.solution_space.path_finder.path_finder import IPathFinder
 from src.main.canonicalization.canonicalization import get_code_from_tree
 from src.main.solution_space.measured_tree.measured_tree import IMeasuredTree
-from src.main.util.consts import LOGGER_NAME, INT_EXPERIENCE, TEST_RESULT, TASK
+from src.main.util.consts import LOGGER_NAME, INT_EXPERIENCE, TEST_RESULT, TASK, EXTENSION
 from src.main.solution_space.solution_space_serializer import SolutionSpaceSerializer
 from src.main.solution_space.solution_space_visualizer import SolutionSpaceVisualizer
 
@@ -36,9 +36,9 @@ log = logging.getLogger(LOGGER_NAME)
 
 class TEST_INPUT(Enum):
     SOURCE_CODE = 'source'
+    RATE = 'rate'
     AGE = 'age'
     INT_EXPERIENCE = 'int_experience'
-    RATE = 'rate'
 
 
 Class = TypeVar('Class')
@@ -51,6 +51,7 @@ def skip(reason: str):
     def wrap(clazz: Type[Class]) -> None:
         clazz.is_skipped = True
         clazz.skipped_reason = reason
+
     return wrap
 
 
@@ -58,6 +59,7 @@ def doc_param(*sub):
     def wrap(obj):
         obj.__doc__ = obj.__doc__.format(*sub)
         return obj
+
     return wrap
 
 
@@ -84,7 +86,8 @@ class TestSystem:
                                                              'MeasuredVertex description',
                                                              ['__lt__']))
         TestSystem.__print_output(self.get_methods_doc_table(self._path_finder_subclasses, 'PathFinder description'))
-        TestSystem.__print_output(self.get_result_table('Results of running find_next_vertex'))
+        TestSystem.__print_output(self.get_result_table('Results of running find_next_vertex'),
+                                  f'{self._graph.task.value}_result_table', True)
 
     # Get a table with all methods docs collected from given classes.
     # If some class doesn't have a method, there is self._no_method_sign (for example, '---') in a corresponding cell.
@@ -133,7 +136,8 @@ class TestSystem:
 
         for i, test_input in enumerate(self._test_inputs):
             user_anon_tree, user_canon_tree = self.__create_user_trees(test_input)
-            row = [i] + [test_input[key] for key in TEST_INPUT]
+            row = [i] + [test_input[key] for key in TEST_INPUT if key != TEST_INPUT.INT_EXPERIENCE] \
+                  + [test_input[TEST_INPUT.INT_EXPERIENCE].get_str_experience()]
             for path_finder in path_finders:
                 row.append(self.__run_path_finder(path_finder, user_anon_tree, user_canon_tree, i))
             table.add_row(row)
@@ -228,9 +232,15 @@ class TestSystem:
 
     # Todo: add ability to print output to file?
     @staticmethod
-    def __print_output(output: Optional[Any]) -> None:
+    def __print_output(output: Optional[Any],
+                       file_name: str = 'path_finder_test_system_output',
+                       to_write_to_file: bool = False) -> None:
         if output is not None:
             print(f'{output}\n')
+            if to_write_to_file:
+                path = os.path.join(SOLUTION_SPACE_FOLDER, 'path_finder_test_system_output',
+                                    file_name + EXTENSION.TXT.value)
+                create_file(str(output), path)
 
     @staticmethod
     def generate_all_test_fragments(ages: List[int], experiences: List[INT_EXPERIENCE],
@@ -254,6 +264,9 @@ class TestSystem:
             return ['s = input()',
                     's = input()\nres = ""',
                     's = input()\nres = ""\nif len(s) % 2 == 0:\n    print(s)',
-                    's = input()\nres = ""\nif len(s) % 2 == 0:\n    print(s)\nelse:\n    print(s)']
+                    's = input()\nres = ""\nif len(s) % 2 == 0:\n    print(s)\nelse:\n    print(s)',
+                    's = input()\nres = ""\nif len(s) % 2 == 0:\n    for i in range(len(s) // 2):\n        res += s[i] + "("',
+                    's = input()\nres = ""\nif len(s) % 2 == 0:\n    for i in range(len(s) // 2):\n        res += s[i] + "("\n    for i in range(len(s) // 2 - 1, len(s)):\n        res += s[i] + ")"'
+                    ]
         else:
             raise NotImplemented
