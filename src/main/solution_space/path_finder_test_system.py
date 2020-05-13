@@ -86,7 +86,7 @@ class TestSystem:
                                                              'MeasuredVertex description',
                                                              ['__lt__']))
         TestSystem.__print_output(self.get_methods_doc_table(self._path_finder_subclasses, 'PathFinder description'))
-        TestSystem.__print_output(self.get_result_table('Results of running find_next_vertex').get_string(),
+        TestSystem.__print_output(self.get_result_table('Results of running find_next_vertex'),
                                   f'{self._graph.task.value}_result_table', True)
 
     # Get a table with all methods docs collected from given classes.
@@ -242,8 +242,18 @@ class TestSystem:
             print(f'{output}\n')
             if to_write_to_file:
                 path = os.path.join(SOLUTION_SPACE_FOLDER, 'path_finder_test_system_output',
-                                    file_name + EXTENSION.TXT.value)
-                create_file(output, path)
+                                    file_name)
+                extension = EXTENSION.HTML.value if isinstance(output, PrettyTable) else EXTENSION.TXT.value
+                path += extension
+                # todo: replace spaces to &nbsp;
+                create_file(TestSystem.__format_content(output), path)
+
+    @staticmethod
+    def __format_content(output: Any) -> str:
+        if not isinstance(output, PrettyTable):
+            return output
+        content = output.get_html_string(border=True, header=True, format=True)
+        return content.replace('    ', '&nbsp;&nbsp;&nbsp;&nbsp;')
 
     @staticmethod
     def generate_all_test_fragments(ages: List[int], experiences: List[INT_EXPERIENCE],
