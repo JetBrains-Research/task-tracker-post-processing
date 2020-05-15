@@ -11,25 +11,25 @@ import importlib
 import itertools
 from enum import Enum
 from abc import ABCMeta
-from datetime import datetime, timedelta
 from itertools import product
 from types import FunctionType
+from datetime import datetime, timedelta
 from typing import Type, TypeVar, List, Dict, Any, Tuple, Optional
 
 from prettytable import PrettyTable, ALL
 
 from src.main.solution_space.hint import HintHandler
 from src.main.solution_space.data_classes import Profile
-from src.main.util.file_util import get_class_parent_package, create_file, add_suffix_to_file
 from src.main.solution_space.serialized_code import AnonTree
-from src.main.solution_space.consts import TEST_SYSTEM_GRAPH, SOLUTION_SPACE_FOLDER
 from src.main.solution_space.solution_graph import SolutionGraph
 from src.main.solution_space.path_finder.path_finder import IPathFinder
 from src.main.canonicalization.canonicalization import get_code_from_tree
 from src.main.solution_space.measured_tree.measured_tree import IMeasuredTree
-from src.main.util.consts import LOGGER_NAME, INT_EXPERIENCE, TEST_RESULT, TASK, EXTENSION
+from src.main.solution_space.consts import TEST_SYSTEM_GRAPH, SOLUTION_SPACE_FOLDER
 from src.main.solution_space.solution_space_serializer import SolutionSpaceSerializer
 from src.main.solution_space.solution_space_visualizer import SolutionSpaceVisualizer
+from src.main.util.consts import LOGGER_NAME, INT_EXPERIENCE, TEST_RESULT, TASK, EXTENSION
+from src.main.util.file_util import get_class_parent_package, create_file, add_suffix_to_file
 
 log = logging.getLogger(LOGGER_NAME)
 
@@ -81,7 +81,6 @@ class TestSystem:
         self._graph = graph if graph is not None else SolutionSpaceSerializer.deserialize(serialized_graph_path)
 
         if task and self._graph:
-            print("graph is ok")
             assert self._graph.task == task
 
         if to_visualize_graph:

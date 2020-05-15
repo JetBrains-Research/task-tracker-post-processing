@@ -123,7 +123,7 @@ def main() -> None:
     # running tests on TEST_INPUT.SOURCE_CODE.
     # However, to speed up the process, one may include TEST_INPUT.RATE.
     ages = [12]
-    experiences = [INT_EXPERIENCE.LESS_THAN_HALF_YEAR, INT_EXPERIENCE.FROM_ONE_TO_TWO_YEARS]
+    experiences = [INT_EXPERIENCE.FROM_ONE_TO_TWO_YEARS]
     test_fragments = TestSystem.generate_all_test_fragments(ages, experiences, TestSystem.get_fragments_for_task(task))
     ts = TestSystem(test_fragments, task=task, add_same_docs=False)
 
