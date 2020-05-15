@@ -34,6 +34,8 @@ from src.main.util.file_util import get_class_parent_package, create_file, add_s
 log = logging.getLogger(LOGGER_NAME)
 
 
+# Todo: rewrite it
+# Make sure 'INT_EXPERIENCE' is the last one, otherwise columns in result table will be in wrong order
 class TEST_INPUT(Enum):
     SOURCE_CODE = 'source'
     RATE = 'rate'
