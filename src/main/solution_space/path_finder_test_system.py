@@ -134,7 +134,10 @@ class TestSystem:
         table = PrettyTable(field_names=['index'] + [e.value for e in TEST_INPUT] +
                                         [self.__get_path_finder_version(pf) for pf in path_finders], title=title)
 
+        log.info(f"There are {len(self._test_inputs)} test inputs")
+
         for i, test_input in enumerate(self._test_inputs):
+            log.info(f"Running path finders on {i} test input")
             user_anon_tree, user_canon_tree = self.__create_user_trees(test_input)
             row = [i] + [test_input[key] for key in TEST_INPUT if key != TEST_INPUT.INT_EXPERIENCE] \
                   + [test_input[TEST_INPUT.INT_EXPERIENCE].get_str_experience()]
