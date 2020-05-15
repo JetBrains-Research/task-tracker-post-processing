@@ -20,7 +20,7 @@ from prettytable import PrettyTable, ALL
 
 from src.main.solution_space.hint import HintHandler
 from src.main.solution_space.data_classes import Profile
-from src.main.util.file_util import get_class_parent_package, create_file
+from src.main.util.file_util import get_class_parent_package, create_file, add_suffix_to_file
 from src.main.solution_space.serialized_code import AnonTree
 from src.main.solution_space.consts import TEST_SYSTEM_GRAPH, SOLUTION_SPACE_FOLDER
 from src.main.solution_space.solution_graph import SolutionGraph
@@ -68,10 +68,22 @@ class TestSystem:
     _no_method_sign = '---'
     _spaces_to_crop_in_doc = 8
 
-    def __init__(self, test_inputs: List[TestInput], graph: Optional[SolutionGraph] = None,
-                 serialized_graph_path: Optional[str] = TEST_SYSTEM_GRAPH,
-                 add_same_docs: bool = True, to_visualize_graph: bool = True):
+    def __init__(self, test_inputs: List[TestInput], graph: Optional[SolutionGraph] = None, task: Optional[TASK] = None,
+                 serialized_graph_path: Optional[str] = TEST_SYSTEM_GRAPH, add_same_docs: bool = True,
+                 to_visualize_graph: bool = True):
+
+        # If task is not None, test_system tries to find serialized graph with name test_system_graph_task.pickle
+        # in resources/test_system folder
+        if task is not None:
+            serialized_graph_path = add_suffix_to_file(serialized_graph_path, task.value)
+
+        # If no graph is passed, test_system tries to deserialize graph from serialized_graph_path
         self._graph = graph if graph is not None else SolutionSpaceSerializer.deserialize(serialized_graph_path)
+
+        if task and self._graph:
+            print("graph is ok")
+            assert self._graph.task == task
+
         if to_visualize_graph:
             s_v = SolutionSpaceVisualizer(self._graph)
             path = s_v.visualize_graph()

@@ -76,8 +76,8 @@ def main() -> None:
     Graph constructing
     """
     task = TASK.PIES
-    graph = construct_solution_graph(path, task)
-    print('Graph was constructed')
+    # graph = construct_solution_graph(path, task)
+    # print('Graph was constructed')
 
     """
     Nodes number statistics
@@ -103,9 +103,9 @@ def main() -> None:
     """
     Graph visualization
     """
-    gv = SolutionSpaceVisualizer(graph)
-    graph_visualization_path = gv.visualize_graph(name_prefix=f'{task.value}')
-    print(graph_visualization_path)
+    # gv = SolutionSpaceVisualizer(graph)
+    # graph_visualization_path = gv.visualize_graph(name_prefix=f'{task.value}')
+    # print(graph_visualization_path)
 
     """
     Getting hint
@@ -125,7 +125,7 @@ def main() -> None:
     ages = [12]
     experiences = [INT_EXPERIENCE.LESS_THAN_HALF_YEAR, INT_EXPERIENCE.FROM_ONE_TO_TWO_YEARS]
     test_fragments = TestSystem.generate_all_test_fragments(ages, experiences, TestSystem.get_fragments_for_task(task))
-    ts = TestSystem(test_fragments, graph, add_same_docs=True)
+    ts = TestSystem(test_fragments, task=task, add_same_docs=False)
 
 
 if __name__ == '__main__':

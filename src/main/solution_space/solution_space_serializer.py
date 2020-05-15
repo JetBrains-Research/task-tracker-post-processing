@@ -38,8 +38,7 @@ class SolutionSpaceSerializer:
                     new_path_for_graph: Optional[str] = None,
                     to_delete_old_graph_directory: bool = True) -> Optional[SolutionGraph]:
         if not is_file(serialized_graph_path):
-            log.info(f'Path {serialized_graph_path} is incorrect')
-            return None
+            log_and_raise_error(f'Path {serialized_graph_path} is incorrect', log)
         try:
             deserialized_graph, instances, item_dict =  deserialize_data_from_file(serialized_graph_path)
             IdCounter._instances = instances
