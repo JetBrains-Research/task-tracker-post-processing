@@ -11,34 +11,36 @@ import importlib
 import itertools
 from enum import Enum
 from abc import ABCMeta
-from datetime import datetime
 from itertools import product
 from types import FunctionType
+from datetime import datetime, timedelta
 from typing import Type, TypeVar, List, Dict, Any, Tuple, Optional
 
 from prettytable import PrettyTable, ALL
 
 from src.main.solution_space.hint import HintHandler
 from src.main.solution_space.data_classes import Profile
-from src.main.util.file_util import get_class_parent_package
 from src.main.solution_space.serialized_code import AnonTree
-from src.main.solution_space.consts import TEST_SYSTEM_GRAPH
 from src.main.solution_space.solution_graph import SolutionGraph
 from src.main.solution_space.path_finder.path_finder import IPathFinder
 from src.main.canonicalization.canonicalization import get_code_from_tree
 from src.main.solution_space.measured_tree.measured_tree import IMeasuredTree
-from src.main.util.consts import LOGGER_NAME, INT_EXPERIENCE, TEST_RESULT, TASK
+from src.main.solution_space.consts import TEST_SYSTEM_GRAPH, SOLUTION_SPACE_FOLDER
 from src.main.solution_space.solution_space_serializer import SolutionSpaceSerializer
 from src.main.solution_space.solution_space_visualizer import SolutionSpaceVisualizer
+from src.main.util.consts import LOGGER_NAME, INT_EXPERIENCE, TEST_RESULT, TASK, EXTENSION
+from src.main.util.file_util import get_class_parent_package, create_file, add_suffix_to_file
 
 log = logging.getLogger(LOGGER_NAME)
 
 
+# Todo: rewrite it
+# Make sure 'INT_EXPERIENCE' is the last one, otherwise columns in result table will be in wrong order
 class TEST_INPUT(Enum):
     SOURCE_CODE = 'source'
+    RATE = 'rate'
     AGE = 'age'
     INT_EXPERIENCE = 'int_experience'
-    RATE = 'rate'
 
 
 Class = TypeVar('Class')
@@ -51,6 +53,7 @@ def skip(reason: str):
     def wrap(clazz: Type[Class]) -> None:
         clazz.is_skipped = True
         clazz.skipped_reason = reason
+
     return wrap
 
 
@@ -58,6 +61,7 @@ def doc_param(*sub):
     def wrap(obj):
         obj.__doc__ = obj.__doc__.format(*sub)
         return obj
+
     return wrap
 
 
@@ -66,10 +70,21 @@ class TestSystem:
     _no_method_sign = '---'
     _spaces_to_crop_in_doc = 8
 
-    def __init__(self, test_inputs: List[TestInput], graph: Optional[SolutionGraph] = None,
-                 serialized_graph_path: Optional[str] = TEST_SYSTEM_GRAPH,
-                 add_same_docs: bool = True, to_visualize_graph: bool = True):
+    def __init__(self, test_inputs: List[TestInput], graph: Optional[SolutionGraph] = None, task: Optional[TASK] = None,
+                 serialized_graph_path: Optional[str] = TEST_SYSTEM_GRAPH, add_same_docs: bool = True,
+                 to_visualize_graph: bool = True):
+
+        # If task is not None, test_system tries to find serialized graph with name test_system_graph_task.pickle
+        # in resources/test_system folder
+        if task is not None:
+            serialized_graph_path = add_suffix_to_file(serialized_graph_path, task.value)
+
+        # If no graph is passed, test_system tries to deserialize graph from serialized_graph_path
         self._graph = graph if graph is not None else SolutionSpaceSerializer.deserialize(serialized_graph_path)
+
+        if task and self._graph:
+            assert self._graph.task == task
+
         if to_visualize_graph:
             s_v = SolutionSpaceVisualizer(self._graph)
             path = s_v.visualize_graph()
@@ -84,7 +99,8 @@ class TestSystem:
                                                              'MeasuredVertex description',
                                                              ['__lt__']))
         TestSystem.__print_output(self.get_methods_doc_table(self._path_finder_subclasses, 'PathFinder description'))
-        TestSystem.__print_output(self.get_result_table('Results of running find_next_vertex'))
+        TestSystem.__print_output(self.get_result_table('Results of running find_next_vertex'),
+                                  f'{self._graph.task.value}_result_table', True)
 
     # Get a table with all methods docs collected from given classes.
     # If some class doesn't have a method, there is self._no_method_sign (for example, '---') in a corresponding cell.
@@ -131,11 +147,20 @@ class TestSystem:
         table = PrettyTable(field_names=['index'] + [e.value for e in TEST_INPUT] +
                                         [self.__get_path_finder_version(pf) for pf in path_finders], title=title)
 
+        log.info(f"There are {len(self._test_inputs)} test inputs")
+
         for i, test_input in enumerate(self._test_inputs):
+            log.info(f"Running path finders on {i} test input")
             user_anon_tree, user_canon_tree = self.__create_user_trees(test_input)
-            row = [i] + [test_input[key] for key in TEST_INPUT]
+            row = [i] + [test_input[key] for key in TEST_INPUT if key != TEST_INPUT.INT_EXPERIENCE] \
+                  + [test_input[TEST_INPUT.INT_EXPERIENCE].get_str_experience()]
             for path_finder in path_finders:
-                row.append(self.__run_path_finder(path_finder, user_anon_tree, user_canon_tree, i))
+                time, next_anon_tree = self.__run_path_finder(path_finder, user_anon_tree, user_canon_tree, i)
+                hint = HintHandler.get_hint_by_anon_tree(test_input[TEST_INPUT.SOURCE_CODE], next_anon_tree)
+                row.append(f'time: {time}'
+                           f'\n\nnext anon tree id: {next_anon_tree.id}'
+                           f'\n\nanon code:\n{get_code_from_tree(next_anon_tree.tree)}'
+                           f'\n\napply diffs:\n{hint.recommended_code}')
             table.add_row(row)
 
         return TestSystem.__set_table_style(table)
@@ -154,13 +179,11 @@ class TestSystem:
 
     @staticmethod
     def __run_path_finder(path_finder: IPathFinder, user_anon_tree: AnonTree, user_canon_tree: ast.AST,
-                          candidates_file_id: int) -> str:
+                          candidates_file_id: int) -> Tuple[timedelta, AnonTree]:
         start_time = datetime.now()
         next_anon_tree = path_finder.find_next_anon_tree(user_anon_tree, user_canon_tree, candidates_file_id)
         end_time = datetime.now()
-        return f'time: {end_time - start_time}\n\n' \
-               f'vertex id: {next_anon_tree.id}\n\n' \
-               f'anon code:\n{get_code_from_tree(next_anon_tree.tree)}'
+        return end_time - start_time, next_anon_tree
 
     # Gets path_finder version in format like this: 'PathFinderV1, MeasuredVertexV1'
     @staticmethod
@@ -228,9 +251,25 @@ class TestSystem:
 
     # Todo: add ability to print output to file?
     @staticmethod
-    def __print_output(output: Optional[Any]) -> None:
+    def __print_output(output: Optional[Any],
+                       file_name: str = 'path_finder_test_system_output',
+                       to_write_to_file: bool = False) -> None:
         if output is not None:
             print(f'{output}\n')
+            if to_write_to_file:
+                path = os.path.join(SOLUTION_SPACE_FOLDER, 'path_finder_test_system_output',
+                                    file_name)
+                extension = EXTENSION.HTML.value if isinstance(output, PrettyTable) else EXTENSION.TXT.value
+                path += extension
+                # todo: replace spaces to &nbsp;
+                create_file(TestSystem.__format_content(output), path)
+
+    @staticmethod
+    def __format_content(output: Any) -> str:
+        if not isinstance(output, PrettyTable):
+            return output
+        content = output.get_html_string(border=True, header=True, format=True)
+        return content.replace('    ', '&nbsp;&nbsp;&nbsp;&nbsp;')
 
     @staticmethod
     def generate_all_test_fragments(ages: List[int], experiences: List[INT_EXPERIENCE],
@@ -254,6 +293,27 @@ class TestSystem:
             return ['s = input()',
                     's = input()\nres = ""',
                     's = input()\nres = ""\nif len(s) % 2 == 0:\n    print(s)',
-                    's = input()\nres = ""\nif len(s) % 2 == 0:\n    print(s)\nelse:\n    print(s)']
+                    's = input()\nres = ""\nif len(s) % 2 == 0:\n    print(s)\nelse:\n    print(s)',
+                    's = input()\nres = ""\nif len(s) % 2 == 0:\n    for i in range(len(s) // 2):\n        res += s[i] + "("',
+                    's = input()\nres = ""\nif len(s) % 2 == 0:\n    for i in range(len(s) // 2):\n        res += s[i] + "("\n    for i in range(len(s) // 2 - 1, len(s)):\n        res += s[i] + ")"'
+                    ]
+        elif task == TASK.ZERO:
+            return [
+                'N = int(input())',
+                'N = int(input())\nfor i in range(N):\n    a = int(input())',
+                'N = int(input())\nfor i in range(N):\n    a = int(input())\n    if a == 0:\n        print("YES")',
+                'N = int(input())\nfor i in range(N):\n    a = int(input())\n    if a == 0:\n        print("YES")\nprint("NO")',
+                'N = int(input())\nc = 0\nfor i in range(N):\n    a = int(input())\n    if a == 0:\n        c += 1\nprint("NO")',
+                'N = int(input())\nc = 0\nfor i in range(N):\n    a = int(input())\n    if a == 0:\n        c += 1\nif c > 0:\n    print("YES")'
+            ]
+        elif task == TASK.MAX_3:
+            return [
+                'a = int(input())',
+                'a = int(input())\nb = int(input())',
+                'a = int(input())\nb = int(input())\nc = int(input())',
+                'a = int(input())\nb = int(input())\nc = int(input())\nif a > b and a > c:\n    print(a)',
+                'a = int(input())\nb = int(input())\nc = int(input())\nm = a',
+                'a = int(input())\nb = int(input())\nc = int(input())\nm = a\nif b > m:\n    m = b\nif c > m:\n    m = c',
+            ]
         else:
             raise NotImplemented

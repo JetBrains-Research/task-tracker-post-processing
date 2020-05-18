@@ -42,12 +42,9 @@ class HintHandler(ISerializedObject):
         anon_tree.find_medians()
         return anon_tree, code.canon_tree
 
-    def get_hint(self, source_code: str, profile: Profile, path_finder: IPathFinder,
-                 rate: Optional[float] = None) -> Hint:
-        anon_tree, canon_tree = self.create_user_trees(source_code, profile, rate)
-
-        next_anon_tree = path_finder.find_next_anon_tree(anon_tree, canon_tree)
-        diff_handler = RiversDiffHandler(source_code=source_code)
+    @staticmethod
+    def get_hint_by_anon_tree(user_source_code: str, next_anon_tree: AnonTree) -> Hint:
+        diff_handler = RiversDiffHandler(source_code=user_source_code)
         log.info(f'Next vertex id is {next_anon_tree.id}')
 
         anon_tree = next_anon_tree.tree
@@ -61,3 +58,10 @@ class HintHandler(ISerializedObject):
         # Todo: new version of apply diffs
         recommended_tree = diff_handler.apply_diffs(diffs, tree_type)
         return Hint(get_code_from_tree(recommended_tree))
+
+    def get_hint(self, source_code: str, profile: Profile, path_finder: IPathFinder,
+                 rate: Optional[float] = None) -> Hint:
+        anon_tree, canon_tree = self.create_user_trees(source_code, profile, rate)
+
+        next_anon_tree = path_finder.find_next_anon_tree(anon_tree, canon_tree)
+        return HintHandler.get_hint_by_anon_tree(source_code, next_anon_tree)

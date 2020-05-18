@@ -10,13 +10,13 @@ from src.main.solution_space.measured_tree.measured_tree import IMeasuredTree
 
 
 @skip(reason='The best version is MeasuredTreeV3')
-class MeasuredTreeV1(IMeasuredTree):
-    _age_w = 1
-    _exp_w = 1
-    _diffs_w = 1
-    _users_w = -1
-    _rollback_w = 1
-    _rate_w = 1
+class MeasuredTreeV2(IMeasuredTree):
+    _age_w = -0.15
+    _exp_w = -0.15
+    _diffs_w = 0.3
+    _users_w = -0.5
+    _rollback_w = 0.45
+    _rate_w = 0.05
 
     @doc_param(_diffs_w, _users_w, _rate_w, _rollback_w, _age_w, _exp_w)
     def _IMeasuredTree__calculate_distance_to_user(self) -> float:
@@ -47,6 +47,6 @@ class MeasuredTreeV1(IMeasuredTree):
         1. If o is not an instance of class, raise an error
         2. Compare distance
         """
-        if not isinstance(o, MeasuredTreeV1):
+        if not isinstance(o, MeasuredTreeV2):
             log_and_raise_error(f'The object {o} is not {self.__class__} class', log)
         return self._distance_to_user < o._distance_to_user
