@@ -8,7 +8,7 @@ import logging
 from typing import List, Callable, Optional, Set
 
 from src.main.util import consts
-from src.main.util.consts import TASK, DEFAULT_VALUE, INT_EXPERIENCE
+from src.main.util.consts import TASK, DEFAULT_VALUE
 from src.main.util.math_util import get_safety_median
 from src.main.util.log_util import log_and_raise_error
 from src.main.canonicalization.consts import TREE_TYPE
