@@ -58,20 +58,15 @@ def main() -> None:
     """
     Find tests result
     """
-    path = run_tests(path)
-    print(f'Data path after finding tests result: {path}')
-
-    """
-    Splitting data
-    """
-    # split_tasks_into_separate_files(path)
-    # print(f'Data path after splitting: {path}')
-    # # Todo: add splitting and finding tests results
+    # path = run_tests(path)
+    # print(f'Data path after finding tests result: {path}')
 
     """
     Tasks separating
     Note: Path should contain files after preprocessing with tests results
     """
+    # Note: you should send a direct folder with tasks in the same language
+    # Todo: add the tip in readme
     # split_tasks_into_separate_files(path)
 
     """
@@ -89,9 +84,9 @@ def main() -> None:
     """
     Graph constructing
     """
-    # task = TASK.BRACKETS
-    # graph = construct_solution_graph(path, task)
-    # print('Graph was constructed')
+    task = TASK.BRACKETS
+    graph = construct_solution_graph(path, task)
+    print('Graph was constructed')
 
     """
     Nodes number statistics
@@ -116,9 +111,9 @@ def main() -> None:
     """
     Graph visualization
     """
-    # gv = SolutionSpaceVisualizer(graph)
-    # graph_visualization_path = gv.visualize_graph(name_prefix=f'{task.value}_without_loops')
-    # print(graph_visualization_path)
+    gv = SolutionSpaceVisualizer(graph)
+    graph_visualization_path = gv.visualize_graph(name_prefix=f'{task.value}_full')
+    print(graph_visualization_path)
 
     """
     Getting hint
@@ -135,10 +130,10 @@ def main() -> None:
     # It's possible not to include TEST_INPUT.RATE in dict, in this case it will be found by
     # running tests on TEST_INPUT.SOURCE_CODE.
     # However, to speed up the process, one may include TEST_INPUT.RATE.
-    # ages = [12]
-    # experiences = [INT_EXPERIENCE.FROM_ONE_TO_TWO_YEARS]
-    # test_fragments = TestSystem.generate_all_test_fragments(ages, experiences, TestSystem.get_fragments_for_task(task))
-    # ts = TestSystem(test_fragments, task=task, add_same_docs=False, graph=graph)
+    ages = [12]
+    experiences = [INT_EXPERIENCE.FROM_ONE_TO_TWO_YEARS]
+    test_fragments = TestSystem.generate_all_test_fragments(ages, experiences, TestSystem.get_fragments_for_task(task))
+    ts = TestSystem(test_fragments, task=task, add_same_docs=False, graph=graph)
 
 
 if __name__ == '__main__':
