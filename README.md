@@ -24,58 +24,58 @@ Simply clone the repository and run the following commands:
 
 ### Run
 
-Use `-h` option to get a help
+Use `-h` option to show help.
 
 **Required arguments:**
-1. **path** - data path.
-2. **action** - current action to run. Available values: **preprocessing**, **statistics**, **algo**.
+1. **path** — the path to data.
+2. **action** — action to run. Available values: **preprocessing**, **statistics**, **algo**.
+
+Parameter| Description
+--- | ---
+__preprocessing__ | preprocess the data
+__statistics__ | plot statistics
+__algo__ | run the algorithm
 
 A simple configuration: `python main.py path_to_files preprocessing`
-
-Param | Description 
---- | --- 
-__preprocessing__ | data preprocessing
-__statistics__ | plot statistics
-__algo__ | run the algo
 
 **Optional arguments**:
 - Data preprocessing:
 
-__--level__ - use level param to set level for the action. Available levels:
+__--level__ — allows to set the level for the preprocessing. Available levels:
 
-**Note**: the the Nth level runs all the level before it
+**Note**: the Nth level runs all the levels before it.
 
-Param | Description 
---- | --- 
-**-1**| use all preprocessing levels, default value
+Parameter | Description
+--- | ---
+**-1**|  use all preprocessing levels, default value
 **0** |  merge activity-tracker and code-tracker files
 **1** |  find tests results for the tasks
-**2** |  split data
+**2** |  split the data
 **3** |  remove intermediate diffs
 **4** |  remove inefficient statements
-**5** |  add int experience column
+**5** |  add _int experience_ column
 
 
-- Algo:
+- Running the algorithm:
 
-__--level__ - use level param to set level for the action. Available levels:
+__--level__ allows to set the level for running the algorithm. Available levels:
 
-**Note**: the the Nth level runs all the level before it
+**Note**: the Nth level runs all the levels before it.
 
-Param | Description 
---- | --- 
+Parameter | Description
+--- | ---
 **-1**|  run the path finder test system
 **0** |  construct a solution graph
-**1** |  run the main algo and get a hint, default value
+**1** |  run the main algorithm and get a hint, default value
 
 Additional arguments:
 
-Param | Description 
---- | --- 
-**construct** |  to construct graph. It the argument is False, graph will be deserialized. Default value is `True`
-**serialize** |  construct a solution graph. Default value is `False`
-**viz**       |  run the main algo and get a hint, default value. Default value is `True`
-**task**      |  run the main algo and get a hint, default value. Default value is `pies`. Available values can be found in `TASK.tasks_values()` if file [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/util/consts.py)
+Parameter | Description
+--- | ---
+**construct** |  construct the graph. If the argument is `False`, the graph will be deserialized. The default value is `True`
+**serialize** |  serialize the solution graph. The default value is `False`.
+**viz**          |  visualize the graph. The default value is `True`
+**task**        |  the task for the main algorithm. The default value is `pies`. Available values can be found in `TASK.tasks_values()` if file [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/util/consts.py).
 
 ---
 
@@ -136,46 +136,45 @@ You have to create an instance of **TestSystem** for it with necessary ages, exp
 
 ### Visualization
 
-You can visualize some things
+You can visualize different parts of the pipeline.
 
 #### Participants distribution
 
-**Note**: Run _before_ `split_tasks_into_separate_files` because it the use old files structure to count unique users.
+**Note**: Run _before_ 'split_tasks_into_separate_files' because the old files structure is used to count unique users.
 
 Use **get_profile_statistics** method from [statistics_gathering.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/statistics_gathering/statistics_gathering.py)
-to get age and experience statistics. After that run **plot_profile_statistics** method from [profile_statistics_plots.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/plots/profile_statistics_plots.py)
+to get the age and experience statistics. After that, run **plot_profile_statistics** method from [profile_statistics_plots.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/plots/profile_statistics_plots.py)
 with the necessary column and options. Use serialized files with statistic as a parameter.
 
-Two _columns type_ available:
+Two column types are available:
 1. STATISTICS_KEY.AGE
 2. STATISTICS_KEY.EXPERIENCE
 
-Two _charts type_ available:
+Two chart types are available:
 1. PLOT_TYPE.BAR
 2. PLOT_TYPE.PIE
 
 Other options:
-1. **to_union_rare** lets merge the rare values. The rare value means the freq of the value is less or equal 
-than `STATISTICS_RARE_VALUE_THRESHOLD` from [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/plots/util/consts.py)
+1. **to_union_rare** allows to merge the rare values. The rare value means the frequency of the value is less than or equal to `STATISTICS_RARE_VALUE_THRESHOLD` from [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/plots/util/consts.py).
 Default value for `STATISTICS_RARE_VALUE_THRESHOLD` is 2. Default value for **to_union_rare** is `False`.
-2. **format** let us save output into a file in the different formats. The default value is `html` because the plots are 
-interactive
-3. **auto_open** lets open plots automatically. The default value is `False`.
-4. **x_category_order** lets choose sort type for **X** axis. Available values store in `PLOTTY_CATEGORY_ORDER` from [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/plots/util/consts.py).
+2. **format** allows to save the output into a file in different formats. The default value is `html` because the plots are
+interactive.
+3. **auto_open** allows to open plots automatically. The default value is `False`.
+4. **x_category_order** allows to choose the sort order for **X** axis. Available values are stored in `PLOTTY_CATEGORY_ORDER` from [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/plots/util/consts.py).
 The default value is `PLOTTY_CATEGORY_ORDER.TOTAL_ASCENDING`.
 
 #### Tasks distribution
 
-**Note**: Run _after_ 'split_tasks_into_separate_files'
+**Note**: Run _after_ 'split_tasks_into_separate_files'.
 
 Use **plot_tasks_statistics** method from [tasks_statistics_plots.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/plots/tasks_statistics_plots.py)
 to plot tasks statistics.
 
 Available options:
-1. **plot_name** lets choose file name for save. Default value is _task_distribution_plot_.
-2. **format** let us save output into a file in the different formats. The default value is `html` because the plots are 
-interactive
-3. **auto_open** lets open plots automatically. The default value is `False`.
+1. **plot_name** allows to choose the filename. The default value is _task_distribution_plot_.
+2. **format** allows to save the output into different formats. The default value is `html` because the plots are
+interactive.
+3. **auto_open** allows to open plots automatically. The default value is `False`.
 
 #### Splitting plots
 
