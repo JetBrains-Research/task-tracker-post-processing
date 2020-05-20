@@ -13,16 +13,19 @@ from src.main.util.file_util import add_slash
 from src.main.util.log_util import configure_logger
 from src.main.solution_space.hint import HintHandler
 from src.main.solution_space.consts import TEST_SYSTEM_GRAPH
-from src.main.plots.util.consts import PLOTTY_CATEGORY_ORDER
 from src.main.solution_space.data_classes import User, CodeInfo
 from src.main.preprocessing.preprocessing import preprocess_data
+from src.main.plots.tasks_statistics_plots import plot_tasks_statistics
 from src.main.splitting.splitting import split_tasks_into_separate_files
 from src.main.preprocessing.int_experience_adding import add_int_experience
+from src.main.plots.profile_statistics_plots import plot_profile_statistics
 from src.main.util.consts import PATH_CMD_ARG, TASK, INT_EXPERIENCE, TEST_RESULT
 from src.main.solution_space.path_finder_test_system import TestSystem, TEST_INPUT
 from src.main.solution_space.solution_space_handler import construct_solution_graph
+from src.main.statistics_gathering.statistics_gathering import get_profile_statistics
 from src.main.solution_space.solution_space_serializer import SolutionSpaceSerializer
 from src.main.solution_space.solution_space_visualizer import SolutionSpaceVisualizer
+from src.main.plots.util.consts import PLOTTY_CATEGORY_ORDER, STATISTICS_KEY, PLOT_TYPE
 from src.main.preprocessing.intermediate_diffs_removing import remove_intermediate_diffs
 from src.main.preprocessing.inefficient_statements_removing import remove_inefficient_statements
 from src.main.plots.solution_graph_statistics_plots import plot_node_numbers_statistics, \
@@ -71,11 +74,31 @@ def main() -> None:
     """
     # result_path = add_int_experience(path)
     # print(result_path)
-
+    """
+    Plot profile statistics
+    Note: Run before 'split_tasks_into_separate_files' 
+    """
+    # statistics_path = get_profile_statistics(path)
+    # # Plot age statistics
+    # age_path = os.path.join(statistics_path, 'age.pickle')
+    # plot_profile_statistics(age_path, STATISTICS_KEY.AGE, PLOT_TYPE.BAR, auto_open=True,
+    #                         x_category_order=PLOTTY_CATEGORY_ORDER.CATEGORY_ASCENDING)
+    # plot_profile_statistics(age_path, STATISTICS_KEY.AGE, PLOT_TYPE.PIE, auto_open=True,
+    #                         to_union_rare=True)
+    # # Plot experience statistics
+    # experience_path = os.path.join(statistics_path, 'programExperience.pickle')
+    # plot_profile_statistics(experience_path, STATISTICS_KEY.EXPERIENCE, PLOT_TYPE.BAR, auto_open=True)
+    # plot_profile_statistics(experience_path, STATISTICS_KEY.EXPERIENCE, PLOT_TYPE.PIE, auto_open=True,
+    #                         to_union_rare=True)
+    """
+    Plot tasks statistics
+    Note: Run after 'split_tasks_into_separate_files'
+    """
+    # plot_tasks_statistics(path)
     """
     Graph constructing
     """
-    task = TASK.PIES
+    # task = TASK.PIES
     # graph = construct_solution_graph(path, task)
     # print('Graph was constructed')
 
@@ -122,10 +145,10 @@ def main() -> None:
     # It's possible not to include TEST_INPUT.RATE in dict, in this case it will be found by
     # running tests on TEST_INPUT.SOURCE_CODE.
     # However, to speed up the process, one may include TEST_INPUT.RATE.
-    ages = [12]
-    experiences = [INT_EXPERIENCE.FROM_ONE_TO_TWO_YEARS]
-    test_fragments = TestSystem.generate_all_test_fragments(ages, experiences, TestSystem.get_fragments_for_task(task))
-    ts = TestSystem(test_fragments, task=task, add_same_docs=False)
+    # ages = [12]
+    # experiences = [INT_EXPERIENCE.FROM_ONE_TO_TWO_YEARS]
+    # test_fragments = TestSystem.generate_all_test_fragments(ages, experiences, TestSystem.get_fragments_for_task(task))
+    # ts = TestSystem(test_fragments, task=task, add_same_docs=False)
 
 
 if __name__ == '__main__':
