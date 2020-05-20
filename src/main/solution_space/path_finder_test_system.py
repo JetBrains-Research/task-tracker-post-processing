@@ -288,7 +288,13 @@ class TestSystem:
                     'a = 10\nb = 5\nn = 14\nprint(a * n,  b * n)',
                     'a = int(input())\nb = int(input())\nn = int(input())\nrub = a * n\ncop = b * n',
                     'a = int(input())\nb = int(input())\nn = int(input())\nrub = a * n\ncop = b * n\nprint(rub + " " + cop)',
-                    'a = int(input())\nb = int(input())\nn = int(input())\nrub = a * n\ncop = b * n\nprint(str(rub) + " " + str(cop))']
+                    'a = int(input())\nb = int(input())\nn = int(input())\nrub = a * n\ncop = b * n\nprint(str(rub) + " " + str(cop))',
+                    'a = int(input())\nb = int(input())\nn = int(input())\nrub = a * n\nif b * n >= 100:\n    rub += b * n // 100',
+                    'a = int(input())\nb = int(input())\nn = int(input())\nrub = a * n\nif b * n <= 100:\n    rub += b * n // 100',
+                    'a = int(input())\nb = int(input())\nn = int(input())\nrub = a * n\nif b * n >= 100:\n    rub += b * n // 100\ncop = b * n\nprint(rub + " " + cop)',
+                    'a = int(input())\nb = int(input())\nn = int(input())\nrub = a * n\ncop = b * n\nwhile cop > 100:\n    rub += 1',
+                    'a = int(input())\nb = int(input())\nn = int(input())\nrub = a * n\ncop = b * n\nwhile cop > 100:\n    rub += 1\n    cop -= 100'
+                    ]
         elif task == TASK.BRACKETS:
             return ['s = input()',
                     's = input()\nres = ""',
@@ -304,7 +310,16 @@ class TestSystem:
                 'N = int(input())\nfor i in range(N):\n    a = int(input())\n    if a == 0:\n        print("YES")',
                 'N = int(input())\nfor i in range(N):\n    a = int(input())\n    if a == 0:\n        print("YES")\nprint("NO")',
                 'N = int(input())\nc = 0\nfor i in range(N):\n    a = int(input())\n    if a == 0:\n        c += 1\nprint("NO")',
-                'N = int(input())\nc = 0\nfor i in range(N):\n    a = int(input())\n    if a == 0:\n        c += 1\nif c > 0:\n    print("YES")'
+                'N = int(input())\nfor i in range(N):\n    a = int(input())\n    if a == 0:\n        nprint("YES")',
+                'N = int(input())\nfor i in range(N):\n    a = int(input())\n    if a == 0:\n        nprint("YES")\nprint("NO")',
+                'N = int(input())\nc = 0\nfor i in range(N):\n    a = int(input())\n    if a == 0:\n        c += 1\nif c > 0:\n    print("YES")',
+                'N = int(input())\na = []\mfor i in range(N):\n    c = int(input())',
+                'N = int(input())\na = []\mfor i in range(N):\n    c = int(input())\n    a.append(c)',
+                'N = int(input())\na = []\mfor i in range(N):\n    c = int(input())\n    a.append(c)\na.sort()',
+                'N = int(input())\na = []\mfor i in range(N):\n    c = int(input())\n    a.append(c)\na.sort()\nif a[0] == 0:\n    print("YES")',
+                'N = int(input())\na = []\mfor i in range(N):\n    c = int(input())\n    a.append(c)\na.sort()\nif a[0] != 0:\n    print("NO")',
+                'N = int(input())\na = []\mfor i in range(N):\n    c = int(input())\n    a.append(c)\nm = min(a)\nif m == 0:\n    print("YES")',
+                'N = int(input())\na = []\mfor i in range(N):\n    c = int(input())\n    a.append(c)\nm = min(a)\nif m != 0:\n    print("NO")'
             ]
         elif task == TASK.MAX_3:
             return [
@@ -314,6 +329,13 @@ class TestSystem:
                 'a = int(input())\nb = int(input())\nc = int(input())\nif a > b and a > c:\n    print(a)',
                 'a = int(input())\nb = int(input())\nc = int(input())\nm = a',
                 'a = int(input())\nb = int(input())\nc = int(input())\nm = a\nif b > m:\n    m = b\nif c > m:\n    m = c',
+                'a = int(input())\nb = int(input())\nc = int(input())\nk = []',
+                'a = int(input())\nb = int(input())\nc = int(input())\nk = []\nk.append(a)',
+                'a = int(input())\nb = int(input())\nc = int(input())\nk = []\nk.append(a)\nk.append(b)',
+                'a = int(input())\nb = int(input())\nc = int(input())\nk = []\nk.append(a)\nk.append(b)\nk.append(c)',
+                'a = int(input())\nb = int(input())\nc = int(input())\nk = [a, b, c]',
+                'a = int(input())\nb = int(input())\nc = int(input())\nif a > b and a > c:\n    print(a)\nelif a == b == c:\n    print(a)',
+                'a = int(input())\nb = int(input())\nc = int(input())\nif a > b and a > c:\n    print(a)\nelif a == b == c:\n    print(a)\nelif b > a and b < c:\n    print(c)'
             ]
         else:
             raise NotImplemented
