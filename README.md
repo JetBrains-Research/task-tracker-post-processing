@@ -30,6 +30,8 @@ Use `-h` option to get a help
 1. **path** - data path.
 2. **action** - current action to run. Available values: **preprocessing**, **statistics**, **algo**.
 
+A simple configuration: `python main.py path_to_files preprocessing`
+
 Param | Description 
 --- | --- 
 __preprocessing__ | data preprocessing
