@@ -163,6 +163,7 @@ def __create_code_info_chain(file: str, task: TASK) -> List[Tuple[Code, CodeInfo
 
 
 # Todo: find a better way for it
+# Todo: handle a case when there is no empty_code in the chain
 # Detect loops in code_info_chain and remove all intermediate states which include in the loops
 # Before changes: Tree_1 -> Tree_2 -> Tree_3 -> Tree_1 -> Tree_4
 # After changes: Tree_1 -> Tree_4

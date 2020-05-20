@@ -5,12 +5,12 @@ from typing import List, Tuple, Callable
 
 import pytest
 
-from src.main.solution_space.data_classes import CodeInfo, User
+from src.test.test_config import to_skip, TEST_LEVEL
 from src.main.solution_space.serialized_code import Code
-from src.main.solution_space.solution_space_handler import __remove_loops
 from src.main.util.consts import LOGGER_NAME, TEST_RESULT
 from src.main.util.helper_classes.id_counter import IdCounter
-from src.test.test_config import to_skip, TEST_LEVEL
+from src.main.solution_space.data_classes import CodeInfo, User
+from src.main.solution_space.solution_space_handler import __remove_loops
 
 
 log = logging.getLogger(LOGGER_NAME)
