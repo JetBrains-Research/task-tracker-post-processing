@@ -195,6 +195,7 @@ class EXTENSION(Enum):
     CPP = '.cpp'
     DOT = '.dot'
     MD = '.md'
+    GRADLE = '.gradle'
 
 
 EXTENSION_TO_LANGUAGE_DICT: Dict[EXTENSION, LANGUAGE] = {
