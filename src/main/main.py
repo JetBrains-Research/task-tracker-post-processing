@@ -7,13 +7,12 @@ from datetime import datetime
 
 import pandas as pd
 
-from src.main.splitting.tasks_tests_handler import run_tests
-
 sys.path.append('.')
 from src.main.util import consts
 from src.main.util.file_util import add_slash
 from src.main.util.log_util import configure_logger
 from src.main.solution_space.hint import HintHandler
+from src.main.splitting.tasks_tests_handler import run_tests
 from src.main.solution_space.consts import TEST_SYSTEM_GRAPH
 from src.main.plots.util.consts import PLOTTY_CATEGORY_ORDER
 from src.main.solution_space.data_classes import User, CodeInfo
