@@ -3,13 +3,17 @@
 import os
 import sys
 import logging
+import argparse
 from datetime import datetime
+from enum import Enum
 
 import pandas as pd
 
+from src.main.util.configs import ACTIONS_TYPE, PREPROCESSING_LEVEL
+
 sys.path.append('.')
 from src.main.util import consts
-from src.main.util.file_util import add_slash
+from src.main.util.file_util import add_slash, get_all_file_system_items, language_item_condition
 from src.main.util.log_util import configure_logger
 from src.main.solution_space.hint import HintHandler
 from src.main.splitting.tasks_tests_handler import run_tests
@@ -20,7 +24,7 @@ from src.main.plots.tasks_statistics_plots import plot_tasks_statistics
 from src.main.splitting.splitting import split_tasks_into_separate_files
 from src.main.preprocessing.int_experience_adding import add_int_experience
 from src.main.plots.profile_statistics_plots import plot_profile_statistics
-from src.main.util.consts import PATH_CMD_ARG, TASK, INT_EXPERIENCE, TEST_RESULT
+from src.main.util.consts import PATH_CMD_ARG, TASK, INT_EXPERIENCE, TEST_RESULT, FILE_SYSTEM_ITEM
 from src.main.solution_space.path_finder_test_system import TestSystem, TEST_INPUT
 from src.main.solution_space.solution_space_handler import construct_solution_graph
 from src.main.statistics_gathering.statistics_gathering import get_profile_statistics
@@ -38,50 +42,70 @@ pd.set_option('display.max_columns', 100)
 log = logging.getLogger(consts.LOGGER_NAME)
 
 
-def __get_data_path() -> str:
-    args = sys.argv
-    path = args[args.index(PATH_CMD_ARG) + 1]
-    if not os.path.isdir(path):
-        log.error(f'It is not a folder, passed path is {path}')
-        sys.exit(1)
-    return add_slash(path)
+parser = argparse.ArgumentParser(description='Coding Assistant project.')
+
+
+def __configure_args() -> None:
+    parser.add_argument('path', type=str, nargs=1, help='data path')
+    parser.add_argument('action', type=str, nargs=1, choices=ACTIONS_TYPE.values(),
+                        help='current action')
+    parser.add_argument('--level', nargs='?', const=-1, default=-1, help='preprocessing level')
+
+
+def __split_into_tasks(path: str) -> str:
+    split_tasks_into_separate_files(path)
+    pass
+    return path
+
+
+def __data_preprocessing(path: str, preprocessing_level: PREPROCESSING_LEVEL) -> None:
+    preprocessing_functions = [preprocess_data, run_tests, split_tasks_into_separate_files, remove_intermediate_diffs,
+                               remove_inefficient_statements, add_int_experience]
+
+    start_function_index = 0
+    end_function_index = preprocessing_level.value \
+        if preprocessing_level != PREPROCESSING_LEVEL.ALL else PREPROCESSING_LEVEL.max_value()
+
+    paths = [path]
+    for function_index in range(start_function_index, end_function_index + 1):
+        log.info(f'Current operation is {preprocessing_functions[function_index]}')
+        new_paths = []
+        for path in paths:
+            path = preprocessing_functions[function_index](path)
+            if function_index == PREPROCESSING_LEVEL.SPLIT:
+                # Get all sub folders
+                new_paths += get_all_file_system_items(path, language_item_condition, FILE_SYSTEM_ITEM.SUBDIR)
+            else:
+                new_paths.append(path)
+        paths = new_paths
+
+
+def __get_preprocessing_level(level: int) -> PREPROCESSING_LEVEL:
+    try:
+        return PREPROCESSING_LEVEL(level)
+    except ValueError:
+        message = f'Preprosessing level have to be an integer number from {PREPROCESSING_LEVEL.min_value()} ' \
+                  f'to {PREPROCESSING_LEVEL.max_value()}'
+        log.error(message)
+        raise ValueError(message)
 
 
 def main() -> None:
     configure_logger(to_delete_previous_logs=True)
-    path = __get_data_path()
+    __configure_args()
+    args = parser.parse_args()
+    path = add_slash(args.path[0])
+    action = ACTIONS_TYPE(args.action[0])
 
-    """
-    Data preprocessing
-    """
-    # path = preprocess_data(path)
-    # print(f'Preprocessed data path: {path}')
+    if action == ACTIONS_TYPE.PREPROCESSING:
+        level = __get_preprocessing_level(args.level)
+        __data_preprocessing(path, level)
+    elif action == ACTIONS_TYPE.STATISTICS:
+        pass
+    elif action == ACTIONS_TYPE.ALGO:
+        pass
 
-    """
-    Find tests result
-    """
-    # path = run_tests(path)
-    # print(f'Data path after finding tests result: {path}')
 
-    """
-    Tasks separating
-    Note: Path should contain files after preprocessing with tests results
-    """
-    # Note: you should send a direct folder with tasks in the same language
-    # Todo: add the tip in readme
-    # split_tasks_into_separate_files(path)
-
-    """
-    Removing inefficient statements and intermediate diffs
-    """
-    # new_path = remove_intermediate_diffs(path)
-    # remove_inefficient_statements(new_path)
-
-    """
-    Adding int experience
-    """
-    # result_path = add_int_experience(path)
-    # print(result_path)
     """
     Plot profile statistics
     Note: Run before 'split_tasks_into_separate_files' 
@@ -106,9 +130,9 @@ def main() -> None:
     """
     Graph constructing
     """
-    task = TASK.PIES
-    graph = construct_solution_graph(path, task)
-    print('Graph was constructed')
+    # task = TASK.PIES
+    # graph = construct_solution_graph(path, task)
+    # print('Graph was constructed')
 
     """
     Nodes number statistics
@@ -117,8 +141,6 @@ def main() -> None:
     # print('Created plot with node numbers statistics')
     # plot_node_numbers_freq_for_each_vertex(graph)
     # print('Created plots with node numbers freq for each vertex')
-
-
     """
     Graph serialization
     """
@@ -134,9 +156,9 @@ def main() -> None:
     """
     Graph visualization
     """
-    gv = SolutionSpaceVisualizer(graph)
-    graph_visualization_path = gv.visualize_graph(name_prefix=f'{task.value}_full')
-    print(graph_visualization_path)
+    # gv = SolutionSpaceVisualizer(graph)
+    # graph_visualization_path = gv.visualize_graph(name_prefix=f'{task.value}_full')
+    # print(graph_visualization_path)
 
     """
     Getting hint
@@ -153,11 +175,11 @@ def main() -> None:
     # It's possible not to include TEST_INPUT.RATE in dict, in this case it will be found by
     # running tests on TEST_INPUT.SOURCE_CODE.
     # However, to speed up the process, one may include TEST_INPUT.RATE.
-    ages = [12, 15, 18]
-    experiences = [INT_EXPERIENCE.LESS_THAN_HALF_YEAR, INT_EXPERIENCE.FROM_ONE_TO_TWO_YEARS,
-                   INT_EXPERIENCE.MORE_THAN_SIX]
-    test_fragments = TestSystem.generate_all_test_fragments(ages, experiences, TestSystem.get_fragments_for_task(task))
-    ts = TestSystem(test_fragments, task=task, add_same_docs=False, graph=graph)
+    # ages = [12, 15, 18]
+    # experiences = [INT_EXPERIENCE.LESS_THAN_HALF_YEAR, INT_EXPERIENCE.FROM_ONE_TO_TWO_YEARS,
+    #                INT_EXPERIENCE.MORE_THAN_SIX]
+    # test_fragments = TestSystem.generate_all_test_fragments(ages, experiences, TestSystem.get_fragments_for_task(task))
+    # ts = TestSystem(test_fragments, task=task, add_same_docs=False, graph=graph)
 
 
 if __name__ == '__main__':
