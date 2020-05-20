@@ -22,6 +22,61 @@ Simply clone the repository and run the following commands:
 
 ---
 
+### Run
+
+Use `-h` option to get a help
+
+**Required arguments:**
+1. **path** - data path.
+2. **action** - current action to run. Available values: **preprocessing**, **statistics**, **algo**.
+
+Param | Description 
+--- | --- 
+__preprocessing__ | data preprocessing
+__statistics__ | plot statistics
+__algo__ | run the algo
+
+**Optional arguments**:
+- Data preprocessing:
+
+__--level__ - use level param to set level for the action. Available levels:
+
+**Note**: the the Nth level runs all the level before it
+
+Param | Description 
+--- | --- 
+**-1**| use all preprocessing levels, default value
+**0** |  merge activity-tracker and code-tracker files
+**1** |  find tests results for the tasks
+**2** |  split data
+**3** |  remove intermediate diffs
+**4** |  remove inefficient statements
+**5** |  add int experience column
+
+
+- Algo:
+
+__--level__ - use level param to set level for the action. Available levels:
+
+**Note**: the the Nth level runs all the level before it
+
+Param | Description 
+--- | --- 
+**-1**|  run the path finder test system
+**0** |  construct a solution graph
+**1** |  run the main algo and get a hint, default value
+
+Additional arguments:
+
+Param | Description 
+--- | --- 
+**construct** |  to construct graph. It the argument is False, graph will be deserialized. Default value is `True`
+**serialize** |  construct a solution graph. Default value is `False`
+**viz**       |  run the main algo and get a hint, default value. Default value is `True`
+**task**      |  run the main algo and get a hint, default value. Default value is `pies`. Available values can be found in `TASK.tasks_values()` if file [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/util/consts.py)
+
+---
+
 ### Data preprocessing
 
 The hint generation algorithm requires data to have a special format. The repository contains all the necessary 
