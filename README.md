@@ -83,17 +83,17 @@ You can visualize some things
 
 #### Participants distribution
 
-**Note**: Run _before_ 'split_tasks_into_separate_files' because it the use old files structure to count unique users
+**Note**: Run _before_ `split_tasks_into_separate_files` because it the use old files structure to count unique users.
 
 Use **get_profile_statistics** method from [statistics_gathering.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/statistics_gathering/statistics_gathering.py)
 to get age and experience statistics. After that run **plot_profile_statistics** method from [profile_statistics_plots.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/plots/profile_statistics_plots.py)
 with the necessary column and options. Use serialized files with statistic as a parameter.
 
-Two columns type available:
+Two _columns type_ available:
 1. STATISTICS_KEY.AGE
 2. STATISTICS_KEY.EXPERIENCE
 
-Two charts type available:
+Two _charts type_ available:
 1. PLOT_TYPE.BAR
 2. PLOT_TYPE.PIE
 
