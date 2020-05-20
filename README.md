@@ -83,11 +83,42 @@ You can visualize some things
 
 #### Participants distribution
 
-Todo
+**Note**: Run _before_ 'split_tasks_into_separate_files' because it the use old files structure to count unique users
+
+Use **get_profile_statistics** method from [statistics_gathering.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/statistics_gathering/statistics_gathering.py)
+to get age and experience statistics. After that run **plot_profile_statistics** method from [profile_statistics_plots.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/plots/profile_statistics_plots.py)
+with the necessary column and options. Use serialized files with statistic as a parameter.
+
+Two columns type available:
+1. STATISTICS_KEY.AGE
+2. STATISTICS_KEY.EXPERIENCE
+
+Two charts type available:
+1. PLOT_TYPE.BAR
+2. PLOT_TYPE.PIE
+
+Other options:
+1. **to_union_rare** lets merge the rare values. The rare value means the freq of the value is less or equal 
+than `STATISTICS_RARE_VALUE_THRESHOLD` from [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/plots/util/consts.py)
+Default value for `STATISTICS_RARE_VALUE_THRESHOLD` is 2. Default value for **to_union_rare** is `False`.
+2. **format** let us save output into a file in the different formats. The default value is `html` because the plots are 
+interactive
+3. **auto_open** lets open plots automatically. The default value is `False`.
+4. **x_category_order** lets choose sort type for **X** axis. Available values store in `PLOTTY_CATEGORY_ORDER` from [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/plots/util/consts.py).
+The default value is `PLOTTY_CATEGORY_ORDER.TOTAL_ASCENDING`.
 
 #### Tasks distribution
 
-Todo
+**Note**: Run _after_ 'split_tasks_into_separate_files'
+
+Use **plot_tasks_statistics** method from [tasks_statistics_plots.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/plots/tasks_statistics_plots.py)
+to plot tasks statistics.
+
+Available options:
+1. **plot_name** lets choose file name for save. Default value is _task_distribution_plot_.
+2. **format** let us save output into a file in the different formats. The default value is `html` because the plots are 
+interactive
+3. **auto_open** lets open plots automatically. The default value is `False`.
 
 #### Splitting plots
 
