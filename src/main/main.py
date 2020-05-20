@@ -12,6 +12,7 @@ from src.main.util import consts
 from src.main.util.file_util import add_slash
 from src.main.util.log_util import configure_logger
 from src.main.solution_space.hint import HintHandler
+from src.main.splitting.tasks_tests_handler import run_tests
 from src.main.solution_space.consts import TEST_SYSTEM_GRAPH
 from src.main.solution_space.data_classes import User, CodeInfo
 from src.main.preprocessing.preprocessing import preprocess_data
@@ -53,14 +54,21 @@ def main() -> None:
     """
     Data preprocessing
     """
-    # preprocess_data(path)
+    # path = preprocess_data(path)
+    # print(f'Preprocessed data path: {path}')
 
-    # Todo: add splitting and finding tests results
+    """
+    Find tests result
+    """
+    # path = run_tests(path)
+    # print(f'Data path after finding tests result: {path}')
 
     """
     Tasks separating
     Note: Path should contain files after preprocessing with tests results
     """
+    # Note: you should send a direct folder with tasks in the same language
+    # Todo: add the tip in readme
     # split_tasks_into_separate_files(path)
 
     """
@@ -98,9 +106,9 @@ def main() -> None:
     """
     Graph constructing
     """
-    # task = TASK.PIES
-    # graph = construct_solution_graph(path, task)
-    # print('Graph was constructed')
+    task = TASK.BRACKETS
+    graph = construct_solution_graph(path, task)
+    print('Graph was constructed')
 
     """
     Nodes number statistics
@@ -126,9 +134,9 @@ def main() -> None:
     """
     Graph visualization
     """
-    # gv = SolutionSpaceVisualizer(graph)
-    # graph_visualization_path = gv.visualize_graph(name_prefix=f'{task.value}')
-    # print(graph_visualization_path)
+    gv = SolutionSpaceVisualizer(graph)
+    graph_visualization_path = gv.visualize_graph(name_prefix=f'{task.value}_full')
+    print(graph_visualization_path)
 
     """
     Getting hint
@@ -145,10 +153,10 @@ def main() -> None:
     # It's possible not to include TEST_INPUT.RATE in dict, in this case it will be found by
     # running tests on TEST_INPUT.SOURCE_CODE.
     # However, to speed up the process, one may include TEST_INPUT.RATE.
-    # ages = [12]
-    # experiences = [INT_EXPERIENCE.FROM_ONE_TO_TWO_YEARS]
-    # test_fragments = TestSystem.generate_all_test_fragments(ages, experiences, TestSystem.get_fragments_for_task(task))
-    # ts = TestSystem(test_fragments, task=task, add_same_docs=False)
+    ages = [12]
+    experiences = [INT_EXPERIENCE.FROM_ONE_TO_TWO_YEARS]
+    test_fragments = TestSystem.generate_all_test_fragments(ages, experiences, TestSystem.get_fragments_for_task(task))
+    ts = TestSystem(test_fragments, task=task, add_same_docs=False, graph=graph)
 
 
 if __name__ == '__main__':

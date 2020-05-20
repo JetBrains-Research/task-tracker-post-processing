@@ -17,7 +17,7 @@ from src.main.solution_space.solution_graph import SolutionGraph
 from src.main.canonicalization.canonicalization import are_asts_equal, get_trees
 from src.main.solution_space.data_classes import AtiItem, Profile, User, CodeInfo
 from src.main.util.file_util import get_all_file_system_items, extension_file_condition
-from src.main.util.consts import DEFAULT_VALUE, TASK, LANGUAGE, EXTENSION, INT_EXPERIENCE
+from src.main.util.consts import DEFAULT_VALUE, TASK, LANGUAGE, EXTENSION, INT_EXPERIENCE, TEST_RESULT
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -155,7 +155,38 @@ def __create_code_info_chain(file: str, task: TASK) -> List[Tuple[Code, CodeInfo
         code = __get_code(solutions, old_index, task_index, canon_tree, anon_tree)
         code_info = __get_code_info(solutions, user, old_index, ati_actions)
         code_info_chain.append((code, code_info))
+    log.info(f'Size of code info chain before removing loops is {len(code_info_chain)}')
+    code_info_chain = __remove_loops(code_info_chain, user)
+    log.info(f'Size of code info chain after removing loops is {len(code_info_chain)}')
     log.info(f'Finish solution space creating for file {file} for task {task}')
+    return code_info_chain
+
+
+# Todo: find a better way for it
+# Todo: handle a case when there is no empty_code in the chain
+# Detect loops in code_info_chain and remove all intermediate states which include in the loops
+# Before changes: Tree_1 -> Tree_2 -> Tree_3 -> Tree_1 -> Tree_4
+# After changes: Tree_1 -> Tree_4
+def __remove_loops(code_info_chain: List[Tuple[Code, CodeInfo]], user: User) -> List[Tuple[Code, CodeInfo]]:
+    # Add empty code
+    # We want to remove loops, but we can have the situation: Tree1 -> Tree2 -> Tree3 -> Empty Tree -> Tree5
+    # In the case we will get after loops removing: Tree1 -> Tree2 -> Tree3 -> Empty Tree -> Tree5,
+    # but it is incorrect, because we expect Empty Tree -> Tree5
+    # If we add empty code, we will have: Empty Tree -> Tree1 -> Tree2 -> Tree3 -> Empty Tree -> Tree5
+    # and we will get after loops removing: Empty Tree -> Tree5
+    code_info_chain = [(Code.from_source('', TEST_RESULT.CORRECT_CODE.value), CodeInfo(user))] + code_info_chain
+
+    current_tree_index = 0
+    while current_tree_index < len(code_info_chain):
+        current_anon_tree = code_info_chain[current_tree_index][0].anon_tree
+        same_tree_indexes = []
+        for next_tree_index in range(current_tree_index + 1, len(code_info_chain)):
+            next_anon_tree = code_info_chain[next_tree_index][0].anon_tree
+            if are_asts_equal(current_anon_tree, next_anon_tree):
+                same_tree_indexes.append(next_tree_index)
+        if len(same_tree_indexes) > 0:
+            del code_info_chain[current_tree_index:max(same_tree_indexes)]
+        current_tree_index += 1
     return code_info_chain
 
 
