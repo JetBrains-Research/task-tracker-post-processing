@@ -35,6 +35,7 @@ Parameter| Description
 __preprocessing__ | preprocess the data
 __statistics__ | plot statistics
 __algo__ | run the algorithm
+__test_system__ | run the path finder test system
 
 A simple configuration: `python main.py path_to_files preprocessing`
 
@@ -43,28 +44,26 @@ A simple configuration: `python main.py path_to_files preprocessing`
 
 __--level__ — allows to set the level for the preprocessing. Available levels:
 
-**Note**: the Nth level runs all the levels before it.
+**Note**: the Nth level runs all the levels before it. The default value is the max level value.
 
 Parameter | Description
 --- | ---
-**-1**|  use all preprocessing levels, default value
 **0** |  merge activity-tracker and code-tracker files
 **1** |  find tests results for the tasks
 **2** |  split the data
 **3** |  remove intermediate diffs
 **4** |  remove inefficient statements
-**5** |  add _int experience_ column
+**5** |  add _int experience_ column, default value
 
 
 - Running the algorithm:
 
 __--level__ allows to set the level for running the algorithm. Available levels:
 
-**Note**: the Nth level runs all the levels before it.
+**Note**: the Nth level runs all the levels before it. The default value is the max level value.
 
 Parameter | Description
 --- | ---
-**-1**|  run the path finder test system
 **0** |  construct a solution graph
 **1** |  run the main algorithm and get a hint, default value
 
@@ -74,8 +73,8 @@ Parameter | Description
 --- | ---
 **construct** |  construct the graph. If the argument is `False`, the graph will be deserialized. The default value is `True`
 **serialize** |  serialize the solution graph. The default value is `False`.
-**viz**          |  visualize the graph. The default value is `True`
-**task**        |  the task for the main algorithm. The default value is `pies`. Available values can be found in `TASK.tasks_values()` if file [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/util/consts.py).
+**viz**       |  visualize the graph. The default value is `True`
+**task**      |  the task for the main algorithm. The default value is `pies`. Available values can be found in `TASK.tasks_values()` if file [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/util/consts.py).
 
 ---
 

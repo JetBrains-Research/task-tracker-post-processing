@@ -5,6 +5,7 @@ import sys
 import logging
 import argparse
 from datetime import datetime
+from typing import Union, Type
 
 import pandas as pd
 
@@ -16,12 +17,13 @@ from src.main.splitting.tasks_tests_handler import run_tests
 from src.main.solution_space.consts import TEST_SYSTEM_GRAPH
 from src.main.solution_space.data_classes import User, CodeInfo
 from src.main.preprocessing.preprocessing import preprocess_data
+from src.main.solution_space.solution_graph import SolutionGraph
 from src.main.plots.tasks_statistics_plots import plot_tasks_statistics
 from src.main.splitting.splitting import split_tasks_into_separate_files
 from src.main.preprocessing.int_experience_adding import add_int_experience
 from src.main.plots.profile_statistics_plots import plot_profile_statistics
 from src.main.solution_space.path_finder.path_finver_v_4 import PathFinderV4
-from src.main.util.configs import ACTIONS_TYPE, PREPROCESSING_LEVEL, ALGO_LEVEL
+from src.main.util.configs import ACTIONS_TYPE, PREPROCESSING_LEVEL, ALGO_LEVEL, DEFAULT_LEVEL_VALUE
 from src.main.solution_space.path_finder_test_system import TestSystem, TEST_INPUT
 from src.main.solution_space.measured_tree.measured_tree_v_3 import MeasuredTreeV3
 from src.main.solution_space.solution_space_handler import construct_solution_graph
@@ -57,7 +59,8 @@ def __configure_args() -> None:
     parser.add_argument('action', type=str, nargs=1, choices=ACTIONS_TYPE.values(),
                         help='current action')
 
-    parser.add_argument('--level', nargs='?', const=-1, default=-1, help=__get_level_arg_description())
+    parser.add_argument('--level', nargs='?', const=DEFAULT_LEVEL_VALUE, default=DEFAULT_LEVEL_VALUE,
+                        help=__get_level_arg_description())
     # Algo args
     parser.add_argument('--construct', nargs='?', const=True, default=True,
                         help='to construct graph. It the argument is False, graph will be deserialized')
@@ -66,22 +69,11 @@ def __configure_args() -> None:
     parser.add_argument('--task', nargs='?', const=TASK.PIES.value, default=TASK.PIES.value, help='task for the algo')
 
 
-def __split_into_tasks(path: str) -> str:
-    split_tasks_into_separate_files(path)
-    pass
-    return path
-
-
 def __data_preprocessing(path: str, preprocessing_level: PREPROCESSING_LEVEL) -> None:
     preprocessing_functions = [preprocess_data, run_tests, split_tasks_into_separate_files, remove_intermediate_diffs,
                                remove_inefficient_statements, add_int_experience]
-
-    start_function_index = 0
-    end_function_index = preprocessing_level.value \
-        if preprocessing_level != PREPROCESSING_LEVEL.ALL else PREPROCESSING_LEVEL.max_value()
-
     paths = [path]
-    for function_index in range(start_function_index, end_function_index + 1):
+    for function_index in range(0,  preprocessing_level.value + 1):
         log.info(f'Current operation is {preprocessing_functions[function_index]}')
         new_paths = []
         for path in paths:
@@ -98,26 +90,6 @@ def __data_preprocessing(path: str, preprocessing_level: PREPROCESSING_LEVEL) ->
     print(f'Folders with data: {str_paths}')
 
 
-def __get_preprocessing_level(level: int) -> PREPROCESSING_LEVEL:
-    try:
-        return PREPROCESSING_LEVEL(level)
-    except ValueError:
-        message = f'Preprosessing level has to be an integer number from {PREPROCESSING_LEVEL.min_value()} ' \
-                  f'to {PREPROCESSING_LEVEL.max_value()}'
-        log.error(message)
-        raise ValueError(message)
-
-
-def __get_algo_level(level: int) -> ALGO_LEVEL:
-    try:
-        return ALGO_LEVEL(level)
-    except ValueError:
-        message = f'Algo level has to be an integer number from {ALGO_LEVEL.min_value()} ' \
-                  f'to {ALGO_LEVEL.max_value()}'
-        log.error(message)
-        raise ValueError(message)
-
-
 def __get_task(task: str) -> TASK:
     try:
         return TASK(task)
@@ -127,8 +99,8 @@ def __get_task(task: str) -> TASK:
         raise ValueError(message)
 
 
-def __run_algo(path: str, level: ALGO_LEVEL, task: TASK = TASK.PIES, to_construct: bool = True,
-               to_serialize: bool = True, to_visualize: bool = True) -> None:
+def __construct_graph(path: str, task: TASK = TASK.PIES, to_construct: bool = True,
+               to_serialize: bool = True, to_visualize: bool = True) -> SolutionGraph:
     if to_construct:
         graph = construct_solution_graph(path, task)
         log.info('Graph was constructed')
@@ -146,27 +118,38 @@ def __run_algo(path: str, level: ALGO_LEVEL, task: TASK = TASK.PIES, to_construc
         graph_visualization_path = gv.visualize_graph(name_prefix=f'{task.value}')
         log.info(f'Graph visualization path: {graph_visualization_path}')
 
-    if level == ALGO_LEVEL.CONSTRUCT:
+    return graph
+
+
+def __run_algo(path: str, algo_level: ALGO_LEVEL, task: TASK = TASK.PIES, to_construct: bool = True,
+               to_serialize: bool = True, to_visualize: bool = True) -> None:
+    graph = __construct_graph(path, task, to_construct, to_serialize, to_visualize)
+
+    if algo_level == ALGO_LEVEL.CONSTRUCT:
         return
 
-    if level == ALGO_LEVEL.TEST:
-        # It's possible not to include TEST_INPUT.RATE in dict, in this case it will be found by
-        # running tests on TEST_INPUT.SOURCE_CODE.
-        # However, to speed up the process, one may include TEST_INPUT.RATE.
-        # Todo: get ages and experiences from args?
-        ages = [12, 15, 18]
-        experiences = [INT_EXPERIENCE.LESS_THAN_HALF_YEAR, INT_EXPERIENCE.FROM_ONE_TO_TWO_YEARS,
-                       INT_EXPERIENCE.MORE_THAN_SIX]
-        test_fragments = TestSystem.generate_all_test_fragments(ages, experiences, TestSystem.get_fragments_for_task(task))
-        ts = TestSystem(test_fragments, task=task, add_same_docs=False, graph=graph)
-
-    if level == ALGO_LEVEL.HINT:
+    if algo_level == ALGO_LEVEL.HINT:
         # Todo
         source = 'a = int(input())\nb = int(input())\nn = int(input())'
         code_info = CodeInfo(User())
         # hint_handler = HintHandler(graph, PathFinderV4, MeasuredTreeV3)
         # hint = hint_handler.get_hint(source, code_info)
         # print(hint.recommended_code)
+
+
+def __run_test_system(path: str, task: TASK = TASK.PIES, to_construct: bool = True,
+               to_serialize: bool = True, to_visualize: bool = True) -> None:
+    graph = __construct_graph(path, task, to_construct, to_serialize, to_visualize)
+
+    # It's possible not to include TEST_INPUT.RATE in dict, in this case it will be found by
+    # running tests on TEST_INPUT.SOURCE_CODE.
+    # However, to speed up the process, one may include TEST_INPUT.RATE.
+    # Todo: get ages and experiences from args?
+    ages = [12, 15, 18]
+    experiences = [INT_EXPERIENCE.LESS_THAN_HALF_YEAR, INT_EXPERIENCE.FROM_ONE_TO_TWO_YEARS,
+                   INT_EXPERIENCE.MORE_THAN_SIX]
+    test_fragments = TestSystem.generate_all_test_fragments(ages, experiences, TestSystem.get_fragments_for_task(task))
+    ts = TestSystem(test_fragments, task=task, add_same_docs=False, graph=graph)
 
 
 def main() -> None:
@@ -177,15 +160,18 @@ def main() -> None:
     action = ACTIONS_TYPE(args.action[0])
 
     if action == ACTIONS_TYPE.PREPROCESSING:
-        level = __get_preprocessing_level(args.level)
+        level = PREPROCESSING_LEVEL.get_level(args.level)
         __data_preprocessing(path, level)
     elif action == ACTIONS_TYPE.STATISTICS:
         # Todo
         pass
     elif action == ACTIONS_TYPE.ALGO:
-        level = __get_algo_level(int(args.level))
+        level = ALGO_LEVEL.get_level(args.level)
         task = __get_task(args.task)
         __run_algo(path, level, task, args.construct, args.serialize, args.viz)
+    elif action == ACTIONS_TYPE.TEST_SYSTEM:
+        task = __get_task(args.task)
+        __run_test_system(path, task, args.construct, args.serialize, args.viz)
     """
     Plot profile statistics
     Note: Run before 'split_tasks_into_separate_files' 
