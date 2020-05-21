@@ -72,7 +72,7 @@ def find_task_dfs(df: pd.DataFrame, task: consts.TASK) -> List[pd.DataFrame]:
 
 
 # 2.0 version with a different task_df extraction
-def split_tasks_into_separate_files(path: str, result_name_suffix: str = 'separated_tasks') -> None:
+def split_tasks_into_separate_files(path: str, result_name_suffix: str = 'separated_tasks') -> str:
     files = get_all_file_system_items(path, ct_file_condition)
     result_folder = get_result_folder(path, result_name_suffix)
     for file in files:
@@ -88,3 +88,4 @@ def split_tasks_into_separate_files(path: str, result_name_suffix: str = 'separa
                     filename = task.value + '/' + get_parent_folder_name(file) + '_' + get_name_from_path(file, False) \
                                + f'_{i}' + get_extension_from_file(file).value
                     write_based_on_language(result_folder, filename, task_df, language)
+    return result_folder

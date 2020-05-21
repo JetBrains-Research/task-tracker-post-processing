@@ -193,12 +193,12 @@ def __remove_loops(code_info_chain: List[Tuple[Code, CodeInfo]], user: User) -> 
 def construct_solution_graph(path: str, task: TASK, language: LANGUAGE = LANGUAGE.PYTHON) -> SolutionGraph:
     files = get_all_file_system_items(path, extension_file_condition(EXTENSION.CSV))
     sg = SolutionGraph(task, language)
-    log.info(f'Start creating solution space')
+    log.info(f'Start creating solution space from path {path}')
     for file in files:
         log.info(f'Start handling file {file}')
         code_info_chain = __create_code_info_chain(file, task)
         sg.add_code_info_chain(code_info_chain)
-    log.info(f'Finish creating solution space')
+    log.info(f'Finish creating solution space from path {path}')
     log.info('Start finding medians')
     sg.find_all_medians()
     log.info('Finish finding medians')

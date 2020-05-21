@@ -58,7 +58,8 @@ def __plot_bar_chart(bars: List[go.Bar], path: str, plot_name: str = 'bar_plot',
     save_plot(fig, path, plot_consts.PLOT_TYPE.BAR, plot_name, format, auto_open)
 
 
-def plot_tasks_statistics(path: str, plot_name: str = 'task_plot', format: consts.EXTENSION = consts.EXTENSION.HTML,
+def plot_tasks_statistics(path: str, plot_name: str = 'task_distribution_plot',
+                          format: consts.EXTENSION = consts.EXTENSION.HTML,
                           auto_open: bool = False) -> None:
     statistics_dict = get_tasks_statistics(path)
     bars = __get_bars_for_plot(statistics_dict)

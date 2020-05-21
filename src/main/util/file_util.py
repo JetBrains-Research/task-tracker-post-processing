@@ -178,6 +178,13 @@ def all_items_condition(name: str) -> bool:
     return True
 
 
+def language_item_condition(name: str) -> bool:
+    for language in LANGUAGE:
+        if language.value == name:
+            return True
+    return False
+
+
 # To get all files or subdirs (depends on the last parameter) from root that match item_condition
 # Can be used to get all codetracker files, all data folders, etc.
 # Note that all subdirs or files already contain the full path for them

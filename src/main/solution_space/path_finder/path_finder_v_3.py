@@ -8,11 +8,12 @@ from typing import List, Optional, Dict, Any
 from src.main.solution_space.solution_graph import Vertex
 from src.main.solution_space.serialized_code import AnonTree
 from src.main.canonicalization.diffs.gumtree import GumTreeDiff
-from src.main.solution_space.path_finder_test_system import doc_param
+from src.main.solution_space.path_finder_test_system import doc_param, skip
 from src.main.solution_space.path_finder.path_finder import IPathFinder, log
 from src.main.canonicalization.canonicalization import get_code_from_tree, get_nodes_number_in_ast
 
 
+@skip(reason='The best version is PathFinderV4')
 class PathFinderV3(IPathFinder):
     candidates_file_prefix: Optional[str] = None
     canon_top_n = 5
