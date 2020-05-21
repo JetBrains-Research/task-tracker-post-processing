@@ -102,19 +102,20 @@ def __get_task(task: str) -> TASK:
 
 def __construct_graph(path: str, task: TASK = TASK.PIES, to_construct: bool = True,
                to_serialize: bool = True, to_visualize: bool = True) -> SolutionGraph:
-    if to_construct:
+    # Todo: make it better
+    if to_construct == 'True':
         graph = construct_solution_graph(path, task)
         log.info('Graph was constructed')
     else:
         graph = SolutionSpaceSerializer.deserialize(path)
         log.info('Graph was deserialized')
 
-    if to_serialize:
+    if to_serialize == 'True':
         path = SolutionSpaceSerializer.serialize(graph)
         log.info(f'Serialized graph path: {path}')
         print(f'Serialized graph path: {path}')
 
-    if to_visualize:
+    if to_visualize == 'True':
         gv = SolutionSpaceVisualizer(graph)
         graph_visualization_path = gv.visualize_graph(name_prefix=f'{task.value}')
         log.info(f'Graph visualization path: {graph_visualization_path}')
@@ -146,9 +147,8 @@ def __run_test_system(path: str, task: TASK = TASK.PIES, to_construct: bool = Tr
     # running tests on TEST_INPUT.SOURCE_CODE.
     # However, to speed up the process, one may include TEST_INPUT.RATE.
     # Todo: get ages and experiences from args?
-    ages = [12, 15, 18]
-    experiences = [INT_EXPERIENCE.LESS_THAN_HALF_YEAR, INT_EXPERIENCE.FROM_ONE_TO_TWO_YEARS,
-                   INT_EXPERIENCE.MORE_THAN_SIX]
+    ages = [15]
+    experiences = [INT_EXPERIENCE.FROM_ONE_TO_TWO_YEARS]
     test_fragments = TestSystem.generate_all_test_fragments(ages, experiences, TestSystem.get_fragments_for_task(task))
     ts = TestSystem(test_fragments, task=task, add_same_docs=False, graph=graph)
 
@@ -160,8 +160,10 @@ def main() -> None:
     path = args.path[0]
     if not os.path.exists(args.path[0]):
         log_and_raise_error(f'Path {path} does not exist', log)
-    # Todo: do we want to add a slash if it's a file with serialized graph?
-    path = add_slash(path)
+
+    # we don't want to add a slash if it's a file (with serialized graph, for example), so we add it only if it's a dir
+    if os.path.isdir(path):
+        path = add_slash(path)
     action = ACTIONS_TYPE(args.action[0])
 
     if action == ACTIONS_TYPE.PREPROCESSING:
