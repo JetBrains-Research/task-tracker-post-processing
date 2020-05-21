@@ -286,6 +286,64 @@ class TestSystem:
         if os.path.exists(task_path):
             fragments = get_all_file_system_items(task_path, extension_file_condition(EXTENSION.PY))
             return list(map(get_content_from_file, fragments))
+
+        if task == TASK.PIES:
+            return ['a = int(input())',
+                    'a = int(input())\nb = int(input())',
+                    'a = int(input())\nb = int(input())\nn = int(input())',
+                    'a = input()\nb = input()',
+                    'a = 10\nb = 5\nn = 14\nprint(a * n,  b * n)',
+                    'a = int(input())\nb = int(input())\nn = int(input())\nrub = a * n\ncop = b * n',
+                    'a = int(input())\nb = int(input())\nn = int(input())\nrub = a * n\ncop = b * n\nprint(rub + " " + cop)',
+                    'a = int(input())\nb = int(input())\nn = int(input())\nrub = a * n\ncop = b * n\nprint(str(rub) + " " + str(cop))',
+                    'a = int(input())\nb = int(input())\nn = int(input())\nrub = a * n\nif b * n >= 100:\n    rub += b * n // 100',
+                    'a = int(input())\nb = int(input())\nn = int(input())\nrub = a * n\nif b * n <= 100:\n    rub += b * n // 100',
+                    'a = int(input())\nb = int(input())\nn = int(input())\nrub = a * n\nif b * n >= 100:\n    rub += b * n // 100\ncop = b * n\nprint(rub + " " + cop)',
+                    'a = int(input())\nb = int(input())\nn = int(input())\nrub = a * n\ncop = b * n\nwhile cop > 100:\n    rub += 1',
+                    'a = int(input())\nb = int(input())\nn = int(input())\nrub = a * n\ncop = b * n\nwhile cop > 100:\n    rub += 1\n    cop -= 100'
+                    ]
+        elif task == TASK.BRACKETS:
+            return ['s = input()',
+                    's = input()\nres = ""',
+                    's = input()\nres = ""\nif len(s) % 2 == 0:\n    print(s)',
+                    's = input()\nres = ""\nif len(s) % 2 == 0:\n    print(s)\nelse:\n    print(s)',
+                    's = input()\nres = ""\nif len(s) % 2 == 0:\n    for i in range(len(s) // 2):\n        res += s[i] + "("',
+                    's = input()\nres = ""\nif len(s) % 2 == 0:\n    for i in range(len(s) // 2):\n        res += s[i] + "("\n    for i in range(len(s) // 2 - 1, len(s)):\n        res += s[i] + ")"'
+                    ]
+        elif task == TASK.ZERO:
+            return [
+                'N = int(input())',
+                'N = int(input())\nfor i in range(N):\n    a = int(input())',
+                'N = int(input())\nfor i in range(N):\n    a = int(input())\n    if a == 0:\n        print("YES")',
+                'N = int(input())\nfor i in range(N):\n    a = int(input())\n    if a == 0:\n        print("YES")\nprint("NO")',
+                'N = int(input())\nc = 0\nfor i in range(N):\n    a = int(input())\n    if a == 0:\n        c += 1\nprint("NO")',
+                'N = int(input())\nfor i in range(N):\n    a = int(input())\n    if a == 0:\n        nprint("YES")',
+                'N = int(input())\nfor i in range(N):\n    a = int(input())\n    if a == 0:\n        nprint("YES")\nprint("NO")',
+                'N = int(input())\nc = 0\nfor i in range(N):\n    a = int(input())\n    if a == 0:\n        c += 1\nif c > 0:\n    print("YES")',
+                'N = int(input())\na = []\mfor i in range(N):\n    c = int(input())',
+                'N = int(input())\na = []\mfor i in range(N):\n    c = int(input())\n    a.append(c)',
+                'N = int(input())\na = []\mfor i in range(N):\n    c = int(input())\n    a.append(c)\na.sort()',
+                'N = int(input())\na = []\mfor i in range(N):\n    c = int(input())\n    a.append(c)\na.sort()\nif a[0] == 0:\n    print("YES")',
+                'N = int(input())\na = []\mfor i in range(N):\n    c = int(input())\n    a.append(c)\na.sort()\nif a[0] != 0:\n    print("NO")',
+                'N = int(input())\na = []\mfor i in range(N):\n    c = int(input())\n    a.append(c)\nm = min(a)\nif m == 0:\n    print("YES")',
+                'N = int(input())\na = []\mfor i in range(N):\n    c = int(input())\n    a.append(c)\nm = min(a)\nif m != 0:\n    print("NO")'
+            ]
+        elif task == TASK.MAX_3:
+            return [
+                'a = int(input())',
+                'a = int(input())\nb = int(input())',
+                'a = int(input())\nb = int(input())\nc = int(input())',
+                'a = int(input())\nb = int(input())\nc = int(input())\nif a > b and a > c:\n    print(a)',
+                'a = int(input())\nb = int(input())\nc = int(input())\nm = a',
+                'a = int(input())\nb = int(input())\nc = int(input())\nm = a\nif b > m:\n    m = b\nif c > m:\n    m = c',
+                'a = int(input())\nb = int(input())\nc = int(input())\nk = []',
+                'a = int(input())\nb = int(input())\nc = int(input())\nk = []\nk.append(a)',
+                'a = int(input())\nb = int(input())\nc = int(input())\nk = []\nk.append(a)\nk.append(b)',
+                'a = int(input())\nb = int(input())\nc = int(input())\nk = []\nk.append(a)\nk.append(b)\nk.append(c)',
+                'a = int(input())\nb = int(input())\nc = int(input())\nk = [a, b, c]',
+                'a = int(input())\nb = int(input())\nc = int(input())\nif a > b and a > c:\n    print(a)\nelif a == b == c:\n    print(a)',
+                'a = int(input())\nb = int(input())\nc = int(input())\nif a > b and a > c:\n    print(a)\nelif a == b == c:\n    print(a)\nelif b > a and b < c:\n    print(c)'
+            ]
         else:
             log_and_raise_error(f'No fragments found in path {task_path}', log, NotImplementedError)
 

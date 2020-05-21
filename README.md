@@ -22,6 +22,62 @@ Simply clone the repository and run the following commands:
 
 ---
 
+### Run
+
+Use `-h` option to show help.
+
+**Required arguments:**
+1. **path** — the path to data.
+2. **action** — action to run. Available values: **preprocessing**, **statistics**, **algo**.
+
+Parameter| Description
+--- | ---
+__preprocessing__ | preprocess the data
+__statistics__ | plot statistics
+__algo__ | run the algorithm
+__test_system__ | run the path finder test system
+
+A simple configuration: `python main.py path_to_files preprocessing`
+
+**Optional arguments**:
+- Data preprocessing:
+
+__--level__ — allows to set the level for the preprocessing. Available levels:
+
+**Note**: the Nth level runs all the levels before it. The default value is the max level value.
+
+Parameter | Description
+--- | ---
+**0** |  merge activity-tracker and code-tracker files
+**1** |  find tests results for the tasks
+**2** |  split the data
+**3** |  remove intermediate diffs
+**4** |  remove inefficient statements
+**5** |  add _int experience_ column, default value
+
+
+- Running the algorithm:
+
+__--level__ allows to set the level for running the algorithm. Available levels:
+
+**Note**: the Nth level runs all the levels before it. The default value is the max level value.
+
+Parameter | Description
+--- | ---
+**0** |  construct a solution graph
+**1** |  run the main algorithm and get a hint, default value
+
+Additional arguments:
+
+Parameter | Description
+--- | ---
+**construct** |  construct the graph. If the argument is `False`, the graph will be deserialized. The default value is `True`
+**serialize** |  serialize the solution graph. The default value is `False`.
+**viz**       |  visualize the graph. The default value is `True`
+**task**      |  the task for the main algorithm. The default value is `pies`. Available values can be found in `TASK.tasks_values()` if file [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/util/consts.py).
+
+---
+
 ### Data preprocessing
 
 The hint generation algorithm requires data to have a special format. The repository contains all the necessary 
@@ -79,15 +135,45 @@ You have to create an instance of **TestSystem** for it with necessary ages, exp
 
 ### Visualization
 
-You can visualize some things
+You can visualize different parts of the pipeline.
 
 #### Participants distribution
 
-Todo
+**Note**: Run _before_ 'split_tasks_into_separate_files' because the old files structure is used to count unique users.
+
+Use **get_profile_statistics** method from [statistics_gathering.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/statistics_gathering/statistics_gathering.py)
+to get the age and experience statistics. After that, run **plot_profile_statistics** method from [profile_statistics_plots.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/plots/profile_statistics_plots.py)
+with the necessary column and options. Use serialized files with statistic as a parameter.
+
+Two column types are available:
+1. STATISTICS_KEY.AGE
+2. STATISTICS_KEY.EXPERIENCE
+
+Two chart types are available:
+1. PLOT_TYPE.BAR
+2. PLOT_TYPE.PIE
+
+Other options:
+1. **to_union_rare** allows to merge the rare values. The rare value means the frequency of the value is less than or equal to `STATISTICS_RARE_VALUE_THRESHOLD` from [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/plots/util/consts.py).
+Default value for `STATISTICS_RARE_VALUE_THRESHOLD` is 2. Default value for **to_union_rare** is `False`.
+2. **format** allows to save the output into a file in different formats. The default value is `html` because the plots are
+interactive.
+3. **auto_open** allows to open plots automatically. The default value is `False`.
+4. **x_category_order** allows to choose the sort order for **X** axis. Available values are stored in `PLOTTY_CATEGORY_ORDER` from [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/plots/util/consts.py).
+The default value is `PLOTTY_CATEGORY_ORDER.TOTAL_ASCENDING`.
 
 #### Tasks distribution
 
-Todo
+**Note**: Run _after_ 'split_tasks_into_separate_files'.
+
+Use **plot_tasks_statistics** method from [tasks_statistics_plots.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/plots/tasks_statistics_plots.py)
+to plot tasks statistics.
+
+Available options:
+1. **plot_name** allows to choose the filename. The default value is _task_distribution_plot_.
+2. **format** allows to save the output into different formats. The default value is `html` because the plots are
+interactive.
+3. **auto_open** allows to open plots automatically. The default value is `False`.
 
 #### Splitting plots
 

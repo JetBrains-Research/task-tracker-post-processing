@@ -75,7 +75,10 @@ def __get_age_and_experience_of_one_user(ages_and_experiences: List[AgeAndExperi
 
 
 def __get_empty_statistics_dict() -> Statistics:
-    return {column: {} for column in STATISTICS_KEY}
+    return {
+        STATISTICS_KEY.AGE: {},
+        STATISTICS_KEY.EXPERIENCE: {}
+    }
 
 
 def __update_statistics_dict_column(statistics: Statistics, column: STATISTICS_KEY, value: InvalidProfile) -> None:
