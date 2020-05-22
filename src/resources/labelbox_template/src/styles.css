@@ -57,3 +57,7 @@ button#submit-button {
   border-radius: 3px;
   padding: 5px 15px 5px 15px;
 }
+
+div#form-meta-info {
+  margin-bottom: 20px;
+}
