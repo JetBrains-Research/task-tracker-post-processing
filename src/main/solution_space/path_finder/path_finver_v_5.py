@@ -8,12 +8,12 @@ from typing import List, Optional, Dict, Any
 from src.main.solution_space.solution_graph import Vertex
 from src.main.solution_space.serialized_code import AnonTree
 from src.main.canonicalization.diffs.gumtree import GumTreeDiff
-from src.main.solution_space.path_finder_test_system import doc_param
+from src.main.solution_space.path_finder_test_system import doc_param, skip
 from src.main.solution_space.path_finder.path_finder import IPathFinder, log
 from src.main.canonicalization.canonicalization import get_code_from_tree, get_nodes_number_in_ast
 
-
-class PathFinderV4(IPathFinder):
+@skip(reason='Testing new measured vertex with fixed bugs')
+class PathFinderV5(IPathFinder):
     candidates_file_prefix: Optional[str] = None
 
     canon_top_n = 5
@@ -32,17 +32,21 @@ class PathFinderV4(IPathFinder):
     goal_tree_stop_earlier = False
     goal_tree_lower_bound = True
 
-    @doc_param(graph_tree_stop_earlier, graph_tree_lower_bound, goal_tree_stop_earlier, goal_tree_lower_bound)
+    to_add_empty_tree_to_goals = False
+    to_add_empty_tree_to_graph = True
+
+    @doc_param(graph_tree_stop_earlier, graph_tree_lower_bound, goal_tree_stop_earlier, goal_tree_lower_bound,
+               to_add_empty_tree_to_graph, to_add_empty_tree_to_goals)
     def find_next_anon_tree(self, user_anon_tree: AnonTree, user_canon_tree: ast.AST,
                             candidates_file_id: Optional[int] = None) -> AnonTree:
         """
         1. Find the same tree SAME_TREE in the graph and get the best tree from next trees (__find_same_tree_in_graph)
         2. If SAME_TREE is not None, return SAME_TREE
         2. Find the closest tree CLOSEST_TREE in graph (__find_closest_tree with graph.canon_trees_nodes_number,
-        can_stop_earlier={0}, to_use_lower_bound={1})
+        can_stop_earlier={0}, to_use_lower_bound={1}, to_add_empty_tree_to_graph={4})
         3. If not _is_close_to_goals, return CLOSEST_TREE
         4. Find the closest goal CLOSEST_GOAL in graph (__find_closest_goal_tree, can_stop_earlier={2},
-         to_use_lower_bound={3})
+         to_use_lower_bound={3}, to_add_empty_tree_to_goals={5})
         5. Choose between CLOSEST_TREE and CLOSEST_GOAL using __go_through_graph
         """
 
@@ -64,7 +68,8 @@ class PathFinderV4(IPathFinder):
                                                    self.graph.canon_nodes_number_dict,
                                                    to_use_lower_bound=self.graph_tree_lower_bound,
                                                    can_stop_earlier=self.graph_tree_stop_earlier,
-                                                   candidates_file_name='graph_candidates')
+                                                   candidates_file_name='graph_candidates',
+                                                   to_add_empty_tree = self.to_add_empty_tree_to_graph)
         # We can have graph_anon_tree = None
         if graph_anon_tree:
             log.info(f'Chosen anon tree in graph:\n{get_code_from_tree(graph_anon_tree.tree)}')
@@ -96,7 +101,6 @@ class PathFinderV4(IPathFinder):
             if graph_anon_tree:
                 next_anon_trees = [AnonTree.get_item_by_id(id) for id in graph_anon_tree.next_anon_trees_ids]
                 next_anon_trees = [tree for tree in next_anon_trees if tree.nodes_number >= user_anon_tree.nodes_number]
-
                 return self.__choose_best_anon_tree(user_anon_tree, next_anon_trees, 'same_tree_candidates')
         return None
 
@@ -109,10 +113,12 @@ class PathFinderV4(IPathFinder):
                             canon_nodes_numbers_dict: Dict[int, list],
                             candidates_file_name: str,
                             can_stop_earlier: bool = True,
-                            to_use_lower_bound=True) -> Optional[AnonTree]:
+                            to_use_lower_bound=True,
+                            to_add_empty_tree=False) -> Optional[AnonTree]:
         """
         1. Consider each vertex with similar nodes number as candidate (chose at least TOP_N_CANON = {1} candidates)
-        2. Choose at least TOP_N_ANON = {0} anon trees from canon candidates and run __choose_best_anon_tree
+        2. Choose at least TOP_N_ANON = {0} anon trees from canon candidates, add empty tree if needed,
+         and run __choose_best_anon_tree
         """
 
         # Get vertices ids with canon trees, which have nodes number similar to user canon_nodes_number
@@ -128,6 +134,8 @@ class PathFinderV4(IPathFinder):
         anon_nodes_numbers_dict = self.__get_items_nodes_number_dict(anon_trees)
         anon_candidates = self.__get_top_n_candidates(self.anon_top_n, user_anon_tree.nodes_number, anon_nodes_numbers_dict,
                                                       can_stop_earlier, to_use_lower_bound)
+        if to_add_empty_tree:
+            anon_candidates.append(self._graph.empty_vertex.serialized_code.anon_trees[0])
 
         return self.__choose_best_anon_tree(user_anon_tree, anon_candidates, candidates_file_name)
 
@@ -158,7 +166,8 @@ class PathFinderV4(IPathFinder):
         return self.__find_closest_tree(user_anon_tree, user_canon_nodes_number, self.graph.goals_nodes_number_dict,
                                         candidates_file_name='goal_candidates',
                                         can_stop_earlier=self.goal_tree_stop_earlier,
-                                        to_use_lower_bound=self.graph_tree_lower_bound)
+                                        to_use_lower_bound=self.graph_tree_lower_bound,
+                                        to_add_empty_tree=self.to_add_empty_tree_to_goals)
 
     # Todo: speed it up due to sparse node_numbers dict
     @staticmethod
@@ -183,7 +192,7 @@ class PathFinderV4(IPathFinder):
         min_nodes_number = min(nodes_numbers_dict.keys())
 
         while len(candidates) < top_n and nodes_numbers_queue and \
-                (not can_stop_earlier or indent <= PathFinderV4.max_tree_nodes_number_indent):
+                (not can_stop_earlier or indent <= PathFinderV5.max_tree_nodes_number_indent):
             log.info(f'Start adding candidates.\n'
                      f'Candidates len is {len(candidates)}, queue have {len(nodes_numbers_queue)} nodes numbers')
             while nodes_numbers_queue:
@@ -232,7 +241,7 @@ class PathFinderV4(IPathFinder):
         """
         Returns True, if diffs from USER to GRAPH_VERTEX is more than {0} * (diffs from USER to GOAL)
         """
-        return diffs_from_user_to_graph_vertex > PathFinderV4.diffs_percent_far_from_graph * diffs_from_user_to_goal
+        return diffs_from_user_to_graph_vertex > PathFinderV5.diffs_percent_far_from_graph * diffs_from_user_to_goal
 
     @staticmethod
     def __is_rate_worse(user_rate: float, graph_vertex_rate: float) -> bool:
@@ -245,7 +254,7 @@ class PathFinderV4(IPathFinder):
         """
         Returns True, if diff from USER to GOAL is less than {0} * (diffs from EMPTY to GOAL)
         """
-        return diffs_from_user_to_goal <= PathFinderV4.diffs_percent_path_is_done * diffs_from_empty_to_goal
+        return diffs_from_user_to_goal <= PathFinderV5.diffs_percent_path_is_done * diffs_from_empty_to_goal
 
     # Returns should we go through graph or directly to the goal
     def __go_through_graph(self, user_anon: AnonTree, graph_anon: AnonTree, goal_anon: AnonTree) -> bool:

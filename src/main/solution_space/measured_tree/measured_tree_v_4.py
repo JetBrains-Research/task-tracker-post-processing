@@ -11,9 +11,9 @@ from src.main.solution_space.path_finder_test_system import doc_param
 from src.main.solution_space.measured_tree.measured_tree import IMeasuredTree
 
 
-class MeasuredTreeV3(IMeasuredTree):
-    _age_w = -0.15
-    _exp_w = -0.15
+class MeasuredTreeV4(IMeasuredTree):
+    _age_w = 0.15
+    _exp_w = 0.15
     _diffs_w = 0.5
     _users_w = -0.5
     _rollback_w = 0.6
@@ -54,6 +54,6 @@ class MeasuredTreeV3(IMeasuredTree):
         1. If o is not an instance of class, raise an error
         2. Compare distance
         """
-        if not isinstance(o, MeasuredTreeV3):
+        if not isinstance(o, MeasuredTreeV4):
             log_and_raise_error(f'The object {o} is not {self.__class__} class', log)
         return self._distance_to_user < o._distance_to_user

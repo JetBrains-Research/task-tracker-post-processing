@@ -29,6 +29,7 @@ from src.main.solution_space.solution_space_visualizer import SolutionSpaceVisua
 from src.main.util.consts import LOGGER_NAME, INT_EXPERIENCE, TEST_RESULT, TASK, EXTENSION
 from src.main.util.file_util import get_class_parent_package, create_file, add_suffix_to_file
 from src.main.solution_space.consts import TEST_SYSTEM_GRAPH, SOLUTION_SPACE_FOLDER, TEST_INPUT
+from src.main.util.log_util import log_and_raise_error
 
 log = logging.getLogger(LOGGER_NAME)
 
@@ -165,7 +166,10 @@ class TestSystem:
         profile = Profile(test_input[TEST_INPUT.AGE], test_input[TEST_INPUT.INT_EXPERIENCE])
         # If rate is None, it's okay, it will be found further
         rate = test_input.get(TEST_INPUT.RATE)
-        return self._hint_handler.create_user_trees(test_input[TEST_INPUT.SOURCE_CODE], profile, rate)
+        user_trees = self._hint_handler.create_user_trees(test_input[TEST_INPUT.SOURCE_CODE], profile, rate)
+        # Put found rate into test_input
+        test_input[TEST_INPUT.RATE] = user_trees[0].rate
+        return user_trees
 
     @staticmethod
     def __run_path_finder(path_finder: IPathFinder, user_anon_tree: AnonTree, user_canon_tree: ast.AST,
@@ -261,10 +265,16 @@ class TestSystem:
 
     @staticmethod
     def generate_all_test_inputs(ages: List[int], experiences: List[INT_EXPERIENCE],
-                                 fragments: List[str]) -> List[TestInput]:
-        return [{TEST_INPUT.SOURCE_CODE: f, TEST_INPUT.AGE: a,
-                 TEST_INPUT.RATE: TEST_RESULT.CORRECT_CODE.value,
-                 TEST_INPUT.INT_EXPERIENCE: e} for a, e, f in itertools.product(ages, experiences, fragments)]
+                                 fragments: List[str], rates: Optional[List[float]] = None) -> List[TestInput]:
+        # If no rates were given, we consider each fragment's rate as None, so they will be found later
+        if rates is None:
+            rates = [None] * len(fragments)
+        # If there are given rates, we must check rates length
+        elif len(fragments) != len(rates):
+            log_and_raise_error('Given rates don\'t match given fragments due to different lists length', log)
+        fragments_with_rates = [(fragments[i], rates[i]) for i in range(0, len(fragments))]
+        return [{TEST_INPUT.SOURCE_CODE: fr[0], TEST_INPUT.AGE: a, TEST_INPUT.RATE: fr[1],
+                 TEST_INPUT.INT_EXPERIENCE: e} for a, e, fr in itertools.product(ages, experiences, fragments_with_rates)]
 
     @staticmethod
     def get_fragments_for_task(task: TASK) -> List[str]:

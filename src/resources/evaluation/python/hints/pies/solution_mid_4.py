@@ -1,7 +1,4 @@
-a = int(input())
+# rate: 0
 b = int(input())
 n = int(input())
-rub = a * n
 cop = b * n
-while cop > 100:
-    rub += 1

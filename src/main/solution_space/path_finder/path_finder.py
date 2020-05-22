@@ -42,20 +42,24 @@ class IPathFinder(object, metaclass=ABCMeta):
                             candidates_file_id: Optional[int] = None) -> AnonTree:
         raise NotImplementedError
 
-    def write_candidates_info_to_file(self, candidates: List[AnonTree], file_prefix: str = 'candidates',
-                                      path: Optional[str] = None) -> str:
-        candidates_info = ''.join([f'Tree id: {candidate.id}\n{get_code_from_tree(candidate.tree)}\n\n\n'
+    def write_candidates_info_to_file(self, candidates: List[IMeasuredTree],
+                                      file_prefix: str = 'candidates', path: Optional[str] = None) -> str:
+        user_tree = candidates[0].user_tree
+        user_info = f'profile: {user_tree.code_info_list[0].user.profile},\n\n' \
+                    f'{get_code_from_tree(user_tree.tree)}\n\n\n\n\n'
+        candidates_info = ''.join([f'Tree id: {candidate.candidate_tree.id},\n'
+                                   f'Distance to user: {candidate.distance_to_user}\n'
+                                   f'Distance info: {candidate.distance_info}\n\n\n'
+                                   f'{get_code_from_tree(candidate.candidate_tree.tree)}\n\n\n'
                                    for candidate in candidates])
         if path is None:
             path = os.path.join(self.graph.graph_directory, 'candidates_info')
         file_path = os.path.join(path, f'{file_prefix}_info{consts.EXTENSION.TXT.value}')
-        create_file(candidates_info, file_path)
+        create_file(user_info + candidates_info, file_path)
         log.info(f'Candidates were written in the file {file_path}')
         return file_path
 
-    def get_file_prefix_by_user_tree(self, user_tree: AnonTree, file_id: Optional[int]) -> str:
-        res = str(file_id) if file_id else ''
-        return f'{res}_{user_tree.code_info_list[0].user.profile.age}' \
-               f'_{user_tree.code_info_list[0].user.profile.experience.get_str_experience().lower()}' \
-               f'_{self.__class__.__name__}' \
-               f'_{self.measured_vertex_subclass.__name__}'
+    def get_file_prefix_by_user_tree(self, file_id: int) -> str:
+        res = str(file_id)
+        return f'{res}_{self.__class__.__name__}_{self.measured_vertex_subclass.__name__}'
+
