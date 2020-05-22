@@ -95,14 +95,14 @@ function setAgeValue() {
 
 function setExperienceValue() {
     if (labelResult.experience) {
-        const element = document.getElementById(labelResult.experience);
-        element.checked = true;
+        const element = document.getElementById("experienceInput");
+        element.value = labelResult.experience;
     }
 }
 
 
 function getExperienceValue() {
-    const experienceValue = document.querySelector('input[name="' + EXPERIENCE + '"]:checked');
+    const experienceValue = document.getElementById("experienceInput");
     if (experienceValue) {
         labelResult.experience = experienceValue.value;
     }
@@ -136,6 +136,20 @@ function getReadableExperience(experience) {
     return lowerExperience.charAt(0).toUpperCase() + lowerExperience.slice(1)
 }
 
+// <p>Please, set your experience:</p>
+// <input type="radio" id="${LESS_THAN_HALF_YEAR}" name="${EXPERIENCE}" value="${LESS_THAN_HALF_YEAR}">
+// <label for="${LESS_THAN_HALF_YEAR}">${getReadableExperience(LESS_THAN_HALF_YEAR)}</label><br>
+// <input type="radio" id="${FROM_HALF_TO_ONE_YEAR}" name="${EXPERIENCE}" value="${FROM_HALF_TO_ONE_YEAR}">
+// <label for="${FROM_HALF_TO_ONE_YEAR}">${getReadableExperience(FROM_HALF_TO_ONE_YEAR)}</label><br>
+// <input type="radio" id="${FROM_ONE_TO_TWO_YEARS}" name="${EXPERIENCE}" value="${FROM_ONE_TO_TWO_YEARS}">
+// <label for="${FROM_ONE_TO_TWO_YEARS}">${getReadableExperience(FROM_ONE_TO_TWO_YEARS)}</label><br>
+// <input type="radio" id="${FROM_TWO_TO_FOUR_YEARS}" name="${EXPERIENCE}" value="${FROM_TWO_TO_FOUR_YEARS}">
+// <label for="${FROM_TWO_TO_FOUR_YEARS}">${getReadableExperience(FROM_TWO_TO_FOUR_YEARS)}</label><br>
+// <input type="radio" id="${FROM_FOUR_TO_SIX_YEARS}" name="${EXPERIENCE}" value="${FROM_FOUR_TO_SIX_YEARS}">
+// <label for="${FROM_FOUR_TO_SIX_YEARS}">${getReadableExperience(FROM_FOUR_TO_SIX_YEARS)}</label><br>
+// <input type="radio" id="${MORE_THAN_SIX}" name="${EXPERIENCE}" value="${MORE_THAN_SIX}">
+// <label for="${MORE_THAN_SIX}">${getReadableExperience(MORE_THAN_SIX)}</label><br>
+
 
 function drawItem(dataToLabel) {
     const labelForm = `
@@ -147,19 +161,9 @@ function drawItem(dataToLabel) {
         </div>
         
         <div>
-            <p>Please, set your experience:</p>
-            <input type="radio" id="${LESS_THAN_HALF_YEAR}" name="${EXPERIENCE}" value="${LESS_THAN_HALF_YEAR}">
-            <label for="${LESS_THAN_HALF_YEAR}">${getReadableExperience(LESS_THAN_HALF_YEAR)}</label><br>
-            <input type="radio" id="${FROM_HALF_TO_ONE_YEAR}" name="${EXPERIENCE}" value="${FROM_HALF_TO_ONE_YEAR}">
-            <label for="${FROM_HALF_TO_ONE_YEAR}">${getReadableExperience(FROM_HALF_TO_ONE_YEAR)}</label><br>
-            <input type="radio" id="${FROM_ONE_TO_TWO_YEARS}" name="${EXPERIENCE}" value="${FROM_ONE_TO_TWO_YEARS}">
-            <label for="${FROM_ONE_TO_TWO_YEARS}">${getReadableExperience(FROM_ONE_TO_TWO_YEARS)}</label><br>
-            <input type="radio" id="${FROM_TWO_TO_FOUR_YEARS}" name="${EXPERIENCE}" value="${FROM_TWO_TO_FOUR_YEARS}">
-            <label for="${FROM_TWO_TO_FOUR_YEARS}">${getReadableExperience(FROM_TWO_TO_FOUR_YEARS)}</label><br>
-            <input type="radio" id="${FROM_FOUR_TO_SIX_YEARS}" name="${EXPERIENCE}" value="${FROM_FOUR_TO_SIX_YEARS}">
-            <label for="${FROM_FOUR_TO_SIX_YEARS}">${getReadableExperience(FROM_FOUR_TO_SIX_YEARS)}</label><br>
-            <input type="radio" id="${MORE_THAN_SIX}" name="${EXPERIENCE}" value="${MORE_THAN_SIX}">
-            <label for="${MORE_THAN_SIX}">${getReadableExperience(MORE_THAN_SIX)}</label><br>
+            <label for="ageInput">Please, input your experience (number of years):</label>
+            <input type="number" id="experienceInput" name="${EXPERIENCE}"
+               min="1" max="100">
         </div>
          
     </div>
