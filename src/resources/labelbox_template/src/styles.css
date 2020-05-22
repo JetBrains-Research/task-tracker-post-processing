@@ -1,0 +1,89 @@
+:root {
+  --color-heading: #1973b8;
+  --header-height: 70px;
+  --border-clor: lightgray;
+}
+
+body {
+  height: 100vh;
+  background-image: url(images/bg-01.jpg);
+
+  font-family: 'PT Sans', Oxygen, Cantarell, Droid Sans, Helvetica Neue, Arial, Segoe UI, Roboto, sans-serif;
+  margin: 0;
+}
+
+.header {
+  height: var(--header-height);
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  background-color: white;
+}
+
+div#content {
+  max-width: 80%;
+  background: hsla(0, 0%, 100%, 0.8);
+  border-radius: 2px;
+  padding: 30px 40px 30px 40px;
+  margin: auto;
+  margin-top: 35px;
+  text-align: center;
+}
+
+.header h1 {
+  font-weight: 500;
+  color: var(--color-heading);
+  margin: 0 auto 0 20px;
+}
+
+p {
+  margin: 10px;
+}
+
+main {
+  position: relative;
+  padding: 15px;
+}
+
+#root-chart {
+  border: 1px solid var(--border-clor);
+  outline: none;
+  margin: 0 5px;
+  height: calc(100vh - var(--header-height));
+}
+
+#form {
+  display: grid;
+  align-items: center;
+}
+
+#form-image-container {
+  height: 250px;
+  width: 400px;
+  margin: auto;
+  text-align: center;
+}
+
+#form-image {
+  height: 100%;
+}
+
+button.form-buttons {
+  margin-right: 20px;
+  background-color: white;
+  border-radius: 5px;
+  padding: 5px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+#submit-button {
+  margin-top: 20px;
+}
+
+#quest-cont {
+  display: flex;
+  margin: auto;
+  text-align: center;
+}
