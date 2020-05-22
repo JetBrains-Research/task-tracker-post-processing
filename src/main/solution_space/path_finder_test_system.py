@@ -9,7 +9,6 @@ import inspect
 import pkgutil
 import importlib
 import itertools
-from enum import Enum
 from abc import ABCMeta
 from itertools import product
 from types import FunctionType
@@ -25,24 +24,13 @@ from src.main.solution_space.solution_graph import SolutionGraph
 from src.main.solution_space.path_finder.path_finder import IPathFinder
 from src.main.canonicalization.canonicalization import get_code_from_tree
 from src.main.solution_space.measured_tree.measured_tree import IMeasuredTree
-from src.main.solution_space.consts import TEST_SYSTEM_GRAPH, SOLUTION_SPACE_FOLDER, TEST_SYSTEM_FRAGMENTS
 from src.main.solution_space.solution_space_serializer import SolutionSpaceSerializer
 from src.main.solution_space.solution_space_visualizer import SolutionSpaceVisualizer
 from src.main.util.consts import LOGGER_NAME, INT_EXPERIENCE, TEST_RESULT, TASK, EXTENSION
-from src.main.util.file_util import get_class_parent_package, create_file, add_suffix_to_file, \
-    get_all_file_system_items, extension_file_condition, get_content_from_file
-from src.main.util.log_util import log_and_raise_error
+from src.main.util.file_util import get_class_parent_package, create_file, add_suffix_to_file
+from src.main.solution_space.consts import TEST_SYSTEM_GRAPH, SOLUTION_SPACE_FOLDER, TEST_INPUT
 
 log = logging.getLogger(LOGGER_NAME)
-
-
-# Todo: rewrite it
-# Make sure 'INT_EXPERIENCE' is the last one, otherwise columns in result table will be in wrong order
-class TEST_INPUT(Enum):
-    SOURCE_CODE = 'source'
-    RATE = 'rate'
-    AGE = 'age'
-    INT_EXPERIENCE = 'int_experience'
 
 
 Class = TypeVar('Class')
@@ -251,7 +239,6 @@ class TestSystem:
                 TestSystem.__print_output(f'{c.__name__} is skipped, reason: {c.skipped_reason}')
         return not_skipped_subclasses
 
-    # Todo: add ability to print output to file?
     @staticmethod
     def __print_output(output: Optional[Any],
                        file_name: str = 'path_finder_test_system_output',
@@ -263,7 +250,6 @@ class TestSystem:
                                     file_name)
                 extension = EXTENSION.HTML.value if isinstance(output, PrettyTable) else EXTENSION.TXT.value
                 path += extension
-                # todo: replace spaces to &nbsp;
                 create_file(TestSystem.__format_content(output), path)
 
     @staticmethod
@@ -274,18 +260,73 @@ class TestSystem:
         return content.replace('    ', '&nbsp;&nbsp;&nbsp;&nbsp;')
 
     @staticmethod
-    def generate_all_test_fragments(ages: List[int], experiences: List[INT_EXPERIENCE],
-                                    fragments: List[str]) -> List[Dict[TEST_INPUT, Any]]:
+    def generate_all_test_inputs(ages: List[int], experiences: List[INT_EXPERIENCE],
+                                 fragments: List[str]) -> List[TestInput]:
         return [{TEST_INPUT.SOURCE_CODE: f, TEST_INPUT.AGE: a,
                  TEST_INPUT.RATE: TEST_RESULT.CORRECT_CODE.value,
                  TEST_INPUT.INT_EXPERIENCE: e} for a, e, f in itertools.product(ages, experiences, fragments)]
 
     @staticmethod
-    def get_fragments_for_task(task: TASK, path: str = TEST_SYSTEM_FRAGMENTS) -> List[str]:
-        task_path = os.path.join(path, task.value)
-        if os.path.exists(task_path):
-            fragments = get_all_file_system_items(task_path, extension_file_condition(EXTENSION.PY))
-            return list(map(get_content_from_file, fragments))
-        else:
-            log_and_raise_error(f'No fragments found in path {task_path}', log, NotImplementedError)
+    def get_fragments_for_task(task: TASK) -> List[str]:
+        if task == TASK.PIES:
+            return ['a = int(input())',
+                    'a = int(input())\nb = int(input())',
+                    'a = int(input())\nb = int(input())\nn = int(input())',
+                    'a = input()\nb = input()',
+                    'a = 10\nb = 5\nn = 14\nprint(a * n,  b * n)',
+                    'a = int(input())\nb = int(input())\nn = int(input())\nrub = a * n\ncop = b * n',
+                    'a = int(input())\nb = int(input())\nn = int(input())\nrub = a * n\ncop = b * n\nprint(rub + " " + cop)',
+                    'a = int(input())\nb = int(input())\nn = int(input())\nrub = a * n\ncop = b * n\nprint(str(rub) + " " + str(cop))',
+                    'a = int(input())\nb = int(input())\nn = int(input())\nrub = a * n\nif b * n >= 100:\n    rub += b * n // 100',
+                    'a = int(input())\nb = int(input())\nn = int(input())\nrub = a * n\nif b * n <= 100:\n    rub += b * n // 100',
+                    'a = int(input())\nb = int(input())\nn = int(input())\nrub = a * n\nif b * n >= 100:\n    rub += b * n // 100\ncop = b * n\nprint(rub + " " + cop)',
+                    'a = int(input())\nb = int(input())\nn = int(input())\nrub = a * n\ncop = b * n\nwhile cop > 100:\n    rub += 1',
+                    'a = int(input())\nb = int(input())\nn = int(input())\nrub = a * n\ncop = b * n\nwhile cop > 100:\n    rub += 1\n    cop -= 100'
+                    ]
+        elif task == TASK.BRACKETS:
+            return ['s = input()',
+                    's = input()\nres = ""',
+                    's = input()\nres = ""\nif len(s) % 2 == 0:\n    print(s)',
+                    's = input()\nres = ""\nif len(s) % 2 == 0:\n    print(s)\nelse:\n    print(s)',
+                    's = input()\nres = ""\nif len(s) % 2 == 0:\n    for i in range(len(s) // 2):\n        res += s[i] + "("',
+                    's = input()\nres = ""\nif len(s) % 2 == 0:\n    for i in range(len(s) // 2):\n        res += s[i] + "("\n    for i in range(len(s) // 2 - 1, len(s)):\n        res += s[i] + ")"'
+                    ]
 
+        elif task == TASK.ZERO:
+            return [
+                'N = int(input())',
+                'N = int(input())\nfor i in range(N):\n    a = int(input())',
+                'N = int(input())\nfor i in range(N):\n    a = int(input())\n    if a == 0:\n        print("YES")',
+                'N = int(input())\nfor i in range(N):\n    a = int(input())\n    if a == 0:\n        print("YES")\nprint("NO")',
+                'N = int(input())\nc = 0\nfor i in range(N):\n    a = int(input())\n    if a == 0:\n        c += 1\nprint("NO")',
+                'N = int(input())\nc = 0\nfor i in range(N):\n    a = int(input())\n    if a == 0:\n        c += 1\nif c > 0:\n    print("YES")'
+                'N = int(input())\nfor i in range(N):\n    a = int(input())\n    if a == 0:\n        nprint("YES")',
+                'N = int(input())\nfor i in range(N):\n    a = int(input())\n    if a == 0:\n        nprint("YES")\nprint("NO")',
+                'N = int(input())\nc = 0\nfor i in range(N):\n    a = int(input())\n    if a == 0:\n        c += 1\nif c > 0:\n    print("YES")',
+                'N = int(input())\na = []\mfor i in range(N):\n    c = int(input())',
+                'N = int(input())\na = []\mfor i in range(N):\n    c = int(input())\n    a.append(c)',
+                'N = int(input())\na = []\mfor i in range(N):\n    c = int(input())\n    a.append(c)\na.sort()',
+                'N = int(input())\na = []\mfor i in range(N):\n    c = int(input())\n    a.append(c)\na.sort()\nif a[0] == 0:\n    print("YES")',
+                'N = int(input())\na = []\mfor i in range(N):\n    c = int(input())\n    a.append(c)\na.sort()\nif a[0] != 0:\n    print("NO")',
+                'N = int(input())\na = []\mfor i in range(N):\n    c = int(input())\n    a.append(c)\nm = min(a)\nif m == 0:\n    print("YES")',
+                'N = int(input())\na = []\mfor i in range(N):\n    c = int(input())\n    a.append(c)\nm = min(a)\nif m != 0:\n    print("NO")'
+            ]
+
+        elif task == TASK.MAX_3:
+            return [
+                'a = int(input())',
+                'a = int(input())\nb = int(input())',
+                'a = int(input())\nb = int(input())\nc = int(input())',
+                'a = int(input())\nb = int(input())\nc = int(input())\nif a > b and a > c:\n    print(a)',
+                'a = int(input())\nb = int(input())\nc = int(input())\nm = a',
+                'a = int(input())\nb = int(input())\nc = int(input())\nm = a\nif b > m:\n    m = b\nif c > m:\n    m = c',
+                'a = int(input())\nb = int(input())\nc = int(input())\nk = []',
+                'a = int(input())\nb = int(input())\nc = int(input())\nk = []\nk.append(a)',
+                'a = int(input())\nb = int(input())\nc = int(input())\nk = []\nk.append(a)\nk.append(b)',
+                'a = int(input())\nb = int(input())\nc = int(input())\nk = []\nk.append(a)\nk.append(b)\nk.append(c)',
+                'a = int(input())\nb = int(input())\nc = int(input())\nk = [a, b, c]',
+                'a = int(input())\nb = int(input())\nc = int(input())\nif a > b and a > c:\n    print(a)\nelif a == b == c:\n    print(a)',
+                'a = int(input())\nb = int(input())\nc = int(input())\nif a > b and a > c:\n    print(a)\nelif a == b == c:\n    print(a)\nelif b > a and b < c:\n    print(c)'
+            ]
+        else:
+            raise NotImplemented
