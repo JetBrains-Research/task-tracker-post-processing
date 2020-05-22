@@ -9,26 +9,29 @@ const labelResult = {
 
 const BAD = 'bad';
 const NORMAL = 'normal';
-const GOD = 'god';
+const GOOD = 'good';
 
-function checkToSetLabels() {
-    toSettedLabels = !(labelResult.anonTree == null || labelResult.applyDiffs == null);
-}
+const ANON_TREE_QUEST_NAME = 'anonTree';
+const APPLY_DIFFS_QUEST_NAME = 'applyDiffs';
 
-function setAnonTreeResult(result) {
-    labelResult.anonTree = result;
-    checkToSetLabels();
-}
 
-function setApplyDiffsResult(result) {
-    labelResult.applyDiffs = result;
-    checkToSetLabels();
-}
+// Get img from Labelbox and draw it
+Labelbox.currentAsset().subscribe((asset) => {
+    if (asset) {
+        drawItem(asset.data);
+    }
+});
 
+
+// Send answer to Labelbox
 function label() {
-    if (!toSettedLabels)
+    getAnonTreeValue();
+    getApplyDiffsValue();
+
+    if (!toSettedLabels) {
         alert('You should label anon tree and apply diffs');
-    return;
+        return;
+    }
 
     const jsonLabel = JSON.stringify(labelResult);
     Labelbox.setLabelForAsset(jsonLabel).then(() => {
@@ -36,59 +39,28 @@ function label() {
     });
 }
 
-Labelbox.currentAsset().subscribe((asset) => {
-    if (asset) {
-        drawItem(asset.data);
-    }
-});
 
-const defaultConfiguration = {
-    classifications: [
-        {
-            name: "model",
-            instructions: "Select the car model",
-            type: "radio",
-            options: [
-                {
-                    value: "model_s",
-                    label: "Tesla Model S"
-                },
-                {
-                    value: "model_3",
-                    label: "Tesla Model 3"
-                },
-                {
-                    value: "model_x",
-                    label: "Tesla Model X"
-                }
-            ]
-        },
-        {
-            name: "image_problems",
-            instructions: "Select all that apply",
-            type: "checklist",
-            options: [
-                {
-                    value: "blur",
-                    label: "Blurry"
-                },
-                {
-                    value: "saturated",
-                    label: "Over Saturated"
-                },
-                {
-                    value: "pixelated",
-                    label: "Pixelated"
-                }
-            ]
-        },
-        {
-            name: "description",
-            instructions: "Describe this image",
-            type: "text"
-        }
-    ]
-};
+function checkToSetLabels() {
+    toSettedLabels = !(labelResult.anonTree == null || labelResult.applyDiffs == null);
+}
+
+
+function getAnonTreeValue() {
+    const anonTreeValue = document.querySelector('input[name="' + ANON_TREE_QUEST_NAME + '"]:checked');
+    if (anonTreeValue) {
+        labelResult.anonTree = anonTreeValue.value;
+        checkToSetLabels();
+    }
+}
+
+function getApplyDiffsValue() {
+    const applyDiffsValue = document.querySelector('input[name="' + APPLY_DIFFS_QUEST_NAME + '"]:checked');
+    if (applyDiffsValue) {
+        labelResult.applyDiffs = applyDiffsValue.value;
+        checkToSetLabels();
+    }
+}
+
 
 function drawItem(dataToLabel) {
     const labelForm = `
@@ -96,17 +68,23 @@ function drawItem(dataToLabel) {
         <img id="form-image" src="${dataToLabel}"></img>
     </div>
     <div id="quest-cont">
-        <div style="margin-right: 50px;">
-          <p>Anon tree:</p>
-          <button class="form-buttons" onclick="setAnonTreeResult(BAD)">Bad Quality</button>
-          <button class="form-buttons" onclick="setAnonTreeResult(NORMAL)">Normal Quality</button>
-          <button class="form-buttons" onclick="setAnonTreeResult(GOD)">Good Quality</button>
+        <div id="anonTreeQuest">
+          <p>Anon tree (bla bla bla):</p>
+          <input type="radio" id="anonBad" name="${ANON_TREE_QUEST_NAME}" value="${BAD}">
+          <label for="anonBad">${BAD}</label><br>
+          <input type="radio" id="anonNormal" name="${ANON_TREE_QUEST_NAME}" value="${NORMAL}">
+          <label for="anonNormal">${NORMAL}</label><br>
+          <input type="radio" id="anonGood" name="${ANON_TREE_QUEST_NAME}" value="${GOOD}">
+          <label for="anonGood">${GOOD}</label>
         </div>
-        <div style="margin-left: 50px;">
-          <p>Apply diffs:</p>
-          <button class="form-buttons" onclick="setApplyDiffsResult(BAD)">Bad Quality</button>
-          <button class="form-buttons" onclick="setApplyDiffsResult(NORMAL)">Normal Quality</button>
-          <button class="form-buttons" onclick="setApplyDiffsResult(GOD)">Good Quality</button>
+        <div>
+          <p>Apply diffs (bla bla bla):</p>
+          <input type="radio" id="diffsBad" name="${APPLY_DIFFS_QUEST_NAME}" value="${BAD}">
+          <label for="diffsBad">${BAD}</label><br>
+          <input type="radio" id="diffsNormal" name="${APPLY_DIFFS_QUEST_NAME}" value="${NORMAL}">
+          <label for="diffsNormal">${NORMAL}</label><br>
+          <input type="radio" id="diffsGood" name="${APPLY_DIFFS_QUEST_NAME}" value="${GOOD}">
+          <label for="diffsGood">${GOOD}</label>
         </div>
     </div>
     <div>

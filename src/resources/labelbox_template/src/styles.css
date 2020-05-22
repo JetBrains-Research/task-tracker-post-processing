@@ -18,7 +18,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  background-color: white;
+  background-color: hsla(0, 0%, 100%, 0.95);
 }
 
 div#content {
@@ -28,7 +28,6 @@ div#content {
   padding: 30px 40px 30px 40px;
   margin: auto;
   margin-top: 35px;
-  text-align: center;
 }
 
 .header h1 {
@@ -37,53 +36,24 @@ div#content {
   margin: 0 auto 0 20px;
 }
 
-p {
-  margin: 10px;
-}
-
-main {
-  position: relative;
-  padding: 15px;
-}
-
-#root-chart {
-  border: 1px solid var(--border-clor);
-  outline: none;
-  margin: 0 5px;
-  height: calc(100vh - var(--header-height));
-}
-
-#form {
-  display: grid;
-  align-items: center;
-}
 
 #form-image-container {
-  height: 250px;
-  width: 400px;
-  margin: auto;
-  text-align: center;
+  max-width: 100%;
+  max-height: 300px;
 }
 
 #form-image {
-  height: 100%;
+  max-width: 100%;
+  max-height: 300px;
 }
 
-button.form-buttons {
-  margin-right: 20px;
-  background-color: white;
-  border-radius: 5px;
-  padding: 5px;
-  padding-left: 15px;
-  padding-right: 15px;
+p {
+  margin-bottom: 10px;
 }
 
-#submit-button {
-  margin-top: 20px;
-}
-
-#quest-cont {
-  display: flex;
-  margin: auto;
-  text-align: center;
+button#submit-button {
+  margin-top: 15px;
+  background: white;
+  border-radius: 3px;
+  padding: 5px 15px 5px 15px;
 }
