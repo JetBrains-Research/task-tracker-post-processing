@@ -18,6 +18,19 @@ def get_nodes_number_in_ast(tree: ast.AST) -> int:
         count += 1
     return count
 
+def get_ast_structure(tree: ast.AST) -> Tuple[int, int, int]:
+    if_count = 0
+    for_count = 0
+    while_conut = 0
+    for node in ast.walk(tree):
+        if isinstance(node, ast.If):
+            if_count += 1
+        elif isinstance(node, ast.For):
+            for_count += 1
+        elif isinstance(node, ast.While):
+            while_conut += 1
+    return (if_count, for_count, while_conut)
+
 
 #################### Kelly Rivers part ####################
 

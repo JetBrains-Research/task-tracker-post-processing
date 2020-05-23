@@ -7,10 +7,10 @@ from typing import Tuple
 from src.main.util.log_util import log_and_raise_error
 from src.main.solution_space.serialized_code import AnonTree
 from src.main.solution_space.path_finder.path_finder import log
-from src.main.solution_space.path_finder_test_system import doc_param
+from src.main.solution_space.path_finder_test_system import doc_param, skip
 from src.main.solution_space.measured_tree.measured_tree import IMeasuredTree
 
-
+@skip(reason='wrong weights for age and experience')
 class MeasuredTreeV3(IMeasuredTree):
     _age_w = -0.15
     _exp_w = -0.15

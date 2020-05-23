@@ -25,20 +25,22 @@ class Vertex(IdCounter, PrettyString):
             else SerializedCode(code, code_info, graph.graph_directory, graph.file_prefix)
         self._vertex_type = vertex_type
         super().__init__(to_store_items=True)
-        self.__init_nodes_numbers()
+        self.__init_nodes_numbers_and_structure()
 
-    def __init_nodes_numbers(self):
+    def __init_nodes_numbers_and_structure(self) -> None:
         if self._serialized_code is not None:
             canon_nodes_number = get_nodes_number_in_ast(self._serialized_code.canon_tree)
             self._graph.canon_nodes_number_dict[canon_nodes_number].append(self.id)
             for i, a_t in enumerate(self._serialized_code.anon_trees):
-                anon_nodes_number = get_nodes_number_in_ast(a_t.tree)
-                self._graph.anon_nodes_number_dict[anon_nodes_number].append((self.id, i))
+                self._graph.anon_nodes_number_dict[a_t.nodes_number].append((self.id, i))
+                self._graph.anon_structure_dict[a_t.ast_structure].append((self.id, i))
 
-    def add_anon_tree_nodes_number(self) -> None:
+    def add_anon_nodes_number_and_structure(self) -> None:
         last_index = len(self.serialized_code.anon_trees) - 1
-        anon_nodes_number = get_nodes_number_in_ast(self.serialized_code.anon_trees[last_index].tree)
-        self.graph.anon_nodes_number_dict[anon_nodes_number].append((self.id, last_index))
+        anon_tree = self.serialized_code.anon_trees[last_index]
+        self.graph.anon_nodes_number_dict[anon_tree.nodes_number].append((self.id, last_index))
+        self.graph.anon_structure_dict[anon_tree.ast_structure].append((self.id, last_index))
+
 
     @property
     def graph(self) -> sg.SolutionGraph:

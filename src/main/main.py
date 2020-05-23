@@ -122,6 +122,7 @@ def __construct_graph(path: str, task: TASK = TASK.PIES, to_construct: str = 'Tr
         gv = SolutionSpaceVisualizer(graph)
         graph_visualization_path = gv.visualize_graph(name_prefix=f'{task.value}')
         log.info(f'Graph visualization path: {graph_visualization_path}')
+        print(f'Graph visualization path: {graph_visualization_path}')
 
     return graph
 

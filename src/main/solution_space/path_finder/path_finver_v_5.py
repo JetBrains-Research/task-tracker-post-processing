@@ -12,7 +12,6 @@ from src.main.solution_space.path_finder_test_system import doc_param, skip
 from src.main.solution_space.path_finder.path_finder import IPathFinder, log
 from src.main.canonicalization.canonicalization import get_code_from_tree, get_nodes_number_in_ast
 
-@skip(reason='Testing new measured vertex with fixed bugs')
 class PathFinderV5(IPathFinder):
     candidates_file_prefix: Optional[str] = None
 
@@ -125,15 +124,14 @@ class PathFinderV5(IPathFinder):
         vertices_ids = self.__get_top_n_candidates(self.canon_top_n, user_canon_nodes_number, canon_nodes_numbers_dict,
                                                    can_stop_earlier, to_use_lower_bound)
         log.info(f'CANON_TOP_N vertices ids are {vertices_ids}')
-        if len(vertices_ids) == 0:
-            return None
+        anon_candidates = []
 
-        vertices: List[Vertex] = [Vertex.get_item_by_id(id) for id in vertices_ids]
-
-        anon_trees = sum([v.serialized_code.anon_trees for v in vertices], [])
-        anon_nodes_numbers_dict = self.__get_items_nodes_number_dict(anon_trees)
-        anon_candidates = self.__get_top_n_candidates(self.anon_top_n, user_anon_tree.nodes_number, anon_nodes_numbers_dict,
-                                                      can_stop_earlier, to_use_lower_bound)
+        if len(vertices_ids) != 0:
+            vertices: List[Vertex] = [Vertex.get_item_by_id(id) for id in vertices_ids]
+            anon_trees = sum([v.serialized_code.anon_trees for v in vertices], [])
+            anon_nodes_numbers_dict = self.__get_items_nodes_number_dict(anon_trees)
+            anon_candidates = self.__get_top_n_candidates(self.anon_top_n, user_anon_tree.nodes_number, anon_nodes_numbers_dict,
+                                                          can_stop_earlier, to_use_lower_bound)
         if to_add_empty_tree:
             anon_candidates.append(self._graph.empty_vertex.serialized_code.anon_trees[0])
 

@@ -12,11 +12,11 @@ from src.main.solution_space.measured_tree.measured_tree import IMeasuredTree
 
 
 class MeasuredTreeV4(IMeasuredTree):
-    _age_w = 0.15
-    _exp_w = 0.15
-    _diffs_w = 0.5
-    _users_w = -0.5
-    _rollback_w = 0.6
+    _age_w = 0.3
+    _exp_w = 0.3
+    _diffs_w = 0.6
+    _users_w = -0.2
+    _rollback_w = 2.0
     _rate_w = -0.3
 
     @doc_param(_diffs_w, _users_w, _rate_w, _rollback_w, _age_w, _exp_w)
@@ -31,11 +31,11 @@ class MeasuredTreeV4(IMeasuredTree):
         6. (if possible) abs difference between exp, weight: {5}
         """
         distance = self._diffs_w * self._diffs_number\
-                   + self._users_w * self.users_count\
+                   + self._users_w * self.users_count / 43 \
                    + self._rate_w * (self.user_tree.rate - self.candidate_tree.rate)\
                    + self._rollback_w * self.rollback_probability
         distance_info = f'(diffs: {self._diffs_w} * {self._diffs_number}) + ' \
-                        f'(users: {self._users_w} * {self.users_count}) + ' \
+                        f'(users: {self._users_w} * {self.users_count} / 43) + ' \
                         f'(rate: {self._rate_w} * ({self.user_tree.rate} - {self.candidate_tree.rate})) + ' \
                         f'(rollback: {self._rollback_w} * {self.rollback_probability})'
 

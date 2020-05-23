@@ -71,6 +71,7 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
         self.canon_nodes_number_dict = defaultdict(get_empty_list)
         self.anon_nodes_number_dict = defaultdict(get_empty_list)
         self.goals_nodes_number_dict = defaultdict(get_empty_list)
+        self.anon_structure_dict = defaultdict(get_empty_list)
 
         self._goals_median = None
 
@@ -125,7 +126,7 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
     @goals_median.getter
     def goals_median(self) -> int:
         if self._goals_median is None:
-            log_and_raise_error('Goal median is not found yet, you should call find_goal_median first', log)
+            log_and_raise_error('Goal median is not found yet, you should call find_goals_median first', log)
         return self._goals_median
 
     def find_goals_median(self) -> None:
@@ -187,7 +188,7 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
         if vertex:
             anon_tree_file = vertex.serialized_code.add_anon_tree(code.anon_tree, code.rate, code_info)
             if anon_tree_file:
-                vertex.add_anon_tree_nodes_number()
+                vertex.add_anon_nodes_number_and_structure()
             return vertex
         log.info(f'Not found any existing vertex for code: {str(code)}, creating a new one')
         return self.create_vertex(code, code_info)

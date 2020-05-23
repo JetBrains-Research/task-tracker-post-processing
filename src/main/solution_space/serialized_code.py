@@ -5,7 +5,7 @@ from __future__ import annotations
 import os
 import ast
 import logging
-from typing import List, Callable, Optional, Set
+from typing import List, Callable, Optional, Set, Tuple
 
 from src.main.util import consts
 from src.main.util.consts import TASK, DEFAULT_VALUE
@@ -20,7 +20,7 @@ from src.main.util.helper_classes.pretty_string import PrettyString
 from src.main.util.file_util import create_file, is_file, add_suffix_to_file
 from src.main.splitting.tasks_tests_handler import check_tasks, create_in_and_out_dict
 from src.main.canonicalization.canonicalization import are_asts_equal, get_code_from_tree, get_trees, \
-    get_nodes_number_in_ast
+    get_nodes_number_in_ast, get_ast_structure
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -97,11 +97,16 @@ class AnonTree(IdCounter, PrettyString, SerializedTree):
         PrettyString.__init__(self)
         SerializedTree.__init__(self, file_path, anon_tree, self.id, to_create_file)
         self._nodes_number = get_nodes_number_in_ast(anon_tree)
+        self._ast_structure = get_ast_structure(anon_tree)
         self._next_anon_trees_ids = []
 
     @property
     def nodes_number(self) -> int:
         return self._nodes_number
+
+    @property
+    def ast_structure(self) -> Tuple[int, int, int]:
+        return self._ast_structure
 
     @property
     def next_anon_trees_ids(self) -> List[int]:
@@ -180,6 +185,7 @@ class AnonTree(IdCounter, PrettyString, SerializedTree):
     def __str__(self):
         return f'Anon_tree: {get_code_from_tree(self._tree)}\n' \
                f'Code info:\n{list(map(str, self._code_info_list))}\n' \
+               f'Structure: {self._ast_structure}' \
 
 
 
