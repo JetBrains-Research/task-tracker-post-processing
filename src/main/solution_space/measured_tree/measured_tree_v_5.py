@@ -4,14 +4,14 @@ from __future__ import annotations
 
 from typing import Tuple
 
-from src.main.canonicalization.diffs.gumtree import GumTreeDiff
 from src.main.util.log_util import log_and_raise_error
 from src.main.solution_space.serialized_code import AnonTree
+from src.main.canonicalization.diffs.gumtree import GumTreeDiff
 from src.main.solution_space.path_finder.path_finder import log
-from src.main.solution_space.path_finder_test_system import doc_param
+from src.main.solution_space.path_finder_test_system import doc_param, skip
 from src.main.solution_space.measured_tree.measured_tree import IMeasuredTree
 
-
+@skip('')
 class MeasuredTreeV5(IMeasuredTree):
     _age_w = 0.15
     _exp_w = 0.15
@@ -39,6 +39,7 @@ class MeasuredTreeV5(IMeasuredTree):
         6. (if possible) abs difference between age, weight: {4}
         7. (if possible) abs difference between exp, weight: {5}
         """
+        # TODO: 43 is the number of users in the whole graph. We should definitely rewrite it and make better
         distance = self._diffs_w * self._diffs_number\
                    + self._users_w * self.users_count / 43 \
                    + self._rate_w * (self.user_tree.rate - self.candidate_tree.rate)\

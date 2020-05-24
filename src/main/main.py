@@ -9,12 +9,12 @@ from typing import Union, Type
 
 import pandas as pd
 
+from src.main.solution_space.evaluation.evaluation import Evaluation
 
 sys.path.append('.')
 sys.path.append('../..')
 from src.main.util import consts
 from src.main.solution_space.hint import HintHandler
-from src.main.solution_space.evaluation import Evaluation
 from src.main.splitting.tasks_tests_handler import run_tests
 from src.main.solution_space.data_classes import User, CodeInfo
 from src.main.preprocessing.preprocessing import preprocess_data
@@ -161,7 +161,7 @@ def __run_test_system(path: str, task: TASK = TASK.PIES, to_construct: str = 'Tr
 def __run_evaluation(path: str) -> None:
     graph = SolutionSpaceSerializer.deserialize(path)
     evaluation = Evaluation(graph)
-    evaluation.evaluate(EVALUATION_TYPE.HINTS)
+    evaluation.evaluate(20)
 
 
 def main() -> None:

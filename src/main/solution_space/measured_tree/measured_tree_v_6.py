@@ -15,16 +15,21 @@ from src.main.solution_space.measured_tree.measured_tree import IMeasuredTree
 class MeasuredTreeV6(IMeasuredTree):
     _age_w = 0.15
     _exp_w = 0.15
-    _diffs_w = 0.4
-    _users_w = -0.8
-    _rollback_w = 0.3
+    _diffs_w = 0.6
+    _users_w = -2.0
+    _rollback_w = 3.0
     _rate_w = 0.3
     _structure_w = 0.5
+
+    # def _IMeasuredTree__init_diffs_number_and_rollback_probability(self) -> None:
+    #     self._diffs_number, delete_edits = GumTreeDiff \
+    #         .get_diffs_and_delete_edits_numbers(self.user_tree.tree_file, self.candidate_tree.tree_file)
+    #     self._rollback_probability = delete_edits
 
     def _IMeasuredTree__init_diffs_number_and_rollback_probability(self) -> None:
         self._diffs_number, delete_edits = GumTreeDiff \
             .get_diffs_and_delete_edits_numbers(self.user_tree.tree_file, self.candidate_tree.tree_file)
-        self._rollback_probability = delete_edits
+        self._rollback_probability = 0 if self._diffs_number == 0 else delete_edits / self._diffs_number
 
     @doc_param(_diffs_w, _users_w, _rate_w, _rollback_w, _age_w, _exp_w, _structure_w)
     def _IMeasuredTree__calculate_distance_to_user(self) -> Tuple[float, str]:
@@ -38,6 +43,7 @@ class MeasuredTreeV6(IMeasuredTree):
         6. (if possible) abs difference between age, weight: {4}
         7. (if possible) abs difference between exp, weight: {5}
         """
+        # TODO: 43 is the number of users in the whole graph. We should definitely rewrite it and make better
         distance = self._diffs_w * self._diffs_number\
                    + self._users_w * self.users_count / 43 \
                    + self._rate_w * (self.user_tree.rate - self.candidate_tree.rate)\
@@ -57,7 +63,7 @@ class MeasuredTreeV6(IMeasuredTree):
             distance += self._exp_w * abs(self.user_tree.experience_median - self.candidate_tree.experience_median)
             distance_info += f' + (exp: {self._exp_w} * |{self.user_tree.experience_median} - {self.candidate_tree.experience_median}|)'
 
-        return (distance, distance_info)
+        return distance, distance_info
 
     def __lt__(self, o: object):
         """

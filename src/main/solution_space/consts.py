@@ -18,7 +18,7 @@ class TEST_INPUT(Enum):
     SOURCE_CODE = 'source'
     RATE = 'rate'
     AGE = 'age'
-    INT_EXPERIENCE = 'int_experience'
+    INT_EXPERIENCE = 'experience'
 
 
 class EVALUATION_TYPE(Enum):

@@ -18,18 +18,18 @@ from typing import Type, TypeVar, List, Dict, Any, Tuple, Optional
 from prettytable import PrettyTable, ALL
 
 from src.main.solution_space.hint import HintHandler
+from src.main.util.log_util import log_and_raise_error
 from src.main.solution_space.data_classes import Profile
 from src.main.solution_space.serialized_code import AnonTree
 from src.main.solution_space.solution_graph import SolutionGraph
 from src.main.solution_space.path_finder.path_finder import IPathFinder
 from src.main.canonicalization.canonicalization import get_code_from_tree
+from src.main.util.consts import LOGGER_NAME, INT_EXPERIENCE, TASK, EXTENSION
 from src.main.solution_space.measured_tree.measured_tree import IMeasuredTree
 from src.main.solution_space.solution_space_serializer import SolutionSpaceSerializer
 from src.main.solution_space.solution_space_visualizer import SolutionSpaceVisualizer
-from src.main.util.consts import LOGGER_NAME, INT_EXPERIENCE, TEST_RESULT, TASK, EXTENSION
 from src.main.util.file_util import get_class_parent_package, create_file, add_suffix_to_file
 from src.main.solution_space.consts import TEST_SYSTEM_GRAPH, SOLUTION_SPACE_FOLDER, TEST_INPUT
-from src.main.util.log_util import log_and_raise_error
 
 log = logging.getLogger(LOGGER_NAME)
 
@@ -143,8 +143,12 @@ class TestSystem:
         for i, test_input in enumerate(self._test_inputs):
             log.info(f"Running path finders on {i} test input")
             user_anon_tree, user_canon_tree = self.__create_user_trees(test_input)
-            row = [i] + [test_input[key] for key in TEST_INPUT if key != TEST_INPUT.INT_EXPERIENCE] \
-                  + [test_input[TEST_INPUT.INT_EXPERIENCE].get_str_experience()]
+            # TODO: REWRITE IT!
+            row = [i] +\
+                  [f'{test_input[TEST_INPUT.SOURCE_CODE]}\n\nanon tree:\n{get_code_from_tree(user_anon_tree.tree)}'] + \
+                  [test_input[TEST_INPUT.RATE]] + \
+                  [test_input[TEST_INPUT.AGE]] +\
+                  [test_input[TEST_INPUT.INT_EXPERIENCE].get_short_str()]
             for path_finder in path_finders:
                 time, next_anon_tree = self.__run_path_finder(path_finder, user_anon_tree, user_canon_tree, i)
                 hint = HintHandler.get_hint_by_anon_tree(test_input[TEST_INPUT.SOURCE_CODE], next_anon_tree)
