@@ -18,6 +18,7 @@ class IMeasuredTree(object, metaclass=ABCMeta):
         self._users_count = len(candidate_tree.get_unique_users())
         self._distance_to_user, self._distance_info = self.__calculate_distance_to_user()
 
+    @abstractmethod
     def __init_diffs_number_and_rollback_probability(self) -> None:
         self._diffs_number, delete_edits = GumTreeDiff \
             .get_diffs_and_delete_edits_numbers(self.user_tree.tree_file, self.candidate_tree.tree_file)

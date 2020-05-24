@@ -1,8 +1,7 @@
-# rate: 0.25
+# rate: 0
 a = int(input())
 b = int(input())
 n = int(input())
-if b * n < 100:
-    print(a * n, b * n)
-else:
-    print()
+rub = a * n + (b * n) % 100
+cop = b * n // 100
+print(rub, cop)

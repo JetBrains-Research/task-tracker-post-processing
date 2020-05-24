@@ -1,2 +1,3 @@
+# rate: 0
 s = input()
-res = ""
+l = len(s)

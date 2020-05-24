@@ -33,13 +33,13 @@ class Vertex(IdCounter, PrettyString):
             self._graph.canon_nodes_number_dict[canon_nodes_number].append(self.id)
             for i, a_t in enumerate(self._serialized_code.anon_trees):
                 self._graph.anon_nodes_number_dict[a_t.nodes_number].append((self.id, i))
-                self._graph.anon_structure_dict[a_t.ast_structure].append((self.id, i))
+                self._graph.anon_structure_dict[a_t.ast_structure].append(a_t.id)
 
     def add_anon_nodes_number_and_structure(self) -> None:
         last_index = len(self.serialized_code.anon_trees) - 1
         anon_tree = self.serialized_code.anon_trees[last_index]
         self.graph.anon_nodes_number_dict[anon_tree.nodes_number].append((self.id, last_index))
-        self.graph.anon_structure_dict[anon_tree.ast_structure].append((self.id, last_index))
+        self.graph.anon_structure_dict[anon_tree.ast_structure].append(anon_tree.id)
 
 
     @property

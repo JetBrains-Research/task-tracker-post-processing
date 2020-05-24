@@ -17,7 +17,7 @@ from src.main.util.helper_classes.id_counter import IdCounter
 from src.main.solution_space.data_classes import CodeInfo, User
 from src.main.util.language_util import get_extension_by_language
 from src.main.util.helper_classes.pretty_string import PrettyString
-from src.main.util.file_util import create_file, is_file, add_suffix_to_file
+from src.main.util.file_util import create_file, is_file, add_suffix_to_file, remove_directory, create_directory
 from src.main.splitting.tasks_tests_handler import check_tasks, create_in_and_out_dict
 from src.main.canonicalization.canonicalization import are_asts_equal, get_code_from_tree, get_trees, \
     get_nodes_number_in_ast, get_ast_structure
@@ -27,10 +27,13 @@ log = logging.getLogger(consts.LOGGER_NAME)
 
 class ISerializedObject:
     def __init__(self, folder_with_files: str, file_prefix: str,
-                 language: consts.LANGUAGE = consts.LANGUAGE.PYTHON):
+                 language: consts.LANGUAGE = consts.LANGUAGE.PYTHON, to_delete_prev_folder: bool = True):
         self._folder_with_files = folder_with_files
         self._file_prefix = file_prefix
         self._language = language
+        if to_delete_prev_folder:
+            remove_directory(self._folder_with_files)
+        create_directory(self._folder_with_files)
 
     @property
     def folder_with_files(self) -> str:
@@ -164,6 +167,13 @@ class AnonTree(IdCounter, PrettyString, SerializedTree):
 
     def get_unique_users(self) -> Set[User]:
         return set([code_info.user for code_info in self._code_info_list])
+
+    def has_empty_structure(self) -> bool:
+        return self._ast_structure == (0, 0, 0)
+
+    # Todo: add tests?
+    def get_structure_dif(self, anon_tree: AnonTree) -> int:
+        return sum([abs(s_1 - s_2) for s_1, s_2 in zip(self.ast_structure, anon_tree.ast_structure)])
 
     @staticmethod
     def __find_median(default_value: int, all_values: List[int]) -> int:

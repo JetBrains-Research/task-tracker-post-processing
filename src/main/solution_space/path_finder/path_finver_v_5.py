@@ -12,11 +12,13 @@ from src.main.solution_space.path_finder_test_system import doc_param, skip
 from src.main.solution_space.path_finder.path_finder import IPathFinder, log
 from src.main.canonicalization.canonicalization import get_code_from_tree, get_nodes_number_in_ast
 
+
 class PathFinderV5(IPathFinder):
     candidates_file_prefix: Optional[str] = None
 
-    canon_top_n = 5
-    anon_top_n = 10
+    canon_top_n = 15
+    anon_top_n = 5
+    same_structure_top_n = 7
 
     max_tree_nodes_number_indent = 5
     max_goal_nodes_number_indent = 15
@@ -25,7 +27,7 @@ class PathFinderV5(IPathFinder):
     diffs_percent_path_is_done = 0.2
     diffs_percent_far_from_graph = 0.2
 
-    graph_tree_stop_earlier = True
+    graph_tree_stop_earlier = False
     graph_tree_lower_bound = True
 
     goal_tree_stop_earlier = False
@@ -33,6 +35,9 @@ class PathFinderV5(IPathFinder):
 
     to_add_empty_tree_to_goals = False
     to_add_empty_tree_to_graph = True
+
+    to_add_same_structure_trees_to_goals = True
+    to_add_same_structure_trees_to_graph = True
 
     @doc_param(graph_tree_stop_earlier, graph_tree_lower_bound, goal_tree_stop_earlier, goal_tree_lower_bound,
                to_add_empty_tree_to_graph, to_add_empty_tree_to_goals)
@@ -68,11 +73,12 @@ class PathFinderV5(IPathFinder):
                                                    to_use_lower_bound=self.graph_tree_lower_bound,
                                                    can_stop_earlier=self.graph_tree_stop_earlier,
                                                    candidates_file_name='graph_candidates',
-                                                   to_add_empty_tree = self.to_add_empty_tree_to_graph)
+                                                   to_add_empty_tree=self.to_add_empty_tree_to_graph,
+                                                   to_add_same_structure_trees=self.to_add_same_structure_trees_to_graph)
         # We can have graph_anon_tree = None
         if graph_anon_tree:
             log.info(f'Chosen anon tree in graph:\n{get_code_from_tree(graph_anon_tree.tree)}')
-            if not self._is_close_to_goals(graph_anon_tree):
+            if not self.__is_close_to_goals(graph_anon_tree):
                 log.info(f'The most of path is not done. Go through graph')
                 return graph_anon_tree
 
@@ -112,8 +118,9 @@ class PathFinderV5(IPathFinder):
                             canon_nodes_numbers_dict: Dict[int, list],
                             candidates_file_name: str,
                             can_stop_earlier: bool = True,
-                            to_use_lower_bound=True,
-                            to_add_empty_tree=False) -> Optional[AnonTree]:
+                            to_use_lower_bound: bool = True,
+                            to_add_empty_tree: bool = False,
+                            to_add_same_structure_trees: bool = False) -> Optional[AnonTree]:
         """
         1. Consider each vertex with similar nodes number as candidate (chose at least TOP_N_CANON = {1} candidates)
         2. Choose at least TOP_N_ANON = {0} anon trees from canon candidates, add empty tree if needed,
@@ -130,15 +137,29 @@ class PathFinderV5(IPathFinder):
             vertices: List[Vertex] = [Vertex.get_item_by_id(id) for id in vertices_ids]
             anon_trees = sum([v.serialized_code.anon_trees for v in vertices], [])
             anon_nodes_numbers_dict = self.__get_items_nodes_number_dict(anon_trees)
-            anon_candidates = self.__get_top_n_candidates(self.anon_top_n, user_anon_tree.nodes_number, anon_nodes_numbers_dict,
+            anon_candidates = self.__get_top_n_candidates(self.anon_top_n, user_anon_tree.nodes_number,
+                                                          anon_nodes_numbers_dict,
                                                           can_stop_earlier, to_use_lower_bound)
         if to_add_empty_tree:
             anon_candidates.append(self._graph.empty_vertex.serialized_code.anon_trees[0])
 
+        if to_add_same_structure_trees:
+            anon_candidates += self.__get_same_structure_trees(user_anon_tree, self.same_structure_top_n)
+
         return self.__choose_best_anon_tree(user_anon_tree, anon_candidates, candidates_file_name)
 
+    def __get_same_structure_trees(self, user_anon_tree: AnonTree, trees_number: int) -> List[AnonTree]:
+        same_structure_anon_trees = [AnonTree.get_item_by_id(a_id) for a_id in
+                                     self.graph.anon_structure_dict[user_anon_tree.ast_structure]]
+        same_structure_anon_trees_dict = self.__get_items_nodes_number_dict(same_structure_anon_trees)
+        same_structure_candidates = self.__get_top_n_candidates(trees_number, user_anon_tree.nodes_number,
+                                                                same_structure_anon_trees_dict,
+                                                                can_stop_earlier=False, to_use_lower_bound=True)
+        log.info(f'Found trees with same structure: {[c.id for c in same_structure_candidates]}')
+        return same_structure_candidates
+
     @doc_param(nodes_number_percent_close_to_goals, max_goal_nodes_number_indent)
-    def _is_close_to_goals(self, closest_tree: AnonTree) -> bool:
+    def __is_close_to_goals(self, closest_tree: AnonTree) -> bool:
         """
         1. Use only nodes number info.
         2. Returns True if percent of goals with similar nodes number (with indent no more than {1}) is more than {0}
@@ -165,7 +186,8 @@ class PathFinderV5(IPathFinder):
                                         candidates_file_name='goal_candidates',
                                         can_stop_earlier=self.goal_tree_stop_earlier,
                                         to_use_lower_bound=self.graph_tree_lower_bound,
-                                        to_add_empty_tree=self.to_add_empty_tree_to_goals)
+                                        to_add_empty_tree=self.to_add_empty_tree_to_goals,
+                                        to_add_same_structure_trees=self.to_add_same_structure_trees_to_goals)
 
     # Todo: speed it up due to sparse node_numbers dict
     @staticmethod
@@ -186,6 +208,10 @@ class PathFinderV5(IPathFinder):
         candidates = []
         nodes_numbers_queue = collections.deque([nodes_number])
         indent = 0
+        if not nodes_numbers_dict:
+            log.info(f'Given nodes_number_dict is empty, finish getting top_n candidates, top_n is {top_n},'
+                     f' candidates len is {len(candidates)}')
+            return candidates
         max_nodes_number = max(nodes_numbers_dict.keys())
         min_nodes_number = min(nodes_numbers_dict.keys())
 
@@ -223,11 +249,14 @@ class PathFinderV5(IPathFinder):
         2. Return the first candidate
         """
         log.info(f'Number of candidates: {len(anon_trees)}\nCandidates ids are {([a_t.id for a_t in anon_trees])}')
+        anon_trees = list(set(anon_trees))
+        log.info(f'Number of candidates: {len(anon_trees)}\nCandidates ids are {([a_t.id for a_t in anon_trees])}')
+
         if len(anon_trees) == 0:
             return None
         candidates = list(map(lambda anon_tree: self.get_measured_tree(user_anon_tree, anon_tree), anon_trees))
 
-        self.write_candidates_info_to_file(candidates,  f'{self.candidates_file_prefix}_{candidates_file_name}')
+        self.write_candidates_info_to_file(candidates, f'{self.candidates_file_prefix}_{candidates_file_name}')
 
         candidates.sort()
         log.info(f'The best vertex id is {candidates[0].candidate_tree.id}')

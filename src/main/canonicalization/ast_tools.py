@@ -29,7 +29,7 @@ def get_ast_structure(tree: ast.AST) -> Tuple[int, int, int]:
             for_count += 1
         elif isinstance(node, ast.While):
             while_conut += 1
-    return (if_count, for_count, while_conut)
+    return if_count, for_count, while_conut
 
 
 #################### Kelly Rivers part ####################

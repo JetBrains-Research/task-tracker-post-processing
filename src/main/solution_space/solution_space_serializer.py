@@ -4,6 +4,7 @@ import os
 import logging
 from typing import Optional
 
+from src.main.solution_space.serialized_code import AnonTree
 from src.main.util.log_util import log_and_raise_error
 from src.main.util.helper_classes.id_counter import IdCounter
 from src.main.solution_space.solution_graph import SolutionGraph
@@ -23,8 +24,8 @@ class SolutionSpaceSerializer:
     # any IdCounter objects, that don't belong to graph, their id will be in IdCounter, but the objects themselves won't
     # be serialized. So it can probably cause an error while getting item by id.
     @staticmethod
-    def serialize(graph: SolutionGraph, serialized_file_prefix: str = 'serialized_graph') -> str:
-        graph_name = f'graph_{graph.id}_{serialized_file_prefix}'
+    def serialize(graph: SolutionGraph, serialized_file_suffix: str = 'serialized_graph') -> str:
+        graph_name = f'graph_{graph.id}_{serialized_file_suffix}'
         graph_path = os.path.join(SERIALIZED_GRAPH_PATH, f'{graph_name}{EXTENSION.PICKLE.value}')
         objects_to_serialize = (graph, IdCounter._instances, IdCounter._id_item_dict_by_class)
         serialize_data_and_write_to_file(graph_path, objects_to_serialize)
@@ -51,3 +52,8 @@ class SolutionSpaceSerializer:
             log_and_raise_error(f'OSError during the deserialized graph process. '
                                 f'Serialized graph path is {serialized_graph_path}', log, OSError)
 
+#
+# graph = SolutionSpaceSerializer.deserialize('/home/elena/workspaces/python/codetracker-data/src/resources/serialized_graph/graph_0_pies.pickle')
+# print(graph.task)
+# for k, v in graph.anon_structure_dict.items():
+#     print(k, len(v), v)

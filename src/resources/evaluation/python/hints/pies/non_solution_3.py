@@ -1,9 +1,11 @@
 # rate: 0
 n = int(input())
-factorial_list = []
-while n > 0:
-    factorial_list.append(1)
-    factorial_list = [n*f for f in factorial_list]
-    n -= 1
-print(factorial_list)
+fib = []
+while len(fib) < n:
+    if len(fib) < 2:
+        fib.append(1)
+    else:
+        fib.append(fib[-2] + fib[-1])
+print(fib)
+
 

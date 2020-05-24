@@ -1,5 +1,4 @@
-g_0 = int(input())
-g_1 = int(input())
-g_2 = int(input())
-if (g_1 > g_0):
-    print(g_0 * g_1)
+g2 = int(input())
+g1 = int(input())
+g0 = int(input())
+print((g2 * g0), (g1 * g0))

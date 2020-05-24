@@ -114,7 +114,7 @@ def __construct_graph(path: str, task: TASK = TASK.PIES, to_construct: str = 'Tr
         log.info('Graph was deserialized')
 
     if to_serialize == 'True':
-        path = SolutionSpaceSerializer.serialize(graph)
+        path = SolutionSpaceSerializer.serialize(graph, serialized_file_suffix=f'{task.value}')
         log.info(f'Serialized graph path: {path}')
         print(f'Serialized graph path: {path}')
 
