@@ -1,15 +1,14 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import logging
-from enum import Enum
 from typing import Optional, Tuple, List, Callable
 
-from src.main.evaluation.util import HINT_SIZE, HINT_STRUCTURE, HINT_TO_SOLUTION_DISTANCE, HINT_STEP, HINT_QUALITY, \
-    APPLY_DIFFS_QUALITY, HINT_SOLUTION
 from src.main.util import consts
 from src.main.util.consts import UTF_ENCODING
-from src.main.util.file_util import get_content_from_file
 from src.main.util.log_util import log_and_raise_error
+from src.main.util.file_util import get_content_from_file
+from src.main.evaluation.util import HINT_SIZE, HINT_STRUCTURE, HINT_TO_SOLUTION_DISTANCE, HINT_STEP, HINT_QUALITY, \
+    APPLY_DIFFS_QUALITY, HINT_SOLUTION
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -230,7 +229,7 @@ class EvaluationStatisticsHandler:
         good, bad = self.__get_apply_diffs_quality_statistics()
         self.__print_one_statistics(good, bad, 'Correct VS incorrect diffs applying:')
 
-        good, bad = self.__get_apply_diffs_quality_statistics()
+        good, bad = self.__get_approximate_structure_with_good_hint_statistics()
         self.__print_one_statistics(good, bad, 'Hint structure: SIMILAR\nHint to solution distance: APPROXIMATE\n'
                                                'Hint step: NORMAL\nHint quality: {GOOD, NORMAL} VS others, which '
                                                'are the task solution')
@@ -253,5 +252,3 @@ class EvaluationStatisticsHandler:
         self.__print_one_statistics(good, bad, 'Hint structure: SIMILAR\nHint to solution distance: APPROXIMATE\n'
                                                'Hint step: {BIG, NORMAL}\nHint quality: {GOOD, NORMAL} '
                                                'VS others, which are the task solution')
-
-
