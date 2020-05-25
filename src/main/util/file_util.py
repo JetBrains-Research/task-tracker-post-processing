@@ -129,8 +129,8 @@ def get_original_file_name_with_extension(hashed_file_name: str, extension: EXTE
     return get_original_file_name(hashed_file_name) + extension
 
 
-def get_content_from_file(file: str) -> str:
-    with open(file, 'r', encoding=ISO_ENCODING) as f:
+def get_content_from_file(file: str, encoding: str = ISO_ENCODING) -> str:
+    with open(file, 'r', encoding=encoding) as f:
         return f.read().rstrip('\n')
 
 
