@@ -1,7 +1,7 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import os
-from typing import Set, Dict, List
+from typing import List
 
 from src.main.util import consts
 from src.main.splitting.task_checker import check_call_safely
@@ -12,8 +12,10 @@ from src.main.canonicalization.canonicalization import get_code_from_tree
 
 # It is the class for creating a solution graph representation by using graphviz library
 class SolutionSpaceVisualizer:
-    def __init__(self, graph: SolutionGraph):
+    def __init__(self, graph: SolutionGraph, to_include_end_vertex: bool = True, to_color: bool = True):
         self._graph = graph
+        self._to_include_end_vertex = to_include_end_vertex
+        self._to_color = to_color
 
     @staticmethod
     def __get_vertex_info(vertex: Vertex) -> str:
@@ -23,15 +25,24 @@ class SolutionSpaceVisualizer:
             info += f'Anon code {i}:\n{get_code_from_tree(a_t.tree)}\n'
         return info
 
+    @staticmethod
+    def __get_color_by_rate(rate: float) -> str:
+        hue = str((rate) * 0.33)
+        return f'"{hue} 0.7 1.0"'
+
     def __get_labels(self) -> str:
         labels = ''
         for vertex in self._graph.get_traversal():
             if self._graph.is_empty_vertex(vertex):
                 labels += f'{vertex.id} [label="Vertex {vertex.id}. Empty vertex"]\n'
             else:
-                labels += f'{vertex.id} [label="Vertex {vertex.id}"]\n'
-
-        labels += f'{self._graph.end_vertex.id} [label="Vertex {self._graph.end_vertex.id}. End vertex"]\n'
+                if self._to_color:
+                    labels += f'{vertex.id} [label="Vertex {vertex.id}", style=filled,' \
+                              f' fillcolor={self.__get_color_by_rate(vertex.serialized_code.rate)}]\n'
+                else:
+                    labels += f'{vertex.id} [label="Vertex {vertex.id}"]\n'
+        if self._to_include_end_vertex:
+            labels += f'{self._graph.end_vertex.id} [label="Vertex {self._graph.end_vertex.id}. End vertex"]\n'
         return labels
 
     def __create_vertices_content(self, folder_path: str) -> None:
@@ -49,8 +60,11 @@ class SolutionSpaceVisualizer:
     def __get_graph_structure(self) -> str:
         structure = ''
         for vertex in self._graph.get_traversal():
-            if vertex.children:
-                structure += f'{vertex.id} -> {self.__class__.__get_vertices_list(vertex.children)}\n'
+            vertex_children = vertex.children
+            if not self._to_include_end_vertex and self._graph.end_vertex in vertex_children:
+                vertex_children.remove(self._graph.end_vertex)
+            if vertex_children:
+                structure += f'{vertex.id} -> {self.__get_vertices_list(vertex_children)}\n'
         return structure
 
     # We want to get a graph representation in the dot format for the graphviz library

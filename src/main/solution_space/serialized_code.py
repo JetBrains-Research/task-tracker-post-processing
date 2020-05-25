@@ -249,6 +249,10 @@ class SerializedCode(IdCounter, PrettyString, ISerializedObject):
     def language(self) -> consts.LANGUAGE:
         return self._language
 
+    @property
+    def rate(self) -> float:
+        return self._rate
+
     def is_full(self) -> bool:
         return self._rate == consts.TEST_RESULT.FULL_SOLUTION.value
 

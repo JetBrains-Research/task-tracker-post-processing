@@ -65,8 +65,8 @@ def __configure_args() -> None:
     # Algo args
     parser.add_argument('--construct', nargs='?', const=True, default=True,
                         help='to construct graph. It the argument is False, graph will be deserialized')
-    parser.add_argument('--serialize', nargs='?', const=False, default=False, help='to serialize graph')
-    parser.add_argument('--viz', nargs='?', const=True, default=True, help='to visualize graph')
+    parser.add_argument('--serialize', nargs='?', const='False', default='False', help='to serialize graph')
+    parser.add_argument('--viz', nargs='?', const='True', default='True', help='to visualize graph')
     parser.add_argument('--task', nargs='?', const=TASK.PIES.value, default=TASK.PIES.value, help='task for the algo')
 
 
@@ -100,30 +100,33 @@ def __get_task(task: str) -> TASK:
         raise ValueError(message)
 
 
-def __construct_graph(path: str, task: TASK = TASK.PIES, to_construct: bool = True,
-               to_serialize: bool = True, to_visualize: bool = True) -> SolutionGraph:
-    if to_construct:
+def __construct_graph(path: str, task: TASK = TASK.PIES, to_construct: str = 'True',
+               to_serialize: str = 'True', to_visualize: str = 'True') -> SolutionGraph:
+    if to_construct == 'True':
         graph = construct_solution_graph(path, task)
         log.info('Graph was constructed')
+        print('Graph was constructed')
     else:
         graph = SolutionSpaceSerializer.deserialize(path)
         log.info('Graph was deserialized')
+        print('Graph was deserialized')
 
-    if to_serialize:
+    if to_serialize == 'True':
         path = SolutionSpaceSerializer.serialize(graph)
         log.info(f'Serialized graph path: {path}')
         print(f'Serialized graph path: {path}')
 
-    if to_visualize:
+    if to_visualize == 'True':
         gv = SolutionSpaceVisualizer(graph)
         graph_visualization_path = gv.visualize_graph(name_prefix=f'{task.value}')
         log.info(f'Graph visualization path: {graph_visualization_path}')
+        print(f'Graph visualization path: {graph_visualization_path}')
 
     return graph
 
 
-def __run_algo(path: str, algo_level: ALGO_LEVEL, task: TASK = TASK.PIES, to_construct: bool = True,
-               to_serialize: bool = True, to_visualize: bool = True) -> None:
+def __run_algo(path: str, algo_level: ALGO_LEVEL, task: TASK = TASK.PIES, to_construct: str = 'True',
+               to_serialize: str = 'True', to_visualize: str = 'True') -> None:
     graph = __construct_graph(path, task, to_construct, to_serialize, to_visualize)
 
     if algo_level == ALGO_LEVEL.CONSTRUCT:
@@ -138,8 +141,8 @@ def __run_algo(path: str, algo_level: ALGO_LEVEL, task: TASK = TASK.PIES, to_con
         # print(hint.recommended_code)
 
 
-def __run_test_system(path: str, task: TASK = TASK.PIES, to_construct: bool = True,
-               to_serialize: bool = True, to_visualize: bool = True) -> None:
+def __run_test_system(path: str, task: TASK = TASK.PIES, to_construct: str = 'True',
+               to_serialize: str = 'True', to_visualize: str = 'True') -> None:
     graph = __construct_graph(path, task, to_construct, to_serialize, to_visualize)
 
     # It's possible not to include TEST_INPUT.RATE in dict, in this case it will be found by
@@ -158,10 +161,12 @@ def main() -> None:
     __configure_args()
     args = parser.parse_args()
     path = args.path[0]
-    if not os.path.exists(args.path[0]):
+    if not os.path.exists(path):
         log_and_raise_error(f'Path {path} does not exist', log)
-    # Todo: do we want to add a slash if it's a file with serialized graph?
-    path = add_slash(path)
+
+    if os.path.isdir(path):
+        path = add_slash(path)
+
     action = ACTIONS_TYPE(args.action[0])
 
     if action == ACTIONS_TYPE.PREPROCESSING:
