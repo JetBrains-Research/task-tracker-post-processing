@@ -41,10 +41,10 @@ class TestEvaluationUtil:
         for i in range(max_n_for_true):
             # If for max_n is True then for max_n in [1, max_n] is True too
             with subtests.test(msg=f'Exception was raised for list {bool_list} and min_number_of_true = {i}'):
-                assert contains_at_least_n_true(bool_list, min_number_of_true=i)
+                assert contains_at_least_n_true(*bool_list, min_number_of_true=i)
 
         for i in range(max_n_for_true + 1, MAX_N):
             # If for max_n is True then for n in [max_n + 1, inf) is False
             with subtests.test(msg=f'Exception was raised for list {bool_list} and min_number_of_true = {i}'):
-                assert not contains_at_least_n_true(bool_list, min_number_of_true=i)
+                assert not contains_at_least_n_true(*bool_list, min_number_of_true=i)
 
