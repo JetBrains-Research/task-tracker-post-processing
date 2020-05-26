@@ -15,11 +15,12 @@ from src.main.solution_space.measured_tree.measured_tree import IMeasuredTree
 class MeasuredTreeV6(IMeasuredTree):
     _age_w = 0.15
     _exp_w = 0.15
-    _diffs_w = 0.6
-    _users_w = -2.0
-    _rollback_w = 3.0
+    _diffs_w = 0.5
+    _users_w = -0.5
+    _rollback_w = 4.0
     _rate_w = 0.3
-    _structure_w = 0.5
+    _structure_w = 6.5
+    # _structure_w = 7.0
 
     # def _IMeasuredTree__init_diffs_number_and_rollback_probability(self) -> None:
     #     self._diffs_number, delete_edits = GumTreeDiff \
@@ -45,12 +46,12 @@ class MeasuredTreeV6(IMeasuredTree):
         """
         # TODO: 43 is the number of users in the whole graph. We should definitely rewrite it and make better
         distance = self._diffs_w * self._diffs_number\
-                   + self._users_w * self.users_count / 43 \
+                   + self._users_w * self.users_count / 16 \
                    + self._rate_w * (self.user_tree.rate - self.candidate_tree.rate)\
                    + self._rollback_w * self.rollback_probability\
                    + self._structure_w * (self.user_tree.get_structure_dif(self.candidate_tree))
         distance_info = f'(diffs: {self._diffs_w} * {self._diffs_number}) + ' \
-                        f'(users: {self._users_w} * {self.users_count} / 43) + ' \
+                        f'(users: {self._users_w} * {self.users_count} / 16) + ' \
                         f'(rate: {self._rate_w} * ({self.user_tree.rate} - {self.candidate_tree.rate})) + ' \
                         f'(rollback: {self._rollback_w} * {self.rollback_probability}) + ' \
                         f'(structure: {self._structure_w} * {self.user_tree.get_structure_dif(self.candidate_tree)})'

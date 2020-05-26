@@ -161,7 +161,7 @@ def __run_test_system(path: str, task: TASK = TASK.PIES, to_construct: str = 'Tr
 def __run_evaluation(path: str) -> None:
     graph = SolutionSpaceSerializer.deserialize(path)
     evaluation = Evaluation(graph)
-    evaluation.evaluate(20)
+    evaluation.evaluate(100)
 
 
 def main() -> None:
