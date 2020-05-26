@@ -142,7 +142,7 @@ class TestSystem:
 
         for i, test_input in enumerate(self._test_inputs):
             log.info(f"Running path finders on {i} test input")
-            user_anon_tree, user_canon_tree = self.__create_user_trees(test_input)
+            user_anon_tree, user_canon_tree = self.create_user_trees(test_input)
             # TODO: REWRITE IT!
             row = [i] +\
                   [f'{test_input[TEST_INPUT.SOURCE_CODE]}\n\nanon tree:\n{get_code_from_tree(user_anon_tree.tree)}'] + \
@@ -166,7 +166,7 @@ class TestSystem:
             path_finders.append(pf_subclass(self._graph, mv_subclass))
         return path_finders
 
-    def __create_user_trees(self, test_input: TestInput) -> Tuple[AnonTree, ast.AST]:
+    def create_user_trees(self, test_input: TestInput) -> Tuple[AnonTree, ast.AST]:
         profile = Profile(test_input[TEST_INPUT.AGE], test_input[TEST_INPUT.INT_EXPERIENCE])
         # If rate is None, it's okay, it will be found further
         rate = test_input.get(TEST_INPUT.RATE)

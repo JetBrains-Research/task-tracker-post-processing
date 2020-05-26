@@ -88,7 +88,9 @@ def drop_same_anon_trees(df: pd.DataFrame) -> pd.DataFrame:
 
 
 # Run it after finding all pseudo solutions
-def sample_n_correct_test_inputs(path: str, n: int,
+def sample_n_correct_test_inputs(path: str,
+                                 n: int,
+                                 specific_indices: Optional[List[int]] = None,
                                  to_include_full_solutions: bool = False,
                                  rate: Optional[float] = None,
                                  to_include_same_anon_fragments: bool = False) -> List[TestInput]:
@@ -109,14 +111,19 @@ def sample_n_correct_test_inputs(path: str, n: int,
     if not to_include_same_anon_fragments:
         merged_df = drop_same_anon_trees(merged_df)
 
-    try:
-        n_random_rows = merged_df.sample(n)
-    except ValueError:
-        log.info(f'There is less than {n} fragments')
-        n_random_rows = merged_df
+    if specific_indices:
+        n_random_rows = merged_df[merged_df.index.isin(specific_indices)]
+    else:
+        try:
+            n_random_rows = merged_df.sample(n)
+        except ValueError:
+            log.info(f'There is less than {n} fragments')
+            n_random_rows = merged_df
 
     test_inputs = []
     for i, row in n_random_rows.iterrows():
+        print(f'{i}, ', end='')
+        log.info(f'random row {i}')
         test_inputs.append({TEST_INPUT.SOURCE_CODE: row[CODE_TRACKER_COLUMN.FRAGMENT.value].rstrip('\n'),
                             TEST_INPUT.RATE: row[CODE_TRACKER_COLUMN.TESTS_RESULTS.value],
                             TEST_INPUT.AGE: row[CODE_TRACKER_COLUMN.AGE.value],
@@ -124,8 +131,9 @@ def sample_n_correct_test_inputs(path: str, n: int,
                                 __get_enum_or_default(INT_EXPERIENCE,
                                                       row[CODE_TRACKER_COLUMN.INT_EXPERIENCE.value],
                                                       DEFAULT_VALUE.INT_EXPERIENCE)})
-
+    print('\n')
     return test_inputs
 
 
 configure_logger(to_delete_previous_logs=True)
+# 199, 191, 201, 154, 56, 183, 133, 161, 145, 65, 218, 157, 75, 24, 25, 111, 175, 88, 162, 174, 36, 71, 156, 163, 108, 188, 17, 192, 14, 142, 147, 112, 204, 128, 225, 1, 180, 165, 62, 190, 70, 78, 238, 79, 241, 124, 248, 55, 10, 146,

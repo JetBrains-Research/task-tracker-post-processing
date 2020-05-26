@@ -2,17 +2,19 @@
 
 from __future__ import annotations
 
+import sys
 from typing import Tuple
 
+from src.main.canonicalization.canonicalization import are_asts_equal
 from src.main.canonicalization.diffs.gumtree import GumTreeDiff
 from src.main.util.log_util import log_and_raise_error
 from src.main.solution_space.serialized_code import AnonTree
 from src.main.solution_space.path_finder.path_finder import log
-from src.main.solution_space.path_finder_test_system import doc_param, skip
+from src.main.solution_space.path_finder_test_system import doc_param
 from src.main.solution_space.measured_tree.measured_tree import IMeasuredTree
 
-@skip('')
-class MeasuredTreeV6(IMeasuredTree):
+
+class MeasuredTreeV7(IMeasuredTree):
     _age_w = 0.15
     _exp_w = 0.15
     _diffs_w = 0.5
@@ -28,9 +30,15 @@ class MeasuredTreeV6(IMeasuredTree):
     #     self._rollback_probability = delete_edits
 
     def _IMeasuredTree__init_diffs_number_and_rollback_probability(self) -> None:
-        self._diffs_number, delete_edits = GumTreeDiff \
-            .get_diffs_and_delete_edits_numbers(self.user_tree.tree_file, self.candidate_tree.tree_file)
-        self._rollback_probability = 0 if self._diffs_number == 0 else delete_edits / self._diffs_number
+        if are_asts_equal(self._user_tree.tree, self._candidate_tree.tree):
+            self._diffs_number = 9223372036854775807
+            self._rollback_probability = 0
+        else:
+            diffs_number, delete_edits = GumTreeDiff \
+                .get_diffs_and_delete_edits_numbers(self.user_tree.tree_file, self.candidate_tree.tree_file)
+            # TODO: use infinite
+            self._diffs_number = diffs_number if diffs_number != 0 else 9223372036854775807
+            self._rollback_probability = 0 if diffs_number == 0 else delete_edits / diffs_number
 
     @doc_param(_diffs_w, _users_w, _rate_w, _rollback_w, _age_w, _exp_w, _structure_w)
     def _IMeasuredTree__calculate_distance_to_user(self) -> Tuple[float, str]:
@@ -46,12 +54,12 @@ class MeasuredTreeV6(IMeasuredTree):
         """
         # TODO: 43 is the number of users in the whole graph. We should definitely rewrite it and make better
         distance = self._diffs_w * self._diffs_number\
-                   + self._users_w * self.users_count / 16 \
+                   + self._users_w * self.users_count / 43 \
                    + self._rate_w * (self.user_tree.rate - self.candidate_tree.rate)\
                    + self._rollback_w * self.rollback_probability\
                    + self._structure_w * (self.user_tree.get_structure_dif(self.candidate_tree))
         distance_info = f'(diffs: {self._diffs_w} * {self._diffs_number}) + ' \
-                        f'(users: {self._users_w} * {self.users_count} / 16) + ' \
+                        f'(users: {self._users_w} * {self.users_count} / 43) + ' \
                         f'(rate: {self._rate_w} * ({self.user_tree.rate} - {self.candidate_tree.rate})) + ' \
                         f'(rollback: {self._rollback_w} * {self.rollback_probability}) + ' \
                         f'(structure: {self._structure_w} * {self.user_tree.get_structure_dif(self.candidate_tree)})'
@@ -71,6 +79,6 @@ class MeasuredTreeV6(IMeasuredTree):
         1. If o is not an instance of class, raise an error
         2. Compare distance
         """
-        if not isinstance(o, MeasuredTreeV6):
+        if not isinstance(o, MeasuredTreeV7):
             log_and_raise_error(f'The object {o} is not {self.__class__} class', log)
         return self._distance_to_user < o._distance_to_user
