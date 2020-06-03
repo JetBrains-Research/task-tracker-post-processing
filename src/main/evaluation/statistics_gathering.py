@@ -68,7 +68,29 @@ class EvaluationStatisticsHandler:
     table_separator = '\t'
     labeled_symbol = '-'
     statistics_printer_separator = '________________________________________________'
+    number_of_lines_for_not_solution_piece_part = 4
+    number_of_categories_for_solution_piece_part = 5
 
+    # The file must have the following structure:
+    # fragment_id
+    # IS NOT SOLUTION:
+    # \t\t{HINT_SIZE values}
+    # \n\n
+    # IS SOLUTION:
+    # \t\t{HINT_STRUCTURE values}
+    # \n\n
+    # \t\t{HINT_TO_SOLUTION_DISTANCE values}
+    # \n\n
+    # \t\t{HINT_STEP values}
+    # \n\n
+    # \t\t{HINT_QUALITY values}
+    # \n\n
+    # \t\t{QUALITY_AFTER_DIFFS_APPLIED values}
+    # \n\n
+    #
+    # Note: each category must have labeled_symbol to label the necessary option
+    # (including IS NOT SOLUTION and IS SOLUTION)
+    # Each value from {} must be on the new line
     def __init__(self, file: str, max_number_of_fragments: int = 100):
         self._fragments = self.__parse_file_with_statistics(file, max_number_of_fragments=max_number_of_fragments)
 
@@ -80,7 +102,7 @@ class EvaluationStatisticsHandler:
     def __handle_not_solution_piece(self, not_solution_piece: str) -> Tuple[str, bool, Optional[HINT_SIZE]]:
         log.info(f'Start handling not solution piece of statistics')
         not_solution_piece = not_solution_piece.lstrip(self.separator).split(self.separator)
-        if len(not_solution_piece) != 4:
+        if len(not_solution_piece) != self.number_of_lines_for_not_solution_piece_part:
             log_and_raise_error(f'Not solution piece in statistics has an incorrect structure', log)
         fragment_id = not_solution_piece[0].rstrip('.')
         is_not_solution = self.labeled_symbol in not_solution_piece[1]
@@ -94,24 +116,22 @@ class EvaluationStatisticsHandler:
                                                                     Optional[HINT_QUALITY],
                                                                     Optional[QUALITY_AFTER_DIFFS_APPLIED]]:
         log.info(f'Start handling solution piece of statistics')
-        solution_piece = solution_piece.split(self.separator * 2)
-        if len(solution_piece) != 5:
+        solution_info, statistics_info = solution_piece.split(self.separator, 1)
+        statistics_info = statistics_info.split(self.separator * 2)
+        if len(statistics_info) != self.number_of_categories_for_solution_piece_part:
             log_and_raise_error(f'Solution piece in statistics has an incorrect structure', log)
 
-        # handle hint structure
-        hint_structure_info = solution_piece[0].split(self.separator + self.table_separator)
-        is_solution = self.labeled_symbol in hint_structure_info[0]
-        hint_structure = HINT_STRUCTURE.get_hint_structure(*self.__does_contain_labeled_symbol(hint_structure_info[1:]))
-
-        converters = [HINT_TO_SOLUTION_DISTANCE.get_hint_to_solution_distance,
+        is_solution = self.labeled_symbol in solution_info
+        converters = [HINT_STRUCTURE.get_hint_structure,
+                      HINT_TO_SOLUTION_DISTANCE.get_hint_to_solution_distance,
                       HINT_STEP.get_hint_step,
                       HINT_QUALITY.get_hint_quality,
                       QUALITY_AFTER_DIFFS_APPLIED.get_apply_diffs_quality]
         parsed_info = []
-        for index, piece in enumerate(solution_piece[1:]):
+        for index, piece in enumerate(statistics_info):
             info = piece.split(self.separator + self.table_separator)
             parsed_info.append(converters[index](*self.__does_contain_labeled_symbol(info)))
-        return (is_solution, hint_structure, *parsed_info)
+        return (is_solution, *parsed_info)
 
     def __get_statistics_from_fragment(self, fragment: str) -> FragmentStatistics:
         log.info(f'Start parsing the fragment\n{fragment}')
@@ -158,81 +178,74 @@ class EvaluationStatisticsHandler:
     def __get_approximate_structure_with_good_hint_statistics(self) -> Tuple[int, int]:
         """
             HINT_STRUCTURE: SIMILAR
-            HINT_TO_SOLUTION_DISTANCE: APPROXIMATE
+            HINT_TO_SOLUTION_DISTANCE: CLOSE
             HINT_STEP: NORMAL
             HINT_QUALITY: {GOOD, NORMAL}
             vs others with HINT_SOLUTION: SOLUTION
         """
         return self.__get_statistics_for_solutions_by_condition(lambda f:
                                                                 f.hint_structure == HINT_STRUCTURE.SIMILAR and
-                                                                f.hint_to_solution_distance == HINT_TO_SOLUTION_DISTANCE.APPROXIMATE and
+                                                                f.hint_to_solution_distance == HINT_TO_SOLUTION_DISTANCE.CLOSE and
                                                                 f.hint_step == HINT_STEP.NORMAL and
-                                                                (
-                                                                            f.hint_quality == HINT_QUALITY.GOOD or f.hint_quality == HINT_QUALITY.NORMAL))
+                                                                (f.hint_quality == HINT_QUALITY.GOOD or f.hint_quality == HINT_QUALITY.NORMAL))
 
     # Todo: rename
     def __get_dissimilar_structure_with_good_hint_statistics(self) -> Tuple[int, int]:
         """
             HINT_STRUCTURE: DISSIMILAR
-            HINT_TO_SOLUTION_DISTANCE: APPROXIMATE
+            HINT_TO_SOLUTION_DISTANCE: CLOSE
             HINT_STEP: NORMAL
             HINT_QUALITY: {GOOD, NORMAL}
             vs others with HINT_SOLUTION: SOLUTION
         """
         return self.__get_statistics_for_solutions_by_condition(lambda f:
                                                                 f.hint_structure == HINT_STRUCTURE.DISSIMILAR and
-                                                                f.hint_to_solution_distance == HINT_TO_SOLUTION_DISTANCE.APPROXIMATE and
+                                                                f.hint_to_solution_distance == HINT_TO_SOLUTION_DISTANCE.CLOSE and
                                                                 f.hint_step == HINT_STEP.NORMAL and
-                                                                (
-                                                                            f.hint_quality == HINT_QUALITY.GOOD or f.hint_quality == HINT_QUALITY.NORMAL))
+                                                                (f.hint_quality == HINT_QUALITY.GOOD or f.hint_quality == HINT_QUALITY.NORMAL))
 
     # Todo: rename
     def __get_approximate_structure_with_different_steps_statistics(self) -> Tuple[int, int]:
         """
             HINT_STRUCTURE: SIMILAR
-            HINT_TO_SOLUTION_DISTANCE: APPROXIMATE
+            HINT_TO_SOLUTION_DISTANCE: CLOSE
             HINT_STEP: {BIG, SMALL}
             HINT_QUALITY: {GOOD, NORMAL}
             vs others with HINT_SOLUTION: SOLUTION
         """
         return self.__get_statistics_for_solutions_by_condition(lambda f:
                                                                 f.hint_structure == HINT_STRUCTURE.SIMILAR and
-                                                                f.hint_to_solution_distance == HINT_TO_SOLUTION_DISTANCE.APPROXIMATE and
-                                                                (
-                                                                            f.hint_step == HINT_STEP.BIG or f.hint_step == HINT_STEP.SMALL) and
-                                                                (
-                                                                            f.hint_quality == HINT_QUALITY.GOOD or f.hint_quality == HINT_QUALITY.NORMAL))
+                                                                f.hint_to_solution_distance == HINT_TO_SOLUTION_DISTANCE.CLOSE and
+                                                                (f.hint_step == HINT_STEP.BIG or f.hint_step == HINT_STEP.SMALL) and
+                                                                (f.hint_quality == HINT_QUALITY.GOOD or f.hint_quality == HINT_QUALITY.NORMAL))
 
     # Todo: rename
     def __get_approximate_structure_without_steps_statistics(self) -> Tuple[int, int]:
         """
             HINT_STRUCTURE: SIMILAR
-            HINT_TO_SOLUTION_DISTANCE: APPROXIMATE
+            HINT_TO_SOLUTION_DISTANCE: CLOSE
             HINT_QUALITY: {GOOD, NORMAL}
             vs others with HINT_SOLUTION: SOLUTION
         """
         return self.__get_statistics_for_solutions_by_condition(lambda f:
                                                                 f.hint_structure == HINT_STRUCTURE.SIMILAR and
-                                                                f.hint_to_solution_distance == HINT_TO_SOLUTION_DISTANCE.APPROXIMATE and
-                                                                (
-                                                                            f.hint_quality == HINT_QUALITY.GOOD or f.hint_quality == HINT_QUALITY.NORMAL))
+                                                                f.hint_to_solution_distance == HINT_TO_SOLUTION_DISTANCE.CLOSE and
+                                                                (f.hint_quality == HINT_QUALITY.GOOD or f.hint_quality == HINT_QUALITY.NORMAL))
 
     # Todo: rename
     def __get_approximate_structure_with_different_big_and_normal_steps_statistics(self) -> Tuple[int, int]:
         """
             HINT_STRUCTURE: SIMILAR
-            HINT_TO_SOLUTION_DISTANCE: APPROXIMATE
+            HINT_TO_SOLUTION_DISTANCE: CLOSE
             HINT_STEP: {BIG, NORMAL}
             HINT_QUALITY: {GOOD, NORMAL}
             vs others with HINT_SOLUTION: SOLUTION
         """
         return self.__get_statistics_for_solutions_by_condition(lambda f:
                                                                 f.hint_structure == HINT_STRUCTURE.SIMILAR and
-                                                                f.hint_to_solution_distance == HINT_TO_SOLUTION_DISTANCE.APPROXIMATE and
-                                                                (
-                                                                            f.hint_step == HINT_STEP.BIG or f.hint_step == HINT_STEP.NORMAL) and
-                                                                (
-                                                                            f.hint_quality == HINT_QUALITY.GOOD or f.hint_quality == HINT_QUALITY.NORMAL))
+                                                                f.hint_to_solution_distance == HINT_TO_SOLUTION_DISTANCE.CLOSE and
+                                                                (f.hint_step == HINT_STEP.BIG or f.hint_step == HINT_STEP.NORMAL) and
+                                                                (f.hint_quality == HINT_QUALITY.GOOD or f.hint_quality == HINT_QUALITY.NORMAL))
 
     @staticmethod
     def __get_readable_percents(current: int, all: int) -> float:
@@ -257,3 +270,4 @@ class EvaluationStatisticsHandler:
             print(f'{self.__get_readable_title(m.__doc__)}\n({good} examples, {bad} examples)\n'
                   f'({self.__get_readable_percents(good, count)}%, {self.__get_readable_percents(bad, count)}%)')
             print(self.statistics_printer_separator)
+

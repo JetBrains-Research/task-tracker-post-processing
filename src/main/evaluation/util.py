@@ -13,7 +13,7 @@ log = logging.getLogger(consts.LOGGER_NAME)
 
 # Check if al least N (min_number_of_true) values are True
 def contains_at_least_n_true(*values: bool, min_number_of_true: int = 2) -> bool:
-    return all(map(any, repeat(iter(list(values)), min_number_of_true)))
+    return sum(values) >= min_number_of_true
 
 
 # Shows if the fragment is a solution problem or not
@@ -55,7 +55,7 @@ class HINT_SIZE(Enum):
 # Note: is valid only for HINT_SOLUTION.SOLUTION otherwise is None
 class HINT_STRUCTURE(Enum):
     SIMILAR = 'similar'
-    DISSIMILAR = 'disimilar'
+    DISSIMILAR = 'dissimilar'
 
     @staticmethod
     def get_hint_structure(is_similar: bool, is_dissimilar: bool) -> Optional['HINT_STRUCTURE']:
@@ -72,9 +72,9 @@ class HINT_STRUCTURE(Enum):
 # Shows a distance between hint and current solution structure
 # Note: is valid only for HINT_SOLUTION.SOLUTION otherwise is None
 class HINT_TO_SOLUTION_DISTANCE(Enum):
-    APPROXIMATE = 'approximate'
+    CLOSE = 'close'
     SAME_TREE = 'same tree'
-    REMOTE = 'remote'
+    FAR = 'far'
     UNCLEAR = 'unclear'
 
     @staticmethod
@@ -85,11 +85,11 @@ class HINT_TO_SOLUTION_DISTANCE(Enum):
                                 f'Passed values:\nis_approximate {is_approximate}\nis_same_tree {is_same_tree}\n'
                                 f'is_remote {is_remote}\nis_unclear {is_unclear}', log)
         if is_approximate:
-            return HINT_TO_SOLUTION_DISTANCE.APPROXIMATE
+            return HINT_TO_SOLUTION_DISTANCE.CLOSE
         if is_same_tree:
             return HINT_TO_SOLUTION_DISTANCE.SAME_TREE
         if is_remote:
-            return HINT_TO_SOLUTION_DISTANCE.REMOTE
+            return HINT_TO_SOLUTION_DISTANCE.FAR
         if is_unclear:
             return HINT_TO_SOLUTION_DISTANCE.UNCLEAR
         return None
