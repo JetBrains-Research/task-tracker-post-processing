@@ -122,7 +122,7 @@ def sample_n_correct_test_inputs(path: str,
 
     test_inputs = []
     for i, row in n_random_rows.iterrows():
-        print(f'{i}, ', end='')
+        # print(f'{i}, ', end='')
         log.info(f'random row {i}')
         test_inputs.append({TEST_INPUT.SOURCE_CODE: row[CODE_TRACKER_COLUMN.FRAGMENT.value].rstrip('\n'),
                             TEST_INPUT.RATE: row[CODE_TRACKER_COLUMN.TESTS_RESULTS.value],
@@ -130,7 +130,8 @@ def sample_n_correct_test_inputs(path: str,
                             TEST_INPUT.INT_EXPERIENCE:
                                 __get_enum_or_default(INT_EXPERIENCE,
                                                       row[CODE_TRACKER_COLUMN.INT_EXPERIENCE.value],
-                                                      DEFAULT_VALUE.INT_EXPERIENCE)})
+                                                      DEFAULT_VALUE.INT_EXPERIENCE),
+                            'i': {i}})
     print('\n')
     return test_inputs
 

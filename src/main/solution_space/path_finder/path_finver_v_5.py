@@ -63,6 +63,7 @@ class PathFinderV5(IPathFinder):
         same_tree = self.__find_same_tree_in_graph(user_anon_tree, user_canon_tree)
         if same_tree is not None:
             log.info(f'Found the same tree. Chosen anon tree:\n{get_code_from_tree(same_tree.tree)}')
+            print('same tree')
             return same_tree
 
         log.info('Same tree not found')
@@ -80,6 +81,7 @@ class PathFinderV5(IPathFinder):
             log.info(f'Chosen anon tree in graph:\n{get_code_from_tree(graph_anon_tree.tree)}')
             if not self.__is_close_to_goals(graph_anon_tree):
                 log.info(f'The most of path is not done. Go through graph')
+                print('graph tree')
                 return graph_anon_tree
 
         goal_anon_tree = self.__find_closest_goal_tree(user_anon_tree, canon_nodes_number)
@@ -88,9 +90,11 @@ class PathFinderV5(IPathFinder):
         # We can have graph_anon_tree = None
         if graph_anon_tree and self.__go_through_graph(user_anon_tree, graph_anon_tree, goal_anon_tree):
             log.info(f'We are going through graph')
+            print('goal tree')
             return graph_anon_tree
         else:
             log.info(f'We are going directly to the goal')
+            print('goal tree')
             return goal_anon_tree
 
     def __find_same_tree_in_graph(self, user_anon_tree: AnonTree, user_canon_tree: ast.AST) -> Optional[AnonTree]:

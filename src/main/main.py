@@ -157,7 +157,6 @@ def __run_test_system(path: str, task: TASK = TASK.PIES, to_construct: str = 'Tr
     ts = TestSystem(test_fragments, task=task, add_same_docs=False, graph=graph)
 
 
-# TODO: add arguments for evaluation type
 def __run_evaluation(path: str) -> None:
     graph = SolutionSpaceSerializer.deserialize(path)
     evaluation = Evaluation(graph)
