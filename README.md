@@ -1,9 +1,27 @@
 [![JetBrains Research](https://jb.gg/badges/research.svg)](https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub)
 [![CircleCI](https://circleci.com/gh/JetBrains-Research/codetracker-data.svg?style=shield)](https://circleci.com/gh/JetBrains-Research/codetracker-data)
 
+
+# Table of Contents
+
+- [Coding Assistant](#coding-assistant)
+  - [Short description](#short-description)
+  - [Detail description](#detail-description)
+    - [Data preprocessing](#data-preprocessing)
+    - [Hint generation](#hint-generation)
+    - [Visualization](#visualization)
+  - [Installation](#installation)
+  - [Usage](#usage)
+    - [Data preprocessing module](#data-preprocessing-module)
+    - [Plots module](#plots-module) 
+    - [Hint generation module](#hint-generation-module) 
+    - [Path finder test system module](#path-finder-test-system-module)   
+  - [Tests running](#tests-running)        
+
+
 # Coding Assistant
 
-### Description
+## Short description
 
 The project's goal is analyzing the students' behavior while solving diverse programming tasks and creating an
 assistant system based on previous solutions. The idea is to collapse all partial solutions of each problem
@@ -12,7 +30,7 @@ students.
 
 ---
 
-## Modules
+## Detail description
 
 ### Data preprocessing
 
@@ -133,7 +151,7 @@ from [solution_graph_statistics_plots.py](https://github.com/JetBrains-Research/
 
 ---
 
-### Installation
+## Installation
 
 Simply clone the repository and run the following commands:
 
@@ -143,7 +161,7 @@ Simply clone the repository and run the following commands:
 
 ---
 
-### Running
+## Usage
 
 Run the necessary file for available modules:
 
@@ -158,7 +176,7 @@ A simple configuration: `python file args`
 
 Use `-h` option to show help for each module.
 
-#### Data preprocessing module
+### Data preprocessing module
 
 **Required arguments:**
 1. **path** — the path to data.
@@ -178,7 +196,7 @@ Value | Description
 
 **Note**: the Nth level runs all the levels before it. The default value is the max level value.
 
-#### Plots module
+### Plots module
 
 **Required arguments:**
 1. **path** — the path to data.
@@ -202,7 +220,7 @@ Parameter | Description
 
 _TODO_: **splitting_plots**
 
-#### Hint generation module
+### Hint generation module
 
 **Required arguments:**
 1. **path** — the path of the folder with files to construct the solution graph or path of the serialized solution graph
@@ -229,7 +247,7 @@ Parameter | Description
 
 **Note**: you should use only one param from the set {**--construct**, **--deserialize**} in the same time
 
-#### Path finder test system module
+### Path finder test system module
 
 **Required arguments:**
 1. **path** — the path of the folder with files to construct the solution graph or path of the serialized solution graph
@@ -249,7 +267,7 @@ Parameter | Description
 
 ---
 
-### Tests running
+## Tests running
 
 We use [`pytest`](https://docs.pytest.org/en/latest/contents.html) library for tests.
 
