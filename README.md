@@ -178,6 +178,9 @@ Use `-h` option to show help for each module.
 
 ### Data preprocessing module
 
+See description: [Usage](#usage)
+File for running: [preprocessing_main.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/preprocessing_main.py)
+
 **Required arguments:**
 1. **path** — the path to data.
 
@@ -197,6 +200,9 @@ Value | Description
 **Note**: the Nth level runs all the levels before it. The default value is the max level value.
 
 ### Plots module
+
+See description: [Usage](#usage)
+File for running: [plots_main.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/statistics_main.py)
 
 **Required arguments:**
 1. **path** — the path to data.
@@ -221,6 +227,9 @@ Parameter | Description
 _TODO_: **splitting_plots**
 
 ### Hint generation module
+
+See description: [Usage](#usage)
+File for running: [algo_main.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/algo_main.py)
 
 **Required arguments:**
 1. **path** — the path of the folder with files to construct the solution graph or path of the serialized solution graph
@@ -248,6 +257,9 @@ Parameter | Description
 **Note**: you should use only one param from the set {**--construct**, **--deserialize**} in the same time
 
 ### Path finder test system module
+
+See description: [Usage](#usage)
+File for running: [test_system_main.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/test_system_main.py)
 
 **Required arguments:**
 1. **path** — the path of the folder with files to construct the solution graph or path of the serialized solution graph
