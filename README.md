@@ -200,11 +200,11 @@ Value | Description
 
 Parameter | Description
 --- | ---
-**--construct**   |  construct the solution graph. The default value is `True`
-**--deserialize** |  deserialize the solution graph. The default value is `False`
-**--serialize**   |  serialize the solution graph. The default value is `False`.
-**--viz**         |  visualize the solution graph. The default value is `True`
-**--task**        |  the task for the main algorithm. The default value is `pies`. Available values can be found in `TASK.tasks_values()` if file [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/util/consts.py).
+**construct**   |  construct the solution graph. The default value is `True`
+**deserialize** |  deserialize the solution graph. The default value is `False`
+**serialize**   |  serialize the solution graph. The default value is `False`.
+**viz**         |  visualize the solution graph. The default value is `True`
+**task**        |  the task for the main algorithm. The default value is `pies`. Available values can be found in `TASK.tasks_values()` if file [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/util/consts.py).
 
 **Note**: you should use only one param from the set {**--construct**, **--deserialize**} in the same time
 
@@ -217,11 +217,11 @@ Parameter | Description
 
 Parameter | Description
 --- | ---
-**--construct**   |  construct the solution graph. The default value is `True`
-**--deserialize** |  deserialize the solution graph. The default value is `False`
-**--serialize**   |  serialize the solution graph. The default value is `False`.
-**--viz**         |  visualize the solution graph. The default value is `True`
-**--task**        |  the task for the main algorithm. The default value is `pies`. Available values can be found in `TASK.tasks_values()` if file [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/util/consts.py).
+**construct**   |  construct the solution graph. The default value is `True`
+**deserialize** |  deserialize the solution graph. The default value is `False`
+**serialize**   |  serialize the solution graph. The default value is `False`.
+**viz**         |  visualize the solution graph. The default value is `True`
+**task**        |  the task for the main algorithm. The default value is `pies`. Available values can be found in `TASK.tasks_values()` if file [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/util/consts.py).
 
 **Note**: you should use only one param from the set {**--construct**, **--deserialize**} in the same time
 
