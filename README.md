@@ -179,6 +179,7 @@ Use `-h` option to show help for each module.
 ### Data preprocessing module
 
 See description: [Usage](#usage)
+
 File for running: [preprocessing_main.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/preprocessing_main.py)
 
 **Required arguments:**
@@ -202,6 +203,7 @@ Value | Description
 ### Plots module
 
 See description: [Usage](#usage)
+
 File for running: [plots_main.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/statistics_main.py)
 
 **Required arguments:**
@@ -229,6 +231,7 @@ _TODO_: **splitting_plots**
 ### Hint generation module
 
 See description: [Usage](#usage)
+
 File for running: [algo_main.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/algo_main.py)
 
 **Required arguments:**
@@ -259,6 +262,7 @@ Parameter | Description
 ### Path finder test system module
 
 See description: [Usage](#usage)
+
 File for running: [test_system_main.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/test_system_main.py)
 
 **Required arguments:**
