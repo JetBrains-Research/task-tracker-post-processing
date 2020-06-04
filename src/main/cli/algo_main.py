@@ -11,6 +11,7 @@ from src.main.solution_space.solution_space_handler import construct_solution_gr
 from src.main.solution_space.solution_space_serializer import SolutionSpaceSerializer
 from src.main.solution_space.solution_space_visualizer import SolutionSpaceVisualizer
 
+# Todo: add The number of nodes statistics
 
 class AlgoCli(ICli):
 
@@ -36,10 +37,10 @@ class AlgoCli(ICli):
         self._parser.add_argument('--task', nargs='?', const=TASK.PIES.value, default=TASK.PIES.value,
                                   help='task for the algorithm')
         self._parser.add_argument('--construct', type=self.str_to_bool, nargs='?', const=True, default=True,
-                                  help='to construct graph. Note: you can use only one param from the set '
+                                  help='to construct graph. Note: you should use only one param from the set '
                                        '{--construct, --deserialize} in the same time')
         self._parser.add_argument('--deserialize', type=self.str_to_bool, nargs='?', const=False, default=False,
-                                  help='to deserialize graph. Note: you can use only one param from the set '
+                                  help='to deserialize graph. Note: you should use only one param from the set '
                                        '{--construct, --deserialize} in the same time')
         self._parser.add_argument('--serialize', type=self.str_to_bool, nargs='?', const=False, default=False,
                                   help='to serialize graph')

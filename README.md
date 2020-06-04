@@ -12,71 +12,7 @@ students.
 
 ---
 
-### Installation
-
-Simply clone the repository and run the following commands:
-
-1. `pip install -r requirements.txt`
-2. `pip install -r dev-requirements.txt`
-3. `pip install -r test-requirements.txt`
-
----
-
-### Run
-
-Use `-h` option to show help.
-
-**Required arguments:**
-1. **path** — the path to data.
-2. **action** — action to run. Available values: **preprocessing**, **statistics**, **algo**.
-
-Parameter| Description
---- | ---
-__preprocessing__ | preprocess the data
-__statistics__ | plot statistics
-__algo__ | run the algorithm
-__test_system__ | run the path finder test system
-
-A simple configuration: `python main.py path_to_files preprocessing`
-
-**Optional arguments**:
-- Data preprocessing:
-
-__--level__ — allows to set the level for the preprocessing. Available levels:
-
-**Note**: the Nth level runs all the levels before it. The default value is the max level value.
-
-Parameter | Description
---- | ---
-**0** |  merge activity-tracker and code-tracker files
-**1** |  find tests results for the tasks
-**2** |  split the data
-**3** |  remove intermediate diffs
-**4** |  remove inefficient statements
-**5** |  add _int experience_ column, default value
-
-
-- Running the algorithm:
-
-__--level__ allows to set the level for running the algorithm. Available levels:
-
-**Note**: the Nth level runs all the levels before it. The default value is the max level value.
-
-Parameter | Description
---- | ---
-**0** |  construct a solution graph
-**1** |  run the main algorithm and get a hint, default value
-
-Additional arguments:
-
-Parameter | Description
---- | ---
-**construct** |  construct the graph. If the argument is `False`, the graph will be deserialized. The default value is `True`
-**serialize** |  serialize the solution graph. The default value is `False`.
-**viz**       |  visualize the graph. The default value is `True`
-**task**      |  the task for the main algorithm. The default value is `pies`. Available values can be found in `TASK.tasks_values()` if file [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/util/consts.py).
-
----
+## Modules
 
 ### Data preprocessing
 
@@ -197,7 +133,101 @@ from [solution_graph_statistics_plots.py](https://github.com/JetBrains-Research/
 
 ---
 
-### Run tests
+### Installation
+
+Simply clone the repository and run the following commands:
+
+1. `pip install -r requirements.txt`
+2. `pip install -r dev-requirements.txt`
+3. `pip install -r test-requirements.txt`
+
+---
+
+### Running
+
+Run the necessary file for available modules:
+
+File| Module | Description
+--- | --- | --- 
+[preprocessing_main.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/preprocessing_main.py) | [Data preprocessing module](#data-preprocessing-module) | Includes all steps from the [Data preprocessing](#data-preprocessing) section
+[statistics_main.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/statistics_main.py) | [Statistics module](#statistics-module) | Includes _Participants distribution_, _Tasks distribution_ and _Splitting plots_ from the [Visualization](#visualization) section
+[algo_main.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/algo_main.py) | [Hint generation module](#hint-generation-module) | Includes all steps from the [Hint generation](#hint-generation) section
+[test_system_main.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/test_system_main.py) | [Path finder test system module](#path-finder-test-system-module) | Run the path finder test system
+
+A simple configuration: `python file args`
+
+Use `-h` option to show help for each module.
+
+#### Data preprocessing module
+
+**Required arguments:**
+1. **path** — the path to data.
+
+**Optional arguments**:
+
+__--level__ — allows to set the level for the preprocessing. Available levels:
+
+Value | Description
+--- | ---
+**0** |  merge activity-tracker and code-tracker files
+**1** |  find tests results for the tasks
+**2** |  split the data
+**3** |  remove intermediate diffs
+**4** |  remove inefficient statements
+**5** |  add _int experience_ column, default value
+
+**Note**: the Nth level runs all the levels before it. The default value is the max level value.
+
+#### Statistics module
+
+_TODO_
+
+#### Hint generation module
+
+**Required arguments:**
+1. **path** — the path of the folder with files to construct the solution graph or path of the serialized solution graph
+
+**Optional arguments**:
+
+__--level__ allows to set the level for running the algorithm. Available levels:
+
+Value | Description
+--- | ---
+**0** |  construct a solution graph
+**1** |  run the main algorithm and get a hint, default value
+
+**Note**: the Nth level runs all the levels before it. The default value is the max level value.
+
+Parameter | Description
+--- | ---
+**--construct**   |  construct the solution graph. The default value is `True`
+**--deserialize** |  deserialize the solution graph. The default value is `False`
+**--serialize**   |  serialize the solution graph. The default value is `False`.
+**--viz**         |  visualize the solution graph. The default value is `True`
+**--task**        |  the task for the main algorithm. The default value is `pies`. Available values can be found in `TASK.tasks_values()` if file [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/util/consts.py).
+
+**Note**: you should use only one param from the set {**--construct**, **--deserialize**} in the same time
+
+#### Path finder test system module
+
+**Required arguments:**
+1. **path** — the path of the folder with files to construct the solution graph or path of the serialized solution graph
+
+**Optional arguments**:
+
+Parameter | Description
+--- | ---
+**--construct**   |  construct the solution graph. The default value is `True`
+**--deserialize** |  deserialize the solution graph. The default value is `False`
+**--serialize**   |  serialize the solution graph. The default value is `False`.
+**--viz**         |  visualize the solution graph. The default value is `True`
+**--task**        |  the task for the main algorithm. The default value is `pies`. Available values can be found in `TASK.tasks_values()` if file [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/util/consts.py).
+
+**Note**: you should use only one param from the set {**--construct**, **--deserialize**} in the same time
+
+---
+
+### Tests running
 
 We use [`pytest`](https://docs.pytest.org/en/latest/contents.html) library for tests.
 
