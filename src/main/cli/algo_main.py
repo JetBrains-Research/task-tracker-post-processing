@@ -10,8 +10,9 @@ from src.main.util.log_util import log_and_raise_error
 from src.main.solution_space.solution_space_handler import construct_solution_graph
 from src.main.solution_space.solution_space_serializer import SolutionSpaceSerializer
 from src.main.solution_space.solution_space_visualizer import SolutionSpaceVisualizer
+from src.main.plots.solution_graph_statistics_plots import plot_node_numbers_statistics, \
+    plot_node_numbers_freq_for_each_vertex
 
-# Todo: add The number of nodes statistics
 
 class AlgoCli(ICli):
 
@@ -25,6 +26,7 @@ class AlgoCli(ICli):
         self._to_visualize = True
         self._task = None
         self._graph = None
+        self._to_get_nodes_number_statistics = False
 
     def configure_args(self) -> None:
         self._parser.add_argument('path', type=str, nargs=1, help=f'set path of the folder with files to construct '
@@ -46,6 +48,8 @@ class AlgoCli(ICli):
                                   help='to serialize graph')
         self._parser.add_argument('--viz', type=self.str_to_bool, nargs='?', const=True, default=True,
                                   help='to visualize graph')
+        self._parser.add_argument('--nod_num_stat', type=self.str_to_bool, nargs='?', const=False, default=False,
+                                  help='to visualize the number of nodes statistics (for each vertex and in general)')
 
     def __construct_graph(self) -> None:
         if self._to_construct:
@@ -68,6 +72,10 @@ class AlgoCli(ICli):
             graph_visualization_path = gv.visualize_graph(name_prefix=f'{self._task.value}')
             self._log.info(f'Graph visualization path: {graph_visualization_path}')
 
+        if self._to_get_nodes_number_statistics:
+            plot_node_numbers_statistics(self._graph)
+            plot_node_numbers_freq_for_each_vertex(self._graph)
+
     def parse_args(self) -> None:
         args = self._parser.parse_args()
         if args.construct and args.deserialize:
@@ -77,6 +85,7 @@ class AlgoCli(ICli):
         self._to_deserialize = args.deserialize
         self._to_serialize = args.serialize
         self._to_visualize = args.viz
+        self._to_get_nodes_number_statistics = args.nod_num_stat
         path = args.path[0]
         if not os.path.exists(args.path[0]):
             log_and_raise_error(f'Path {path} does not exist', self._log)

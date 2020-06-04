@@ -204,6 +204,7 @@ Parameter | Description
 **deserialize** |  deserialize the solution graph. The default value is `False`
 **serialize**   |  serialize the solution graph. The default value is `False`.
 **viz**         |  visualize the solution graph. The default value is `True`
+**nod_num_stat**|  visualize the number of nodes in trees statistics (for each vertex and in general). The default value is `False`
 **task**        |  the task for the main algorithm. The default value is `pies`. Available values can be found in `TASK.tasks_values()` if file [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/util/consts.py).
 
 **Note**: you should use only one param from the set {**--construct**, **--deserialize**} in the same time
@@ -221,6 +222,7 @@ Parameter | Description
 **deserialize** |  deserialize the solution graph. The default value is `False`
 **serialize**   |  serialize the solution graph. The default value is `False`.
 **viz**         |  visualize the solution graph. The default value is `True`
+**nod_num_stat**|  visualize the number of nodes in trees statistics (for each vertex and in general). The default value is `False`
 **task**        |  the task for the main algorithm. The default value is `pies`. Available values can be found in `TASK.tasks_values()` if file [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/util/consts.py).
 
 **Note**: you should use only one param from the set {**--construct**, **--deserialize**} in the same time
