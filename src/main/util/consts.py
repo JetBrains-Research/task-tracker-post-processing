@@ -254,3 +254,6 @@ RUNNING_TESTS_RESULT_FOLDER = 'running_tests_result_3'
 MAX_DIFF_SYMBOLS = 30
 
 TIMEOUT = 5
+
+TRUE_VALUES_SET = {'true', 't', '1', 'yes', 'y'}
+FALSE_VALUES_SET = {'false', 'f', '0', 'no', 'n'}

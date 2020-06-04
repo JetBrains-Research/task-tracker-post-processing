@@ -1,5 +1,5 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
-import collections
+
 from enum import Enum
 from typing import List
 
@@ -17,9 +17,6 @@ class ACTIONS_TYPE(Enum):
     @classmethod
     def values(cls) -> List[str]:
         return [a_t.value for a_t in ACTIONS_TYPE]
-
-
-DEFAULT_LEVEL_VALUE = -1
 
 
 class PREPROCESSING_LEVEL(Enum):
@@ -57,7 +54,6 @@ class PREPROCESSING_LEVEL(Enum):
         except ValueError:
             raise ValueError(message)
 
-        level = PREPROCESSING_LEVEL.max_value() if level == DEFAULT_LEVEL_VALUE else level
         if level < PREPROCESSING_LEVEL.min_value() or level > PREPROCESSING_LEVEL.max_value():
             raise ValueError(message)
         try:
@@ -92,7 +88,6 @@ class ALGO_LEVEL(Enum):
         except ValueError:
             raise ValueError(message)
 
-        level = ALGO_LEVEL.max_value() if level == DEFAULT_LEVEL_VALUE else level
         if level < ALGO_LEVEL.min_value() or level > ALGO_LEVEL.max_value():
             raise ValueError(message)
         try:
