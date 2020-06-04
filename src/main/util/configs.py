@@ -4,19 +4,31 @@ from enum import Enum
 from typing import List
 
 
-class ACTIONS_TYPE(Enum):
-    PREPROCESSING = 'preprocessing'
-    STATISTICS = 'statistics'
-    ALGO = 'algo'
-    TEST_SYSTEM = 'test_system'
+class PLOT_TYPE(Enum):
+    PARTICIPANTS_DISTRIBUTION = 'participants_distr'
+    TASKS_DISTRIBUTION = 'tasks_distr'
+    SPLITTING_PLOTS = 'splitting_plots'
 
     @classmethod
-    def actions(cls) -> List['ACTIONS_TYPE']:
-        return [_ for _ in ACTIONS_TYPE]
+    def plot_types(cls) -> List['PLOT_TYPE']:
+        return [_ for _ in PLOT_TYPE]
 
     @classmethod
     def values(cls) -> List[str]:
-        return [a_t.value for a_t in ACTIONS_TYPE]
+        return [p_t.value for p_t in PLOT_TYPE]
+
+    @classmethod
+    def description(cls) -> str:
+        return f'{PLOT_TYPE.PARTICIPANTS_DISTRIBUTION.value} - visualize participants distribution; ' \
+               f'{PLOT_TYPE.TASKS_DISTRIBUTION.value} - visualize tasks distribution; ' \
+               f'{PLOT_TYPE.SPLITTING_PLOTS.value} - visualize splitting plots;'
+
+    @classmethod
+    def str_to_plot_type(cls, value: str) -> 'PLOT_TYPE':
+        try:
+            return PLOT_TYPE(value.lower())
+        except ValueError:
+            raise ValueError(f'{value} is not a plot_type value. Available values: {PLOT_TYPE.description()}')
 
 
 class PREPROCESSING_LEVEL(Enum):

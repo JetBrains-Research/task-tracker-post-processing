@@ -86,8 +86,8 @@ Two column types are available:
 2. STATISTICS_KEY.EXPERIENCE
 
 Two chart types are available:
-1. PLOT_TYPE.BAR
-2. PLOT_TYPE.PIE
+1. CHART_TYPE.BAR
+2. CHART_TYPE.PIE
 
 Other options:
 1. **to_union_rare** allows to merge the rare values. The rare value means the frequency of the value is less than or equal to `STATISTICS_RARE_VALUE_THRESHOLD` from [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/plots/util/consts.py).
@@ -150,7 +150,7 @@ Run the necessary file for available modules:
 File| Module | Description
 --- | --- | --- 
 [preprocessing_main.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/preprocessing_main.py) | [Data preprocessing module](#data-preprocessing-module) | Includes all steps from the [Data preprocessing](#data-preprocessing) section
-[statistics_main.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/statistics_main.py) | [Statistics module](#statistics-module) | Includes _Participants distribution_, _Tasks distribution_ and _Splitting plots_ from the [Visualization](#visualization) section
+[plots_main.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/statistics_main.py) | [Plots module](#plots-module) | Includes _Participants distribution_, _Tasks distribution_ and _Splitting plots_ from the [Visualization](#visualization) section
 [algo_main.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/algo_main.py) | [Hint generation module](#hint-generation-module) | Includes all steps from the [Hint generation](#hint-generation) section
 [test_system_main.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/test_system_main.py) | [Path finder test system module](#path-finder-test-system-module) | Run the path finder test system
 
@@ -178,9 +178,29 @@ Value | Description
 
 **Note**: the Nth level runs all the levels before it. The default value is the max level value.
 
-#### Statistics module
+#### Plots module
 
-_TODO_
+**Required arguments:**
+1. **path** — the path to data.
+2. **plot_type** — the type of plot. Available values:
+
+Value | Description
+--- | ---
+**participants_distr** |  to visualize [Participants distribution](#participants-distribution)
+**tasks_distr**        |  to visualize [Tasks distribution](#tasks-distribution)
+**splitting_plots**    |  to visualize [Splitting plots](#splitting-plots)
+
+**Optional arguments**:
+
+Parameter | Description
+--- | ---
+**type_dstr**   |  distribution type. Only for **plot_type**: `participants_distr`. Available values are `programExperience` and `age`. The default value is `programExperience`.
+**chart_type**  |  chart type. Only for **plot_type**: `participants_distr`. Available values are `bar` and `pie`. The default value is `bar`.
+**to_union_rare**| allows to merge the rare values. Only for **plot_type**: `participants_distr`. The default value is `False`.
+**format**      |  allows to save the output into a file in different formats. Available values are `html` and `png`. The default value is `html`.
+**auto_open**   |  allows to open plots automatically. The default value is `False`
+
+_TODO_: **splitting_plots**
 
 #### Hint generation module
 

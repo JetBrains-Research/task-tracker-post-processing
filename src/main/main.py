@@ -13,7 +13,7 @@ from src.main.util.log_util import configure_logger
 from src.main.plots.tasks_statistics_plots import plot_tasks_statistics
 from src.main.plots.profile_statistics_plots import plot_profile_statistics
 from src.main.statistics_gathering.statistics_gathering import get_profile_statistics
-from src.main.plots.util.consts import PLOTTY_CATEGORY_ORDER, STATISTICS_KEY, PLOT_TYPE
+from src.main.plots.util.consts import PLOTTY_CATEGORY_ORDER, STATISTICS_KEY, CHART_TYPE
 from src.main.plots.solution_graph_statistics_plots import plot_node_numbers_statistics, \
     plot_node_numbers_freq_for_each_vertex
 

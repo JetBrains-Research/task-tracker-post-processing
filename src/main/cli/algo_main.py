@@ -1,11 +1,8 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
-import os
-
 from src.main.util.consts import TASK
 from src.main.util.cli_util import ICli
 from src.main.util.configs import ALGO_LEVEL
-from src.main.util.file_util import add_slash
 from src.main.util.log_util import log_and_raise_error
 from src.main.solution_space.solution_space_handler import construct_solution_graph
 from src.main.solution_space.solution_space_serializer import SolutionSpaceSerializer
@@ -41,14 +38,14 @@ class AlgoCli(ICli):
         self._parser.add_argument('--construct', type=self.str_to_bool, nargs='?', const=True, default=True,
                                   help='to construct graph. Note: you should use only one param from the set '
                                        '{--construct, --deserialize} in the same time')
-        self._parser.add_argument('--deserialize', type=self.str_to_bool, nargs='?', const=False, default=False,
+        self._parser.add_argument('--deserialize', type=self.str_to_bool, nargs='?', const=True, default=False,
                                   help='to deserialize graph. Note: you should use only one param from the set '
                                        '{--construct, --deserialize} in the same time')
-        self._parser.add_argument('--serialize', type=self.str_to_bool, nargs='?', const=False, default=False,
+        self._parser.add_argument('--serialize', type=self.str_to_bool, nargs='?', const=True, default=False,
                                   help='to serialize graph')
         self._parser.add_argument('--viz', type=self.str_to_bool, nargs='?', const=True, default=True,
                                   help='to visualize graph')
-        self._parser.add_argument('--nod_num_stat', type=self.str_to_bool, nargs='?', const=False, default=False,
+        self._parser.add_argument('--nod_num_stat', type=self.str_to_bool, nargs='?', const=True, default=False,
                                   help='to visualize the number of nodes statistics (for each vertex and in general)')
 
     def __construct_graph(self) -> None:
@@ -86,12 +83,8 @@ class AlgoCli(ICli):
         self._to_serialize = args.serialize
         self._to_visualize = args.viz
         self._to_get_nodes_number_statistics = args.nod_num_stat
-        path = args.path[0]
-        if not os.path.exists(args.path[0]):
-            log_and_raise_error(f'Path {path} does not exist', self._log)
-        if self._to_construct:
-            path = add_slash(path)
-        self._path = path
+        # If self._to_construct is True then add slash else don't
+        self._path = self.handle_path(args.path[0], self._to_construct)
         self._level = ALGO_LEVEL.get_level(args.level)
         self._task = self.get_task(args.task)
 

@@ -1,10 +1,12 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
+import os
 import logging
 import argparse
 from abc import ABCMeta, abstractmethod
 
 from src.main.util import consts
+from src.main.util.file_util import add_slash
 from src.main.util.consts import TASK, TRUE_VALUES_SET, FALSE_VALUES_SET
 from src.main.util.log_util import configure_logger, log_and_raise_error
 
@@ -45,3 +47,10 @@ class ICli(object, metaclass=ABCMeta):
             return TASK(task)
         except ValueError:
             log_and_raise_error(f'Task value has to be one from the values: {TASK.tasks_values()}', self._log)
+
+    def handle_path(self, path: str, to_add_slash: bool = True) -> str:
+        if not os.path.exists(path):
+            log_and_raise_error(f'Path {path} is incorrect', self._log)
+        if to_add_slash:
+            path = add_slash(path)
+        return path

@@ -15,7 +15,7 @@ from src.main.plots.util.plots_common import get_readable_key, get_labels_for_fr
 from src.main.plots.util.plotly_util import save_plot, get_freq_bar_chart, update_layout, plot_and_save_freq_chart
 from src.main.statistics_gathering.solution_graph_statistics import get_node_numbers_solution_graph_statistics, \
     get_node_numbers_freq_statistics_for_each_vertex
-from src.main.plots.util.consts import STATISTICS_KEY, PLOTTY_CATEGORY_ORDER, STATISTICS_FREQ, PLOT_TYPE, \
+from src.main.plots.util.consts import STATISTICS_KEY, PLOTTY_CATEGORY_ORDER, STATISTICS_FREQ, CHART_TYPE, \
     DEFAULT_PATH_FOR_PLOTS
 
 
@@ -77,7 +77,7 @@ def __plot_node_numbers_freq_for_vertex(vertex_id: int, labels: Dict[str, str], 
     __add_canon_nodes_numbers(fig, canon_nodes_number, freq_dict)
     # Todo: fix x_category_order, because now order is not always ascending
     fig = update_layout(fig, column, PLOTTY_CATEGORY_ORDER.TRACE)
-    save_plot(fig, path, PLOT_TYPE.BAR, f'vertex_{vertex_id}', format, auto_open)
+    save_plot(fig, path, CHART_TYPE.BAR, f'vertex_{vertex_id}', format, auto_open)
 
 
 def __get_title_for_vertex_plot(vertex_id_: int, column: STATISTICS_KEY = STATISTICS_KEY.NODES_NUMBER) -> str:
