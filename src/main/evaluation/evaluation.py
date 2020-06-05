@@ -43,7 +43,7 @@ class Evaluation:
         else:
             try:
                 self._test_inputs = deserialize_data_from_file(test_inputs_file)
-            except  OSError:
+            except OSError:
                 log_and_raise_error(f'OSError during restoring test_inputs from path {test_inputs_file}.', log, OSError)
 
         print(self._test_inputs)
