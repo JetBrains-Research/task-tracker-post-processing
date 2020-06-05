@@ -8,7 +8,6 @@ class ACTIONS_TYPE(Enum):
     STATISTICS = 'statistics'
     ALGO = 'algo'
     TEST_SYSTEM = 'test_system'
-    EVALUATION = 'evaluation'
 
     @classmethod
     def actions(cls) -> List['ACTIONS_TYPE']:

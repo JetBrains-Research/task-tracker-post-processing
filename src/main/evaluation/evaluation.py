@@ -1,9 +1,10 @@
+# Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
+
 import os
 import timeit
 import logging
 from functools import partial
 from typing import Tuple, List, Type, Optional
-
 
 from src.main.solution_space.hint import HintHandler
 from src.main.util.log_util import log_and_raise_error

@@ -7,8 +7,6 @@ import argparse
 
 import pandas as pd
 
-from src.main.evaluation.evaluation import Evaluation
-
 sys.path.append('.')
 sys.path.append('../..')
 from src.main.util import consts
@@ -16,17 +14,17 @@ from src.main.splitting.tasks_tests_handler import run_tests
 from src.main.solution_space.data_classes import User, CodeInfo
 from src.main.preprocessing.preprocessing import preprocess_data
 from src.main.solution_space.solution_graph import SolutionGraph
+from src.main.solution_space.path_finder_test_system import TestSystem
+from src.main.util.consts import TASK, INT_EXPERIENCE, FILE_SYSTEM_ITEM
 from src.main.splitting.splitting import split_tasks_into_separate_files
 from src.main.util.log_util import configure_logger, log_and_raise_error
 from src.main.preprocessing.int_experience_adding import add_int_experience
-from src.main.solution_space.path_finder_test_system import TestSystem
 from src.main.solution_space.solution_space_handler import construct_solution_graph
 from src.main.solution_space.solution_space_serializer import SolutionSpaceSerializer
 from src.main.solution_space.solution_space_visualizer import SolutionSpaceVisualizer
 from src.main.preprocessing.intermediate_diffs_removing import remove_intermediate_diffs
 from src.main.preprocessing.inefficient_statements_removing import remove_inefficient_statements
 from src.main.util.file_util import add_slash, get_all_file_system_items, language_item_condition
-from src.main.util.consts import TASK, INT_EXPERIENCE, FILE_SYSTEM_ITEM
 from src.main.util.configs import ACTIONS_TYPE, PREPROCESSING_LEVEL, ALGO_LEVEL, DEFAULT_LEVEL_VALUE
 
 pd.set_option('display.max_rows', 250)
@@ -145,13 +143,6 @@ def __run_test_system(path: str, task: TASK = TASK.PIES, to_construct: str = 'Tr
     ts = TestSystem(test_fragments, task=task, add_same_docs=False, graph=graph)
 
 
-def __run_evaluation(path: str) -> None:
-    graph = SolutionSpaceSerializer.deserialize(path)
-    evaluation = Evaluation(graph)
-    # evaluation.does_follow_to_full_solution(50)
-    evaluation.evaluate_time(50)
-
-
 def main() -> None:
     configure_logger(to_delete_previous_logs=True)
     __configure_args()
@@ -179,9 +170,6 @@ def main() -> None:
         task = __get_task(args.task)
         __run_test_system(path, task, args.construct, args.serialize, args.viz)
 
-    # Todo: add to readme
-    elif action == ACTIONS_TYPE.EVALUATION:
-        __run_evaluation(path)
     """
     Plot profile statistics
     Note: Run before 'split_tasks_into_separate_files' 
@@ -211,9 +199,6 @@ def main() -> None:
     # plot_node_numbers_freq_for_each_vertex(graph)
     # print
 
-    """
-    Run Evaluation
-    """
 
 if __name__ == '__main__':
     main()
