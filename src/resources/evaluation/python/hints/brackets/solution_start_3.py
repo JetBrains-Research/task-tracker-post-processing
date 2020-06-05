@@ -1,2 +1,0 @@
-s = input()
-t = input()

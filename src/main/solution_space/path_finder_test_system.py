@@ -135,22 +135,23 @@ class TestSystem:
             TestSystem.__print_output('There are no path_finders')
             return None
         # Set table headers: first go test_input headers, then path_finder versions
-        table = PrettyTable(field_names=['index'] + [e.value for e in TEST_INPUT] +
+        table = PrettyTable(field_names=[e.value for e in TEST_INPUT] +
                                         [self.__get_path_finder_version(pf) for pf in path_finders], title=title)
 
         log.info(f"There are {len(self._test_inputs)} test inputs")
 
         for i, test_input in enumerate(self._test_inputs):
             log.info(f"Running path finders on {i} test input")
-            user_anon_tree, user_canon_tree = self.create_user_trees(test_input)
+            user_anon_tree, user_canon_tree = self.create_user_trees(self._hint_handler, test_input)
             # TODO: REWRITE IT!
-            row = [i] +\
+            row = [test_input[TEST_INPUT.INDEX]] +\
                   [f'{test_input[TEST_INPUT.SOURCE_CODE]}\n\nanon tree:\n{get_code_from_tree(user_anon_tree.tree)}'] + \
                   [test_input[TEST_INPUT.RATE]] + \
                   [test_input[TEST_INPUT.AGE]] +\
                   [test_input[TEST_INPUT.INT_EXPERIENCE].get_short_str()]
             for path_finder in path_finders:
-                time, next_anon_tree = self.__run_path_finder(path_finder, user_anon_tree, user_canon_tree, i)
+                time, next_anon_tree = self.__run_path_finder(path_finder, user_anon_tree, user_canon_tree,
+                                                              test_input[TEST_INPUT.INDEX])
                 hint = HintHandler.get_hint_by_anon_tree(test_input[TEST_INPUT.SOURCE_CODE], next_anon_tree)
                 row.append(f'time: {time}'
                            f'\n\nnext anon tree id: {next_anon_tree.id}'
@@ -166,18 +167,19 @@ class TestSystem:
             path_finders.append(pf_subclass(self._graph, mv_subclass))
         return path_finders
 
-    def create_user_trees(self, test_input: TestInput) -> Tuple[AnonTree, ast.AST]:
+    @staticmethod
+    def create_user_trees(hint_handler: HintHandler, test_input: TestInput) -> Tuple[AnonTree, ast.AST]:
         profile = Profile(test_input[TEST_INPUT.AGE], test_input[TEST_INPUT.INT_EXPERIENCE])
         # If rate is None, it's okay, it will be found further
         rate = test_input.get(TEST_INPUT.RATE)
-        user_trees = self._hint_handler.create_user_trees(test_input[TEST_INPUT.SOURCE_CODE], profile, rate)
+        user_trees = hint_handler.create_user_trees(test_input[TEST_INPUT.SOURCE_CODE], profile, rate)
         # Put found rate into test_input
         test_input[TEST_INPUT.RATE] = user_trees[0].rate
         return user_trees
 
     @staticmethod
     def __run_path_finder(path_finder: IPathFinder, user_anon_tree: AnonTree, user_canon_tree: ast.AST,
-                          candidates_file_id: int) -> Tuple[timedelta, AnonTree]:
+                          candidates_file_id: str) -> Tuple[timedelta, AnonTree]:
         start_time = datetime.now()
         next_anon_tree = path_finder.find_next_anon_tree(user_anon_tree, user_canon_tree, candidates_file_id)
         end_time = datetime.now()
@@ -277,8 +279,12 @@ class TestSystem:
         elif len(fragments) != len(rates):
             log_and_raise_error('Given rates don\'t match given fragments due to different lists length', log)
         fragments_with_rates = [(fragments[i], rates[i]) for i in range(0, len(fragments))]
-        return [{TEST_INPUT.SOURCE_CODE: fr[0], TEST_INPUT.AGE: a, TEST_INPUT.RATE: fr[1],
-                 TEST_INPUT.INT_EXPERIENCE: e} for a, e, fr in itertools.product(ages, experiences, fragments_with_rates)]
+        return [{TEST_INPUT.INDEX: i,
+                 TEST_INPUT.SOURCE_CODE: fr[0],
+                 TEST_INPUT.AGE: a,
+                 TEST_INPUT.RATE: fr[1],
+                 TEST_INPUT.INT_EXPERIENCE: e}
+                for i, a, e, fr in enumerate(itertools.product(ages, experiences, fragments_with_rates))]
 
     @staticmethod
     def get_fragments_for_task(task: TASK) -> List[str]:

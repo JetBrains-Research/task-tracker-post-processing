@@ -129,9 +129,10 @@ def get_original_file_name_with_extension(hashed_file_name: str, extension: EXTE
     return get_original_file_name(hashed_file_name) + extension
 
 
-def get_content_from_file(file: str, encoding: str = ISO_ENCODING) -> str:
+def get_content_from_file(file: str, encoding: str = ISO_ENCODING, to_strip_nl: bool = True) -> str:
     with open(file, 'r', encoding=encoding) as f:
-        return f.read().rstrip('\n')
+        content = f.read()
+        return content if not to_strip_nl else content.rstrip('\n')
 
 
 # File should contain the full path and its extension

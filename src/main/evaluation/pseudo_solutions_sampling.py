@@ -4,7 +4,6 @@ from typing import List, Optional
 import numpy as np
 import pandas as pd
 
-from src.main.util.log_util import configure_logger
 from src.main.solution_space.consts import TEST_INPUT
 from src.main.canonicalization.consts import TREE_TYPE
 from src.main.splitting.splitting import find_task_dfs
@@ -22,7 +21,7 @@ from src.main.util.file_util import get_all_file_system_items, get_result_folder
 log = logging.getLogger(LOGGER_NAME)
 
 
-# Finds all fragments, that have the chosen task 'pies'. These fragments may not be solutions of chosen task
+# Finds all fragments that have the chosen task 'pies'. These fragments may not be solutions of chosen task
 # because some users chose the wrong task, so let's call them 'pseudo solutions'.
 # Run it after running tests, but before splitting
 def find_all_pseudo_solutions(path: str, task: TASK, language: LANGUAGE, to_add_int_experience: bool = True,
@@ -87,14 +86,19 @@ def drop_same_anon_trees(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-# Run it after finding all pseudo solutions
-def sample_n_correct_test_inputs(path: str,
+# Run it after finding all pseudo solutions to sample n correct test inputs from pseudo solutions. All dataframes with
+# pseudo solutions are merged together and filtered according to given arguments (include full solutions or not,
+# choose only solutions with given rate, include same anon tree or not). Then, if no specific indices are passed,
+# n random fragments are sampled from merged df. If there are less than n fragments in merged df,
+# all available fragments are taken. If there are specific indices, these fragments are chosen instead of
+# random sampling.
+def sample_n_correct_test_inputs(pseudo_solutions_path: str,
                                  n: int,
                                  specific_indices: Optional[List[int]] = None,
                                  to_include_full_solutions: bool = False,
                                  rate: Optional[float] = None,
                                  to_include_same_anon_fragments: bool = False) -> List[TestInput]:
-    files = get_all_file_system_items(path, ct_file_condition)
+    files = get_all_file_system_items(pseudo_solutions_path, ct_file_condition)
     dfs = list(map(lambda file: pd.read_csv(file, encoding=ISO_ENCODING), files))
     merged_df = pd.concat(dfs, ignore_index=True)
 
@@ -122,8 +126,9 @@ def sample_n_correct_test_inputs(path: str,
 
     test_inputs = []
     for i, row in n_random_rows.iterrows():
-        # print(f'{i}, ', end='')
         log.info(f'random row {i}')
+        # Add index in the dataframe to the test_input to ba able identify it later.
+        # For example, if we want to sample specific indices again, we can take such indices from previous test_inputs
         test_inputs.append({TEST_INPUT.SOURCE_CODE: row[CODE_TRACKER_COLUMN.FRAGMENT.value].rstrip('\n'),
                             TEST_INPUT.RATE: row[CODE_TRACKER_COLUMN.TESTS_RESULTS.value],
                             TEST_INPUT.AGE: row[CODE_TRACKER_COLUMN.AGE.value],
@@ -131,10 +136,5 @@ def sample_n_correct_test_inputs(path: str,
                                 __get_enum_or_default(INT_EXPERIENCE,
                                                       row[CODE_TRACKER_COLUMN.INT_EXPERIENCE.value],
                                                       DEFAULT_VALUE.INT_EXPERIENCE),
-                            'i': {i}})
-    print('\n')
+                            TEST_INPUT.INDEX: i})
     return test_inputs
-
-
-configure_logger(to_delete_previous_logs=True)
-# 199, 191, 201, 154, 56, 183, 133, 161, 145, 65, 218, 157, 75, 24, 25, 111, 175, 88, 162, 174, 36, 71, 156, 163, 108, 188, 17, 192, 14, 142, 147, 112, 204, 128, 225, 1, 180, 165, 62, 190, 70, 78, 238, 79, 241, 124, 248, 55, 10, 146,

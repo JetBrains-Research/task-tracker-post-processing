@@ -39,7 +39,7 @@ class IPathFinder(object, metaclass=ABCMeta):
     # Make sure code_info_list from user_anon_tree contains one code_info
     @abstractmethod
     def find_next_anon_tree(self, user_anon_tree: AnonTree, user_canon_tree: ast.AST,
-                            candidates_file_id: Optional[int] = None) -> AnonTree:
+                            candidates_file_id: Optional[str] = None) -> AnonTree:
         raise NotImplementedError
 
     def write_candidates_info_to_file(self, candidates: List[IMeasuredTree],
@@ -59,7 +59,6 @@ class IPathFinder(object, metaclass=ABCMeta):
         log.info(f'Candidates were written in the file {file_path}')
         return file_path
 
-    def get_file_prefix_by_user_tree(self, file_id: int) -> str:
-        res = str(file_id)
-        return f'{res}_{self.__class__.__name__}_{self.measured_vertex_subclass.__name__}'
+    def get_file_prefix_by_user_tree(self, file_id: str) -> str:
+        return f'{file_id}_{self.__class__.__name__}_{self.measured_vertex_subclass.__name__}'
 

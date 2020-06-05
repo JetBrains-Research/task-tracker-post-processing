@@ -36,13 +36,13 @@ class PathFinderV5(IPathFinder):
     to_add_empty_tree_to_goals = False
     to_add_empty_tree_to_graph = True
 
-    to_add_same_structure_trees_to_goals = True
+    to_add_same_structure_trees_to_goals = False
     to_add_same_structure_trees_to_graph = True
 
     @doc_param(graph_tree_stop_earlier, graph_tree_lower_bound, goal_tree_stop_earlier, goal_tree_lower_bound,
                to_add_empty_tree_to_graph, to_add_empty_tree_to_goals)
     def find_next_anon_tree(self, user_anon_tree: AnonTree, user_canon_tree: ast.AST,
-                            candidates_file_id: Optional[int] = None) -> AnonTree:
+                            candidates_file_id: Optional[str] = None) -> AnonTree:
         """
         1. Find the same tree SAME_TREE in the graph and get the best tree from next trees (__find_same_tree_in_graph)
         2. If SAME_TREE is not None, return SAME_TREE
@@ -117,7 +117,7 @@ class PathFinderV5(IPathFinder):
     def __get_items_nodes_number_dict(items: List[Any]) -> Dict[int, list]:
         return {k: list(v) for k, v in groupby(items, lambda item: item.nodes_number)}
 
-    @doc_param(anon_top_n, canon_top_n)
+    @doc_param(anon_top_n, canon_top_n, same_structure_top_n)
     def __find_closest_tree(self, user_anon_tree: AnonTree, user_canon_nodes_number: int,
                             canon_nodes_numbers_dict: Dict[int, list],
                             candidates_file_name: str,
@@ -127,8 +127,11 @@ class PathFinderV5(IPathFinder):
                             to_add_same_structure_trees: bool = False) -> Optional[AnonTree]:
         """
         1. Consider each vertex with similar nodes number as candidate (chose at least TOP_N_CANON = {1} candidates)
-        2. Choose at least TOP_N_ANON = {0} anon trees from canon candidates, add empty tree if needed,
-         and run __choose_best_anon_tree
+        2. Choose at least TOP_N_ANON = {0} anon trees from canon candidates
+        3. Consider each anon tree with same structure as candidate
+        4. Choose at least {2} trees according to nodes number from same tree candidates
+        4. Add empty tree if needed
+        5. Run __choose_best_anon_tree on all candidates
         """
 
         # Get vertices ids with canon trees, which have nodes number similar to user canon_nodes_number
@@ -189,7 +192,7 @@ class PathFinderV5(IPathFinder):
         return self.__find_closest_tree(user_anon_tree, user_canon_nodes_number, self.graph.goals_nodes_number_dict,
                                         candidates_file_name='goal_candidates',
                                         can_stop_earlier=self.goal_tree_stop_earlier,
-                                        to_use_lower_bound=self.graph_tree_lower_bound,
+                                        to_use_lower_bound=self.goal_tree_lower_bound,
                                         to_add_empty_tree=self.to_add_empty_tree_to_goals,
                                         to_add_same_structure_trees=self.to_add_same_structure_trees_to_goals)
 

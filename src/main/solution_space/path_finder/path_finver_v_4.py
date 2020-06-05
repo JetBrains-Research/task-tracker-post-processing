@@ -13,7 +13,7 @@ from src.main.solution_space.path_finder.path_finder import IPathFinder, log
 from src.main.canonicalization.canonicalization import get_code_from_tree, get_nodes_number_in_ast
 
 
-@skip('')
+@skip('Doesn\'t consider fragments structure')
 class PathFinderV4(IPathFinder):
     candidates_file_prefix: Optional[str] = None
 
@@ -35,7 +35,7 @@ class PathFinderV4(IPathFinder):
 
     @doc_param(graph_tree_stop_earlier, graph_tree_lower_bound, goal_tree_stop_earlier, goal_tree_lower_bound)
     def find_next_anon_tree(self, user_anon_tree: AnonTree, user_canon_tree: ast.AST,
-                            candidates_file_id: Optional[int] = None) -> AnonTree:
+                            candidates_file_id: Optional[str] = None) -> AnonTree:
         """
         1. Find the same tree SAME_TREE in the graph and get the best tree from next trees (__find_same_tree_in_graph)
         2. If SAME_TREE is not None, return SAME_TREE
