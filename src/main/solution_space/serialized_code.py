@@ -246,7 +246,7 @@ class SerializedCode(IdCounter, PrettyString, ISerializedObject):
         PrettyString.__init__(self)
         IdCounter.__init__(self)
         ISerializedObject.__init__(self, folder_with_files=folder_with_files, file_prefix=file_prefix,
-                                   language=code.language)
+                                   language=code.language, to_delete_prev_folder=False)
         anon_tree = AnonTree(code.anon_tree, code.rate,
                              self.get_file_path(f'{TREE_TYPE.ANON.value}', self.id), code_info)
         self._anon_trees = [anon_tree]
