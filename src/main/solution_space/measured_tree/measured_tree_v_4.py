@@ -10,7 +10,7 @@ from src.main.solution_space.path_finder.path_finder import log
 from src.main.solution_space.path_finder_test_system import doc_param, skip
 from src.main.solution_space.measured_tree.measured_tree import IMeasuredTree
 
-@skip(reason='')
+@skip('Version 7 is better')
 class MeasuredTreeV4(IMeasuredTree):
     _age_w = 0.15
     _exp_w = 0.15

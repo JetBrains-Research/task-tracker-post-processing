@@ -4,14 +4,14 @@ from __future__ import annotations
 
 from typing import Tuple
 
-from src.main.canonicalization.diffs.gumtree import GumTreeDiff
 from src.main.util.log_util import log_and_raise_error
 from src.main.solution_space.serialized_code import AnonTree
 from src.main.solution_space.path_finder.path_finder import log
+from src.main.canonicalization.diffs.gumtree import GumTreeDiff
 from src.main.solution_space.path_finder_test_system import doc_param, skip
 from src.main.solution_space.measured_tree.measured_tree import IMeasuredTree
 
-@skip('')
+@skip('Version 7 is better')
 class MeasuredTreeV6(IMeasuredTree):
     _age_w = 0.15
     _exp_w = 0.15
@@ -20,12 +20,6 @@ class MeasuredTreeV6(IMeasuredTree):
     _rollback_w = 4.0
     _rate_w = 0.3
     _structure_w = 6.5
-    # _structure_w = 7.0
-
-    # def _IMeasuredTree__init_diffs_number_and_rollback_probability(self) -> None:
-    #     self._diffs_number, delete_edits = GumTreeDiff \
-    #         .get_diffs_and_delete_edits_numbers(self.user_tree.tree_file, self.candidate_tree.tree_file)
-    #     self._rollback_probability = delete_edits
 
     def _IMeasuredTree__init_diffs_number_and_rollback_probability(self) -> None:
         self._diffs_number, delete_edits = GumTreeDiff \
@@ -46,12 +40,12 @@ class MeasuredTreeV6(IMeasuredTree):
         """
         # TODO: 43 is the number of users in the whole graph. We should definitely rewrite it and make better
         distance = self._diffs_w * self._diffs_number\
-                   + self._users_w * self.users_count / 16 \
+                   + self._users_w * self.users_count / 43 \
                    + self._rate_w * (self.user_tree.rate - self.candidate_tree.rate)\
                    + self._rollback_w * self.rollback_probability\
                    + self._structure_w * (self.user_tree.get_structure_dif(self.candidate_tree))
         distance_info = f'(diffs: {self._diffs_w} * {self._diffs_number}) + ' \
-                        f'(users: {self._users_w} * {self.users_count} / 16) + ' \
+                        f'(users: {self._users_w} * {self.users_count} / 43) + ' \
                         f'(rate: {self._rate_w} * ({self.user_tree.rate} - {self.candidate_tree.rate})) + ' \
                         f'(rollback: {self._rollback_w} * {self.rollback_probability}) + ' \
                         f'(structure: {self._structure_w} * {self.user_tree.get_structure_dif(self.candidate_tree)})'

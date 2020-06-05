@@ -2,15 +2,14 @@
 
 from __future__ import annotations
 
-import sys
 from typing import Tuple
 
-from src.main.canonicalization.canonicalization import are_asts_equal
-from src.main.canonicalization.diffs.gumtree import GumTreeDiff
 from src.main.util.log_util import log_and_raise_error
 from src.main.solution_space.serialized_code import AnonTree
+from src.main.canonicalization.diffs.gumtree import GumTreeDiff
 from src.main.solution_space.path_finder.path_finder import log
 from src.main.solution_space.path_finder_test_system import doc_param
+from src.main.canonicalization.canonicalization import are_asts_equal
 from src.main.solution_space.measured_tree.measured_tree import IMeasuredTree
 
 
@@ -22,7 +21,6 @@ class MeasuredTreeV7(IMeasuredTree):
     _rollback_w = 4.0
     _rate_w = 0.3
     _structure_w = 6.5
-    # _structure_w = 7.0
 
     # def _IMeasuredTree__init_diffs_number_and_rollback_probability(self) -> None:
     #     self._diffs_number, delete_edits = GumTreeDiff \
