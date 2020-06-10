@@ -10,7 +10,7 @@ from src.main.util import consts
 from src.main.util.consts import TASK
 from src.main.util.log_util import log_and_raise_error
 from src.main.preprocessing.code_tracker_handler import get_ct_language
-from src.main.util.file_util import get_all_file_system_items, ct_file_condition, get_result_folder, \
+from src.main.util.file_util import get_all_file_system_items, ct_file_condition, get_output_directory, \
     write_based_on_language, get_name_from_path, get_parent_folder_name, get_extension_from_file
 
 log = logging.getLogger(consts.LOGGER_NAME)
@@ -74,7 +74,7 @@ def find_task_dfs(df: pd.DataFrame, task: consts.TASK) -> List[pd.DataFrame]:
 # 2.0 version with a different task_df extraction
 def split_tasks_into_separate_files(path: str, result_name_suffix: str = 'separated_tasks') -> str:
     files = get_all_file_system_items(path, ct_file_condition)
-    result_folder = get_result_folder(path, result_name_suffix)
+    output_directory = get_output_directory(path, result_name_suffix)
     for file in files:
         log.info(f'Start splitting file {file}')
         ct_df = pd.read_csv(file, encoding=consts.ISO_ENCODING)
@@ -87,5 +87,5 @@ def split_tasks_into_separate_files(path: str, result_name_suffix: str = 'separa
                     # Change name to get something like pies/ati_207_test_5894859_i.csv
                     filename = task.value + '/' + get_parent_folder_name(file) + '_' + get_name_from_path(file, False) \
                                + f'_{i}' + get_extension_from_file(file).value
-                    write_based_on_language(result_folder, filename, task_df, language)
-    return result_folder
+                    write_based_on_language(output_directory, filename, task_df, language)
+    return output_directory

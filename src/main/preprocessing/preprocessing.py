@@ -13,7 +13,7 @@ from src.main.preprocessing.code_tracker_handler import handle_ct_file
 from src.main.preprocessing.activity_tracker_handler import handle_ati_file, get_ct_name_from_ati_data, \
     get_files_from_ati
 from src.main.util.file_util import get_original_file_name, get_all_file_system_items, data_subdirs_condition, \
-    get_parent_folder_name, get_result_folder, write_result, extension_file_condition
+    get_parent_folder_name, get_output_directory, write_result, extension_file_condition
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -80,7 +80,7 @@ def handle_ct_and_at(ct_file: str, ct_df: pd.DataFrame, ati_file: str, ati_df: p
 
 
 def preprocess_data(path: str) -> str:
-    result_folder = get_result_folder(path, consts.PREPROCESSING_RESULT_FOLDER)
+    output_directory = get_output_directory(path, consts.PREPROCESSING_OUTPUT_DIRECTORY)
     folders = get_all_file_system_items(path, data_subdirs_condition, consts.FILE_SYSTEM_ITEM.SUBDIR)
     for folder in folders:
         log.info(f'Start handling the folder {folder}')
@@ -97,7 +97,7 @@ def preprocess_data(path: str) -> str:
             ct_df, language = handle_ct_file(ct_file)
             ct_df = handle_ct_and_at(ct_file, ct_df, ati_file, ati_df, language)
 
-            write_result(result_folder, path, ct_file, ct_df)
+            write_result(output_directory, path, ct_file, ct_df)
 
         log.info(f'Finish handling the folder {folder}')
-    return result_folder
+    return output_directory

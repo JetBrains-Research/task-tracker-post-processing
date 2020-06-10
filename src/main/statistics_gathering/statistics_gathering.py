@@ -12,7 +12,7 @@ from src.main.util.log_util import log_and_raise_error
 from src.main.preprocessing.code_tracker_handler import handle_ct_file
 from src.main.statistics_gathering.util import Profile, AgeAndExperience, InvalidProfile, InvalidAgeAndExperience, \
     Statistics, InvalidAge, InvalidExperience, StatisticsValue, TaskStatistics
-from src.main.util.file_util import get_name_from_path, ct_file_condition, get_result_folder, change_extension_to,\
+from src.main.util.file_util import get_name_from_path, ct_file_condition, get_output_directory, change_extension_to,\
     serialize_data_and_write_to_file, data_subdirs_condition, get_all_file_system_items, contains_substrings_condition
 
 log = logging.getLogger(consts.LOGGER_NAME)
@@ -91,18 +91,18 @@ def __add_values_in_statistics_dict(statistics: Statistics, age: InvalidAge, exp
     __update_statistics_dict_column(statistics, STATISTICS_KEY.EXPERIENCE, experience)
 
 
-def __write_key_result(statistics_value: StatisticsValue, result_folder: str, file_name: str) -> None:
-    file_path = os.path.join(result_folder, change_extension_to(file_name, consts.EXTENSION.PICKLE))
+def __write_key_result(statistics_value: StatisticsValue, output_directory: str, file_name: str) -> None:
+    file_path = os.path.join(output_directory, change_extension_to(file_name, consts.EXTENSION.PICKLE))
     serialize_data_and_write_to_file(file_path, statistics_value)
 
 
-def __write_results(result_folder: str, statistics: Statistics) -> None:
+def __write_results(output_directory: str, statistics: Statistics) -> None:
     for key in statistics.keys():
-        __write_key_result(statistics[key], result_folder, key.value)
+        __write_key_result(statistics[key], output_directory, key.value)
 
 
 def get_profile_statistics(path: str) -> str:
-    result_folder = get_result_folder(path, consts.STATISTICS_RESULT_FOLDER)
+    output_directory = get_output_directory(path, consts.STATISTICS_OUTPUT_DIRECTORY)
     folders = get_all_file_system_items(path, data_subdirs_condition, consts.FILE_SYSTEM_ITEM.SUBDIR)
     statistics = __get_empty_statistics_dict()
     for folder in folders:
@@ -112,8 +112,8 @@ def get_profile_statistics(path: str) -> str:
         log.info(f'Folder: {folder}, age is {age}, experience is {experience}')
         __add_values_in_statistics_dict(statistics, age, experience)
 
-    __write_results(result_folder, statistics)
-    return result_folder
+    __write_results(output_directory, statistics)
+    return output_directory
 
 
 # Run after 'split_tasks_into_separate_files' to return simple statistics dictionary

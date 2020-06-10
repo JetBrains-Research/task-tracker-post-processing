@@ -157,12 +157,12 @@ class LANGUAGE(Enum):
     PYTHON = 'python'
     KOTLIN = 'kotlin'
     CPP = 'cpp'
-    NOT_DEFINED = 'not_defined'
+    UNDEFINED = 'undefined'
 
 
 class TEST_RESULT(Enum):
     INCORRECT_CODE = -1
-    LANGUAGE_NOT_DEFINED = -2
+    LANGUAGE_UNDEFINED = -2
     # It can be incorrect although, but our checking tools cannot find any errors
     CORRECT_CODE = 0
     # It means that all tests are passed
@@ -203,7 +203,7 @@ EXTENSION_TO_LANGUAGE_DICT: Dict[EXTENSION, LANGUAGE] = {
     EXTENSION.JAVA: LANGUAGE.JAVA,
     EXTENSION.KT: LANGUAGE.KOTLIN,
     EXTENSION.CPP: LANGUAGE.CPP,
-    EXTENSION.EMPTY: LANGUAGE.NOT_DEFINED
+    EXTENSION.EMPTY: LANGUAGE.UNDEFINED
 }
 
 
@@ -241,15 +241,15 @@ GRAPH_REPRESENTATION_PATH = os.path.join(RESOURCES_PATH, 'graph_representation')
 SERIALIZED_GRAPH_PATH = os.path.join(RESOURCES_PATH, 'serialized_graph')
 SOLUTION_SPACE_TEST_RESULT_PATH = os.path.join(RESOURCES_PATH, 'solution_space')
 
-PREPROCESSING_RESULT_FOLDER = 'preprocessing_result'
-STATISTICS_RESULT_FOLDER = 'statistics_result'
+PREPROCESSING_OUTPUT_DIRECTORY = 'preprocessing_result'
+STATISTICS_OUTPUT_DIRECTORY = 'statistics_result'
 
 # Todo: use zip
 GUMTREE_PATH = os.path.join(RESOURCES_PATH, 'gumtree/bin/gumtree')
 
 # v 2.0 - with stopping after the first break
 # v 3.0 - with java package detecting
-RUNNING_TESTS_RESULT_FOLDER = 'running_tests_result_3'
+RUNNING_TESTS_OUTPUT_DIRECTORY = 'running_tests_result_3'
 
 MAX_DIFF_SYMBOLS = 30
 
