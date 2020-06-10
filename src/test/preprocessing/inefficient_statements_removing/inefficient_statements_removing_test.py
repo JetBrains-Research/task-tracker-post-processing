@@ -5,7 +5,7 @@ import pandas as pd
 
 from src.main.util import consts
 from src.test.test_config import to_skip, TEST_LEVEL
-from src.main.preprocessing.inefficient_statements_removing import __remove_inefficient_statements_from_df
+from src.main.preprocessing.inefficient_statements_removing import remove_inefficient_statements_from_df
 
 # Hidden SettingWithCopyWarning
 pd.options.mode.chained_assignment = None
@@ -18,7 +18,7 @@ source_3 = 'g3 = int\n0\nprint()'
 
 
 def run_test(input_df: pd.DataFrame, expected_df: pd.DataFrame) -> bool:
-    input_df = __remove_inefficient_statements_from_df(input_df)
+    input_df = remove_inefficient_statements_from_df(input_df)
     input_df.index = [*range(input_df.shape[0])]
     return input_df.equals(expected_df)
 

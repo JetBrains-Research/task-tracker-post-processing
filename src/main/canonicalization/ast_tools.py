@@ -49,7 +49,7 @@ class AstStructure:
         return nodes_number
 
     def eq_counted_nodes(self, other: AstStructure) -> bool:
-        return not any([self._counted_nodes[n] != other._counted_nodes[n] for n in self._nodes_to_count])
+        return all([self._counted_nodes[n] == other._counted_nodes[n] for n in self._nodes_to_count])
 
     # Note, it doesn't consider nodes number in AST
     def __sub__(self, other: AstStructure) -> int:

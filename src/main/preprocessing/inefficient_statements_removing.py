@@ -34,9 +34,9 @@ def __has_inefficient_statements(source: str) -> bool:
         return contains_any_of_substrings(output, consts.PYLINT_KEY_WORDS)
 
 
-def __remove_inefficient_statements_from_df(df: pd.DataFrame) -> pd.DataFrame:
+def remove_inefficient_statements_from_df(df: pd.DataFrame) -> pd.DataFrame:
     return df[df.apply(lambda row: not __has_inefficient_statements(row[FRAGMENT]), axis=1)]
 
 
 def remove_inefficient_statements(path: str, result_folder_prefix: str = 'remove_inefficient_statements') -> str:
-    return handle_folder(path, result_folder_prefix, __remove_inefficient_statements_from_df)
+    return handle_folder(path, result_folder_prefix, remove_inefficient_statements_from_df)
