@@ -3,6 +3,8 @@
 import os
 from enum import Enum
 
+from src.main.util.consts import TASK
+
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -21,8 +23,11 @@ class TEST_INPUT(Enum):
     AGE = 'age'
     INT_EXPERIENCE = 'experience'
 
-
-
+# Number of users, whose solutions are used in solution graph
+USERS_NUMBER = {
+    TASK.PIES: 43,
+    TASK.BRACKETS: 22
+}
 
 SOLUTION_SPACE_FOLDER = ROOT_DIR + '/../../resources/solution_space'
 TEST_SYSTEM_FRAGMENTS = ROOT_DIR + '/../../resources/test_system/fragments'

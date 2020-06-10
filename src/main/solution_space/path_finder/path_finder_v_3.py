@@ -77,7 +77,7 @@ class PathFinderV3(IPathFinder):
             graph_anon_tree = graph_vertex.serialized_code.find_anon_tree(user_anon_tree.tree)
             if graph_anon_tree:
                 next_anon_trees = [AnonTree.get_item_by_id(id) for id in graph_anon_tree.next_anon_trees_ids]
-                self.write_candidates_info_to_file(next_anon_trees,
+                self.write_candidates_info_to_file(user_anon_tree, next_anon_trees,
                                                    f'{self.candidates_file_prefix}_same_tree_candidates')
                 return self.__choose_best_anon_tree(user_anon_tree, next_anon_trees)
         return None
@@ -104,7 +104,8 @@ class PathFinderV3(IPathFinder):
         anon_nodes_numbers_dict = self.__get_items_nodes_number_dict(anon_trees)
         anon_candidates = self.__get_top_n_candidates(self.anon_top_n, user_anon_tree.nodes_number, anon_nodes_numbers_dict)
 
-        self.write_candidates_info_to_file(anon_candidates, f'{self.candidates_file_prefix}_{candidates_file_name}')
+        self.write_candidates_info_to_file(user_anon_tree, anon_candidates,
+                                           f'{self.candidates_file_prefix}_{candidates_file_name}')
         return self.__choose_best_anon_tree(user_anon_tree, anon_candidates)
 
     @doc_param(nodes_number_percent_close_to_goals)

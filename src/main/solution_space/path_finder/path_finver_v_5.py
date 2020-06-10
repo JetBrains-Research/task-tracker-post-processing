@@ -63,7 +63,6 @@ class PathFinderV5(IPathFinder):
         same_tree = self.__find_same_tree_in_graph(user_anon_tree, user_canon_tree)
         if same_tree is not None:
             log.info(f'Found the same tree. Chosen anon tree:\n{get_code_from_tree(same_tree.tree)}')
-            print('same tree')
             return same_tree
 
         log.info('Same tree not found')
@@ -263,7 +262,8 @@ class PathFinderV5(IPathFinder):
             return None
         candidates = list(map(lambda anon_tree: self.get_measured_tree(user_anon_tree, anon_tree), anon_trees))
 
-        self.write_candidates_info_to_file(candidates, f'{self.candidates_file_prefix}_{candidates_file_name}')
+        self.write_candidates_info_to_file(user_anon_tree, candidates,
+                                           f'{self.candidates_file_prefix}_{candidates_file_name}')
 
         candidates.sort()
         log.info(f'The best vertex id is {candidates[0].candidate_tree.id}')

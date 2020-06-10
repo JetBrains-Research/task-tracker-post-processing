@@ -60,6 +60,7 @@ class HintHandler(ISerializedObject):
             recommended_tree = diff_handler.apply_diffs(diffs, tree_type)
             return Hint(get_code_from_tree(recommended_tree))
         except UnboundLocalError:
+            # Something went wrong in Kelly Rivers applying diffs
             return Hint('UnboundLocalError')
 
     def get_hint(self, source_code: str, profile: Profile, path_finder: IPathFinder,

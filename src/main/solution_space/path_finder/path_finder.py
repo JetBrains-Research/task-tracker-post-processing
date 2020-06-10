@@ -33,7 +33,7 @@ class IPathFinder(object, metaclass=ABCMeta):
         return self._measured_vertex_subclass
 
     def get_measured_tree(self, user_tree: AnonTree, candidate_tree: AnonTree) -> IMeasuredTree:
-        return self._measured_vertex_subclass(user_tree, candidate_tree)
+        return self._measured_vertex_subclass(user_tree, candidate_tree, self._graph.task)
 
     # Find the next anon tree
     # Make sure code_info_list from user_anon_tree contains one code_info
@@ -42,9 +42,8 @@ class IPathFinder(object, metaclass=ABCMeta):
                             candidates_file_id: Optional[str] = None) -> AnonTree:
         raise NotImplementedError
 
-    def write_candidates_info_to_file(self, candidates: List[IMeasuredTree],
+    def write_candidates_info_to_file(self, user_tree: AnonTree, candidates: List[IMeasuredTree],
                                       file_prefix: str = 'candidates', path: Optional[str] = None) -> str:
-        user_tree = candidates[0].user_tree
         user_info = f'profile: {user_tree.code_info_list[0].user.profile},\n\n' \
                     f'{get_code_from_tree(user_tree.tree)}\n\n\n\n\n'
         candidates_info = ''.join([f'Tree id: {candidate.candidate_tree.id},\n'

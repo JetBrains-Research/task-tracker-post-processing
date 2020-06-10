@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Tuple
 
 from src.main.util.log_util import log_and_raise_error
+from src.main.solution_space.consts import USERS_NUMBER
 from src.main.solution_space.serialized_code import AnonTree
 from src.main.solution_space.path_finder.path_finder import log
 from src.main.solution_space.path_finder_test_system import doc_param, skip
@@ -30,12 +31,12 @@ class MeasuredTreeV4(IMeasuredTree):
         5. (if possible) abs difference between age, weight: {4}
         6. (if possible) abs difference between exp, weight: {5}
         """
-        distance = self._diffs_w * self._diffs_number\
-                   + self._users_w * self.users_count / 43 \
-                   + self._rate_w * (self.user_tree.rate - self.candidate_tree.rate)\
+        distance = self._diffs_w * self._diffs_number \
+                   + self._users_w * self.users_number / USERS_NUMBER[self._task] \
+                   + self._rate_w * (self.user_tree.rate - self.candidate_tree.rate) \
                    + self._rollback_w * self.rollback_probability
         distance_info = f'(diffs: {self._diffs_w} * {self._diffs_number}) + ' \
-                        f'(users: {self._users_w} * {self.users_count} / 43) + ' \
+                        f'(users: {self._users_w} * {self.users_number} / {USERS_NUMBER[self._task]}) + ' \
                         f'(rate: {self._rate_w} * ({self.user_tree.rate} - {self.candidate_tree.rate})) + ' \
                         f'(rollback: {self._rollback_w} * {self.rollback_probability})'
 

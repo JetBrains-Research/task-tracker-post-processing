@@ -31,7 +31,7 @@ class MeasuredTreeV2(IMeasuredTree):
         """
 
         distance = self._diffs_w * self._diffs_number\
-                   + self._users_w * self.users_count\
+                   + self._users_w * self.users_number\
                    + self._rate_w * (self.user_tree.rate - self.candidate_tree.rate)\
                    + self._rollback_w * self.rollback_probability
 

@@ -2,21 +2,23 @@
 
 from __future__ import annotations
 
-from abc import ABCMeta, abstractmethod
 from typing import Tuple
+from abc import ABCMeta, abstractmethod
 
+from src.main.util.consts import TASK
 from src.main.solution_space.serialized_code import AnonTree
 from src.main.canonicalization.diffs.gumtree import GumTreeDiff
 
 
 class IMeasuredTree(object, metaclass=ABCMeta):
 
-    def __init__(self, user_tree: AnonTree, candidate_tree: AnonTree):
+    def __init__(self, user_tree: AnonTree, candidate_tree: AnonTree, task: TASK):
         self._user_tree = user_tree
         self._candidate_tree = candidate_tree
         self.__init_diffs_number_and_rollback_probability()
         self._users_count = len(candidate_tree.get_unique_users())
         self._distance_to_user, self._distance_info = self.__calculate_distance_to_user()
+        self._task = TASK
 
     @abstractmethod
     def __init_diffs_number_and_rollback_probability(self) -> None:
@@ -49,7 +51,7 @@ class IMeasuredTree(object, metaclass=ABCMeta):
         return self._rollback_probability
 
     @property
-    def users_count(self) -> int:
+    def users_number(self) -> int:
         return self._users_count
 
     # Together with distance (float) we want to get distance info (str) to know how distance was count

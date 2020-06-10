@@ -4,7 +4,6 @@ import os
 import logging
 from typing import Optional
 
-from src.main.solution_space.serialized_code import AnonTree
 from src.main.util.log_util import log_and_raise_error
 from src.main.util.helper_classes.id_counter import IdCounter
 from src.main.solution_space.solution_graph import SolutionGraph
@@ -51,9 +50,3 @@ class SolutionSpaceSerializer:
         except OSError:
             log_and_raise_error(f'OSError during the deserialized graph process. '
                                 f'Serialized graph path is {serialized_graph_path}', log, OSError)
-
-#
-# graph = SolutionSpaceSerializer.deserialize('/home/elena/workspaces/python/codetracker-data/src/resources/serialized_graph/graph_0_pies.pickle')
-# print(graph.task)
-# for k, v in graph.anon_structure_dict.items():
-#     print(k, len(v), v)

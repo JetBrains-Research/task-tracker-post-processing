@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+import math
 from typing import Tuple
 
 from src.main.util.log_util import log_and_raise_error
+from src.main.solution_space.consts import USERS_NUMBER
 from src.main.solution_space.serialized_code import AnonTree
 from src.main.canonicalization.diffs.gumtree import GumTreeDiff
 from src.main.solution_space.path_finder.path_finder import log
@@ -29,13 +31,12 @@ class MeasuredTreeV7(IMeasuredTree):
 
     def _IMeasuredTree__init_diffs_number_and_rollback_probability(self) -> None:
         if are_asts_equal(self._user_tree.tree, self._candidate_tree.tree):
-            self._diffs_number = 9223372036854775807
+            self._diffs_number = math.inf
             self._rollback_probability = 0
         else:
             diffs_number, delete_edits = GumTreeDiff \
                 .get_diffs_and_delete_edits_numbers(self.user_tree.tree_file, self.candidate_tree.tree_file)
-            # TODO: use infinite
-            self._diffs_number = diffs_number if diffs_number != 0 else 9223372036854775807
+            self._diffs_number = diffs_number if diffs_number != 0 else math.inf
             self._rollback_probability = 0 if diffs_number == 0 else delete_edits / diffs_number
 
     @doc_param(_diffs_w, _users_w, _rate_w, _rollback_w, _age_w, _exp_w, _structure_w)
@@ -50,14 +51,13 @@ class MeasuredTreeV7(IMeasuredTree):
         6. (if possible) abs difference between age, weight: {4}
         7. (if possible) abs difference between exp, weight: {5}
         """
-        # TODO: 43 is the number of users in the whole graph. We should definitely rewrite it and make better
-        distance = self._diffs_w * self._diffs_number\
-                   + self._users_w * self.users_count / 43 \
-                   + self._rate_w * (self.user_tree.rate - self.candidate_tree.rate)\
-                   + self._rollback_w * self.rollback_probability\
+        distance = self._diffs_w * self._diffs_number \
+                   + self._users_w * self.users_number / USERS_NUMBER[self._task] \
+                   + self._rate_w * (self.user_tree.rate - self.candidate_tree.rate) \
+                   + self._rollback_w * self.rollback_probability \
                    + self._structure_w * (self.user_tree.ast_structure - self.candidate_tree.ast_structure)
         distance_info = f'(diffs: {self._diffs_w} * {self._diffs_number}) + ' \
-                        f'(users: {self._users_w} * {self.users_count} / 43) + ' \
+                        f'(users: {self._users_w} * {self.users_number} / {USERS_NUMBER[self._task]}) + ' \
                         f'(rate: {self._rate_w} * ({self.user_tree.rate} - {self.candidate_tree.rate})) + ' \
                         f'(rollback: {self._rollback_w} * {self.rollback_probability}) + ' \
                         f'(structure: {self._structure_w} * {self.user_tree.ast_structure - self.candidate_tree.ast_structure})'

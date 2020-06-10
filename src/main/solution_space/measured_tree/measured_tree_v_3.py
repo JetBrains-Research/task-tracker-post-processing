@@ -31,11 +31,11 @@ class MeasuredTreeV3(IMeasuredTree):
         6. (if possible) abs difference between exp, weight: {5}
         """
         distance = self._diffs_w * self._diffs_number\
-                   + self._users_w * self.users_count\
+                   + self._users_w * self.users_number\
                    + self._rate_w * (self.user_tree.rate - self.candidate_tree.rate)\
                    + self._rollback_w * self.rollback_probability
         distance_info = f'(diffs: {self._diffs_w} * {self._diffs_number}) + ' \
-                        f'(users: {self._users_w} * {self.users_count}) + ' \
+                        f'(users: {self._users_w} * {self.users_number}) + ' \
                         f'(rate: {self._rate_w} * ({self.user_tree.rate} - {self.candidate_tree.rate})) + ' \
                         f'(rollback: {self._rollback_w} * {self.rollback_probability})'
 
