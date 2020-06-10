@@ -41,12 +41,9 @@ class Evaluation:
         if pseudo_solutions_path and test_inputs_number:
             self._test_inputs = sample_n_correct_test_inputs(pseudo_solutions_path, test_inputs_number)
         else:
-            try:
-                self._test_inputs = deserialize_data_from_file(test_inputs_file)
-            except OSError:
-                log_and_raise_error(f'OSError during restoring test_inputs from path {test_inputs_file}.', log, OSError)
+            self._test_inputs = deserialize_data_from_file(test_inputs_file)
 
-        print(self._test_inputs)
+        log.info(f'Test inputs: {self._test_inputs}')
         if store_test_inputs:
             serialize_data_and_write_to_file(test_inputs_file, self._test_inputs)
 
@@ -58,7 +55,6 @@ class Evaluation:
     # time, nodes_number and test_input index for each of test_inputs
     def evaluate_time(self, test_inputs_number: int, repeat: int = 3) -> List[Tuple[float, int, str]]:
         results = []
-        all_time = 0
         for i, t_i in enumerate(self._test_inputs):
             log.info(f'Run {i} test_input')
             anon_tree, canon_tree = TestSystem.create_user_trees(self._hint_handler, t_i)
@@ -67,11 +63,9 @@ class Evaluation:
                 self._path_finder.find_next_anon_tree(anon_tree, canon_tree)
 
             time = min(timeit.Timer(partial(to_time)).repeat(3, repeat)) / repeat
-            log.info(f'time: {time}')
+            log.info(f'Time: {time}')
             results.append((time, anon_tree.nodes_number, t_i[TEST_INPUT.INDEX]))
-            all_time += time
-        log.info(results)
-        log.info(all_time)
+        log.info(f'Time evaluation results {results}')
 
         return results
 
@@ -80,15 +74,14 @@ class Evaluation:
     def does_lead_to_full_solution(self, test_inputs_number: int) -> List[Tuple[bool, int]]:
         results = []
         for i, t_i in enumerate(self._test_inputs):
-            print(f'Run {i}/{len(self._test_inputs)} test input, len: {len(t_i[TEST_INPUT.SOURCE_CODE])}')
-            log.info(f'Run {i}/{len(self._test_inputs)} test input')
+            log.info(f'Run {i}/{len(self._test_inputs)} test input, len: {len(t_i[TEST_INPUT.SOURCE_CODE])}')
             anon_tree, canon_tree = TestSystem.create_user_trees(self._hint_handler, t_i)
             prev_anon_trees = [anon_tree.tree]
             steps_n = 0
-            get_same_tree = False
+            same_tree_in_loop = False
             # Keep getting hints until reaching the full solution or getting the same tree again (it means that
             # there is a loop, so we cannot lead to the full solution)
-            while anon_tree.rate != TEST_RESULT.FULL_SOLUTION.value and not get_same_tree:
+            while anon_tree.rate != TEST_RESULT.FULL_SOLUTION.value and not same_tree_in_loop:
                 log.info(f'step: {steps_n}, anon tree:\n {get_code_from_tree(anon_tree.tree)}')
                 anon_tree = self._path_finder.find_next_anon_tree(anon_tree, canon_tree,
                                                                   f'test_result_{i}_step_{steps_n}')
@@ -96,25 +89,21 @@ class Evaluation:
                 steps_n += 1
                 # Check for getting the same tree again
                 for i, prev_anon_tree in enumerate(prev_anon_trees):
-                    print(f'{i} ', end='')
+                    log.info(f'{i} ', end='')
                     if are_asts_equal(anon_tree.tree, prev_anon_tree):
                         log.info(f'Get the same tree, step {steps_n}')
-                        get_same_tree = True
+                        same_tree_in_loop = True
                         break
                 prev_anon_trees.append(anon_tree.tree)
-            results += [(not get_same_tree, steps_n)]
-        print(f'results: {results}')
+            results += [(not same_tree_in_loop, steps_n)]
         log.info(f'results: {results}')
 
         return results
 
     # Generates N = len(name_suffices) files for evaluation, each of them contains
     # evaluation_fragment (taken from given path), repeated N = len(self._test_inputs) times.
-    def generate_file_for_evaluation(self, name_suffices: List[str] = None,
+    def generate_file_for_evaluation(self, name_suffices: List[str],
                                      evaluation_fragment_file: str = EVALUATION_FRAGMENT_PATH) -> None:
-        # Todo: not sure is it right to write our names here
-        if name_suffices is None:
-            name_suffices = ['nastya', 'alyona']
         fragment = get_content_from_file(evaluation_fragment_file, to_strip_nl=False)
         fragments = [f'{t_i[TEST_INPUT.INDEX]}.\n{fragment}' for t_i in self._test_inputs]
         evaluation_content = ''.join(fragments)
