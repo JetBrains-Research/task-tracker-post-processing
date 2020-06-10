@@ -19,8 +19,8 @@ from src.main.util.helper_classes.pretty_string import PrettyString
 from src.main.solution_space import consts as solution_space_consts
 from src.main.util.file_util import remove_directory, create_directory
 from src.main.util.consts import LOGGER_NAME, TASK, LANGUAGE, TEST_RESULT
+from src.main.canonicalization.canonicalization import are_asts_equal, get_code_from_tree, AstStructure
 from src.main.solution_space.consts import GRAPH_FOLDER_PREFIX, SOLUTION_SPACE_FOLDER, FILE_PREFIX, EMPTY_MEDIAN
-from src.main.canonicalization.canonicalization import are_asts_equal, get_code_from_tree, get_nodes_number_in_ast
 
 log = logging.getLogger(LOGGER_NAME)
 
@@ -171,7 +171,7 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
         if vertex.serialized_code.is_full():
             log.info(f'Connect full code to the end vertex')
             self.connect_to_end_vertex(vertex)
-            self.goals_nodes_number_dict[get_nodes_number_in_ast(vertex.serialized_code.canon_tree)].append(vertex.id)
+            self.goals_nodes_number_dict[AstStructure.get_nodes_number_in_ast(vertex.serialized_code.canon_tree)].append(vertex.id)
         return vertex
 
     def find_vertex(self, canon_tree: ast.AST) -> Optional[Vertex]:

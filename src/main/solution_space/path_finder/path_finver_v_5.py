@@ -8,9 +8,9 @@ from typing import List, Optional, Dict, Any
 from src.main.solution_space.solution_graph import Vertex
 from src.main.solution_space.serialized_code import AnonTree
 from src.main.canonicalization.diffs.gumtree import GumTreeDiff
-from src.main.solution_space.path_finder_test_system import doc_param, skip
+from src.main.solution_space.path_finder_test_system import doc_param
 from src.main.solution_space.path_finder.path_finder import IPathFinder, log
-from src.main.canonicalization.canonicalization import get_code_from_tree, get_nodes_number_in_ast
+from src.main.canonicalization.canonicalization import get_code_from_tree, AstStructure
 
 
 class PathFinderV5(IPathFinder):
@@ -68,7 +68,7 @@ class PathFinderV5(IPathFinder):
 
         log.info('Same tree not found')
 
-        canon_nodes_number = get_nodes_number_in_ast(user_canon_tree)
+        canon_nodes_number = AstStructure.get_nodes_number_in_ast(user_canon_tree)
         graph_anon_tree = self.__find_closest_tree(user_anon_tree, canon_nodes_number,
                                                    self.graph.canon_nodes_number_dict,
                                                    to_use_lower_bound=self.graph_tree_lower_bound,

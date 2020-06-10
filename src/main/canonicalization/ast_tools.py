@@ -1,35 +1,62 @@
 # Copyright (c) 2017 Kelly Rivers
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
+from __future__ import annotations
 
 import logging
+import copy, pickle
 from typing import *
-import ast, copy, pickle
+
 from src.main.util import consts
 from src.main.util.namesets import *
-from .display import printFunction
+from src.main.util.log_util import log_and_raise_error
+from src.main.canonicalization.display import printFunction
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
 
-def get_nodes_number_in_ast(tree: ast.AST) -> int:
-    count = 0
-    for node in ast.walk(tree):
-        # Todo: separate operators\variables and others??
-        count += 1
-    return count
+class AstStructure:
+    _nodes_to_count = {ast.If, ast.For, ast.While}
 
-def get_ast_structure(tree: ast.AST) -> Tuple[int, int, int]:
-    if_count = 0
-    for_count = 0
-    while_conut = 0
-    for node in ast.walk(tree):
-        if isinstance(node, ast.If):
-            if_count += 1
-        elif isinstance(node, ast.For):
-            for_count += 1
-        elif isinstance(node, ast.While):
-            while_conut += 1
-    return if_count, for_count, while_conut
+    def __init__(self, counted_nodes: Dict[Type[ast.AST], int], nodes_number: Optional[int] = None):
+        if counted_nodes.keys() != AstStructure._nodes_to_count:
+            log_and_raise_error('Incorrect structure dict passed to the AstStructure, keys should be'
+                                ' equal to _nodes_to_count', log)
+        self._counted_nodes = counted_nodes
+        self._nodes_number = nodes_number
+
+    @property
+    def nodes_number(self) -> Optional[int]:
+        return self._nodes_number
+
+    @staticmethod
+    def get_ast_structure(tree: ast.AST) -> AstStructure:
+        counted_nodes = dict.fromkeys(AstStructure._nodes_to_count, 0)
+        nodes_number = 0
+        for node in ast.walk(tree):
+            nodes_number += 1
+            for key in counted_nodes.keys():
+                if isinstance(node, key):
+                    counted_nodes[key] += 1
+                    break
+        return AstStructure(counted_nodes, nodes_number)
+
+    @staticmethod
+    def get_nodes_number_in_ast(tree: ast.AST) -> int:
+        nodes_number = 0
+        for _ in ast.walk(tree):
+            # Todo: separate operators\variables and others??
+            nodes_number += 1
+        return nodes_number
+
+    def eq_counted_nodes(self, other: AstStructure) -> bool:
+        return not any([self._counted_nodes[n] != other._counted_nodes[n] for n in self._nodes_to_count])
+
+    # Note, it doesn't consider nodes number in AST
+    def __sub__(self, other: AstStructure) -> int:
+        return sum([abs(self._counted_nodes[n] - other._counted_nodes[n]) for n in self._nodes_to_count])
+
+    def __str__(self) -> str:
+        return '/n'.join([f'{n.__name__}: {self._counted_nodes[n]}' for n in self._nodes_to_count])
 
 
 #################### Kelly Rivers part ####################
@@ -916,184 +943,184 @@ def depthOfAST(a):
 
 
 def compareASTs(a, b, checkEquality=False):
-	"""A comparison function for ASTs"""
-	# None before others
-	if a == b == None:
-		return 0
-	elif a == None or b == None:
-		return -1 if a == None else 1
+    """A comparison function for ASTs"""
+    # None before others
+    if a == b == None:
+        return 0
+    elif a == None or b == None:
+        return -1 if a == None else 1
 
-	if type(a) == type(b) == list:
-		if len(a) != len(b):
-			return len(a) - len(b)
-		for i in range(len(a)):
-			r = compareASTs(a[i], b[i], checkEquality=checkEquality)
-			if r != 0:
-				return r
-		return 0
+    if type(a) == type(b) == list:
+        if len(a) != len(b):
+            return len(a) - len(b)
+        for i in range(len(a)):
+            r = compareASTs(a[i], b[i], checkEquality=checkEquality)
+            if r != 0:
+                return r
+        return 0
 
-	# AST before primitive
-	if (not isinstance(a, ast.AST)) and (not isinstance(b, ast.AST)):
-		if type(a) != type(b):
-			builtins = [bool, int, float, str, bytes, complex]
-			if type(a) not in builtins or type(b) not in builtins:
-				log.info(f'MISSING BUILT-IN TYPE: {str(type(a))}, {str(type(b))}, bug')
-			return builtins.index(type(a)) - builtins.index(type(b))
-		return cmp(a, b)
-	elif (not isinstance(a, ast.AST)) or (not isinstance(b, ast.AST)):
-		return -1 if isinstance(a, ast.AST) else 1
+    # AST before primitive
+    if (not isinstance(a, ast.AST)) and (not isinstance(b, ast.AST)):
+        if type(a) != type(b):
+            builtins = [bool, int, float, str, bytes, complex]
+            if type(a) not in builtins or type(b) not in builtins:
+                log.info(f'MISSING BUILT-IN TYPE: {str(type(a))}, {str(type(b))}, bug')
+            return builtins.index(type(a)) - builtins.index(type(b))
+        return cmp(a, b)
+    elif (not isinstance(a, ast.AST)) or (not isinstance(b, ast.AST)):
+        return -1 if isinstance(a, ast.AST) else 1
 
-	# Order by differing types
-	if type(a) != type(b):
-		# Here is a brief ordering of types that we care about
-		blehTypes = [ast.Load, ast.Store, ast.Del, ast.AugLoad, ast.AugStore, ast.Param]
-		if type(a) in blehTypes and type(b) in blehTypes:
-			return 0
-		elif type(a) in blehTypes or type(b) in blehTypes:
-			return -1 if type(a) in blehTypes else 1
+    # Order by differing types
+    if type(a) != type(b):
+        # Here is a brief ordering of types that we care about
+        blehTypes = [ast.Load, ast.Store, ast.Del, ast.AugLoad, ast.AugStore, ast.Param]
+        if type(a) in blehTypes and type(b) in blehTypes:
+            return 0
+        elif type(a) in blehTypes or type(b) in blehTypes:
+            return -1 if type(a) in blehTypes else 1
 
-		types = [ast.Module, ast.Interactive, ast.Expression, ast.Suite,
+        types = [ast.Module, ast.Interactive, ast.Expression, ast.Suite,
 
-				 ast.Break, ast.Continue, ast.Pass, ast.Global,
-				 ast.Expr, ast.Assign, ast.AugAssign, ast.Return,
-				 ast.Assert, ast.Delete, ast.If, ast.For, ast.While,
-				 ast.With, ast.Import, ast.ImportFrom, ast.Raise,
-				 ast.Try, ast.FunctionDef,
-				 ast.ClassDef,
+                 ast.Break, ast.Continue, ast.Pass, ast.Global,
+                 ast.Expr, ast.Assign, ast.AugAssign, ast.Return,
+                 ast.Assert, ast.Delete, ast.If, ast.For, ast.While,
+                 ast.With, ast.Import, ast.ImportFrom, ast.Raise,
+                 ast.Try, ast.FunctionDef,
+                 ast.ClassDef,
 
-				 ast.BinOp, ast.BoolOp, ast.Compare, ast.UnaryOp,
-				 ast.DictComp, ast.ListComp, ast.SetComp, ast.GeneratorExp,
-				 ast.Yield, ast.Lambda, ast.IfExp, ast.Call, ast.Subscript,
-				 ast.Attribute, ast.Dict, ast.List, ast.Tuple,
-				 ast.Set, ast.Name, ast.Str, ast.Bytes, ast.Num,
-				 ast.NameConstant, ast.Starred,
+                 ast.BinOp, ast.BoolOp, ast.Compare, ast.UnaryOp,
+                 ast.DictComp, ast.ListComp, ast.SetComp, ast.GeneratorExp,
+                 ast.Yield, ast.Lambda, ast.IfExp, ast.Call, ast.Subscript,
+                 ast.Attribute, ast.Dict, ast.List, ast.Tuple,
+                 ast.Set, ast.Name, ast.Str, ast.Bytes, ast.Num,
+                 ast.NameConstant, ast.Starred,
 
-				 ast.Ellipsis, ast.Index, ast.Slice, ast.ExtSlice,
+                 ast.Ellipsis, ast.Index, ast.Slice, ast.ExtSlice,
 
-				 ast.And, ast.Or, ast.Add, ast.Sub, ast.Mult, ast.Div,
-				 ast.Mod, ast.Pow, ast.LShift, ast.RShift, ast.BitOr,
-				 ast.BitXor, ast.BitAnd, ast.FloorDiv, ast.Invert, ast.Not,
-				 ast.UAdd, ast.USub, ast.Eq, ast.NotEq, ast.Lt, ast.LtE,
-				 ast.Gt, ast.GtE, ast.Is, ast.IsNot, ast.In, ast.NotIn,
+                 ast.And, ast.Or, ast.Add, ast.Sub, ast.Mult, ast.Div,
+                 ast.Mod, ast.Pow, ast.LShift, ast.RShift, ast.BitOr,
+                 ast.BitXor, ast.BitAnd, ast.FloorDiv, ast.Invert, ast.Not,
+                 ast.UAdd, ast.USub, ast.Eq, ast.NotEq, ast.Lt, ast.LtE,
+                 ast.Gt, ast.GtE, ast.Is, ast.IsNot, ast.In, ast.NotIn,
 
-				 ast.alias, ast.keyword, ast.arguments, ast.arg, ast.comprehension,
-				 ast.ExceptHandler, ast.withitem
-				 ]
-		if (type(a) not in types) or (type(b) not in types):
-			log.info(f'astTools\tcompareASTs\tmissing type: {str(type(a))}, {str(type(b))}, bug')
-			return 0
-		return types.index(type(a)) - types.index(type(b))
+                 ast.alias, ast.keyword, ast.arguments, ast.arg, ast.comprehension,
+                 ast.ExceptHandler, ast.withitem
+                 ]
+        if (type(a) not in types) or (type(b) not in types):
+            log.info(f'astTools\tcompareASTs\tmissing type: {str(type(a))}, {str(type(b))}, bug')
+            return 0
+        return types.index(type(a)) - types.index(type(b))
 
-	# Then, more complex expressions- but don't bother with this if we're just checking equality
-	if not checkEquality:
-		ad = depthOfAST(a)
-		bd = depthOfAST(b)
-		if ad != bd:
-			return bd - ad
+    # Then, more complex expressions- but don't bother with this if we're just checking equality
+    if not checkEquality:
+        ad = depthOfAST(a)
+        bd = depthOfAST(b)
+        if ad != bd:
+            return bd - ad
 
-	# NameConstants are special
-	if type(a) == ast.NameConstant:
-		if a.value == None or b.value == None:
-			return 1 if a.value != None else (0 if b.value == None else -1)  # short and works
+    # NameConstants are special
+    if type(a) == ast.NameConstant:
+        if a.value == None or b.value == None:
+            return 1 if a.value != None else (0 if b.value == None else -1)  # short and works
 
-		if a.value in [True, False] or b.value in [True, False]:
-			return 1 if a.value not in [True, False] else (cmp(a.value, b.value) if b.value in [True, False] else -1)
+        if a.value in [True, False] or b.value in [True, False]:
+            return 1 if a.value not in [True, False] else (cmp(a.value, b.value) if b.value in [True, False] else -1)
 
-	if type(a) == ast.Name:
-		return cmp(a.id, b.id)
+    if type(a) == ast.Name:
+        return cmp(a.id, b.id)
 
-	# Operations and attributes are all ok
-	elif type(a) in [ast.And, ast.Or, ast.Add, ast.Sub, ast.Mult, ast.Div,
-					 ast.Mod, ast.Pow, ast.LShift, ast.RShift, ast.BitOr,
-					 ast.BitXor, ast.BitAnd, ast.FloorDiv, ast.Invert,
-					 ast.Not, ast.UAdd, ast.USub, ast.Eq, ast.NotEq, ast.Lt,
-					 ast.LtE, ast.Gt, ast.GtE, ast.Is, ast.IsNot, ast.In,
-					 ast.NotIn, ast.Load, ast.Store, ast.Del, ast.AugLoad,
-					 ast.AugStore, ast.Param, ast.Ellipsis, ast.Pass,
-					 ast.Break, ast.Continue
-					 ]:
-		return 0
+    # Operations and attributes are all ok
+    elif type(a) in [ast.And, ast.Or, ast.Add, ast.Sub, ast.Mult, ast.Div,
+                     ast.Mod, ast.Pow, ast.LShift, ast.RShift, ast.BitOr,
+                     ast.BitXor, ast.BitAnd, ast.FloorDiv, ast.Invert,
+                     ast.Not, ast.UAdd, ast.USub, ast.Eq, ast.NotEq, ast.Lt,
+                     ast.LtE, ast.Gt, ast.GtE, ast.Is, ast.IsNot, ast.In,
+                     ast.NotIn, ast.Load, ast.Store, ast.Del, ast.AugLoad,
+                     ast.AugStore, ast.Param, ast.Ellipsis, ast.Pass,
+                     ast.Break, ast.Continue
+                     ]:
+        return 0
 
-	# Now compare based on the attributes in the identical types
-	attrMap = {ast.Module: ["body"], ast.Interactive: ["body"],
-			   ast.Expression: ["body"], ast.Suite: ["body"],
+    # Now compare based on the attributes in the identical types
+    attrMap = {ast.Module: ["body"], ast.Interactive: ["body"],
+               ast.Expression: ["body"], ast.Suite: ["body"],
 
-			   ast.FunctionDef: ["name", "args", "body", "decorator_list", "returns"],
-			   ast.ClassDef: ["name", "bases", "keywords", "body", "decorator_list"],
-			   ast.Return: ["value"],
-			   ast.Delete: ["targets"],
-			   ast.Assign: ["targets", "value"],
-			   ast.AugAssign: ["target", "op", "value"],
-			   ast.For: ["target", "iter", "body", "orelse"],
-			   ast.While: ["test", "body", "orelse"],
-			   ast.If: ["test", "body", "orelse"],
-			   ast.With: ["items", "body"],
-			   ast.Raise: ["exc", "cause"],
-			   ast.Try: ["body", "handlers", "orelse", "finalbody"],
-			   ast.Assert: ["test", "msg"],
-			   ast.Import: ["names"],
-			   ast.ImportFrom: ["module", "names", "level"],
-			   ast.Global: ["names"],
-			   ast.Expr: ["value"],
+               ast.FunctionDef: ["name", "args", "body", "decorator_list", "returns"],
+               ast.ClassDef: ["name", "bases", "keywords", "body", "decorator_list"],
+               ast.Return: ["value"],
+               ast.Delete: ["targets"],
+               ast.Assign: ["targets", "value"],
+               ast.AugAssign: ["target", "op", "value"],
+               ast.For: ["target", "iter", "body", "orelse"],
+               ast.While: ["test", "body", "orelse"],
+               ast.If: ["test", "body", "orelse"],
+               ast.With: ["items", "body"],
+               ast.Raise: ["exc", "cause"],
+               ast.Try: ["body", "handlers", "orelse", "finalbody"],
+               ast.Assert: ["test", "msg"],
+               ast.Import: ["names"],
+               ast.ImportFrom: ["module", "names", "level"],
+               ast.Global: ["names"],
+               ast.Expr: ["value"],
 
-			   ast.BoolOp: ["op", "values"],
-			   ast.BinOp: ["left", "op", "right"],
-			   ast.UnaryOp: ["op", "operand"],
-			   ast.Lambda: ["args", "body"],
-			   ast.IfExp: ["test", "body", "orelse"],
-			   ast.Dict: ["keys", "values"],
-			   ast.Set: ["elts"],
-			   ast.ListComp: ["elt", "generators"],
-			   ast.SetComp: ["elt", "generators"],
-			   ast.DictComp: ["key", "value", "generators"],
-			   ast.GeneratorExp: ["elt", "generators"],
-			   ast.Yield: ["value"],
-			   ast.Compare: ["left", "ops", "comparators"],
-			   ast.Call: ["func", "args", "keywords"],
-			   ast.Num: ["n"],
-			   ast.Str: ["s"],
-			   ast.Bytes: ["s"],
-			   ast.NameConstant: ["value"],
-			   ast.Attribute: ["value", "attr"],
-			   ast.Subscript: ["value", "slice"],
-			   ast.List: ["elts"],
-			   ast.Tuple: ["elts"],
-			   ast.Starred: ["value"],
+               ast.BoolOp: ["op", "values"],
+               ast.BinOp: ["left", "op", "right"],
+               ast.UnaryOp: ["op", "operand"],
+               ast.Lambda: ["args", "body"],
+               ast.IfExp: ["test", "body", "orelse"],
+               ast.Dict: ["keys", "values"],
+               ast.Set: ["elts"],
+               ast.ListComp: ["elt", "generators"],
+               ast.SetComp: ["elt", "generators"],
+               ast.DictComp: ["key", "value", "generators"],
+               ast.GeneratorExp: ["elt", "generators"],
+               ast.Yield: ["value"],
+               ast.Compare: ["left", "ops", "comparators"],
+               ast.Call: ["func", "args", "keywords"],
+               ast.Num: ["n"],
+               ast.Str: ["s"],
+               ast.Bytes: ["s"],
+               ast.NameConstant: ["value"],
+               ast.Attribute: ["value", "attr"],
+               ast.Subscript: ["value", "slice"],
+               ast.List: ["elts"],
+               ast.Tuple: ["elts"],
+               ast.Starred: ["value"],
 
-			   ast.Slice: ["lower", "upper", "step"],
-			   ast.ExtSlice: ["dims"],
-			   ast.Index: ["value"],
+               ast.Slice: ["lower", "upper", "step"],
+               ast.ExtSlice: ["dims"],
+               ast.Index: ["value"],
 
-			   ast.comprehension: ["target", "iter", "ifs"],
-			   ast.ExceptHandler: ["type", "name", "body"],
-			   ast.arguments: ["args", "vararg", "kwonlyargs", "kw_defaults", "kwarg", "defaults"],
-			   ast.arg: ["arg", "annotation"],
-			   ast.keyword: ["arg", "value"],
-			   ast.alias: ["name", "asname"],
-			   ast.withitem: ["context_expr", "optional_vars"]}
+               ast.comprehension: ["target", "iter", "ifs"],
+               ast.ExceptHandler: ["type", "name", "body"],
+               ast.arguments: ["args", "vararg", "kwonlyargs", "kw_defaults", "kwarg", "defaults"],
+               ast.arg: ["arg", "annotation"],
+               ast.keyword: ["arg", "value"],
+               ast.alias: ["name", "asname"],
+               ast.withitem: ["context_expr", "optional_vars"]}
 
-	for attr in attrMap[type(a)]:
-		r = compareASTs(getattr(a, attr), getattr(b, attr), checkEquality=checkEquality)
-		if r != 0:
-			return r
-	# If all attributes are identical, they're equal
-	return 0
+    for attr in attrMap[type(a)]:
+        r = compareASTs(getattr(a, attr), getattr(b, attr), checkEquality=checkEquality)
+        if r != 0:
+            return r
+    # If all attributes are identical, they're equal
+    return 0
 
 
 def deepcopyList(l):
-	"""Deepcopy of a list"""
-	if l == None:
-		return None
-	if isinstance(l, ast.AST):
-		return deepcopy(l)
-	if type(l) != list:
-		log.info(f'astTools\tdeepcopyList\tNot a list: {str(type(l))}, bug')
-		return copy.deepcopy(l)
+    """Deepcopy of a list"""
+    if l == None:
+        return None
+    if isinstance(l, ast.AST):
+        return deepcopy(l)
+    if type(l) != list:
+        log.info(f'astTools\tdeepcopyList\tNot a list: {str(type(l))}, bug')
+        return copy.deepcopy(l)
 
-	newList = []
-	for line in l:
-		newList.append(deepcopy(line))
-	return newList
+    newList = []
+    for line in l:
+        newList.append(deepcopy(line))
+    return newList
 
 
 def deepcopy(a):

@@ -7,11 +7,11 @@ from typing import List, Optional
 
 import src.main.solution_space.solution_graph as sg
 from src.main.solution_space.data_classes import CodeInfo
+from src.main.canonicalization.ast_tools import AstStructure
 from src.main.util.helper_classes.id_counter import IdCounter
 from src.main.solution_space import consts as solution_space_consts
 from src.main.util.helper_classes.pretty_string import PrettyString
 from src.main.solution_space.serialized_code import Code, SerializedCode
-from src.main.canonicalization.ast_tools import get_nodes_number_in_ast
 
 
 class Vertex(IdCounter, PrettyString):
@@ -29,7 +29,7 @@ class Vertex(IdCounter, PrettyString):
 
     def __init_nodes_numbers_and_structure(self) -> None:
         if self._serialized_code is not None:
-            canon_nodes_number = get_nodes_number_in_ast(self._serialized_code.canon_tree)
+            canon_nodes_number = AstStructure.get_nodes_number_in_ast(self._serialized_code.canon_tree)
             self._graph.canon_nodes_number_dict[canon_nodes_number].append(self.id)
             for i, a_t in enumerate(self._serialized_code.anon_trees):
                 self._graph.anon_nodes_number_dict[a_t.nodes_number].append((self.id, i))

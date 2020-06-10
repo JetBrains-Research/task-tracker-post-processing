@@ -5,7 +5,7 @@ from __future__ import annotations
 import os
 import ast
 import logging
-from typing import List, Callable, Optional, Set, Tuple
+from typing import List, Callable, Optional, Set
 
 from src.main.util import consts
 from src.main.util.consts import TASK, DEFAULT_VALUE
@@ -17,10 +17,9 @@ from src.main.util.helper_classes.id_counter import IdCounter
 from src.main.solution_space.data_classes import CodeInfo, User
 from src.main.util.language_util import get_extension_by_language
 from src.main.util.helper_classes.pretty_string import PrettyString
-from src.main.util.file_util import create_file, is_file, add_suffix_to_file, remove_directory, create_directory
 from src.main.splitting.tasks_tests_handler import check_tasks, create_in_and_out_dict
-from src.main.canonicalization.canonicalization import are_asts_equal, get_code_from_tree, get_trees, \
-    get_nodes_number_in_ast, get_ast_structure
+from src.main.util.file_util import create_file, is_file, add_suffix_to_file, remove_directory, create_directory
+from src.main.canonicalization.canonicalization import are_asts_equal, get_code_from_tree, get_trees, AstStructure
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -92,23 +91,21 @@ class AnonTree(IdCounter, PrettyString, SerializedTree):
     def __init__(self, anon_tree: ast.AST, rate: float, file_path: str, code_info: Optional[CodeInfo] = None,
                  to_create_file: bool = True):
         self._code_info_list = [] if code_info is None else [code_info]
-        self._nodes_number = get_nodes_number_in_ast(anon_tree)
         self._age_median = None
         self._experience_median = None
         self._rate = rate
         IdCounter.__init__(self, to_store_items=True)
         PrettyString.__init__(self)
         SerializedTree.__init__(self, file_path, anon_tree, self.id, to_create_file)
-        self._nodes_number = get_nodes_number_in_ast(anon_tree)
-        self._ast_structure = get_ast_structure(anon_tree)
+        self._ast_structure = AstStructure.get_ast_structure(anon_tree)
         self._next_anon_trees_ids = []
 
     @property
     def nodes_number(self) -> int:
-        return self._nodes_number
+        return self._ast_structure.nodes_number
 
     @property
-    def ast_structure(self) -> Tuple[int, int, int]:
+    def ast_structure(self) -> AstStructure:
         return self._ast_structure
 
     @property
@@ -167,13 +164,6 @@ class AnonTree(IdCounter, PrettyString, SerializedTree):
 
     def get_unique_users(self) -> Set[User]:
         return set([code_info.user for code_info in self._code_info_list])
-
-    def has_empty_structure(self) -> bool:
-        return self._ast_structure == (0, 0, 0)
-
-    # Todo: add tests?
-    def get_structure_dif(self, anon_tree: AnonTree) -> int:
-        return sum([abs(s_1 - s_2) for s_1, s_2 in zip(self.ast_structure, anon_tree.ast_structure)])
 
     @staticmethod
     def __find_median(default_value: int, all_values: List[int]) -> int:
@@ -303,7 +293,7 @@ class SerializedCode(IdCounter, PrettyString, ISerializedObject):
             anon_tree._tree_file = anon_tree.create_file_for_tree(to_overwrite=to_overwrite)
 
     def find_anon_tree(self, anon_tree: ast.AST) -> Optional[AnonTree]:
-        current_nodes_number = get_nodes_number_in_ast(anon_tree)
+        current_nodes_number = AstStructure.get_nodes_number_in_ast(anon_tree)
         for a_t in self._anon_trees:
             # It will work faster
             if current_nodes_number != a_t.nodes_number:

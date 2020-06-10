@@ -44,12 +44,12 @@ class MeasuredTreeV5(IMeasuredTree):
                    + self._users_w * self.users_count / 43 \
                    + self._rate_w * (self.user_tree.rate - self.candidate_tree.rate)\
                    + self._rollback_w * self.rollback_probability\
-                   + self._structure_w * (self.user_tree.get_structure_dif(self.candidate_tree))
+                   + self._structure_w * (self.user_tree.ast_structure - self.candidate_tree.ast_structure)
         distance_info = f'(diffs: {self._diffs_w} * {self._diffs_number}) + ' \
                         f'(users: {self._users_w} * {self.users_count} / 43) + ' \
                         f'(rate: {self._rate_w} * ({self.user_tree.rate} - {self.candidate_tree.rate})) + ' \
                         f'(rollback: {self._rollback_w} * {self.rollback_probability}) + ' \
-                        f'(structure: {self._structure_w} * {self.user_tree.get_structure_dif(self.candidate_tree)})'
+                        f'(structure: {self._structure_w} * {self.user_tree.ast_structure - self.candidate_tree.ast_structure})'
 
         trees = [self.user_tree, self.candidate_tree]
         if AnonTree.have_non_empty_attr('_age_median', trees):
