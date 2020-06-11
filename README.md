@@ -70,8 +70,8 @@ The correct order for data preprocessing is:
 ### Hint generation
 
 The steps for the hint generation:
-1. Construct the **Solution graph** (use **construct_solution_graph** method from [solution_space_handler.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/solution_space/solution_space_handler.py)).
-2. Serialize/deserialize the graph if you want. Use the [SolutionSpaceSerializer](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/solution_space/solution_space_serializer.py) class.
+1. Construct or deserialize a **Solution graph** (use **construct_solution_graph** method from [solution_space_handler.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/solution_space/solution_space_handler.py)).
+2. Serialize the graph if you want. Use the [SolutionSpaceSerializer](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/solution_space/solution_space_serializer.py) class.
 3. Generate a hint by using the path finder algorithm.
 
 
@@ -220,11 +220,11 @@ Value | Description
 
 Parameter | Description
 --- | ---
-**type_dstr**   |  distribution type. Only for **plot_type**: `participants_distr`. Available values are `programExperience` and `age`. The default value is `programExperience`.
-**chart_type**  |  chart type. Only for **plot_type**: `participants_distr`. Available values are `bar` and `pie`. The default value is `bar`.
-**to_union_rare**| allows to merge the rare values. Only for **plot_type**: `participants_distr`. The default value is `False`.
-**format**      |  allows to save the output into a file in different formats. Available values are `html` and `png`. The default value is `html`.
-**auto_open**   |  allows to open plots automatically. The default value is `False`
+**\-\-type_dstr**   |  distribution type. Only for **plot_type**: `participants_distr`. Available values are `programExperience` and `age`. The default value is `programExperience`.
+**\-\-chart_type**  |  chart type. Only for **plot_type**: `participants_distr`. Available values are `bar` and `pie`. The default value is `bar`.
+**\-\-to_union_rare**| allows to merge the rare values. Only for **plot_type**: `participants_distr`. The default value is `False`.
+**\-\-format**      |  allows to save the output into a file in different formats. Available values are `html` and `png`. The default value is `html`.
+**\-\-auto_open**   |  allows to open plots automatically. The default value is `False`
 
 _TODO_: **splitting_plots**
 
@@ -243,19 +243,19 @@ __--level__ allows to set the level for running the algorithm. Available levels:
 
 Value | Description
 --- | ---
-**0** |  construct a solution graph
+**0** |  construct or deserialize a solution graph
 **1** |  run the main algorithm and get a hint, default value
 
 **Note**: the Nth level runs all the levels before it. The default value is the max level value.
 
 Parameter | Description
 --- | ---
-**construct**   |  construct the solution graph. The default value is `True`
-**deserialize** |  deserialize the solution graph. The default value is `False`
-**serialize**   |  serialize the solution graph. The default value is `False`.
-**viz**         |  visualize the solution graph. The default value is `True`
-**nod_num_stat**|  visualize the number of nodes in trees statistics (for each vertex and in general). The default value is `False`
-**task**        |  the task for the main algorithm. The default value is `pies`. Available values can be found in `TASK.tasks_values()` if file [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/util/consts.py).
+**\-\-construct**   |  construct the solution graph. The default value is `True`
+**\-\-deserialize** |  deserialize the solution graph. The default value is `False`
+**\-\-serialize**   |  serialize the solution graph. The default value is `False`.
+**\-\-viz**         |  visualize the solution graph. The default value is `True`
+**\-\-nod_num_stat**|  visualize the number of nodes in trees statistics (for each vertex and in general). The default value is `False`
+**\-\-task**        |  the task for the main algorithm. The default value is `pies`. Available values can be found in `TASK.tasks_values()` if file [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/util/consts.py).
 
 **Note**: you should use only one param from the set {**--construct**, **--deserialize**} in the same time
 
@@ -272,12 +272,12 @@ File for running: [test_system_main.py](https://github.com/JetBrains-Research/co
 
 Parameter | Description
 --- | ---
-**construct**   |  construct the solution graph. The default value is `True`
-**deserialize** |  deserialize the solution graph. The default value is `False`
-**serialize**   |  serialize the solution graph. The default value is `False`.
-**viz**         |  visualize the solution graph. The default value is `True`
-**nod_num_stat**|  visualize the number of nodes in trees statistics (for each vertex and in general). The default value is `False`
-**task**        |  the task for the main algorithm. The default value is `pies`. Available values can be found in `TASK.tasks_values()` if file [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/util/consts.py).
+**\-\-construct**   |  construct the solution graph. The default value is `True`
+**\-\-deserialize** |  deserialize the solution graph. The default value is `False`
+**\-\-serialize**   |  serialize the solution graph. The default value is `False`.
+**\-\-viz**         |  visualize the solution graph. The default value is `True`
+**\-\-nod_num_stat**|  visualize the number of nodes in trees statistics (for each vertex and in general). The default value is `False`
+**\-\-task**        |  the task for the main algorithm. The default value is `pies`. Available values can be found in `TASK.tasks_values()` if file [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/util/consts.py).
 
 **Note**: you should use only one param from the set {**--construct**, **--deserialize**} in the same time
 
