@@ -58,7 +58,7 @@ def __fill_diffs_column(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def __remove_intermediate_diffs_from_df(df: pd.DataFrame) -> pd.DataFrame:
+def remove_intermediate_diffs_from_df(df: pd.DataFrame) -> pd.DataFrame:
     df[SHIFTED_FRAGMENT] = df[FRAGMENT].shift(1)
     df[DIFFS] = df.apply(lambda row: __get_diffs_line_number(row[FRAGMENT], row[SHIFTED_FRAGMENT]), axis=1)
     __fill_diffs_column(df)
@@ -68,4 +68,4 @@ def __remove_intermediate_diffs_from_df(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def remove_intermediate_diffs(path: str, output_directory_prefix: str = 'remove_intermediate_diffs') -> str:
-    return handle_folder(path, output_directory_prefix, __remove_intermediate_diffs_from_df)
+    return handle_folder(path, output_directory_prefix, remove_intermediate_diffs_from_df)

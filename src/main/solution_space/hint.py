@@ -56,8 +56,12 @@ class HintHandler(ISerializedObject):
 
         # Todo: apply the first diff
         # Todo: new version of apply diffs
-        recommended_tree = diff_handler.apply_diffs(diffs, tree_type)
-        return Hint(get_code_from_tree(recommended_tree))
+        try:
+            recommended_tree = diff_handler.apply_diffs(diffs, tree_type)
+            return Hint(get_code_from_tree(recommended_tree))
+        except UnboundLocalError:
+            # Something went wrong in Kelly Rivers applying diffs
+            return Hint('UnboundLocalError')
 
     def get_hint(self, source_code: str, profile: Profile, path_finder: IPathFinder,
                  rate: Optional[float] = None) -> Hint:

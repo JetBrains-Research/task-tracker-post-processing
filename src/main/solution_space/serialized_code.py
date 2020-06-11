@@ -17,20 +17,22 @@ from src.main.util.helper_classes.id_counter import IdCounter
 from src.main.solution_space.data_classes import CodeInfo, User
 from src.main.util.language_util import get_extension_by_language
 from src.main.util.helper_classes.pretty_string import PrettyString
-from src.main.util.file_util import create_file, is_file, add_suffix_to_file
 from src.main.splitting.tasks_tests_handler import check_tasks, create_in_and_out_dict
-from src.main.canonicalization.canonicalization import are_asts_equal, get_code_from_tree, get_trees, \
-    get_nodes_number_in_ast
+from src.main.util.file_util import create_file, is_file, add_suffix_to_file, remove_directory, create_directory
+from src.main.canonicalization.canonicalization import are_asts_equal, get_code_from_tree, get_trees, AstStructure
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
 
 class ISerializedObject:
     def __init__(self, folder_with_files: str, file_prefix: str,
-                 language: consts.LANGUAGE = consts.LANGUAGE.PYTHON):
+                 language: consts.LANGUAGE = consts.LANGUAGE.PYTHON, to_delete_prev_folder: bool = True):
         self._folder_with_files = folder_with_files
         self._file_prefix = file_prefix
         self._language = language
+        if to_delete_prev_folder:
+            remove_directory(self._folder_with_files)
+        create_directory(self._folder_with_files)
 
     @property
     def folder_with_files(self) -> str:
@@ -89,19 +91,22 @@ class AnonTree(IdCounter, PrettyString, SerializedTree):
     def __init__(self, anon_tree: ast.AST, rate: float, file_path: str, code_info: Optional[CodeInfo] = None,
                  to_create_file: bool = True):
         self._code_info_list = [] if code_info is None else [code_info]
-        self._nodes_number = get_nodes_number_in_ast(anon_tree)
         self._age_median = None
         self._experience_median = None
         self._rate = rate
         IdCounter.__init__(self, to_store_items=True)
         PrettyString.__init__(self)
         SerializedTree.__init__(self, file_path, anon_tree, self.id, to_create_file)
-        self._nodes_number = get_nodes_number_in_ast(anon_tree)
+        self._ast_structure = AstStructure.get_ast_structure(anon_tree)
         self._next_anon_trees_ids = []
 
     @property
     def nodes_number(self) -> int:
-        return self._nodes_number
+        return self._ast_structure.nodes_number
+
+    @property
+    def ast_structure(self) -> AstStructure:
+        return self._ast_structure
 
     @property
     def next_anon_trees_ids(self) -> List[int]:
@@ -180,6 +185,7 @@ class AnonTree(IdCounter, PrettyString, SerializedTree):
     def __str__(self):
         return f'Anon_tree: {get_code_from_tree(self._tree)}\n' \
                f'Code info:\n{list(map(str, self._code_info_list))}\n' \
+               f'Structure: {self._ast_structure}' \
 
 
 
@@ -230,7 +236,7 @@ class SerializedCode(IdCounter, PrettyString, ISerializedObject):
         PrettyString.__init__(self)
         IdCounter.__init__(self)
         ISerializedObject.__init__(self, folder_with_files=folder_with_files, file_prefix=file_prefix,
-                                   language=code.language)
+                                   language=code.language, to_delete_prev_folder=False)
         anon_tree = AnonTree(code.anon_tree, code.rate,
                              self.get_file_path(f'{TREE_TYPE.ANON.value}', self.id), code_info)
         self._anon_trees = [anon_tree]
@@ -287,7 +293,7 @@ class SerializedCode(IdCounter, PrettyString, ISerializedObject):
             anon_tree._tree_file = anon_tree.create_file_for_tree(to_overwrite=to_overwrite)
 
     def find_anon_tree(self, anon_tree: ast.AST) -> Optional[AnonTree]:
-        current_nodes_number = get_nodes_number_in_ast(anon_tree)
+        current_nodes_number = AstStructure.get_nodes_number_in_ast(anon_tree)
         for a_t in self._anon_trees:
             # It will work faster
             if current_nodes_number != a_t.nodes_number:

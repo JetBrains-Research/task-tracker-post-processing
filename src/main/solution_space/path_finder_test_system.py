@@ -9,7 +9,6 @@ import inspect
 import pkgutil
 import importlib
 import itertools
-from enum import Enum
 from abc import ABCMeta
 from itertools import product
 from types import FunctionType
@@ -19,28 +18,20 @@ from typing import Type, TypeVar, List, Dict, Any, Tuple, Optional
 from prettytable import PrettyTable, ALL
 
 from src.main.solution_space.hint import HintHandler
+from src.main.util.log_util import log_and_raise_error
 from src.main.solution_space.data_classes import Profile
 from src.main.solution_space.serialized_code import AnonTree
 from src.main.solution_space.solution_graph import SolutionGraph
 from src.main.solution_space.path_finder.path_finder import IPathFinder
 from src.main.canonicalization.canonicalization import get_code_from_tree
+from src.main.util.consts import LOGGER_NAME, INT_EXPERIENCE, TASK, EXTENSION
 from src.main.solution_space.measured_tree.measured_tree import IMeasuredTree
-from src.main.solution_space.consts import TEST_SYSTEM_GRAPH, SOLUTION_SPACE_FOLDER
 from src.main.solution_space.solution_space_serializer import SolutionSpaceSerializer
 from src.main.solution_space.solution_space_visualizer import SolutionSpaceVisualizer
-from src.main.util.consts import LOGGER_NAME, INT_EXPERIENCE, TEST_RESULT, TASK, EXTENSION
 from src.main.util.file_util import get_class_parent_package, create_file, add_suffix_to_file
+from src.main.solution_space.consts import TEST_SYSTEM_GRAPH, SOLUTION_SPACE_FOLDER, TEST_INPUT
 
 log = logging.getLogger(LOGGER_NAME)
-
-
-# Todo: rewrite it
-# Make sure 'INT_EXPERIENCE' is the last one, otherwise columns in result table will be in wrong order
-class TEST_INPUT(Enum):
-    SOURCE_CODE = 'source'
-    RATE = 'rate'
-    AGE = 'age'
-    INT_EXPERIENCE = 'int_experience'
 
 
 Class = TypeVar('Class')
@@ -144,18 +135,23 @@ class TestSystem:
             TestSystem.__print_output('There are no path_finders')
             return None
         # Set table headers: first go test_input headers, then path_finder versions
-        table = PrettyTable(field_names=['index'] + [e.value for e in TEST_INPUT] +
+        table = PrettyTable(field_names=[e.value for e in TEST_INPUT] +
                                         [self.__get_path_finder_version(pf) for pf in path_finders], title=title)
 
         log.info(f"There are {len(self._test_inputs)} test inputs")
 
         for i, test_input in enumerate(self._test_inputs):
             log.info(f"Running path finders on {i} test input")
-            user_anon_tree, user_canon_tree = self.__create_user_trees(test_input)
-            row = [i] + [test_input[key] for key in TEST_INPUT if key != TEST_INPUT.INT_EXPERIENCE] \
-                  + [test_input[TEST_INPUT.INT_EXPERIENCE].get_str_experience()]
+            user_anon_tree, user_canon_tree = self.create_user_trees(self._hint_handler, test_input)
+            # TODO: REWRITE IT!
+            row = [test_input[TEST_INPUT.INDEX]] +\
+                  [f'{test_input[TEST_INPUT.SOURCE_CODE]}\n\nanon tree:\n{get_code_from_tree(user_anon_tree.tree)}'] + \
+                  [test_input[TEST_INPUT.RATE]] + \
+                  [test_input[TEST_INPUT.AGE]] +\
+                  [test_input[TEST_INPUT.INT_EXPERIENCE].get_short_str()]
             for path_finder in path_finders:
-                time, next_anon_tree = self.__run_path_finder(path_finder, user_anon_tree, user_canon_tree, i)
+                time, next_anon_tree = self.__run_path_finder(path_finder, user_anon_tree, user_canon_tree,
+                                                              test_input[TEST_INPUT.INDEX])
                 hint = HintHandler.get_hint_by_anon_tree(test_input[TEST_INPUT.SOURCE_CODE], next_anon_tree)
                 row.append(f'time: {time}'
                            f'\n\nnext anon tree id: {next_anon_tree.id}'
@@ -171,15 +167,19 @@ class TestSystem:
             path_finders.append(pf_subclass(self._graph, mv_subclass))
         return path_finders
 
-    def __create_user_trees(self, test_input: TestInput) -> Tuple[AnonTree, ast.AST]:
+    @staticmethod
+    def create_user_trees(hint_handler: HintHandler, test_input: TestInput) -> Tuple[AnonTree, ast.AST]:
         profile = Profile(test_input[TEST_INPUT.AGE], test_input[TEST_INPUT.INT_EXPERIENCE])
         # If rate is None, it's okay, it will be found further
         rate = test_input.get(TEST_INPUT.RATE)
-        return self._hint_handler.create_user_trees(test_input[TEST_INPUT.SOURCE_CODE], profile, rate)
+        user_trees = hint_handler.create_user_trees(test_input[TEST_INPUT.SOURCE_CODE], profile, rate)
+        # Put found rate into test_input
+        test_input[TEST_INPUT.RATE] = user_trees[0].rate
+        return user_trees
 
     @staticmethod
     def __run_path_finder(path_finder: IPathFinder, user_anon_tree: AnonTree, user_canon_tree: ast.AST,
-                          candidates_file_id: int) -> Tuple[timedelta, AnonTree]:
+                          candidates_file_id: str) -> Tuple[timedelta, AnonTree]:
         start_time = datetime.now()
         next_anon_tree = path_finder.find_next_anon_tree(user_anon_tree, user_canon_tree, candidates_file_id)
         end_time = datetime.now()
@@ -249,7 +249,6 @@ class TestSystem:
                 TestSystem.__print_output(f'{c.__name__} is skipped, reason: {c.skipped_reason}')
         return not_skipped_subclasses
 
-    # Todo: add ability to print output to file?
     @staticmethod
     def __print_output(output: Optional[Any],
                        file_name: str = 'path_finder_test_system_output',
@@ -261,7 +260,6 @@ class TestSystem:
                                     file_name)
                 extension = EXTENSION.HTML.value if isinstance(output, PrettyTable) else EXTENSION.TXT.value
                 path += extension
-                # todo: replace spaces to &nbsp;
                 create_file(TestSystem.__format_content(output), path)
 
     @staticmethod
@@ -272,11 +270,21 @@ class TestSystem:
         return content.replace('    ', '&nbsp;&nbsp;&nbsp;&nbsp;')
 
     @staticmethod
-    def generate_all_test_fragments(ages: List[int], experiences: List[INT_EXPERIENCE],
-                                    fragments: List[str]) -> List[Dict[TEST_INPUT, Any]]:
-        return [{TEST_INPUT.SOURCE_CODE: f, TEST_INPUT.AGE: a,
-                 TEST_INPUT.RATE: TEST_RESULT.CORRECT_CODE.value,
-                 TEST_INPUT.INT_EXPERIENCE: e} for a, e, f in itertools.product(ages, experiences, fragments)]
+    def generate_all_test_inputs(ages: List[int], experiences: List[INT_EXPERIENCE],
+                                 fragments: List[str], rates: Optional[List[float]] = None) -> List[TestInput]:
+        # If no rates were given, we consider each fragment's rate as None, so they will be found later
+        if rates is None:
+            rates = [None] * len(fragments)
+        # If there are given rates, we must check rates length
+        elif len(fragments) != len(rates):
+            log_and_raise_error('Given rates don\'t match given fragments due to different lists length', log)
+        fragments_with_rates = [(fragments[i], rates[i]) for i in range(0, len(fragments))]
+        return [{TEST_INPUT.INDEX: i,
+                 TEST_INPUT.SOURCE_CODE: fr[0],
+                 TEST_INPUT.AGE: a,
+                 TEST_INPUT.RATE: fr[1],
+                 TEST_INPUT.INT_EXPERIENCE: e}
+                for i, a, e, fr in enumerate(itertools.product(ages, experiences, fragments_with_rates))]
 
     @staticmethod
     def get_fragments_for_task(task: TASK) -> List[str]:
@@ -303,6 +311,7 @@ class TestSystem:
                     's = input()\nres = ""\nif len(s) % 2 == 0:\n    for i in range(len(s) // 2):\n        res += s[i] + "("',
                     's = input()\nres = ""\nif len(s) % 2 == 0:\n    for i in range(len(s) // 2):\n        res += s[i] + "("\n    for i in range(len(s) // 2 - 1, len(s)):\n        res += s[i] + ")"'
                     ]
+
         elif task == TASK.ZERO:
             return [
                 'N = int(input())',
@@ -310,6 +319,7 @@ class TestSystem:
                 'N = int(input())\nfor i in range(N):\n    a = int(input())\n    if a == 0:\n        print("YES")',
                 'N = int(input())\nfor i in range(N):\n    a = int(input())\n    if a == 0:\n        print("YES")\nprint("NO")',
                 'N = int(input())\nc = 0\nfor i in range(N):\n    a = int(input())\n    if a == 0:\n        c += 1\nprint("NO")',
+                'N = int(input())\nc = 0\nfor i in range(N):\n    a = int(input())\n    if a == 0:\n        c += 1\nif c > 0:\n    print("YES")'
                 'N = int(input())\nfor i in range(N):\n    a = int(input())\n    if a == 0:\n        nprint("YES")',
                 'N = int(input())\nfor i in range(N):\n    a = int(input())\n    if a == 0:\n        nprint("YES")\nprint("NO")',
                 'N = int(input())\nc = 0\nfor i in range(N):\n    a = int(input())\n    if a == 0:\n        c += 1\nif c > 0:\n    print("YES")',
@@ -321,6 +331,7 @@ class TestSystem:
                 'N = int(input())\na = []\mfor i in range(N):\n    c = int(input())\n    a.append(c)\nm = min(a)\nif m == 0:\n    print("YES")',
                 'N = int(input())\na = []\mfor i in range(N):\n    c = int(input())\n    a.append(c)\nm = min(a)\nif m != 0:\n    print("NO")'
             ]
+
         elif task == TASK.MAX_3:
             return [
                 'a = int(input())',

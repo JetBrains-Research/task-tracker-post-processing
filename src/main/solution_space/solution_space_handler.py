@@ -37,7 +37,7 @@ def __get_column_unique_value(solutions: pd.DataFrame, column: Column, default: 
     return unique_values[0]
 
 
-def __get_enum_or_default(enum_meta: enum.EnumMeta, value: str, default: DEFAULT_VALUE) \
+def get_enum_or_default(enum_meta: enum.EnumMeta, value: str, default: DEFAULT_VALUE) \
         -> Union[enum.EnumMeta, DEFAULT_VALUE]:
     return enum_meta._value2member_map_.get(value, default)
 
@@ -45,7 +45,7 @@ def __get_enum_or_default(enum_meta: enum.EnumMeta, value: str, default: DEFAULT
 def __get_ati_data(solutions: pd.DataFrame, index: int) -> AtiItem:
     timestamp = __get_column_value(solutions, index, consts.ACTIVITY_TRACKER_COLUMN.TIMESTAMP_ATI)
     str_event_type = __get_column_value(solutions, index, consts.ACTIVITY_TRACKER_COLUMN.EVENT_TYPE)
-    event_type = __get_enum_or_default(consts.ACTIVITY_TRACKER_EVENTS, str_event_type, DEFAULT_VALUE.EVENT_TYPE)
+    event_type = get_enum_or_default(consts.ACTIVITY_TRACKER_EVENTS, str_event_type, DEFAULT_VALUE.EVENT_TYPE)
     event_data = __get_column_value(solutions, index, consts.ACTIVITY_TRACKER_COLUMN.EVENT_DATA)
     return AtiItem(timestamp=timestamp, event_type=event_type, event_data=event_data)
 
@@ -82,7 +82,7 @@ def __get_profile(solutions: pd.DataFrame) -> Profile:
     age = __get_column_unique_value(solutions, consts.CODE_TRACKER_COLUMN.AGE, consts.DEFAULT_VALUE.AGE.value)
     str_experience = __get_column_unique_value(solutions, consts.CODE_TRACKER_COLUMN.INT_EXPERIENCE,
                                                consts.DEFAULT_VALUE.INT_EXPERIENCE.value)
-    experience = __get_enum_or_default(INT_EXPERIENCE, str_experience, DEFAULT_VALUE.INT_EXPERIENCE)
+    experience = get_enum_or_default(INT_EXPERIENCE, str_experience, DEFAULT_VALUE.INT_EXPERIENCE)
     return Profile(age=age, experience=experience)
 
 
@@ -116,11 +116,11 @@ def __filter_incorrect_fragments(solutions: pd.DataFrame) -> pd.DataFrame:
     return solutions.loc[solutions[consts.CODE_TRACKER_COLUMN.TESTS_RESULTS.value].apply(__is_correct_fragment)]
 
 
-def __get_task_index(task: TASK) -> int:
+def get_task_index(task: TASK) -> int:
     return consts.TASK.tasks().index(task)
 
 
-def __get_rate(tests_results: str, task_index: int) -> float:
+def get_rate(tests_results: str, task_index: int) -> float:
     tasks = TASK.tasks()
     tests_results = unpack_tests_results(tests_results, tasks)
     if task_index >= len(tasks) or task_index >= len(tests_results):
@@ -130,7 +130,7 @@ def __get_rate(tests_results: str, task_index: int) -> float:
 
 def __get_code(solutions: pd.DataFrame, index: int, task_index: int, canon_tree: ast.AST, anon_tree: ast.AST) -> Code:
     tests_results = __get_column_value(solutions, index, consts.CODE_TRACKER_COLUMN.TESTS_RESULTS)
-    rate = __get_rate(tests_results, task_index)
+    rate = get_rate(tests_results, task_index)
     log.info(f'Task index is :{task_index}, rate is: {rate}')
     return Code(anon_tree, canon_tree, rate)
 
@@ -146,7 +146,7 @@ def __create_code_info_chain(file: str, task: TASK) -> List[Tuple[Code, CodeInfo
     __convert_to_datetime(data)
     solutions = __filter_incorrect_fragments(data)
     log.info(f'Size of solutions after filtering incorrect fragments is {solutions.shape[0]}')
-    task_index = __get_task_index(task)
+    task_index = get_task_index(task)
     i, code_info_chain = 0, []
     user = __get_user(solutions)
     while i < solutions.shape[0]:
