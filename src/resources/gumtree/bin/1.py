@@ -1,1 +1,2 @@
-a = 5
+name = input()
+print("Hello, " + name)

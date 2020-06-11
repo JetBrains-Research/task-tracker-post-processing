@@ -23,8 +23,8 @@ class SolutionSpaceSerializer:
     # any IdCounter objects, that don't belong to graph, their id will be in IdCounter, but the objects themselves won't
     # be serialized. So it can probably cause an error while getting item by id.
     @staticmethod
-    def serialize(graph: SolutionGraph, serialized_file_prefix: str = 'serialized_graph') -> str:
-        graph_name = f'graph_{graph.id}_{serialized_file_prefix}'
+    def serialize(graph: SolutionGraph, serialized_file_suffix: str = 'serialized_graph') -> str:
+        graph_name = f'graph_{graph.id}_{serialized_file_suffix}'
         graph_path = os.path.join(SERIALIZED_GRAPH_PATH, f'{graph_name}{EXTENSION.PICKLE.value}')
         objects_to_serialize = (graph, IdCounter._instances, IdCounter._id_item_dict_by_class)
         serialize_data_and_write_to_file(graph_path, objects_to_serialize)
@@ -50,4 +50,3 @@ class SolutionSpaceSerializer:
         except OSError:
             log_and_raise_error(f'OSError during the deserialized graph process. '
                                 f'Serialized graph path is {serialized_graph_path}', log, OSError)
-

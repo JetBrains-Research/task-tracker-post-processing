@@ -1,5 +1,4 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
-import collections
 from enum import Enum
 from typing import List
 
