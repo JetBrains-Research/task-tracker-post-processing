@@ -1,0 +1,27 @@
+not a solution:
+        hint is small
+        hint is big
+
+
+solution:
+        similar hint structure
+        dissimilar hint structure
+
+        hint brought closer to the full solution
+        hint is the same tree
+        hint brought further to the full solution
+        unclear, closer or further
+
+        hint step is normal
+        hint step is big
+        hint step is small
+
+        hint quality is good
+        hint quality is normal
+        hint quality is bad
+
+        diffs applying: correct
+        diffs applying: incorrect
+
+
+

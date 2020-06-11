@@ -1,2 +1,2 @@
-a = 6
-b = 5
+name = input()
+print(f"Hello, {name}")

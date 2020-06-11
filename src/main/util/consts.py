@@ -120,6 +120,23 @@ class INT_EXPERIENCE(Enum):
     def values(cls) -> List[str]:
         return [member.value for _, member in INT_EXPERIENCE.__members__.items()]
 
+    def get_short_str(self) -> str:
+        if self is INT_EXPERIENCE.LESS_THAN_HALF_YEAR:
+            return '<0.5 year'
+        elif self is INT_EXPERIENCE.FROM_HALF_TO_ONE_YEAR:
+            return '0.5-1 years'
+        elif self is INT_EXPERIENCE.FROM_ONE_TO_TWO_YEARS:
+            return '1-2 years'
+        elif self is INT_EXPERIENCE.FROM_TWO_TO_FOUR_YEARS:
+            return '2-4 years'
+        elif self is INT_EXPERIENCE.FROM_FOUR_TO_SIX_YEARS:
+            return '4-6 years'
+        elif self is INT_EXPERIENCE.MORE_THAN_SIX:
+            return '>6 years'
+        else:
+            raise NotImplementedError
+
+
     def get_str_experience(self) -> str:
         return EXPERIENCE.values()[self.value]
 
