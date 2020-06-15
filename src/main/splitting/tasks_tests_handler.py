@@ -16,8 +16,8 @@ from src.main.splitting.kotlin_task_checker import KotlinTaskChecker
 from src.main.splitting.python_task_checker import PythonTaskChecker
 from src.main.preprocessing.code_tracker_handler import get_ct_language
 from src.main.splitting.task_checker import TASKS_TESTS_PATH, FilesDict
-from src.main.splitting.not_defined_task_checker import NotDefinedTaskChecker
-from src.main.util.file_util import get_all_file_system_items, ct_file_condition, get_result_folder, \
+from src.main.splitting.undefined_task_checker import UndefinedTaskChecker
+from src.main.util.file_util import get_all_file_system_items, ct_file_condition, get_output_directory, \
     write_based_on_language, get_file_and_parent_folder_names, pair_in_and_out_files, match_condition
 
 log = logging.getLogger(consts.LOGGER_NAME)
@@ -49,7 +49,7 @@ def check_tasks(tasks: List[TASK], source_code: str, in_and_out_files_dict: File
     elif language == LANGUAGE.KOTLIN:
         task_checker = KotlinTaskChecker()
     else:
-        task_checker = NotDefinedTaskChecker()
+        task_checker = UndefinedTaskChecker()
 
     return task_checker.check_tasks(tasks, source_code, in_and_out_files_dict, stop_after_first_false)
 
@@ -61,8 +61,8 @@ def __check_tasks_on_correct_fragments(data: pd.DataFrame, tasks: List[TASK], in
     language = get_ct_language(data)
     log.info(f'{file_log_info}, language is {language.value}, found {str(data.shape[0])} fragments')
 
-    if language == consts.LANGUAGE.NOT_DEFINED:
-        data[TESTS_RESULTS] = str([consts.TEST_RESULT.LANGUAGE_NOT_DEFINED.value] * len(tasks))
+    if language == consts.LANGUAGE.UNDEFINED:
+        data[TESTS_RESULTS] = str([consts.TEST_RESULT.LANGUAGE_UNDEFINED.value] * len(tasks))
     else:
         unique_fragments = list(data[FRAGMENT].unique())
         log.info(f'Found {str(len(unique_fragments))} unique fragments')
@@ -74,21 +74,21 @@ def __check_tasks_on_correct_fragments(data: pd.DataFrame, tasks: List[TASK], in
     return language, data
 
 
-def filter_already_tested_files(files: List[str], result_folder_path: str) -> List[str]:
-    tested_files = get_all_file_system_items(result_folder_path, ct_file_condition)
+def filter_already_tested_files(files: List[str], output_directory_path: str) -> List[str]:
+    tested_files = get_all_file_system_items(output_directory_path, ct_file_condition)
     tested_folder_and_file_names = list(map(lambda f: get_file_and_parent_folder_names(f), tested_files))
     return list(filter(lambda f: get_file_and_parent_folder_names(f) not in tested_folder_and_file_names, files))
 
 
 def run_tests(path: str) -> str:
     log.info(f'Start running tests on path {path}')
-    result_folder = get_result_folder(path, consts.RUNNING_TESTS_RESULT_FOLDER)
+    output_directory = get_output_directory(path, consts.RUNNING_TESTS_OUTPUT_DIRECTORY)
 
     files = get_all_file_system_items(path, ct_file_condition)
     str_len_files = str(len(files))
     log.info(f'Found {str_len_files} files to run tests on them')
 
-    files = filter_already_tested_files(files, result_folder)
+    files = filter_already_tested_files(files, output_directory)
     str_len_files = str(len(files))
     log.info(f'Found {str_len_files} files to run tests on them after filtering already tested')
 
@@ -101,6 +101,6 @@ def run_tests(path: str) -> str:
         data = pd.read_csv(file, encoding=consts.ISO_ENCODING)
         language, data = __check_tasks_on_correct_fragments(data, tasks, in_and_out_files_dict, file_log_info)
         log.info(f'Finish running tests on {file_log_info}, {file}')
-        write_based_on_language(result_folder, file, data, language)
+        write_based_on_language(output_directory, file, data, language)
 
-    return result_folder
+    return output_directory

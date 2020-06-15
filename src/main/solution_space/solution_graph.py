@@ -59,7 +59,7 @@ class SolutionGraph(collections.abc.Iterable, IdCounter, PrettyString):
     def __init__(self, task: TASK, language: LANGUAGE = LANGUAGE.PYTHON, to_delete_old_graph: bool = True,
                  graph_folder_prefix: str = GRAPH_FOLDER_PREFIX, file_prefix: str = FILE_PREFIX):
         super().__init__()
-        if language == LANGUAGE.NOT_DEFINED:
+        if language == LANGUAGE.UNDEFINED:
             log_and_raise_error(f'Error during constructing a solution graph. Language is not defined', log)
         self._task = task
         self._language = language

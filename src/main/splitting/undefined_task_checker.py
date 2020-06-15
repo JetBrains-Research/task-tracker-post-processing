@@ -11,11 +11,11 @@ from src.main.splitting.task_checker import ITaskChecker, SOURCE_OBJECT_NAME, Fi
 log = logging.getLogger(consts.LOGGER_NAME)
 
 
-class NotDefinedTaskChecker(ITaskChecker):
+class UndefinedTaskChecker(ITaskChecker):
 
     @property
     def language(self) -> LANGUAGE:
-        return LANGUAGE.NOT_DEFINED
+        return LANGUAGE.UNDEFINED
 
     @property
     def min_symbols_number(self) -> int:

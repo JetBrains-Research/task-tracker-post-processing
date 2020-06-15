@@ -227,11 +227,11 @@ def data_subdirs_condition(name: str) -> bool:
     return ATI_DATA_FOLDER in name or DI_DATA_FOLDER in name
 
 
-# To get path to the result folder that is near to the original folder
+# To get path to the output directory that is near to the original folder
 # and has the same name but with a suffix added at the end
-def get_result_folder(folder: str, result_name_suffix: str) -> str:
-    result_folder_name = get_name_from_path(folder, False) + '_' + result_name_suffix
-    return os.path.join(get_parent_folder(folder), result_folder_name)
+def get_output_directory(folder: str, result_name_suffix: str) -> str:
+    output_directory_name = get_name_from_path(folder, False) + '_' + result_name_suffix
+    return os.path.join(get_parent_folder(folder), output_directory_name)
 
 
 def create_folder_and_write_df_to_file(folder_to_write: str, file_to_write: str, df: pd.DataFrame) -> None:
@@ -246,25 +246,25 @@ def create_folder_and_write_df_to_file(folder_to_write: str, file_to_write: str,
         df.to_csv(file_to_write, encoding=UTF_ENCODING, index=False)
 
 
-# To write a dataframe to the result_folder remaining the same file structure as it was before
+# To write a dataframe to the output_directory remaining the same file structure as it was before
 # For example, for path home/codetracker/data and file home/codetracker/data/folder1/folder2/ati_566/file.csv
-# the dataframe will be written to result_folder/folder1/folder2/ati_566/file.csv
-def write_result(result_folder: str, path: str, file: str, df: pd.DataFrame) -> None:
-    # check if file is in a path, otherwise we cannot reproduce its structure inside of result_folder
+# the dataframe will be written to output_directory/folder1/folder2/ati_566/file.csv
+def write_result(output_directory: str, path: str, file: str, df: pd.DataFrame) -> None:
+    # check if file is in a path, otherwise we cannot reproduce its structure inside of output_directory
     if path != file[:len(path)]:
         raise ValueError('File is not in a path')
-    path_from_result_folder_to_file = file[len(path):].lstrip('/')
-    file_to_write = os.path.join(result_folder, path_from_result_folder_to_file)
+    path_from_output_directory_to_file = file[len(path):].lstrip('/')
+    file_to_write = os.path.join(output_directory, path_from_output_directory_to_file)
     folder_to_write = get_parent_folder(file_to_write)
     create_folder_and_write_df_to_file(folder_to_write, file_to_write, df)
 
 
-# To write a dataframe to the result_folder based on the language and remaining only the parent folder structure
+# To write a dataframe to the output_directory based on the language and remaining only the parent folder structure
 # For example, for file path/folder1/folder2/ati_566/file.csv and python language the dataframe will be
-# written to result_folder/python/ati_566/file.csv
-def write_based_on_language(result_folder: str, file: str, df: pd.DataFrame,
+# written to output_directory/python/ati_566/file.csv
+def write_based_on_language(output_directory: str, file: str, df: pd.DataFrame,
                             language: LANGUAGE = LANGUAGE.PYTHON.value) -> None:
-    folder_to_write = os.path.join(result_folder, language.value, get_parent_folder_name(file))
+    folder_to_write = os.path.join(output_directory, language.value, get_parent_folder_name(file))
     file_to_write = os.path.join(folder_to_write, get_name_from_path(file))
     create_folder_and_write_df_to_file(folder_to_write, file_to_write, df)
 

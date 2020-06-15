@@ -67,5 +67,5 @@ def remove_intermediate_diffs_from_df(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def remove_intermediate_diffs(path: str, result_folder_prefix: str = 'remove_intermediate_diffs') -> str:
-    return handle_folder(path, result_folder_prefix, remove_intermediate_diffs_from_df)
+def remove_intermediate_diffs(path: str, output_directory_prefix: str = 'remove_intermediate_diffs') -> str:
+    return handle_folder(path, output_directory_prefix, remove_intermediate_diffs_from_df)

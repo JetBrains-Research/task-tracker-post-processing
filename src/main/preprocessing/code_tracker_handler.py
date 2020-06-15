@@ -32,18 +32,18 @@ def fill_column(data: pd.DataFrame, column: CODE_TRACKER_COLUMN, fits_column_res
     return INVALID_FILE_FOR_PREPROCESSING
 
 
-# If we have a few languages, we return NOT_DEFINED, else we return the language.
+# If we have a few languages, we return UNDEFINED, else we return the language.
 # If all files have the same extension, then we return a language, which matches to this extension (it works for all
 # languages for LANGUAGES_DICT from const file)
 # For example, we have a set of files: a.py, b.py. The function returns python because we have one extension for all
 # files.
-# For a case: a.py, b.p and c.java the function returns NOT_DEFINED because the files have different extensions
+# For a case: a.py, b.p and c.java the function returns UNDEFINED because the files have different extensions
 def get_ct_language(data: pd.DataFrame) -> LANGUAGE:
     values = data[CODE_TRACKER_COLUMN.FILE_NAME.value].unique()
     extensions = set(map(get_extension_from_file, values))
     if len(extensions) == 1:
         return get_language_by_extension(extensions.pop())
-    return LANGUAGE.NOT_DEFINED
+    return LANGUAGE.UNDEFINED
 
 
 def handle_ct_file(ct_file: str) -> Tuple[pd.DataFrame, LANGUAGE]:
