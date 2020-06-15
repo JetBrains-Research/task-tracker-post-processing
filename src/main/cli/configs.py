@@ -3,6 +3,13 @@
 from enum import Enum
 from typing import List
 
+from src.main.preprocessing.inefficient_statements_removing import remove_inefficient_statements
+from src.main.preprocessing.int_experience_adding import add_int_experience
+from src.main.preprocessing.intermediate_diffs_removing import remove_intermediate_diffs
+from src.main.preprocessing.preprocessing import preprocess_data
+from src.main.splitting.splitting import split_tasks_into_separate_files
+from src.main.splitting.tasks_tests_handler import run_tests
+
 
 class PLOT_TYPE(Enum):
     PARTICIPANTS_DISTRIBUTION = 'participants_distr'
@@ -38,6 +45,20 @@ class PREPROCESSING_LEVEL(Enum):
     INTERMEDIATE_DIFFS = 3
     INEFFICIENT_STATEMENTS = 4
     INT_EXPERIENCE = 5
+
+    @property
+    def __level_handlers(self):
+        return {
+            self.MERGE: preprocess_data,
+            self.TESTS_RESULTS: run_tests,
+            self.SPLIT: split_tasks_into_separate_files,
+            self.INTERMEDIATE_DIFFS: remove_intermediate_diffs,
+            self.INEFFICIENT_STATEMENTS: remove_inefficient_statements,
+            self.INT_EXPERIENCE: add_int_experience
+        }
+
+    def level_handler(self):
+        return self.__level_handlers[self]
 
     @classmethod
     def min_value(cls) -> int:

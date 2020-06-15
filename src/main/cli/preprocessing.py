@@ -8,15 +8,8 @@ from src.main.util import consts
 from src.main.cli.util import ICli
 from src.main.util.consts import FILE_SYSTEM_ITEM
 from src.main.cli.configs import PREPROCESSING_LEVEL, PREPROCESSING_PARAMS
-from src.main.splitting.tasks_tests_handler import run_tests
-from src.main.preprocessing.preprocessing import preprocess_data
 from src.main.util.log_util import configure_logger, add_console_stream
-from src.main.splitting.splitting import split_tasks_into_separate_files
-from src.main.preprocessing.int_experience_adding import add_int_experience
 from src.main.util.file_util import get_all_file_system_items, language_item_condition
-from src.main.preprocessing.intermediate_diffs_removing import remove_intermediate_diffs
-from src.main.preprocessing.inefficient_statements_removing import remove_inefficient_statements
-
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -41,16 +34,14 @@ class PreprocessingCli(ICli):
 
     def main(self) -> None:
         self.parse_args()
-        preprocessing_functions = [preprocess_data, run_tests, split_tasks_into_separate_files,
-                                   remove_intermediate_diffs, remove_inefficient_statements,
-                                   add_int_experience]
         paths = [self._path]
-        for function_index in range(0, self._level.value + 1):
-            self._log.info(f'Current operation is {preprocessing_functions[function_index]}')
+        for level_index in range(0, self._level.value + 1):
+            current_level = PREPROCESSING_LEVEL(level_index)
+            self._log.info(f'Current operation is {current_level.level_handler()}')
             new_paths = []
             for path in paths:
-                path = preprocessing_functions[function_index](path)
-                if function_index == PREPROCESSING_LEVEL.TESTS_RESULTS.value:
+                path = current_level.level_handler()(path)
+                if current_level == PREPROCESSING_LEVEL.TESTS_RESULTS:
                     # Get all sub folders
                     new_paths += get_all_file_system_items(path, language_item_condition, FILE_SYSTEM_ITEM.SUBDIR)
                 else:

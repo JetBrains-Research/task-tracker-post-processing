@@ -35,8 +35,7 @@ class TestAlgoCli:
                         [],
                         [ALGO_PARAMS.CONSTRUCT],
                         [ALGO_PARAMS.CONSTRUCT, ALGO_PARAMS.SERIALIZE],
-                        [ALGO_PARAMS.CONSTRUCT, ALGO_PARAMS.SERIALIZE, ALGO_PARAMS.VISUALIZE],
-                        [ALGO_PARAMS.CONSTRUCT, ALGO_PARAMS.SERIALIZE, ALGO_PARAMS.VISUALIZE, ALGO_PARAMS.NOD_NUM_STAT]
+                        [ALGO_PARAMS.CONSTRUCT, ALGO_PARAMS.SERIALIZE, ALGO_PARAMS.VISUALIZE]
                     ])
     def param_constructing_graph(request) -> List[ALGO_PARAMS]:
         return request.param
@@ -66,8 +65,7 @@ class TestAlgoCli:
                         [],
                         [ALGO_PARAMS.DESERIALIZE],
                         [ALGO_PARAMS.DESERIALIZE, ALGO_PARAMS.SERIALIZE],
-                        [ALGO_PARAMS.DESERIALIZE, ALGO_PARAMS.SERIALIZE, ALGO_PARAMS.VISUALIZE],
-                        [ALGO_PARAMS.DESERIALIZE, ALGO_PARAMS.SERIALIZE, ALGO_PARAMS.VISUALIZE, ALGO_PARAMS.NOD_NUM_STAT]
+                        [ALGO_PARAMS.DESERIALIZE, ALGO_PARAMS.SERIALIZE, ALGO_PARAMS.VISUALIZE]
                     ])
     def param_deserialize_graph(request) -> List[ALGO_PARAMS]:
         return request.param
