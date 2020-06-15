@@ -40,16 +40,16 @@ preprocessing data steps.
 #### Requirements for the source data
 
 1. The source data has to be in the .csv format.
-2. Activity tracker files have a prefix **ide-events**. We use [activity tracker plugin](https://plugins.jetbrains.com/plugin/8126-activity-tracker).
-3. Code tracker files can have any names. We use [code-tracker-plugin](https://github.com/elena-lyulina/codetracker) at 
+2. _Activity-tracker files_ have a prefix **ide-events**. We use [activity-tracker plugin](https://plugins.jetbrains.com/plugin/8126-activity-tracker).
+3. _Codetracker files_ can have any names. We use [codetracker-plugin](https://github.com/elena-lyulina/codetracker) at 
 the same time with the activity tracker plugin.
-4. Columns for the activity-tracker files can be found in the [const file](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/util/consts.py) (the **CODE_TRACKER_COLUMN** const).
-5. Columns for the code-tracker files can be found in the [const file](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/util/consts.py) (the **ACTIVITY_TRACKER_COLUMN** const).
+4. Columns for the _activity-tracker files_ can be found in the [const file](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/util/consts.py) (the **CODE_TRACKER_COLUMN** const).
+5. Columns for the _codetracker files_ can be found in the [const file](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/util/consts.py) (the **ACTIVITY_TRACKER_COLUMN** const).
 
 #### Preprocessing
 
 The correct order for data preprocessing is:
-1. Merge activity-tracker and code-tracker files (use **preprocess_data** method from [preprocessing.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/preprocessing/preprocessing.py)).
+1. Merge _codetracker files_ and _activity-tracker_ files (use **preprocess_data** method from [preprocessing.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/preprocessing/preprocessing.py)).
 2. Find tests results for the tasks (use **run_tests** method from [tasks_tests_handler.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/splitting/tasks_tests_handler.py)).
 3. Split data (use **split_tasks_into_separate_files** method from [splitting.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/splitting/splitting.py)).
 4. Remove intermediate diffs (use **remove_intermediate_diffs** method from [intermediate_diffs_removing.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/preprocessing/intermediate_diffs_removing.py)).
@@ -70,7 +70,7 @@ The correct order for data preprocessing is:
 ### Hint generation
 
 The steps for the hint generation:
-1. Construct or deserialize a **Solution graph** (use **construct_solution_graph** method from [solution_space_handler.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/solution_space/solution_space_handler.py)).
+1. Construct or deserialize a **Solution graph** (use **construct_solution_graph** method from [solution_space_handler.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/solution_space/solution_space_handler.py) or **deserialize** method from [solution_space_serializer.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/solution_space/solution_space_serializer.py)).
 2. Serialize the graph if you want. Use the [SolutionSpaceSerializer](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/solution_space/solution_space_serializer.py) class.
 3. Generate a hint by using the path finder algorithm.
 
@@ -108,11 +108,11 @@ Two chart types are available:
 2. CHART_TYPE.PIE
 
 Other options:
-1. **to_union_rare** allows to merge the rare values. The rare value means the frequency of the value is less than or equal to `STATISTICS_RARE_VALUE_THRESHOLD` from [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/plots/util/consts.py).
-Default value for `STATISTICS_RARE_VALUE_THRESHOLD` is 2. Default value for **to_union_rare** is `False`.
+1. **to_union_rare** use to merge the rare values. The rare value means the frequency of the value is less than or equal to `STATISTICS_RARE_VALUE_THRESHOLD` from [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/plots/util/consts.py).
+Default value for `STATISTICS_RARE_VALUE_THRESHOLD` is 2.
 2. **format** allows to save the output into a file in different formats. The default value is `html` because the plots are
 interactive.
-3. **auto_open** allows to open plots automatically. The default value is `False`.
+3. **auto_open** use to open plots automatically.
 4. **x_category_order** allows to choose the sort order for **X** axis. Available values are stored in `PLOTTY_CATEGORY_ORDER` from [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/plots/util/consts.py).
 The default value is `PLOTTY_CATEGORY_ORDER.TOTAL_ASCENDING`.
 
@@ -127,7 +127,7 @@ Available options:
 1. **plot_name** allows to choose the filename. The default value is _task_distribution_plot_.
 2. **format** allows to save the output into different formats. The default value is `html` because the plots are
 interactive.
-3. **auto_open** allows to open plots automatically. The default value is `False`.
+3. **auto_open** use to open plots automatically. 
 
 #### Splitting plots
 
@@ -167,12 +167,12 @@ Run the necessary file for available modules:
 
 File| Module | Description
 --- | --- | --- 
-[preprocessing_main.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/preprocessing_main.py) | [Data preprocessing module](#data-preprocessing-module) | Includes all steps from the [Data preprocessing](#data-preprocessing) section
-[plots_main.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/statistics_main.py) | [Plots module](#plots-module) | Includes _Participants distribution_, _Tasks distribution_ and _Splitting plots_ from the [Visualization](#visualization) section
-[algo_main.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/algo_main.py) | [Hint generation module](#hint-generation-module) | Includes all steps from the [Hint generation](#hint-generation) section
-[test_system_main.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/test_system_main.py) | [Path finder test system module](#path-finder-test-system-module) | Run the path finder test system
+[preprocessing.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/preprocessing.py) | [Data preprocessing module](#data-preprocessing-module) | Includes all steps from the [Data preprocessing](#data-preprocessing) section
+[plots.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/plots.py) | [Plots module](#plots-module) | Includes _Participants distribution_, _Tasks distribution_ and _Splitting plots_ from the [Visualization](#visualization) section
+[algo.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/algo.py) | [Hint generation module](#hint-generation-module) | Includes all steps from the [Hint generation](#hint-generation) section
+[path_finder_test_system.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/path_finder_test_system.py) | [Path finder test system module](#path-finder-test-system-module) | Run the path finder test system
 
-A simple configuration: `python file args`
+A simple configuration: `python <file> <args>`
 
 Use `-h` option to show help for each module.
 
@@ -180,7 +180,7 @@ Use `-h` option to show help for each module.
 
 See description: [usage](#usage)
 
-File for running: [preprocessing_main.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/preprocessing_main.py)
+File for running: [preprocessing.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/preprocessing.py)
 
 **Required arguments:**
 1. **path** — the path to data.
@@ -191,7 +191,7 @@ __--level__ — allows to set the level for the preprocessing. Available levels:
 
 Value | Description
 --- | ---
-**0** |  merge activity-tracker and code-tracker files
+**0** |  merge _codetracker files_ and _activity-tracker files_
 **1** |  find tests results for the tasks
 **2** |  split the data
 **3** |  remove intermediate diffs
@@ -204,7 +204,7 @@ Value | Description
 
 See description: [usage](#usage)
 
-File for running: [plots_main.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/statistics_main.py)
+File for running: [plots.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/plots.py)
 
 **Required arguments:**
 1. **path** — the path to data.
@@ -220,11 +220,11 @@ Value | Description
 
 Parameter | Description
 --- | ---
-**\-\-type_dstr**   |  distribution type. Only for **plot_type**: `participants_distr`. Available values are `programExperience` and `age`. The default value is `programExperience`.
+**\-\-type_distr**   |  distribution type. Only for **plot_type**: `participants_distr`. Available values are `programExperience` and `age`. The default value is `programExperience`.
 **\-\-chart_type**  |  chart type. Only for **plot_type**: `participants_distr`. Available values are `bar` and `pie`. The default value is `bar`.
-**\-\-to_union_rare**| allows to merge the rare values. Only for **plot_type**: `participants_distr`. The default value is `False`.
+**\-\-to_union_rare**| use to merge the rare values. Only for **plot_type**: `participants_distr`.
 **\-\-format**      |  allows to save the output into a file in different formats. Available values are `html` and `png`. The default value is `html`.
-**\-\-auto_open**   |  allows to open plots automatically. The default value is `False`
+**\-\-auto_open**   |  use to open plots automatically.
 
 _TODO_: **splitting_plots**
 
@@ -232,7 +232,7 @@ _TODO_: **splitting_plots**
 
 See description: [usage](#usage)
 
-File for running: [algo_main.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/algo_main.py)
+File for running: [algo.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/algo.py)
 
 **Required arguments:**
 1. **path** — the path of the folder with files to construct the solution graph or path of the serialized solution graph
@@ -250,11 +250,11 @@ Value | Description
 
 Parameter | Description
 --- | ---
-**\-\-construct**   |  construct the solution graph. The default value is `True`
-**\-\-deserialize** |  deserialize the solution graph. The default value is `False`
-**\-\-serialize**   |  serialize the solution graph. The default value is `False`.
+**\-\-construct**   |  construct the solution graph using data from the given path. The default value is `True`
+**\-\-deserialize** |  deserialize the solution graph that's stored in the path. The default value is `False`
+**\-\-serialize**   |  serialize the solution graph, that was gotten after constructing/deserialization. The default value is `False`.
 **\-\-viz**         |  visualize the solution graph. The default value is `True`
-**\-\-nod_num_stat**|  visualize the number of nodes in trees statistics (for each vertex and in general). The default value is `False`
+**\-\-nod_num_stat**|  use to visualize the number of nodes in trees statistics (for each vertex and in general).
 **\-\-task**        |  the task for the main algorithm. The default value is `pies`. Available values can be found in `TASK.tasks_values()` if file [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/util/consts.py).
 
 **Note**: you should use only one param from the set {**--construct**, **--deserialize**} in the same time
@@ -263,7 +263,7 @@ Parameter | Description
 
 See description: [usage](#usage)
 
-File for running: [test_system_main.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/test_system_main.py)
+File for running: [path_finder_test_system.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/path_finder_test_system.py)
 
 **Required arguments:**
 1. **path** — the path of the folder with files to construct the solution graph or path of the serialized solution graph
@@ -272,9 +272,9 @@ File for running: [test_system_main.py](https://github.com/JetBrains-Research/co
 
 Parameter | Description
 --- | ---
-**\-\-construct**   |  construct the solution graph. The default value is `True`
-**\-\-deserialize** |  deserialize the solution graph. The default value is `False`
-**\-\-serialize**   |  serialize the solution graph. The default value is `False`.
+**\-\-construct**   |  construct the solution graph using data from the given path. The default value is `True`
+**\-\-deserialize** |  deserialize the solution graph that's stored in the path. The default value is `False`
+**\-\-serialize**   |  serialize the solution graph, that was gotten after constructing/deserialization. The default value is `False`.
 **\-\-viz**         |  visualize the solution graph. The default value is `True`
 **\-\-nod_num_stat**|  visualize the number of nodes in trees statistics (for each vertex and in general). The default value is `False`
 **\-\-task**        |  the task for the main algorithm. The default value is `pies`. Available values can be found in `TASK.tasks_values()` if file [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/util/consts.py).
@@ -297,7 +297,7 @@ __Note__: If you have `ModuleNotFoundError` while you try to run tests, please c
 Use `python setup.py test` from the root directory to run __ALL__ tests. 
 If you want to only run some tests, please use `param --test_level`.
 
-You can use different test levels for `param --test_level`:
+You can use different test levels for param `--test_level`:
 
 Param | Description 
 --- | --- 

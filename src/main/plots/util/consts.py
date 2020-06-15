@@ -128,14 +128,6 @@ class CHART_TYPE(Enum):
     PIE = 'pie'
     BAR = 'bar'
 
-    @classmethod
-    def str_to_chart_type(cls, value: str) -> 'CHART_TYPE':
-        try:
-            return CHART_TYPE(value.lower())
-        except ValueError:
-            available_values_message = ', '.join(list(map(lambda c_t: c_t.value, CHART_TYPE)))
-            raise ValueError(f'{value} is not a char_type value. Available values: {available_values_message}')
-
 
 class STATISTICS_INFO_FOR_PLOTS(Enum):
     LABELS = 'labels'

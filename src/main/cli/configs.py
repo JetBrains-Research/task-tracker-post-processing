@@ -57,22 +57,6 @@ class PREPROCESSING_LEVEL(Enum):
                f'{PREPROCESSING_LEVEL.INEFFICIENT_STATEMENTS.value} - remove inefficient statements; ' \
                f'{PREPROCESSING_LEVEL.INT_EXPERIENCE.value} - add int experience column; '
 
-    @classmethod
-    def get_level(cls, level: str) -> 'PREPROCESSING_LEVEL':
-        message = f'Preprosessing level has to be an integer number from {PREPROCESSING_LEVEL.min_value()} ' \
-                  f'to {PREPROCESSING_LEVEL.max_value()}'
-        try:
-            level = int(level)
-        except ValueError:
-            raise ValueError(message)
-
-        if level < PREPROCESSING_LEVEL.min_value() or level > PREPROCESSING_LEVEL.max_value():
-            raise ValueError(message)
-        try:
-            return PREPROCESSING_LEVEL(level)
-        except ValueError:
-            raise ValueError(message)
-
 
 class ALGO_LEVEL(Enum):
     CONSTRUCT = 0
@@ -91,18 +75,40 @@ class ALGO_LEVEL(Enum):
         return f'{ALGO_LEVEL.CONSTRUCT.value} - construct a solution graph; ' \
                f'{ALGO_LEVEL.HINT.value} - run the main algo and get a hint, default value; '
 
-    @classmethod
-    def get_level(cls, level: str) -> 'ALGO_LEVEL':
-        message = f'Algo level has to be an integer number from {ALGO_LEVEL.min_value()} ' \
-                  f'to {ALGO_LEVEL.max_value()}'
-        try:
-            level = int(level)
-        except ValueError:
-            raise ValueError(message)
 
-        if level < ALGO_LEVEL.min_value() or level > ALGO_LEVEL.max_value():
-            raise ValueError(message)
-        try:
-            return ALGO_LEVEL(level)
-        except ValueError:
-            raise ValueError(message)
+class ALGO_PARAMS(Enum):
+    CONSTRUCT = '--construct'
+    DESERIALIZE = '--deserialize'
+    SERIALIZE = '--serialize'
+    VISUALIZE = '--viz'
+    NOD_NUM_STAT = '--nod_num_stat'
+    TASK = '--task'
+    LEVEL = '--level'
+    PATH = 'path'
+
+    @classmethod
+    def params(cls) -> List['ALGO_PARAMS']:
+        return [p for p in ALGO_PARAMS]
+
+
+class PREPROCESSING_PARAMS(Enum):
+    LEVEL = '--level'
+    PATH = 'path'
+
+    @classmethod
+    def params(cls) -> List['PREPROCESSING_PARAMS']:
+        return [p for p in PREPROCESSING_PARAMS]
+
+
+class PLOTS_PARAMS(Enum):
+    PATH = 'path'
+    PLOT_TYPE = 'plot_type'
+    TYPE_DISTR = '--type_distr'
+    CHART_TYPE = '--chart_type'
+    TO_UNION_RARE = '--to_union_rare'
+    FORMAT = '--format'
+    AUTO_OPEN = '--auto_open'
+
+    @classmethod
+    def params(cls) -> List['PLOTS_PARAMS']:
+        return [p for p in PLOTS_PARAMS]
