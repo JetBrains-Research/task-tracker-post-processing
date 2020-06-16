@@ -71,7 +71,7 @@ class TestAlgoCli:
         return request.param
 
     def test_deserialize_graph(self, param_deserialize_graph) -> None:
-        # Construct the graph and after to run the test with it
+        # Construct the graph and then run the test with it
         graph = construct_solution_graph(DATA_PATH, TASK.PIES)
         path = SolutionSpaceSerializer.serialize(graph)
         output = check_output(self.__get_args(param_deserialize_graph, path))

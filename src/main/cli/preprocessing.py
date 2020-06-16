@@ -37,7 +37,7 @@ class PreprocessingCli(ICli):
         paths = [self._path]
         for level_index in range(0, self._level.value + 1):
             current_level = PREPROCESSING_LEVEL(level_index)
-            self._log.info(f'Current operation is {current_level.level_handler()}')
+            self._log.info(f'Current action is {current_level.level_handler()}')
             new_paths = []
             for path in paths:
                 path = current_level.level_handler()(path)

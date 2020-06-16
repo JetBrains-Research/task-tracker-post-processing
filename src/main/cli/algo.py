@@ -64,12 +64,12 @@ class AlgoCli(ICli):
                                   help='to visualize the number of nodes statistics (for each vertex and in general)')
 
     def __construct_graph(self) -> None:
-        if self._to_deserialize:
-            self._graph = SolutionSpaceSerializer.deserialize(self._path)
-            self._log.info('Graph was deserialized')
-        else:
+        if self._to_construct:
             self._graph = construct_solution_graph(self._path, self._task)
             self._log.info('Graph was constructed')
+        elif self._to_deserialize:
+            self._graph = SolutionSpaceSerializer.deserialize(self._path)
+            self._log.info('Graph was deserialized')
 
         if self._to_serialize:
             path = SolutionSpaceSerializer.serialize(self._graph)
@@ -91,7 +91,11 @@ class AlgoCli(ICli):
             log_and_raise_error(f'You can use only one param from the set ({ALGO_PARAMS.CONSTRUCT.value}, '
                                 f'{ALGO_PARAMS.DESERIALIZE.value}) in the same '
                                 f'time', self._log)
-        self._to_construct = args.construct
+        # Todo: find a better way to use construct and deserialize args
+        if not self._to_deserialize:
+            self._to_construct = True
+        else:
+            self._to_construct = args.construct
         self._to_deserialize = args.deserialize
         self._to_serialize = args.serialize
         self._to_visualize = args.viz

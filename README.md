@@ -110,10 +110,10 @@ Two chart types are available:
 Other options:
 1. **to_union_rare** use to merge the rare values. The rare value means the frequency of the value is less than or equal to `STATISTICS_RARE_VALUE_THRESHOLD` from [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/plots/util/consts.py).
 Default value for `STATISTICS_RARE_VALUE_THRESHOLD` is 2.
-2. **format** allows to save the output into a file in different formats. The default value is `html` because the plots are
+2. **format** use to save the output into a file in different formats. The default value is `html` because the plots are
 interactive.
 3. **auto_open** use to open plots automatically.
-4. **x_category_order** allows to choose the sort order for **X** axis. Available values are stored in `PLOTTY_CATEGORY_ORDER` from [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/plots/util/consts.py).
+4. **x_category_order** use to choose the sort order for **X** axis. Available values are stored in `PLOTTY_CATEGORY_ORDER` from [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/plots/util/consts.py).
 The default value is `PLOTTY_CATEGORY_ORDER.TOTAL_ASCENDING`.
 
 #### Tasks distribution
@@ -124,8 +124,8 @@ Use **plot_tasks_statistics** method from [tasks_statistics_plots.py](https://gi
 to plot tasks statistics.
 
 Available options:
-1. **plot_name** allows to choose the filename. The default value is _task_distribution_plot_.
-2. **format** allows to save the output into different formats. The default value is `html` because the plots are
+1. **plot_name** use to choose the filename. The default value is _task_distribution_plot_.
+2. **format** use to save the output into different formats. The default value is `html` because the plots are
 interactive.
 3. **auto_open** use to open plots automatically. 
 
@@ -187,7 +187,7 @@ File for running: [preprocessing.py](https://github.com/JetBrains-Research/codet
 
 **Optional arguments**:
 
-__--level__ — allows to set the level for the preprocessing. Available levels:
+__--level__ — use to set the level for the preprocessing. Available levels:
 
 Value | Description
 --- | ---
@@ -212,9 +212,9 @@ File for running: [plots.py](https://github.com/JetBrains-Research/codetracker-d
 
 Value | Description
 --- | ---
-**participants_distr** |  to visualize [Participants distribution](#participants-distribution)
-**tasks_distr**        |  to visualize [Tasks distribution](#tasks-distribution)
-**splitting_plots**    |  to visualize [Splitting plots](#splitting-plots)
+**participants_distr** |  use to visualize [Participants distribution](#participants-distribution)
+**tasks_distr**        |  use to visualize [Tasks distribution](#tasks-distribution)
+**splitting_plots**    |  use to visualize [Splitting plots](#splitting-plots)
 
 **Optional arguments**:
 
@@ -223,7 +223,7 @@ Parameter | Description
 **&#8209;&#8209;type_distr**   |  distribution type. Only for **plot_type**: `participants_distr`. Available values are `programExperience` and `age`. The default value is `programExperience`.
 **&#8209;&#8209;chart_type**  |  chart type. Only for **plot_type**: `participants_distr`. Available values are `bar` and `pie`. The default value is `bar`.
 **&#8209;&#8209;to_union_rare**| use to merge the rare values. Only for **plot_type**: `participants_distr`.
-**&#8209;&#8209;format**      |  allows to save the output into a file in different formats. Available values are `html` and `png`. The default value is `html`.
+**&#8209;&#8209;format**      |  use to save the output into a file in different formats. Available values are `html` and `png`. The default value is `html`.
 **&#8209;&#8209;auto_open**   |  use to open plots automatically.
 
 _TODO_: **splitting_plots**
@@ -239,7 +239,7 @@ File for running: [algo.py](https://github.com/JetBrains-Research/codetracker-da
 
 **Optional arguments**:
 
-__--level__ allows to set the level for running the algorithm. Available levels:
+__--level__ use to set the level for running the algorithm. Available levels:
 
 Value | Description
 --- | ---
@@ -250,11 +250,11 @@ Value | Description
 
 Parameter | Description
 --- | ---
-**&#8209;&#8209;construct**   |  construct the solution graph using data from the given path. The default value is `True`
-**&#8209;&#8209;deserialize** |  deserialize the solution graph that's stored in the path. The default value is `False`
-**&#8209;&#8209;serialize**   |  serialize the solution graph, that was gotten after constructing/deserialization. The default value is `False`.
-**&#8209;&#8209;viz**         |  visualize the solution graph. The default value is `True`
-**&#8209;&#8209;nod_num_stat**|  use to visualize the number of nodes in trees statistics (for each vertex and in general).
+**&#8209;&#8209;construct**   |  use to construct the solution graph using data from the given path. The default value is `True`
+**&#8209;&#8209;deserialize** |  use to deserialize the solution graph that's stored in the path. The default value is `False`
+**&#8209;&#8209;serialize**   |  use to serialize the solution graph, that was gotten after constructing/deserialization. The default value is `False`.
+**&#8209;&#8209;viz**         |  use to visualize the solution graph. The default value is `True`.
+**&#8209;&#8209;nod_num_stat**|  use to visualize the number of nodes in trees statistics (for each vertex and in general). The default value is `False`
 **&#8209;&#8209;task**        |  the task for the main algorithm. The default value is `pies`. Available values can be found in `TASK.tasks_values()` if file [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/util/consts.py).
 
 **Note**: you should use only one param from the set {**--construct**, **--deserialize**} in the same time
@@ -272,11 +272,11 @@ File for running: [path_finder_test_system.py](https://github.com/JetBrains-Rese
 
 Parameter | Description
 --- | ---
-**&#8209;&#8209;construct**   |  construct the solution graph using data from the given path. The default value is `True`
-**&#8209;&#8209;deserialize** |  deserialize the solution graph that's stored in the path. The default value is `False`
-**&#8209;&#8209;serialize**   |  serialize the solution graph, that was gotten after constructing/deserialization. The default value is `False`.
-**&#8209;&#8209;viz**         |  visualize the solution graph. The default value is `True`
-**&#8209;&#8209;nod_num_stat**|  visualize the number of nodes in trees statistics (for each vertex and in general). The default value is `False`
+**&#8209;&#8209;construct**   |  use to construct the solution graph using data from the given path. The default value is `True`
+**&#8209;&#8209;deserialize** |  use to deserialize the solution graph that's stored in the path. The default value is `False`
+**&#8209;&#8209;serialize**   |  use to serialize the solution graph, that was gotten after constructing/deserialization. The default value is `False`.
+**&#8209;&#8209;viz**         |  use to visualize the solution graph. The default value is `True`
+**&#8209;&#8209;nod_num_stat**|  use to visualize the number of nodes in trees statistics (for each vertex and in general). The default value is `False`
 **&#8209;&#8209;task**        |  the task for the main algorithm. The default value is `pies`. Available values can be found in `TASK.tasks_values()` if file [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/util/consts.py).
 
 **Note**: you should use only one param from the set {**--construct**, **--deserialize**} in the same time

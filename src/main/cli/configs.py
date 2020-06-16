@@ -1,14 +1,16 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
+from __future__ import annotations
+
 from enum import Enum
 from typing import List
 
-from src.main.preprocessing.inefficient_statements_removing import remove_inefficient_statements
-from src.main.preprocessing.int_experience_adding import add_int_experience
-from src.main.preprocessing.intermediate_diffs_removing import remove_intermediate_diffs
+from src.main.splitting.tasks_tests_handler import run_tests
 from src.main.preprocessing.preprocessing import preprocess_data
 from src.main.splitting.splitting import split_tasks_into_separate_files
-from src.main.splitting.tasks_tests_handler import run_tests
+from src.main.preprocessing.int_experience_adding import add_int_experience
+from src.main.preprocessing.intermediate_diffs_removing import remove_intermediate_diffs
+from src.main.preprocessing.inefficient_statements_removing import remove_inefficient_statements
 
 
 class PLOT_TYPE(Enum):
@@ -17,7 +19,7 @@ class PLOT_TYPE(Enum):
     SPLITTING_PLOTS = 'splitting_plots'
 
     @classmethod
-    def plot_types(cls) -> List['PLOT_TYPE']:
+    def plot_types(cls) -> List[PLOT_TYPE]:
         return [_ for _ in PLOT_TYPE]
 
     @classmethod
@@ -31,13 +33,14 @@ class PLOT_TYPE(Enum):
                f'{PLOT_TYPE.SPLITTING_PLOTS.value} - visualize splitting plots;'
 
     @classmethod
-    def str_to_plot_type(cls, value: str) -> 'PLOT_TYPE':
+    def str_to_plot_type(cls, value: str) -> PLOT_TYPE:
         try:
             return PLOT_TYPE(value.lower())
         except ValueError:
             raise ValueError(f'{value} is not a plot_type value. Available values: {PLOT_TYPE.description()}')
 
 
+# Todo: create an interface for such kind of classes?
 class PREPROCESSING_LEVEL(Enum):
     MERGE = 0
     TESTS_RESULTS = 1
@@ -47,7 +50,7 @@ class PREPROCESSING_LEVEL(Enum):
     INT_EXPERIENCE = 5
 
     @property
-    def __level_handlers(self):
+    def __level_actions(self):
         return {
             self.MERGE: preprocess_data,
             self.TESTS_RESULTS: run_tests,
@@ -58,7 +61,7 @@ class PREPROCESSING_LEVEL(Enum):
         }
 
     def level_handler(self):
-        return self.__level_handlers[self]
+        return self.__level_actions[self]
 
     @classmethod
     def min_value(cls) -> int:
@@ -70,7 +73,7 @@ class PREPROCESSING_LEVEL(Enum):
 
     @classmethod
     def description(cls) -> str:
-        return f'the the Nth level runs all the level before it; ' \
+        return f'the Nth level runs all the level before it; ' \
                f'{PREPROCESSING_LEVEL.MERGE.value} - merge activity-tracker and code-tracker files; ' \
                f'{PREPROCESSING_LEVEL.TESTS_RESULTS.value} - find tests results for the tasks; ' \
                f'{PREPROCESSING_LEVEL.SPLIT.value} - split data; ' \
@@ -108,7 +111,7 @@ class ALGO_PARAMS(Enum):
     PATH = 'path'
 
     @classmethod
-    def params(cls) -> List['ALGO_PARAMS']:
+    def params(cls) -> List[ALGO_PARAMS]:
         return [p for p in ALGO_PARAMS]
 
 
@@ -117,7 +120,7 @@ class PREPROCESSING_PARAMS(Enum):
     PATH = 'path'
 
     @classmethod
-    def params(cls) -> List['PREPROCESSING_PARAMS']:
+    def params(cls) -> List[PREPROCESSING_PARAMS]:
         return [p for p in PREPROCESSING_PARAMS]
 
 
@@ -131,5 +134,5 @@ class PLOTS_PARAMS(Enum):
     AUTO_OPEN = '--auto_open'
 
     @classmethod
-    def params(cls) -> List['PLOTS_PARAMS']:
+    def params(cls) -> List[PLOTS_PARAMS]:
         return [p for p in PLOTS_PARAMS]

@@ -61,7 +61,7 @@ class ICli(object, metaclass=ABCMeta):
 
     @classmethod
     def str_to_preprocessing_level(cls, level: str) -> PREPROCESSING_LEVEL:
-        message = f'Preprosessing level has to be an integer number from {PREPROCESSING_LEVEL.min_value()} ' \
+        message = f'Preprocessing level has to be an integer number from {PREPROCESSING_LEVEL.min_value()} ' \
                   f'to {PREPROCESSING_LEVEL.max_value()}'
         try:
             level = int(level)
