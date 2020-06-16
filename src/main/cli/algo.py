@@ -92,7 +92,7 @@ class AlgoCli(ICli):
                                 f'{ALGO_PARAMS.DESERIALIZE.value}) in the same '
                                 f'time', self._log)
         # Todo: find a better way to use construct and deserialize args
-        if not self._to_deserialize:
+        if not args.deserialize:
             self._to_construct = True
         else:
             self._to_construct = args.construct
