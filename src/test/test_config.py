@@ -25,9 +25,6 @@ class TEST_LEVEL(Enum):
     # Run only util tests
     UTIL = 'util tests'
 
-    # Run only cli tests
-    CLI = 'cli tests'
-
 
 CURRENT_TEST_LEVEL = TEST_LEVEL.ALL
 
@@ -46,8 +43,7 @@ PARAMS_AND_TEST_LEVEL_DICT = {
     'plots': TEST_LEVEL.PLOTS,
     'preprocess': TEST_LEVEL.PREPROCESSING,
     'splitting': TEST_LEVEL.SPLITTING,
-    'util': TEST_LEVEL.UTIL,
-    'cli': TEST_LEVEL.CLI
+    'util': TEST_LEVEL.UTIL
 }
 
 

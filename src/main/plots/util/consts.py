@@ -124,7 +124,7 @@ class STATISTICS_COLORS(Enum):
 DEFAULT_BAR_CHART_COLOR = '#9B0B9B'
 
 
-class CHART_TYPE(Enum):
+class PLOT_TYPE(Enum):
     PIE = 'pie'
     BAR = 'bar'
 

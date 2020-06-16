@@ -36,7 +36,7 @@ def to_filter_rare_values(statistics_df: pd.DataFrame) -> bool:
     return statistics_df[plot_consts.STATISTICS_FREQ] <= plot_consts.STATISTICS_RARE_VALUE_THRESHOLD
 
 
-def create_directory_for_plots(path: str, folder: plot_consts.CHART_TYPE, file_name: str,
+def create_directory_for_plots(path: str, folder: plot_consts.PLOT_TYPE, file_name: str,
                                statistics_folder_name: str = 'statistics') -> str:
     path = os.path.join(get_parent_folder(path), statistics_folder_name, str(folder))
     create_directory(path)

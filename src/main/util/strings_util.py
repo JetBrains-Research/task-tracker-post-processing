@@ -4,12 +4,6 @@ import re
 from typing import List, Any
 
 
-def add_symbol_to_begin(string: str, symbol: str) -> str:
-    if not string.startswith(symbol):
-        string = symbol + string
-    return string
-
-
 def contains_any_of_substrings(string: str, substrings: List[str]) -> bool:
     for substring in substrings:
         if substring in string:

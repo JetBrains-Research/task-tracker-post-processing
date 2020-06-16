@@ -7,7 +7,7 @@ import pytest
 from src.test.plots.util import TO_OPEN_PLOTS
 from src.main.util.consts import TEST_DATA_PATH
 from src.test.test_config import to_skip, TEST_LEVEL
-from src.main.plots.util.consts import STATISTICS_KEY, CHART_TYPE
+from src.main.plots.util.consts import STATISTICS_KEY, PLOT_TYPE
 from src.main.plots.profile_statistics_plots import plot_profile_statistics
 from src.main.statistics_gathering.statistics_gathering import get_profile_statistics
 
@@ -24,6 +24,6 @@ class TestProfileStatisticsPlots:
         age_statistics = [os.path.join(result_path, 'age.pickle'), STATISTICS_KEY.AGE]
         experience_statistics = [os.path.join(result_path, 'programExperience.pickle'), STATISTICS_KEY.EXPERIENCE]
         for statistics, column in [age_statistics, experience_statistics]:
-            for type in CHART_TYPE:
+            for type in PLOT_TYPE:
                 plot_profile_statistics(statistics, column, type, auto_open=TO_OPEN_PLOTS)
 

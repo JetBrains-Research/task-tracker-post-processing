@@ -257,7 +257,6 @@ TEST_PATH = ROOT_DIR + '/../../test'
 GRAPH_REPRESENTATION_PATH = os.path.join(RESOURCES_PATH, 'graph_representation')
 SERIALIZED_GRAPH_PATH = os.path.join(RESOURCES_PATH, 'serialized_graph')
 SOLUTION_SPACE_TEST_RESULT_PATH = os.path.join(RESOURCES_PATH, 'solution_space')
-CLI_PATH = os.path.join(ROOT_DIR + '/../', 'cli')
 
 PREPROCESSING_OUTPUT_DIRECTORY = 'preprocessing_result'
 STATISTICS_OUTPUT_DIRECTORY = 'statistics_result'
@@ -272,6 +271,3 @@ RUNNING_TESTS_OUTPUT_DIRECTORY = 'running_tests_result_3'
 MAX_DIFF_SYMBOLS = 30
 
 TIMEOUT = 5
-
-TRUE_VALUES_SET = {'true', 't', '1', 'yes', 'y'}
-FALSE_VALUES_SET = {'false', 'f', '0', 'no', 'n'}

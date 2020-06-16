@@ -55,7 +55,7 @@ def __plot_bar_chart(bars: List[go.Bar], path: str, plot_name: str = 'bar_plot',
         ),
         colorway=__get_colors()
     )
-    save_plot(fig, path, plot_consts.CHART_TYPE.BAR, plot_name, format, auto_open)
+    save_plot(fig, path, plot_consts.PLOT_TYPE.BAR, plot_name, format, auto_open)
 
 
 def plot_tasks_statistics(path: str, plot_name: str = 'task_distribution_plot',
