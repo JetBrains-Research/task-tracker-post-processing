@@ -11,7 +11,7 @@ from src.main.util.log_util import log_and_raise_error
 from src.main.plots.util.plotly_util import save_plot, plot_and_save_freq_chart
 from src.main.util.file_util import get_parent_folder, deserialize_data_from_file
 from src.main.plots.util.plots_common import to_filter_rare_values, get_readable_key, get_labels_for_freq_plots
-from src.main.plots.util.consts import PLOTTY_CATEGORY_ORDER, PLOT_TYPE, STATISTICS_FREQ, STATISTICS_SHOWING_KEY, \
+from src.main.plots.util.consts import PLOTTY_CATEGORY_ORDER, CHART_TYPE, STATISTICS_FREQ, STATISTICS_SHOWING_KEY, \
     STATISTICS_KEY, STATISTICS_COLORS
 
 log = logging.getLogger(consts.LOGGER_NAME)
@@ -47,10 +47,10 @@ def __plot_pie_chart(statistics_df: pd.DataFrame, title: str, path: str, column:
                  hover_data=[STATISTICS_FREQ],
                  labels=labels)
     fig.update_traces(textposition='inside', textinfo='percent')
-    save_plot(fig, path, PLOT_TYPE.PIE, plot_name, format, auto_open)
+    save_plot(fig, path, CHART_TYPE.PIE, plot_name, format, auto_open)
 
 
-def plot_profile_statistics(file: str, column: STATISTICS_KEY, plot_type: PLOT_TYPE, to_union_rare: bool = False,
+def plot_profile_statistics(file: str, column: STATISTICS_KEY, plot_type: CHART_TYPE, to_union_rare: bool = False,
                             format: consts.EXTENSION = consts.EXTENSION.HTML, auto_open: bool = False,
                             x_category_order: PLOTTY_CATEGORY_ORDER = PLOTTY_CATEGORY_ORDER.TOTAL_ASCENDING) -> None:
     default_value = column.get_default()
@@ -58,10 +58,10 @@ def plot_profile_statistics(file: str, column: STATISTICS_KEY, plot_type: PLOT_T
     path = get_parent_folder(file)
     labels = get_labels_for_freq_plots(column)
     title = __get_title_for_plots(column)
-    if plot_type == PLOT_TYPE.PIE:
+    if plot_type == CHART_TYPE.PIE:
         __plot_pie_chart(statistics_df, title, path, column, labels, plot_name=column.value, format=format,
                          auto_open=auto_open)
-    elif plot_type == PLOT_TYPE.BAR:
+    elif plot_type == CHART_TYPE.BAR:
         plot_and_save_freq_chart(statistics_df, title, path, column, labels, plot_name=column.value, format=format,
                                  auto_open=auto_open, x_category_order=x_category_order)
     else:

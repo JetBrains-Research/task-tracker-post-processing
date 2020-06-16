@@ -1,0 +1,10 @@
+date,timestamp,fileName,fileHashCode,documentHashCode,fragment,chosenTask,writtenTask,age,programExperience,taskStatus,activePane
+2020-05-14T22:53:53.919+03:00,4202,test.py,4275,1805376686,"a=int(input())
+b=int(input())
+n=int(input())
+a=a*100
+b+=a
+b=b*n
+a=b//100
+b=b%100
+print(a,b)",pies,,-1,-1,,taskStatusPane

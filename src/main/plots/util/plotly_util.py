@@ -13,14 +13,15 @@ from src.main.plots.util import consts as plot_consts
 from src.main.util.file_util import change_extension_to
 from src.main.plots.util.plots_common import create_directory_for_plots, get_readable_key
 from src.main.plots.util.consts import STATISTICS_KEY, PLOTTY_CATEGORY_ORDER, STATISTICS_FREQ, STATISTICS_SHOWING_KEY, \
-    STATISTICS_COLORS, PLOT_TYPE
+    STATISTICS_COLORS, CHART_TYPE
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
 
-def save_plot(fig: go.Figure, path: str, plot_type: plot_consts.PLOT_TYPE, plot_name: str = 'result_plot',
+def save_plot(fig: go.Figure, path: str, plot_type: plot_consts.CHART_TYPE, plot_name: str = 'result_plot',
               format: consts.EXTENSION = consts.EXTENSION.HTML, auto_open: bool = False) -> None:
     file_name = create_directory_for_plots(path, plot_type.value, change_extension_to(plot_name, format))
+    log.info(f'Plot destination: {file_name}')
     if format == consts.EXTENSION.HTML:
         plotly.offline.plot(fig, filename=file_name, auto_open=auto_open)
     else:
@@ -61,7 +62,7 @@ def get_freq_bar_chart(statistics_df: pd.DataFrame, title: str, column: STATISTI
 
 def plot_and_save_freq_chart(statistics_df: pd.DataFrame, title: str, path: str, column: STATISTICS_KEY,
                              labels: Dict[str, str], plot_name: str, format: consts.EXTENSION = consts.EXTENSION.HTML,
-                             auto_open: bool = False, plot_type: PLOT_TYPE = PLOT_TYPE.BAR,
+                             auto_open: bool = False, plot_type: CHART_TYPE = CHART_TYPE.BAR,
                              x_category_order: PLOTTY_CATEGORY_ORDER = PLOTTY_CATEGORY_ORDER.TOTAL_ASCENDING) -> None:
     fig = get_freq_bar_chart(statistics_df, title, column, labels, x_category_order)
     save_plot(fig, path, plot_type, plot_name, format, auto_open)
