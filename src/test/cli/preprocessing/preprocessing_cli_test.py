@@ -9,13 +9,13 @@ import pytest
 
 from src.test.test_config import to_skip, TEST_LEVEL
 from src.main.util.consts import TEST_DATA_PATH, CLI_PATH
-from src.main.util.consts import RUNNING_TESTS_RESULT_FOLDER
+from src.main.util.consts import RUNNING_TESTS_OUTPUT_DIRECTORY
 from src.main.util.file_util import get_parent_folder, remove_directory
 from src.main.cli.configs import PREPROCESSING_PARAMS, PREPROCESSING_LEVEL
 
 
 BASE_FOLDER_NAME = 'preprocessing'
-PREPROCESSING_RESULT_PREFIX = 'preprocessing_result'
+PREPROCESSING_OUTPUT_PREFIX = 'preprocessing_output'
 DATA_PATH = os.path.join(TEST_DATA_PATH, 'cli', BASE_FOLDER_NAME)
 
 
@@ -41,9 +41,9 @@ class TestPreprocessingCli:
         output = check_output(self.__get_args(param_data_preprocessing))
         # Delete the new folders
         remove_directory(os.path.join(get_parent_folder(DATA_PATH),
-                                      f'{BASE_FOLDER_NAME}_{PREPROCESSING_RESULT_PREFIX}'))
+                                      f'{BASE_FOLDER_NAME}_{PREPROCESSING_OUTPUT_PREFIX}'))
         remove_directory(os.path.join(get_parent_folder(DATA_PATH),
-                                      f'{BASE_FOLDER_NAME}_{PREPROCESSING_RESULT_PREFIX}_{RUNNING_TESTS_RESULT_FOLDER}'))
+                                      f'{BASE_FOLDER_NAME}_{PREPROCESSING_OUTPUT_PREFIX}_{RUNNING_TESTS_OUTPUT_DIRECTORY}'))
 
     @staticmethod
     @pytest.fixture(scope="function",

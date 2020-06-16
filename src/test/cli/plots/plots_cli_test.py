@@ -16,7 +16,7 @@ from src.main.util.consts import TEST_DATA_PATH, CLI_PATH
 STATISTICS_FOLDER = 'statistics'
 AFTER_SPLITTING_PREFIX = 'after_splitting'
 BEFORE_SPLITTING_PREFIX = 'before_splitting'
-STATISTICS_RESULT_PREFIX = 'statistics_result'
+STATISTICS_OUTPUT_PREFIX = 'statistics_output'
 BASE_DATA_PATH = os.path.join(TEST_DATA_PATH, 'cli', 'plots')
 DATA_BEFORE_SPLITTING_PATH = os.path.join(BASE_DATA_PATH, BEFORE_SPLITTING_PREFIX)
 DATA_AFTER_SPLITTING_PATH = os.path.join(BASE_DATA_PATH, AFTER_SPLITTING_PREFIX)
@@ -44,7 +44,7 @@ class TestPlotsCli:
     def test_plots(self, param_plots) -> None:
         output = check_output(self.__get_args(param_plots))
         # Delete the new folders
-        remove_directory(os.path.join(BASE_DATA_PATH, f'{BEFORE_SPLITTING_PREFIX}_{STATISTICS_RESULT_PREFIX}'))
+        remove_directory(os.path.join(BASE_DATA_PATH, f'{BEFORE_SPLITTING_PREFIX}_{STATISTICS_OUTPUT_PREFIX}'))
         remove_directory(os.path.join(BASE_DATA_PATH, STATISTICS_FOLDER))
 
     @staticmethod
