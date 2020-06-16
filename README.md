@@ -220,11 +220,11 @@ Value | Description
 
 Parameter | Description
 --- | ---
-**\-\-type_distr**   |  distribution type. Only for **plot_type**: `participants_distr`. Available values are `programExperience` and `age`. The default value is `programExperience`.
-**\-\-chart_type**  |  chart type. Only for **plot_type**: `participants_distr`. Available values are `bar` and `pie`. The default value is `bar`.
-**\-\-to_union_rare**| use to merge the rare values. Only for **plot_type**: `participants_distr`.
-**\-\-format**      |  allows to save the output into a file in different formats. Available values are `html` and `png`. The default value is `html`.
-**\-\-auto_open**   |  use to open plots automatically.
+**&#8209;&#8209;type_distr**   |  distribution type. Only for **plot_type**: `participants_distr`. Available values are `programExperience` and `age`. The default value is `programExperience`.
+**&#8209;&#8209;chart_type**  |  chart type. Only for **plot_type**: `participants_distr`. Available values are `bar` and `pie`. The default value is `bar`.
+**&#8209;&#8209;to_union_rare**| use to merge the rare values. Only for **plot_type**: `participants_distr`.
+**&#8209;&#8209;format**      |  allows to save the output into a file in different formats. Available values are `html` and `png`. The default value is `html`.
+**&#8209;&#8209;auto_open**   |  use to open plots automatically.
 
 _TODO_: **splitting_plots**
 
@@ -250,12 +250,12 @@ Value | Description
 
 Parameter | Description
 --- | ---
-**\-\-construct**   |  construct the solution graph using data from the given path. The default value is `True`
-**\-\-deserialize** |  deserialize the solution graph that's stored in the path. The default value is `False`
-**\-\-serialize**   |  serialize the solution graph, that was gotten after constructing/deserialization. The default value is `False`.
-**\-\-viz**         |  visualize the solution graph. The default value is `True`
-**\-\-nod_num_stat**|  use to visualize the number of nodes in trees statistics (for each vertex and in general).
-**\-\-task**        |  the task for the main algorithm. The default value is `pies`. Available values can be found in `TASK.tasks_values()` if file [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/util/consts.py).
+**&#8209;&#8209;construct**   |  construct the solution graph using data from the given path. The default value is `True`
+**&#8209;&#8209;deserialize** |  deserialize the solution graph that's stored in the path. The default value is `False`
+**&#8209;&#8209;serialize**   |  serialize the solution graph, that was gotten after constructing/deserialization. The default value is `False`.
+**&#8209;&#8209;viz**         |  visualize the solution graph. The default value is `True`
+**&#8209;&#8209;nod_num_stat**|  use to visualize the number of nodes in trees statistics (for each vertex and in general).
+**&#8209;&#8209;task**        |  the task for the main algorithm. The default value is `pies`. Available values can be found in `TASK.tasks_values()` if file [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/util/consts.py).
 
 **Note**: you should use only one param from the set {**--construct**, **--deserialize**} in the same time
 
@@ -272,12 +272,12 @@ File for running: [path_finder_test_system.py](https://github.com/JetBrains-Rese
 
 Parameter | Description
 --- | ---
-**\-\-construct**   |  construct the solution graph using data from the given path. The default value is `True`
-**\-\-deserialize** |  deserialize the solution graph that's stored in the path. The default value is `False`
-**\-\-serialize**   |  serialize the solution graph, that was gotten after constructing/deserialization. The default value is `False`.
-**\-\-viz**         |  visualize the solution graph. The default value is `True`
-**\-\-nod_num_stat**|  visualize the number of nodes in trees statistics (for each vertex and in general). The default value is `False`
-**\-\-task**        |  the task for the main algorithm. The default value is `pies`. Available values can be found in `TASK.tasks_values()` if file [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/util/consts.py).
+**&#8209;&#8209;construct**   |  construct the solution graph using data from the given path. The default value is `True`
+**&#8209;&#8209;deserialize** |  deserialize the solution graph that's stored in the path. The default value is `False`
+**&#8209;&#8209;serialize**   |  serialize the solution graph, that was gotten after constructing/deserialization. The default value is `False`.
+**&#8209;&#8209;viz**         |  visualize the solution graph. The default value is `True`
+**&#8209;&#8209;nod_num_stat**|  visualize the number of nodes in trees statistics (for each vertex and in general). The default value is `False`
+**&#8209;&#8209;task**        |  the task for the main algorithm. The default value is `pies`. Available values can be found in `TASK.tasks_values()` if file [consts.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/util/consts.py).
 
 **Note**: you should use only one param from the set {**--construct**, **--deserialize**} in the same time
 
