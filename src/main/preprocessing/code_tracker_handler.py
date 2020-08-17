@@ -10,7 +10,7 @@ from src.main.util.file_util import get_extension_from_file
 from src.main.util.language_util import get_language_by_extension
 from src.main.util.strings_util import convert_camel_case_to_snake_case
 from src.main.util.consts import CODE_TRACKER_COLUMN, DEFAULT_VALUE, INVALID_FILE_FOR_PREPROCESSING, LANGUAGE, \
-    ISO_ENCODING, LOGGER_NAME
+    ISO_ENCODING, LOGGER_NAME, TEST_MODE
 
 log = logging.getLogger(LOGGER_NAME)
 
@@ -61,3 +61,7 @@ def handle_ct_file(ct_file: str) -> Tuple[pd.DataFrame, LANGUAGE]:
                                                               CODE_TRACKER_COLUMN.EXPERIENCE.fits_restrictions,
                                                               DEFAULT_VALUE.EXPERIENCE)
     return ct_df, language
+
+
+def is_test_mode(ct_df: pd.DataFrame) -> bool:
+    return ct_df[CODE_TRACKER_COLUMN.TEST_MODE.value] == TEST_MODE.ON

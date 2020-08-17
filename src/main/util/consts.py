@@ -23,6 +23,7 @@ class CODE_TRACKER_COLUMN(Enum):
     TASK_STATUS = 'taskStatus'
     TESTS_RESULTS = 'testsResults'
     INT_EXPERIENCE = 'intExperience'
+    TEST_MODE = 'testMode'
 
     def fits_restrictions(self, value: Any) -> bool:
         if self is CODE_TRACKER_COLUMN.AGE:
@@ -32,6 +33,11 @@ class CODE_TRACKER_COLUMN(Enum):
         # Todo: implement restrictions for other columns
         else:
             raise NotImplementedError(f"Cannot find any restrictions for {self}")
+
+
+class TEST_MODE(Enum):
+    ON = 'ON'
+    OFF = 'OFF'
 
 
 class TMP_COLUMN(Enum):
@@ -261,6 +267,7 @@ CLI_PATH = os.path.join(ROOT_DIR + '/../', 'cli')
 
 PREPROCESSING_OUTPUT_DIRECTORY = 'preprocessing_result'
 STATISTICS_OUTPUT_DIRECTORY = 'statistics_result'
+TEST_MODE_REMOVING_DIRECTORY = 'without_test_mode_removing'
 
 # Todo: use zip
 GUMTREE_PATH = os.path.join(RESOURCES_PATH, 'gumtree/bin/gumtree')
