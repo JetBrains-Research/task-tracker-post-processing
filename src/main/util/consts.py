@@ -265,9 +265,9 @@ SERIALIZED_GRAPH_PATH = os.path.join(RESOURCES_PATH, 'serialized_graph')
 SOLUTION_SPACE_TEST_RESULT_PATH = os.path.join(RESOURCES_PATH, 'solution_space')
 CLI_PATH = os.path.join(ROOT_DIR + '/../', 'cli')
 
-PREPROCESSING_OUTPUT_DIRECTORY = 'preprocessing_result'
+MERGING_CT_AND_ATI_OUTPUT_DIRECTORY = 'merged_ct_and_ati_result'
 STATISTICS_OUTPUT_DIRECTORY = 'statistics_result'
-TEST_MODE_REMOVING_DIRECTORY = 'without_test_mode_removing'
+PREPROCESSING_DIRECTORY = 'preprocessing_result'
 
 # Todo: use zip
 GUMTREE_PATH = os.path.join(RESOURCES_PATH, 'gumtree/bin/gumtree')

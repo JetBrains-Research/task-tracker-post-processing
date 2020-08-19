@@ -4,7 +4,7 @@ import os
 import re
 import pickle
 import shutil
-from typing import Callable, Any, List, Tuple, Type
+from typing import Callable, Any, List, Tuple, Type, Optional
 
 import pandas as pd
 
@@ -285,3 +285,9 @@ def pair_in_and_out_files(in_files: list, out_files: list) -> List[Tuple[str, st
 def sort_files_by_size(files: List[str], to_reverse: bool = False) -> List[str]:
     files.sort(key=lambda f: os.stat(f).st_size, reverse=to_reverse)
     return files
+
+
+def get_file_with_max_size(files: List[str]) -> Optional[str]:
+    if not files:
+        return None
+    return sort_files_by_size(files, to_reverse=True)[0]

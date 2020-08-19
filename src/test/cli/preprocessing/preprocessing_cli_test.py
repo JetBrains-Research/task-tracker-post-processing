@@ -24,7 +24,7 @@ class TestPreprocessingCli:
 
     @staticmethod
     def __get_args(params: List[str], data_path: str = DATA_PATH) -> List[str]:
-        return ['python3', os.path.join(CLI_PATH, 'preprocessing.py'), data_path] + params
+        return ['python3', os.path.join(CLI_PATH, 'merging_ct_with_ati.py'), data_path] + params
 
     @staticmethod
     @pytest.fixture(scope="function",

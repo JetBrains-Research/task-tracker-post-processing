@@ -5,7 +5,7 @@ import logging
 from src.main.util import consts
 from src.main.util.consts import LOGGER_NAME
 from src.main.util.log_util import log_and_raise_error
-from src.main.preprocessing.preprocessing import is_ct_file
+from src.main.preprocessing.merging_ct_with_ati import is_ct_file
 from src.main.util.file_util import get_all_file_system_items, get_file_and_parent_folder_names, create_file, \
     get_content_from_file, ct_file_condition, extension_file_condition
 
