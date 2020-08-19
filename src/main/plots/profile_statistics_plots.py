@@ -75,18 +75,19 @@ def __plot_pie_chart(statistics_df: pd.DataFrame, title: str, path: str, column:
 def plot_profile_statistics(file: str, column: STATISTICS_KEY, plot_type: CHART_TYPE, to_union_rare: bool = False,
                             format: consts.EXTENSION = consts.EXTENSION.HTML, auto_open: bool = False,
                             x_category_order: PLOTTY_CATEGORY_ORDER = PLOTTY_CATEGORY_ORDER.TOTAL_ASCENDING,
-                            x_axis_title: Optional[str] = None, y_axis_title: Optional[str] = None) -> None:
+                            x_axis_title: Optional[str] = None, y_axis_title: Optional[str] = None,
+                            to_add_percents: bool = False, to_add_title: bool = True) -> None:
     default_value = column.get_default()
     statistics_df = __get_statistics_df_from_file(file, column, default_value, to_union_rare)
     path = get_parent_folder(file)
     labels = get_labels_for_freq_plots(column)
-    title = __get_title_for_plots(column)
+    title = __get_title_for_plots(column) if to_add_title else None
     if plot_type == CHART_TYPE.PIE:
         __plot_pie_chart(statistics_df, title, path, column, labels, plot_name=column.value, format=format,
                          auto_open=auto_open)
     elif plot_type == CHART_TYPE.BAR:
         plot_and_save_freq_chart(statistics_df, title, path, column, labels, plot_name=column.value, format=format,
                                  auto_open=auto_open, x_category_order=x_category_order, x_axis_title=x_axis_title,
-                                 y_axis_title=y_axis_title)
+                                 y_axis_title=y_axis_title, to_add_percents=to_add_percents)
     else:
         log_and_raise_error(f'Plot type {plot_type} is incorrect!', log)
