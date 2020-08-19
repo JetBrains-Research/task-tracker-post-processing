@@ -113,6 +113,17 @@ class EXPERIENCE(Enum):
     def values(cls) -> List[str]:
         return [member.value for _, member in EXPERIENCE.__members__.items()]
 
+    @classmethod
+    def sorted_values(cls) -> List[str]:
+        return [
+            cls.LESS_THAN_HALF_YEAR.value,
+            cls.FROM_HALF_TO_ONE_YEAR.value,
+            cls.FROM_ONE_TO_TWO_YEARS.value,
+            cls.FROM_TWO_TO_FOUR_YEARS.value,
+            cls.FROM_FOUR_TO_SIX_YEARS.value,
+            cls.MORE_THAN_SIX.value
+        ]
+
 
 class INT_EXPERIENCE(Enum):
     LESS_THAN_HALF_YEAR = 0
@@ -128,20 +139,19 @@ class INT_EXPERIENCE(Enum):
 
     def get_short_str(self) -> str:
         if self is INT_EXPERIENCE.LESS_THAN_HALF_YEAR:
-            return '<0.5 year'
+            return '< 0.5'
         elif self is INT_EXPERIENCE.FROM_HALF_TO_ONE_YEAR:
-            return '0.5-1 years'
+            return '0.5 - 1'
         elif self is INT_EXPERIENCE.FROM_ONE_TO_TWO_YEARS:
-            return '1-2 years'
+            return '1 - 2'
         elif self is INT_EXPERIENCE.FROM_TWO_TO_FOUR_YEARS:
-            return '2-4 years'
+            return '2 - 4'
         elif self is INT_EXPERIENCE.FROM_FOUR_TO_SIX_YEARS:
-            return '4-6 years'
+            return '4 - 6'
         elif self is INT_EXPERIENCE.MORE_THAN_SIX:
-            return '>6 years'
+            return '> 6'
         else:
             raise NotImplementedError
-
 
     def get_str_experience(self) -> str:
         return EXPERIENCE.values()[self.value]
