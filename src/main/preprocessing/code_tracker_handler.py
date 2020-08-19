@@ -62,6 +62,3 @@ def handle_ct_file(ct_file: str) -> Tuple[pd.DataFrame, LANGUAGE]:
                                                               DEFAULT_VALUE.EXPERIENCE)
     return ct_df, language
 
-
-def is_test_mode(ct_df: pd.DataFrame) -> bool:
-    return ct_df[CODE_TRACKER_COLUMN.TEST_MODE.value] == TEST_MODE.ON

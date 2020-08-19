@@ -32,13 +32,17 @@ def __merge_ati_files(ati_files: List[str]) -> pd.DataFrame:
     return ati_df
 
 
+def is_test_mode(ct_df: pd.DataFrame) -> bool:
+    return ct_df[CODE_TRACKER_COLUMN.TEST_MODE.value].values[0] == TEST_MODE.ON.value
+
+
 # The function returns True if the code tracker file was created and False otherwise
 def __handle_ct_files(ct_files: List[str], output_task_path: str) -> bool:
     max_ct_file = get_file_with_max_size(ct_files)
     if max_ct_file:
         new_ct_path = os.path.join(output_task_path, get_name_from_path(max_ct_file))
         ct_df = pd.read_csv(max_ct_file)
-        if ct_df[CODE_TRACKER_COLUMN.TEST_MODE.value].iloc[0] == TEST_MODE.OFF.value:
+        if not is_test_mode(ct_df):
             create_file(get_content_from_file(max_ct_file), new_ct_path)
             return True
     return False
