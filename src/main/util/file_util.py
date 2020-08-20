@@ -4,6 +4,7 @@ import os
 import re
 import pickle
 import shutil
+from shutil import copyfile
 from typing import Callable, Any, List, Tuple, Type, Optional
 
 import pandas as pd
@@ -291,3 +292,9 @@ def get_file_with_max_size(files: List[str]) -> Optional[str]:
     if not files:
         return None
     return sort_files_by_size(files, to_reverse=True)[0]
+
+
+def copy_file(src: str, dst: str) -> None:
+    if is_file(src):
+        create_directory(get_parent_folder(dst))
+        copyfile(src, dst)
