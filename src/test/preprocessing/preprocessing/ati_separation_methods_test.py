@@ -9,7 +9,7 @@ import pytest
 
 from src.main.util import consts
 from src.test.test_config import to_skip, TEST_LEVEL
-from src.main.preprocessing.preprocessing import __separate_ati_and_other_files
+from src.main.preprocessing.merging_ct_with_ati import __separate_ati_and_other_files
 
 log = logging.getLogger(consts.LOGGER_NAME)
 

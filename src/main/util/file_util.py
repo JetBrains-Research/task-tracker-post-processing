@@ -4,7 +4,8 @@ import os
 import re
 import pickle
 import shutil
-from typing import Callable, Any, List, Tuple, Type
+from shutil import copyfile
+from typing import Callable, Any, List, Tuple, Type, Optional
 
 import pandas as pd
 
@@ -163,8 +164,8 @@ def does_exist(path: str) -> bool:
 
 def create_directory(directory: str) -> None:
     os.makedirs(directory, exist_ok=True)
-        
-        
+
+
 def remove_directory(directory: str) -> None:
     if os.path.exists(directory):
         shutil.rmtree(directory, ignore_errors=True)
@@ -202,6 +203,7 @@ def get_all_file_system_items(root: str, item_condition: ItemCondition = all_ite
 def extension_file_condition(extension: EXTENSION) -> ItemCondition:
     def has_this_extension(name: str) -> bool:
         return get_extension_from_file(name) == extension
+
     return has_this_extension
 
 
@@ -213,12 +215,14 @@ def ct_file_condition(name: str) -> bool:
 def contains_substrings_condition(substrings: List[str]) -> ItemCondition:
     def contains_these_substrings(name: str) -> bool:
         return contains_any_of_substrings(name, substrings)
+
     return contains_these_substrings
 
 
 def match_condition(regex: str) -> ItemCondition:
     def does_name_match(name: str) -> bool:
         return re.fullmatch(regex, name) is not None
+
     return does_name_match
 
 
@@ -277,3 +281,20 @@ def pair_in_and_out_files(in_files: list, out_files: list) -> List[Tuple[str, st
             raise ValueError(f'List of out files does not contain a file for {in_file}')
         pairs.append((in_file, out_file))
     return pairs
+
+
+def sort_files_by_size(files: List[str], to_reverse: bool = False) -> List[str]:
+    files.sort(key=lambda f: os.stat(f).st_size, reverse=to_reverse)
+    return files
+
+
+def get_file_with_max_size(files: List[str]) -> Optional[str]:
+    if not files:
+        return None
+    return sort_files_by_size(files, to_reverse=True)[0]
+
+
+def copy_file(src: str, dst: str) -> None:
+    if is_file(src):
+        create_directory(get_parent_folder(dst))
+        copyfile(src, dst)

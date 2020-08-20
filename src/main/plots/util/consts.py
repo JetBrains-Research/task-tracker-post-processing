@@ -103,6 +103,7 @@ class STATISTICS_KEY(Enum):
 
 
 STATISTICS_FREQ = 'freq'
+STATISTICS_PERCENTS = 'percents'
 
 
 class STATISTICS_SHOWING_KEY(Enum):

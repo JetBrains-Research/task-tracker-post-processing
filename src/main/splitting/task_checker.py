@@ -123,8 +123,8 @@ class ITaskChecker(object, metaclass=ABCMeta):
 
         return need_to_run_tests, test_results, rate
 
-    def check_task(self, task: TASK, in_and_out_files_dict:  FilesDict, source_file: str,
-                   stop_after_first_false = True) -> float:
+    def check_task(self, task: TASK, in_and_out_files_dict: FilesDict, source_file: str,
+                   stop_after_first_false=True) -> float:
         log.info(f'Start checking task {task.value}')
         in_and_out_files = in_and_out_files_dict.get(task)
         if not in_and_out_files:
@@ -145,8 +145,14 @@ class ITaskChecker(object, metaclass=ABCMeta):
         log.info(f'Finish checking task {task.value}, rate: {str(rate)}')
         return rate
 
+    @classmethod
+    def __get_task_index(cls, tasks: List[TASK], current_task: Optional[TASK] = None) -> int:
+        if current_task is None:
+            return -1
+        return tasks.index(current_task)
+
     def check_tasks(self, tasks: List[TASK], source_code: str, in_and_out_files_dict: FilesDict,
-                    stop_after_first_false: bool = True) -> List[float]:
+                    stop_after_first_false: bool = True, current_task: Optional[TASK] = None) -> List[float]:
         remove_compiled_files()
         log.info(f'Starting checking tasks {[t.value for t in tasks]}'
                  f' for source code on {self.language.value}:\n{source_code}')
@@ -157,8 +163,16 @@ class ITaskChecker(object, metaclass=ABCMeta):
             log.info(f'Finish checking tasks, test results: {str(test_results)}')
             return test_results
 
-        for task in tasks:
-            test_results.append(self.check_task(task, in_and_out_files_dict, source_file, stop_after_first_false))
+        task_index = self.__get_task_index(tasks, current_task)
+        if task_index != -1:
+            log.info(f'Check only current_task: {current_task.value}')
+            test_results = [0.0] * len(tasks)
+            test_results[task_index] = self.check_task(current_task, in_and_out_files_dict, source_file,
+                                                       stop_after_first_false)
+        else:
+            log.info(f'Check all tasks')
+            for task in tasks:
+                test_results.append(self.check_task(task, in_and_out_files_dict, source_file, stop_after_first_false))
 
         log.info(f'Finish checking tasks, test results: {str(test_results)}')
         return test_results

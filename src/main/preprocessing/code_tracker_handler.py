@@ -10,7 +10,7 @@ from src.main.util.file_util import get_extension_from_file
 from src.main.util.language_util import get_language_by_extension
 from src.main.util.strings_util import convert_camel_case_to_snake_case
 from src.main.util.consts import CODE_TRACKER_COLUMN, DEFAULT_VALUE, INVALID_FILE_FOR_PREPROCESSING, LANGUAGE, \
-    ISO_ENCODING, LOGGER_NAME
+    ISO_ENCODING, LOGGER_NAME, TEST_MODE
 
 log = logging.getLogger(LOGGER_NAME)
 
@@ -18,16 +18,12 @@ log = logging.getLogger(LOGGER_NAME)
 def fill_column(data: pd.DataFrame, column: CODE_TRACKER_COLUMN, fits_column_restriction: Callable[[Any], bool],
                 default_value: DEFAULT_VALUE) -> Any:
     values = data[column.value].unique()
-    index = np.argwhere(np.array(list(map(default_value.is_equal, values))))
-    values = np.delete(values, index)
-    # If list is empty after removing defaults, return default value
-    if values.size == 0:
-        return default_value.value
-    # If we have only 1 valid element after removing defaults, we should return it
-    elif len(values) == 1 and fits_column_restriction(values[0]):
+    # Todo: make it more readable and delete not necessary params
+    # Delete all possible default values. If we have only 1 valid element after removing defaults, we should return it
+    # Otherwise it is INVALID_FILE_FOR_PREPROCESSING
+    values = [x for x in values if x not in [np.nan, None, np.datetime64('NaT'), 0, -1] and not pd.isna(x)]
+    if len(values) == 1:
         return values[0]
-    # Otherwise, list can have 1 invalid element, or more than 1 element
-    # Both these cases are incorrect, so we should return INVALID_FILE_FOR_PREPROCESSING
     log.error('Invalid value for column!')
     return INVALID_FILE_FOR_PREPROCESSING
 
@@ -61,3 +57,4 @@ def handle_ct_file(ct_file: str) -> Tuple[pd.DataFrame, LANGUAGE]:
                                                               CODE_TRACKER_COLUMN.EXPERIENCE.fits_restrictions,
                                                               DEFAULT_VALUE.EXPERIENCE)
     return ct_df, language
+
