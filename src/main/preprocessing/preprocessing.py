@@ -56,15 +56,13 @@ def preprocess_data(path: str) -> str:
     output_directory = get_output_directory(path, consts.PREPROCESSING_DIRECTORY)
     user_folders = get_all_file_system_items(path, lambda dir: 'user' in dir, consts.FILE_SYSTEM_ITEM.SUBDIR)
     for user_folder in user_folders:
-        user_path = os.path.join(path, get_name_from_path(user_folder, with_extension=False))
         output_user_path = os.path.join(output_directory, get_name_from_path(user_folder, False))
-        log.info(f'Start handling the path {user_path}')
-        task_folders = get_all_file_system_items(user_path, all_items_condition, consts.FILE_SYSTEM_ITEM.SUBDIR)
+        log.info(f'Start handling the path {user_folder}')
+        task_folders = get_all_file_system_items(user_folder, all_items_condition, consts.FILE_SYSTEM_ITEM.SUBDIR)
         for task_folder in task_folders:
-            task_path = os.path.join(user_path, get_name_from_path(task_folder, with_extension=False))
             output_task_path = os.path.join(output_user_path, get_name_from_path(task_folder, False))
-            log.info(f'Start handling the folder {task_path}')
-            files = get_all_file_system_items(task_path, extension_file_condition(EXTENSION.CSV))
+            log.info(f'Start handling the folder {task_folder}')
+            files = get_all_file_system_items(task_folder, extension_file_condition(EXTENSION.CSV))
             ct_files, ati_files = __partition_into_ct_and_ati_files(files)
             if __handle_ct_files(ct_files, output_task_path) and ati_files:
                 new_ati_path = os.path.join(output_task_path, get_name_from_path(ati_files[0]))
