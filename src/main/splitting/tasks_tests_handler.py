@@ -19,7 +19,7 @@ from src.main.splitting.task_checker import TASKS_TESTS_PATH, FilesDict
 from src.main.splitting.undefined_task_checker import UndefinedTaskChecker
 from src.main.util.file_util import get_all_file_system_items, ct_file_condition, get_output_directory, \
     write_based_on_language, get_file_and_parent_folder_names, pair_in_and_out_files, match_condition, \
-    get_name_from_path, get_original_file_name, get_parent_folder
+    get_name_from_path, get_original_file_name, get_parent_folder, get_parent_folder_name
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -97,8 +97,7 @@ def __get_task_by_ct_file(file: str) -> Optional[TASK]:
 
 def __get_user_folder_name_from_path(file: str) -> str:
     task_folder = get_parent_folder(file)
-    user_folder = get_parent_folder(task_folder)
-    return get_name_from_path(user_folder, with_extension=False)
+    return get_parent_folder_name(task_folder)
 
 
 def run_tests(path: str) -> str:
