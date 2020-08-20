@@ -11,7 +11,7 @@ from src.main.util import consts
 from src.main.util.consts import TASK
 from src.main.util.log_util import log_and_raise_error
 from src.main.util.file_util import get_all_file_system_items, ct_file_condition, get_output_directory, \
-    get_name_from_path, get_parent_folder, copy_file
+    get_name_from_path, get_parent_folder, copy_file, get_parent_folder_name
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -72,10 +72,10 @@ def find_task_dfs(df: pd.DataFrame, task: consts.TASK) -> List[pd.DataFrame]:
 
 
 def __get_dst_path(src_file: str, output_directory: str) -> str:
+    file_name = get_name_from_path(src_file)
     task_path = get_parent_folder(src_file)
     task = get_name_from_path(task_path, with_extension=False)
-    language = get_name_from_path(get_parent_folder(task_path), with_extension=False)
-    file_name = get_name_from_path(src_file)
+    language = get_parent_folder_name(task_path)
     return os.path.join(output_directory, language, task, file_name)
 
 
