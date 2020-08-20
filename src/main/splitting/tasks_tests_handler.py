@@ -122,6 +122,3 @@ def run_tests(path: str) -> str:
         write_based_on_language(output_directory, file, data, language)
 
     return output_directory
-
-
-print(run_tests('/Users/Anastasiia.Birillo/PycharmProjects/codetracker-data/data_1/dataset'))
