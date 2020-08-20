@@ -166,10 +166,9 @@ class ITaskChecker(object, metaclass=ABCMeta):
         task_index = self.__get_task_index(tasks, current_task)
         if task_index != -1:
             log.info(f'Check only current_task: {current_task.value}')
-            empty_rate = 0.0
-            test_results = [empty_rate] * task_index \
-                           + [self.check_task(current_task, in_and_out_files_dict, source_file, stop_after_first_false)] \
-                           + [empty_rate] * (len(tasks) - task_index - 1)
+            test_results = [0.0] * len(tasks)
+            test_results[task_index] = self.check_task(current_task, in_and_out_files_dict, source_file,
+                                                       stop_after_first_false)
         else:
             log.info(f'Check all tasks')
             for task in tasks:
