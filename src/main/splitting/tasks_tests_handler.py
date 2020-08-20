@@ -19,7 +19,7 @@ from src.main.splitting.task_checker import TASKS_TESTS_PATH, FilesDict
 from src.main.splitting.undefined_task_checker import UndefinedTaskChecker
 from src.main.util.file_util import get_all_file_system_items, ct_file_condition, get_output_directory, \
     write_based_on_language, get_file_and_parent_folder_names, pair_in_and_out_files, match_condition, \
-    get_name_from_path, get_original_file_name
+    get_name_from_path, get_original_file_name, get_parent_folder
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -87,13 +87,18 @@ def filter_already_tested_files(files: List[str], output_directory_path: str) ->
 
 
 def __get_task_by_ct_file(file: str) -> Optional[TASK]:
-    file_name = get_name_from_path(file, with_extension=False)
-    task_key = get_original_file_name(file_name)
+    task_key = get_name_from_path(get_parent_folder(file), with_extension=False)
     try:
         return TASK(task_key)
     except ValueError:
         log.info(f'Unexpected task for the file {file}')
         return None
+
+
+def __get_user_folder_name_from_path(file: str) -> str:
+    task_folder = get_parent_folder(file)
+    user_folder = get_parent_folder(task_folder)
+    return get_name_from_path(user_folder, with_extension=False)
 
 
 def run_tests(path: str) -> str:
@@ -119,6 +124,7 @@ def run_tests(path: str) -> str:
         language, data = __check_tasks_on_correct_fragments(data, tasks, in_and_out_files_dict, file_log_info,
                                                             current_task=current_task)
         log.info(f'Finish running tests on {file_log_info}, {file}')
-        write_based_on_language(output_directory, file, data, language)
+        output_directory_with_user_folder = os.path.join(output_directory, __get_user_folder_name_from_path(file))
+        write_based_on_language(output_directory_with_user_folder, file, data, language)
 
     return output_directory
