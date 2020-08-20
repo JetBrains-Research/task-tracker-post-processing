@@ -169,7 +169,7 @@ class ITaskChecker(object, metaclass=ABCMeta):
             empty_rate = 0.0
             test_results = [empty_rate] * task_index \
                            + [self.check_task(current_task, in_and_out_files_dict, source_file, stop_after_first_false)] \
-                           + [empty_rate] * (len(tasks) - task_index)
+                           + [empty_rate] * (len(tasks) - task_index - 1)
         else:
             log.info(f'Check all tasks')
             for task in tasks:
