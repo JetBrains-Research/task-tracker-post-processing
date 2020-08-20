@@ -21,7 +21,7 @@ def fill_column(data: pd.DataFrame, column: CODE_TRACKER_COLUMN, fits_column_res
     # Todo: make it more readable and delete not necessary params
     # Delete all possible default values. If we have only 1 valid element after removing defaults, we should return it
     # Otherwise it is INVALID_FILE_FOR_PREPROCESSING
-    values = [x for x in values if x not in [np.nan, None, np.datetime64('NaT'), 0] and not pd.isna(x)]
+    values = [x for x in values if x not in [np.nan, None, np.datetime64('NaT'), 0, -1] and not pd.isna(x)]
     if len(values) == 1:
         return values[0]
     log.error('Invalid value for column!')
