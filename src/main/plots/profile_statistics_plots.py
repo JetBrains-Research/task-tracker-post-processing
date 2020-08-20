@@ -26,13 +26,13 @@ def __read_statistics_from_file(path: str, default_value: consts.DEFAULT_VALUE, 
     keys = statistics_dict.keys()
     # Sort by my order
     if column == STATISTICS_KEY.EXPERIENCE:
-        keys = __sort_experiences_keys(keys)
+        keys = __sort_experience_keys(keys)
     for key in keys:
         readable_statistics_dict[__get_readable_key_specific_by_column(key, default_value, column)] = statistics_dict[key]
     return readable_statistics_dict
 
 
-def __sort_experiences_keys(keys: List[str]) -> List[str]:
+def __sort_experience_keys(keys: List[str]) -> List[str]:
     experiences_keys = [x for x in EXPERIENCE.sorted_values() if x in keys]
     experiences_keys += [x for x in keys if x not in experiences_keys]
     return experiences_keys
