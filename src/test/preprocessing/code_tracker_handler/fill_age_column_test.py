@@ -24,8 +24,7 @@ INVALID_DF_WITHOUT_DATA = pd.DataFrame({CODE_TRACKER_COLUMN.AGE.value: [DEFAULT_
 
 INVALID_DF_WITHOUT_RESTRICTION = pd.DataFrame({CODE_TRACKER_COLUMN.AGE.value: ["Fifteen"]})
 
-INVALID_DFS = [INVALID_DF, INVALID_DF_WITH_DEFAULT, INVALID_DF_WITH_NONE, INVALID_DF_WITH_NONE_AND_DEFAULT,
-               INVALID_DF_WITHOUT_RESTRICTION]
+INVALID_DFS = [INVALID_DF, INVALID_DF_WITH_DEFAULT, INVALID_DF_WITH_NONE]
 
 VALID_DF = pd.DataFrame({CODE_TRACKER_COLUMN.AGE.value: [11.0, 11.0, 11.0]})
 
@@ -60,5 +59,5 @@ class TestAGEColumnFilling:
     def test_default_dfs(self, default_df: pd.DataFrame) -> None:
         column_value = fill_column(default_df, CODE_TRACKER_COLUMN.AGE,
                                    CODE_TRACKER_COLUMN.AGE.fits_restrictions, DEFAULT_VALUE.AGE)
-        assert DEFAULT_VALUE.AGE.is_equal(column_value)
+        assert INVALID_FILE_FOR_PREPROCESSING == column_value
 
