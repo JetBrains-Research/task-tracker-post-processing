@@ -120,6 +120,9 @@ def run_tests(path: str) -> str:
         file_log_info = f'file: {str(i + 1)}/{str_len_files}'
         log.info(f'Start running tests on {file_log_info}, {file}')
         current_task = __get_task_by_ct_file(file)
+        if not current_task:
+            # We don't need to handle other files
+            continue
         data = pd.read_csv(file, encoding=consts.ISO_ENCODING)
         language, data = __check_tasks_on_correct_fragments(data, tasks, in_and_out_files_dict, file_log_info,
                                                             current_task=current_task)
