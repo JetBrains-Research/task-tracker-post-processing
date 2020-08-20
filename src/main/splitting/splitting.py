@@ -93,8 +93,7 @@ def __get_dst_path(src_file: str, output_directory: str) -> str:
 # --task1
 # ----user_N1_files
 # ----user_N2_files
-# Todo: I am not sure about this name
-def split_tasks_into_separate_files(path: str, output_directory_suffix: str = 'separated_tasks') -> str:
+def reorganize_files_structure(path: str, output_directory_suffix: str = 'separated_tasks') -> str:
     output_directory = get_output_directory(path, output_directory_suffix)
     files = get_all_file_system_items(path, ct_file_condition)
     for file in files:
