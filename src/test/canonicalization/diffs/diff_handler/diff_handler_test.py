@@ -27,7 +27,7 @@ FAILED_APPLYING_DIFFS_TO_STUDENTS_CODE_TEST = {
     TASK.ZERO: ['out_2_4.py'],
     TASK.PIES: ['out_3_1.py', 'out_2_3.py', 'out_2_1.py', 'out_2_3.py', 'out_2_4.py',
                 'out_1_4.py', 'out_4_1.py'],
-    TASK.ELECTION: ['out_1_3.py', 'out_1_2.py', 'out_1_5.py', 'out_1_4.py'],
+    TASK.VOTING: ['out_1_3.py', 'out_1_2.py', 'out_1_5.py', 'out_1_4.py'],
     TASK.MAX_3: ['out_5_7.py', 'out_5_3.py', 'out_5_6.py', 'out_5_4.py'],
 }
 

@@ -170,7 +170,7 @@ class TASK(Enum):
     PIES = 'pies'
     MAX_3 = 'max_3'
     ZERO = 'is_zero'
-    ELECTION = 'election'
+    VOTING = 'voting'
     BRACKETS = 'brackets'
     MAX_DIGIT = 'max_digit'
 
