@@ -16,6 +16,7 @@ class CODE_TRACKER_COLUMN(Enum):
     EXPERIENCE = 'programExperience'
     EXPERIENCE_YEARS = 'programExperienceYears'
     EXPERIENCE_MONTHS = 'programExperienceMonths'
+    TASK_STATUS = 'taskStatus'
     GENDER = 'gender'
     COUNTRY = 'country'
     FILE_NAME = 'fileName'
