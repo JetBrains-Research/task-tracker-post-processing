@@ -1,4 +1,4 @@
-date,timestamp,fileName,fileHashCode,documentHashCode,fragment,chosenTask,writtenTask,age,programExperience,taskStatus,activePane
+date,timestamp,fileName,fileHashCode,documentHashCode,fragment,chosenTask,writtenTask,age,programExperience,taskStatus,activePane,programExperienceYears,programExperienceMonths,gender,country
 2019-12-20T14:16:14.193+03:00,21287,main.cpp,6007,601516113,"#include <iostream>
 #include <cmath>
 
