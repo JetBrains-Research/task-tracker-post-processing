@@ -101,5 +101,3 @@ def merge_ct_with_ati(path: str) -> str:
 
         log.info(f'Finish handling the folder {user_folder}')
     return output_directory
-
-merge_ct_with_ati('/Users/Anastasiia.Birillo/PycharmProjects/codetracker-data/data/tmp')
