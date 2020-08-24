@@ -28,12 +28,11 @@ INVALID_DFS = [INVALID_DF, INVALID_DF_WITH_DEFAULT, INVALID_DF_WITH_NONE]
 
 VALID_DF = pd.DataFrame({CODE_TRACKER_COLUMN.AGE.value: [11.0, 11.0, 11.0]})
 
-VALID_DF_WITH_DEFAULT = pd.DataFrame({CODE_TRACKER_COLUMN.AGE.value: [11.0, 11.0, 11.0, DEFAULT_VALUE.AGE.value]})
+VALID_DF_WITH_DEFAULT = pd.DataFrame({CODE_TRACKER_COLUMN.AGE.value: [11.0, 11.0, 11.0, -1]})
 
 VALID_DFS = [VALID_DF, VALID_DF_WITH_DEFAULT]
 
-VALID_DF_ALL_DEFAULT = pd.DataFrame({CODE_TRACKER_COLUMN.AGE.value: [DEFAULT_VALUE.AGE.value, DEFAULT_VALUE.AGE.value,
-                                                                     DEFAULT_VALUE.AGE.value]})
+VALID_DF_ALL_DEFAULT = pd.DataFrame({CODE_TRACKER_COLUMN.AGE.value: [-1, -1, -1]})
 
 VALID_EMPTY_DF = pd.DataFrame({CODE_TRACKER_COLUMN.AGE.value: []})
 
@@ -45,19 +44,16 @@ class TestAGEColumnFilling:
 
     @pytest.mark.parametrize('invalid_df', INVALID_DFS)
     def test_invalid_dfs(self, invalid_df: pd.DataFrame) -> None:
-        column_value = fill_column(invalid_df, CODE_TRACKER_COLUMN.AGE,
-                                   CODE_TRACKER_COLUMN.AGE.fits_restrictions, DEFAULT_VALUE.AGE)
+        column_value = fill_column(invalid_df, CODE_TRACKER_COLUMN.AGE)
         assert INVALID_FILE_FOR_PREPROCESSING == column_value
 
     @pytest.mark.parametrize('valid_df', VALID_DFS)
     def test_valid_dfs(self, valid_df: pd.DataFrame) -> None:
-        column_value = fill_column(valid_df, CODE_TRACKER_COLUMN.AGE,
-                                   CODE_TRACKER_COLUMN.AGE.fits_restrictions, DEFAULT_VALUE.AGE)
+        column_value = fill_column(valid_df, CODE_TRACKER_COLUMN.AGE)
         assert 11.0 == column_value
 
     @pytest.mark.parametrize('default_df', DEFAULT_DFS)
     def test_default_dfs(self, default_df: pd.DataFrame) -> None:
-        column_value = fill_column(default_df, CODE_TRACKER_COLUMN.AGE,
-                                   CODE_TRACKER_COLUMN.AGE.fits_restrictions, DEFAULT_VALUE.AGE)
+        column_value = fill_column(default_df, CODE_TRACKER_COLUMN.AGE)
         assert INVALID_FILE_FOR_PREPROCESSING == column_value
 
