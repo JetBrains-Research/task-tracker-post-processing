@@ -9,7 +9,7 @@ import pandas as pd
 from src.main.util import consts
 from src.main.plots.util.consts import STATISTICS_KEY
 from src.main.util.log_util import log_and_raise_error
-from src.main.preprocessing.code_tracker_handler import handle_ct_file
+from src.main.preprocessing.code_tracker_handler import handle_ct_file, delete_default_values
 from src.main.statistics_gathering.util import Profile, AgeAndExperience, InvalidProfile, InvalidAgeAndExperience, \
     Statistics, InvalidAge, InvalidExperience, StatisticsValue, TaskStatistics
 from src.main.util.file_util import get_name_from_path, ct_file_condition, get_output_directory, change_extension_to,\
@@ -27,13 +27,13 @@ def is_statistics_key_default_value(value: Any, column: STATISTICS_KEY) -> bool:
 # We must have one value in a profile column otherwise it is an incorrect case
 def __get_profile_info(ct_df: pd.DataFrame, column: STATISTICS_KEY) -> Profile:
     values = ct_df[column.value].unique()
-    if len(values) == 1:
-        value = values[0]
+    values = delete_default_values(values)
+    if len(values) == 0:
         # If it's a default value, return consts.DEFAULT_VALUE
-        if is_statistics_key_default_value(value, column):
-            return column.get_default()
-        return value
-    log_and_raise_error(f'Have found {len(values)} unique value in profile column {column.value}', log)
+        return column.get_default()
+    if len(values) == 1:
+        return values[0]
+    log_and_raise_error(f'Have found {len(values)}: {values} unique value in profile column {column.value}', log)
 
 
 def __get_ct_df(ct_file: str, needs_handling: bool = True) -> pd.DataFrame:

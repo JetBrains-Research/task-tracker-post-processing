@@ -1,7 +1,7 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import logging
-from typing import Any, Tuple
+from typing import Any, Tuple, List
 
 import numpy as np
 import pandas as pd
@@ -14,11 +14,15 @@ from src.main.util.consts import CODE_TRACKER_COLUMN, INVALID_FILE_FOR_PREPROCES
 log = logging.getLogger(LOGGER_NAME)
 
 
+def delete_default_values(values: List[Any], default_value: int = -1) -> List[Any]:
+    return [x for x in values if x not in [np.nan, None, np.datetime64('NaT'),
+                                             default_value, str(default_value)] and not pd.isna(x)]
+
+
 def fill_column(data: pd.DataFrame, column: CODE_TRACKER_COLUMN, default_value: int = -1) -> Any:
     values = data[column.value].unique()
     # Delete all possible NONE values and default_value
-    values = [x for x in values if x not in [np.nan, None, np.datetime64('NaT'),
-                                             default_value, str(default_value)] and not pd.isna(x)]
+    values = delete_default_values(values, default_value)
     if len(values) == 0:
         return default_value
     if len(values) == 1:

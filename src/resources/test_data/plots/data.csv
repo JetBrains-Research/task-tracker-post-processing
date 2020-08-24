@@ -1,4 +1,4 @@
-timestamp,fragment,chosenTask,writtenTask,age,programExperience,taskStatus,testsResults,language,timestampAti,eventType,eventData,atiId
+timestamp,fragment,chosenTask,writtenTask,age,programExperience,taskStatus,testsResults,language,timestampAti,eventType,eventData,,programExperienceYears,programExperienceMonths,gender,country
 0,,pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
 33,"
 ",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,

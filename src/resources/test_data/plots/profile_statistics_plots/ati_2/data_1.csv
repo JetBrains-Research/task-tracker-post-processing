@@ -1,4 +1,4 @@
-age,programExperience,language,fileName,chosenTask
+age,programExperience,language,fileName,chosenTask,programExperienceYears,programExperienceMonths,gender,country
 0.0,nan,python,test.py,brackets
 0.0,nan,python,test.py,brackets
 0.0,nan,python,test.py,brackets
