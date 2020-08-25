@@ -78,7 +78,7 @@ def handle_ct_and_at(ct_file: str, ct_df: pd.DataFrame, ati_df: pd.DataFrame,
     return ct_df
 
 
-def merge_ct_with_ati(path: str) -> str:
+def merge_ct_with_ati(path: str, to_filter_ati_data: bool = True) -> str:
     output_directory = get_output_directory(path, consts.MERGING_CT_AND_ATI_OUTPUT_DIRECTORY)
     user_folders = get_all_file_system_items(path, user_subdirs_condition, consts.FILE_SYSTEM_ITEM.SUBDIR)
     for user_folder in user_folders:
@@ -93,7 +93,7 @@ def merge_ct_with_ati(path: str) -> str:
             except ValueError:
                 continue
 
-            ati_df = handle_ati_file(ati_file)
+            ati_df = handle_ati_file(ati_file, to_filter_ati_data)
             for ct_file in ct_files:
                 ct_df, language = handle_ct_file(ct_file)
                 ct_df = handle_ct_and_at(ct_file, ct_df, ati_df, language)

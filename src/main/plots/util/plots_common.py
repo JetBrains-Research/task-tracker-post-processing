@@ -32,7 +32,7 @@ def get_short_name(path: str) -> str:
     return os.path.join(folder, crop_string(file_name, plot_consts.SHORT_NAME_LENGTH))
 
 
-def to_filter_rare_values(statistics_df: pd.DataFrame) -> bool:
+def to_filter_rare_values(statistics_df: pd.DataFrame) -> pd.Series:
     return statistics_df[plot_consts.STATISTICS_FREQ] <= plot_consts.STATISTICS_RARE_VALUE_THRESHOLD
 
 

@@ -10,6 +10,7 @@ from src.main.util.file_util import get_extension_from_file
 from src.main.util.language_util import get_language_by_extension
 from src.main.util.consts import CODE_TRACKER_COLUMN, INVALID_FILE_FOR_PREPROCESSING, LANGUAGE, \
     ISO_ENCODING, LOGGER_NAME
+from src.main.util.strings_util import convert_camel_case_to_snake_case
 
 log = logging.getLogger(LOGGER_NAME)
 
@@ -48,6 +49,10 @@ def get_ct_language(data: pd.DataFrame) -> LANGUAGE:
 def handle_ct_file(ct_file: str) -> Tuple[pd.DataFrame, LANGUAGE]:
     log.info(f'Start handling the file {ct_file}')
     ct_df = pd.read_csv(ct_file, encoding=ISO_ENCODING)
+    # It's easier to have all tasks written in snake case because further they will be used as folders names and so on
+    ct_df[CODE_TRACKER_COLUMN.CHOSEN_TASK.value] = ct_df[CODE_TRACKER_COLUMN.CHOSEN_TASK.value].fillna(
+        ''). \
+        apply(lambda t: convert_camel_case_to_snake_case(t))
     language = get_ct_language(ct_df)
     ct_df[CODE_TRACKER_COLUMN.LANGUAGE.value] = language.value
 

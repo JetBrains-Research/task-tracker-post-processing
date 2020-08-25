@@ -53,7 +53,9 @@ def __get_statistics_df_from_file(path: str, column: STATISTICS_KEY, default_val
     statistics_df = pd.DataFrame(statistics_dict.items(), columns=[column.value, STATISTICS_FREQ])
     # If we want to union rare values
     if to_union_rare:
-        statistics_df.loc[to_filter_rare_values(statistics_df), column.value] = STATISTICS_SHOWING_KEY.OTHERS.value
+        to_filter_series = to_filter_rare_values(statistics_df)
+        statistics_df.loc[to_filter_series, column.value] \
+            = [STATISTICS_SHOWING_KEY.OTHERS.value] * to_filter_series.size
     return statistics_df
 
 

@@ -90,15 +90,16 @@ def __insert_row(df: pd.DataFrame, row_number: int, row_value: list) -> pd.DataF
     return df_result
 
 
-def preprocess_activity_tracker_data(activity_tracker_data: pd.DataFrame) -> pd.DataFrame:
+def preprocess_activity_tracker_data(activity_tracker_data: pd.DataFrame,
+                                     to_filter_ati_data: bool = True) -> pd.DataFrame:
     log.info('...starting to unify activity tracker data')
     activity_tracker_data = __unify_activity_tracker_columns(activity_tracker_data)
     log.info('finish unifying activity tracker data')
 
-    # Todo: should we filter it?
-    log.info('...starting to filter activity tracker data')
-    activity_tracker_data = __filter_ati_data(activity_tracker_data)
-    log.info('finish filtering activity tracker data')
+    if to_filter_ati_data:
+        log.info('...starting to filter activity tracker data')
+        activity_tracker_data = __filter_ati_data(activity_tracker_data)
+        log.info('finish filtering activity tracker data')
     return activity_tracker_data
 
 
@@ -220,10 +221,10 @@ def get_ct_name_from_ati_data(ct_file: str, language: consts.LANGUAGE, files_fro
     return file_name, does_contain_name
 
 
-def handle_ati_file(ati_file: str) -> pd.DataFrame:
+def handle_ati_file(ati_file: str, to_filter_ati_data: bool = True) -> pd.DataFrame:
     ati_df = None
     if ati_file:
         ati_df = pd.read_csv(ati_file, encoding=consts.ISO_ENCODING,
                              names=consts.ACTIVITY_TRACKER_COLUMN.activity_tracker_columns())
-        ati_df = preprocess_activity_tracker_data(ati_df)
+        ati_df = preprocess_activity_tracker_data(ati_df, to_filter_ati_data)
     return ati_df
