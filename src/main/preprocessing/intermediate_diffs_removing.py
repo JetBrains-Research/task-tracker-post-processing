@@ -10,8 +10,7 @@ from pandas import isna
 from src.main.util import consts
 from src.main.util.data_util import handle_folder
 from src.main.util.consts import LOGGER_NAME, TMP_COLUMN, FILE_SYSTEM_ITEM
-from src.main.util.file_util import get_all_file_system_items, language_item_condition, get_output_directory, \
-    get_name_from_path, move_directory
+from src.main.util.file_util import get_all_file_system_items, language_item_condition, get_output_directory
 
 log = logging.getLogger(LOGGER_NAME)
 

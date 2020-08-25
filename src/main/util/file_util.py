@@ -304,6 +304,3 @@ def copy_file(src: str, dst: str) -> None:
         create_directory(get_parent_folder(dst))
         copyfile(src, dst)
 
-
-def move_directory(src: str, dst: str) -> None:
-    shutil.move(src, dst)
