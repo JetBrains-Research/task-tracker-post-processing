@@ -46,32 +46,33 @@ def __get_default_dict_for_at() -> Dict[str, List[Any]]:
     return {
         consts.ACTIVITY_TRACKER_COLUMN.TIMESTAMP_ATI.value: [],
         consts.ACTIVITY_TRACKER_COLUMN.EVENT_TYPE.value: [],
-        consts.ACTIVITY_TRACKER_COLUMN.EVENT_DATA.value: [],
-        consts.ACTIVITY_TRACKER_COLUMN.ATI_ID.value: []
+        consts.ACTIVITY_TRACKER_COLUMN.EVENT_DATA.value: []
     }
 
 
-def __add_values_in_ati_dict(ati_dict: Dict[str, List[Any]], timestamp: str = '', event_type: str = '', event_data: str = '',
-                             ati_id: str = '') -> None:
+def __add_values_in_ati_dict(ati_dict: Dict[str, List[Any]], timestamp: str = '', event_type: str = '',
+                             event_data: str = '') -> None:
     ati_dict[consts.ACTIVITY_TRACKER_COLUMN.TIMESTAMP_ATI.value].append(timestamp)
     ati_dict[consts.ACTIVITY_TRACKER_COLUMN.EVENT_TYPE.value].append(event_type)
     ati_dict[consts.ACTIVITY_TRACKER_COLUMN.EVENT_DATA.value].append(event_data)
-    ati_dict[consts.ACTIVITY_TRACKER_COLUMN.ATI_ID.value].append(ati_id)
 
 
 def __add_values_in_ati_dict_by_ati_index(res_dict: Dict[str, List[Any]], activity_tracker_data: pd.DataFrame,
-                                          index: int, ati_id: str) -> None:
+                                          index: int) -> None:
     __add_values_in_ati_dict(res_dict,
                              activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.TIMESTAMP_ATI.value].iloc[index],
                              activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.EVENT_TYPE.value].iloc[index],
-                             activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.EVENT_DATA.value].iloc[index],
-                             ati_id)
+                             activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.EVENT_DATA.value].iloc[index])
 
 
 def __are_same_files(code_tracker_file_name: str, activity_tracker_file_path: str) -> bool:
     if pd.isnull(activity_tracker_file_path):
         return False
-    activity_tracker_file_name = get_name_from_path(activity_tracker_file_path)
+    try:
+        activity_tracker_file_name = get_name_from_path(activity_tracker_file_path)
+    except ValueError:
+        # If the activity_tracker_file_name has an invalid extension, it does not equal code_tracker_file_name
+        return False
     return code_tracker_file_name == activity_tracker_file_name
 
 
@@ -89,14 +90,16 @@ def __insert_row(df: pd.DataFrame, row_number: int, row_value: list) -> pd.DataF
     return df_result
 
 
-def preprocess_activity_tracker_data(activity_tracker_data: pd.DataFrame) -> pd.DataFrame:
+def preprocess_activity_tracker_data(activity_tracker_data: pd.DataFrame,
+                                     to_filter_ati_data: bool = True) -> pd.DataFrame:
     log.info('...starting to unify activity tracker data')
     activity_tracker_data = __unify_activity_tracker_columns(activity_tracker_data)
     log.info('finish unifying activity tracker data')
 
-    log.info('...starting to filter activity tracker data')
-    activity_tracker_data = __filter_ati_data(activity_tracker_data)
-    log.info('finish filtering activity tracker data')
+    if to_filter_ati_data:
+        log.info('...starting to filter activity tracker data')
+        activity_tracker_data = __filter_ati_data(activity_tracker_data)
+        log.info('finish filtering activity tracker data')
     return activity_tracker_data
 
 
@@ -136,8 +139,8 @@ def is_ct_i_filled(ct_i: int, ati_dict: Dict[str, List[Any]]) -> bool:
     return __get_dict_lists_size(ati_dict) > ct_i
 
 
-def merge_code_tracker_and_activity_tracker_data(code_tracker_data: pd.DataFrame, activity_tracker_data: pd.DataFrame,
-                                                 ati_id: str) -> pd.DataFrame:
+def merge_code_tracker_and_activity_tracker_data(code_tracker_data: pd.DataFrame,
+                                                 activity_tracker_data: pd.DataFrame) -> pd.DataFrame:
     log.info('Start merging code tracker and activity tracker data')
     res = __get_default_dict_for_at()
     ct_file_name = code_tracker_data[consts.CODE_TRACKER_COLUMN.FILE_NAME.value].iloc[0]
@@ -163,7 +166,7 @@ def merge_code_tracker_and_activity_tracker_data(code_tracker_data: pd.DataFrame
             code_tracker_data = __insert_row(code_tracker_data, ct_i + 1, ct_row)
             ct_i += 1
 
-        __add_values_in_ati_dict_by_ati_index(res, activity_tracker_data, ati_i, ati_id)
+        __add_values_in_ati_dict_by_ati_index(res, activity_tracker_data, ati_i)
 
     log.info('Finish handling the activity tracker file')
 
@@ -188,8 +191,12 @@ def get_files_from_ati(activity_tracker_data: pd.DataFrame) -> List[str]:
     paths_dict = {}
     for current_path in paths:
         path = get_parent_folder(current_path)
-        file = get_name_from_path(current_path)
-        if paths_dict.get(file) is None:
+        try:
+            file = get_name_from_path(current_path)
+        except ValueError:
+            # If the file has an invalid extension, we should miss it
+            continue
+        if file not in paths_dict.keys():
             paths_dict[file] = path
         else:
             if paths_dict[file] != path:
@@ -214,10 +221,10 @@ def get_ct_name_from_ati_data(ct_file: str, language: consts.LANGUAGE, files_fro
     return file_name, does_contain_name
 
 
-def handle_ati_file(ati_file: str) -> pd.DataFrame:
+def handle_ati_file(ati_file: str, to_filter_ati_data: bool = True) -> pd.DataFrame:
     ati_df = None
     if ati_file:
         ati_df = pd.read_csv(ati_file, encoding=consts.ISO_ENCODING,
                              names=consts.ACTIVITY_TRACKER_COLUMN.activity_tracker_columns())
-        ati_df = preprocess_activity_tracker_data(ati_df)
+        ati_df = preprocess_activity_tracker_data(ati_df, to_filter_ati_data)
     return ati_df

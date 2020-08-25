@@ -231,6 +231,11 @@ def data_subdirs_condition(name: str) -> bool:
     return ATI_DATA_FOLDER in name or DI_DATA_FOLDER in name
 
 
+# To get all subdirs that contain user data
+def user_subdirs_condition(name: str) -> bool:
+    return 'user' in name
+
+
 # To get path to the output directory that is near to the original folder
 # and has the same name but with a suffix added at the end
 def get_output_directory(folder: str, result_name_suffix: str) -> str:

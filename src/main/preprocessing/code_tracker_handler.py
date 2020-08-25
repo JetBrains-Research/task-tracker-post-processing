@@ -1,30 +1,34 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import logging
-from typing import Any, Tuple, Callable
+from typing import Any, Tuple, List
 
 import numpy as np
 import pandas as pd
 
 from src.main.util.file_util import get_extension_from_file
 from src.main.util.language_util import get_language_by_extension
+from src.main.util.consts import CODE_TRACKER_COLUMN, INVALID_FILE_FOR_PREPROCESSING, LANGUAGE, \
+    ISO_ENCODING, LOGGER_NAME
 from src.main.util.strings_util import convert_camel_case_to_snake_case
-from src.main.util.consts import CODE_TRACKER_COLUMN, DEFAULT_VALUE, INVALID_FILE_FOR_PREPROCESSING, LANGUAGE, \
-    ISO_ENCODING, LOGGER_NAME, TEST_MODE
 
 log = logging.getLogger(LOGGER_NAME)
 
 
-def fill_column(data: pd.DataFrame, column: CODE_TRACKER_COLUMN, fits_column_restriction: Callable[[Any], bool],
-                default_value: DEFAULT_VALUE) -> Any:
+def delete_default_values(values: List[Any], default_value: int = -1) -> List[Any]:
+    return [x for x in values if x not in [np.nan, None, np.datetime64('NaT'),
+                                             default_value, str(default_value)] and not pd.isna(x)]
+
+
+def fill_column(data: pd.DataFrame, column: CODE_TRACKER_COLUMN, default_value: int = -1) -> Any:
     values = data[column.value].unique()
-    # Todo: make it more readable and delete not necessary params
-    # Delete all possible default values. If we have only 1 valid element after removing defaults, we should return it
-    # Otherwise it is INVALID_FILE_FOR_PREPROCESSING
-    values = [x for x in values if x not in [np.nan, None, np.datetime64('NaT'), 0, -1] and not pd.isna(x)]
+    # Delete all possible NONE values and default_value
+    values = delete_default_values(values, default_value)
+    if len(values) == 0:
+        return default_value
     if len(values) == 1:
         return values[0]
-    log.error('Invalid value for column!')
+    log.info('Invalid value for column!')
     return INVALID_FILE_FOR_PREPROCESSING
 
 
@@ -51,10 +55,8 @@ def handle_ct_file(ct_file: str) -> Tuple[pd.DataFrame, LANGUAGE]:
         apply(lambda t: convert_camel_case_to_snake_case(t))
     language = get_ct_language(ct_df)
     ct_df[CODE_TRACKER_COLUMN.LANGUAGE.value] = language.value
-    ct_df[CODE_TRACKER_COLUMN.AGE.value] = fill_column(ct_df,  CODE_TRACKER_COLUMN.AGE,
-                                                       CODE_TRACKER_COLUMN.AGE.fits_restrictions, DEFAULT_VALUE.AGE)
-    ct_df[CODE_TRACKER_COLUMN.EXPERIENCE.value] = fill_column(ct_df, CODE_TRACKER_COLUMN.EXPERIENCE,
-                                                              CODE_TRACKER_COLUMN.EXPERIENCE.fits_restrictions,
-                                                              DEFAULT_VALUE.EXPERIENCE)
+
+    for column in CODE_TRACKER_COLUMN.get_columns_for_filling():
+        ct_df[column.value] = fill_column(ct_df, column)
     return ct_df, language
 

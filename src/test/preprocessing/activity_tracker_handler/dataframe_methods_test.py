@@ -82,8 +82,7 @@ def get_data_for_filter_test() -> Tuple[pd.DataFrame, pd.DataFrame]:
 def __replace_nan_in_ati_columns(merged_data: pd.DataFrame) -> pd.DataFrame:
     activity_tracker_columns = [consts.ACTIVITY_TRACKER_COLUMN.TIMESTAMP_ATI.value,
                                 consts.ACTIVITY_TRACKER_COLUMN.EVENT_TYPE.value,
-                                consts.ACTIVITY_TRACKER_COLUMN.EVENT_DATA.value,
-                                consts.ACTIVITY_TRACKER_COLUMN.ATI_ID.value]
+                                consts.ACTIVITY_TRACKER_COLUMN.EVENT_DATA.value]
     for column in activity_tracker_columns:
         merged_data[column].fillna('', inplace=True)
     return merged_data
@@ -98,7 +97,7 @@ def get_data_for_merging_test_1() -> Tuple[pd.DataFrame, pd.DataFrame]:
     ct_df_right = __replace_nan_in_ati_columns(
         pd.read_csv(os.path.join(ath_test_folder, ati_folder, 'union_task_1.csv'), encoding=consts.ISO_ENCODING))
 
-    ct_df = ath.merge_code_tracker_and_activity_tracker_data(ct_df, ati_df, 'id')
+    ct_df = ath.merge_code_tracker_and_activity_tracker_data(ct_df, ati_df)
     # ct_df.to_csv(file_name, sep='\t')
 
     return ct_df, ct_df_right
@@ -114,7 +113,7 @@ def get_data_for_merging_test_2() -> Tuple[pd.DataFrame, pd.DataFrame]:
     ct_df_right = __replace_nan_in_ati_columns(
         pd.read_csv(os.path.join(ath_test_folder, ati_folder, 'union_task_2.csv'), encoding=consts.ISO_ENCODING))
 
-    ct_df = ath.merge_code_tracker_and_activity_tracker_data(ct_df, ati_df, 'id')
+    ct_df = ath.merge_code_tracker_and_activity_tracker_data(ct_df, ati_df)
 
     return ct_df, ct_df_right
 
@@ -129,7 +128,7 @@ def get_data_for_merging_test_3() -> Tuple[pd.DataFrame, pd.DataFrame]:
     ct_df_right = __replace_nan_in_ati_columns(
         pd.read_csv(os.path.join(ath_test_folder, ati_folder, 'union_task_1_test_2.csv'), encoding=consts.ISO_ENCODING))
 
-    ct_df = ath.merge_code_tracker_and_activity_tracker_data(ct_df, ati_df, 'id')
+    ct_df = ath.merge_code_tracker_and_activity_tracker_data(ct_df, ati_df)
 
     return ct_df, ct_df_right
 

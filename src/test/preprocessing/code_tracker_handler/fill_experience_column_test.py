@@ -71,19 +71,16 @@ class TestExperienceColumnFilling:
 
     @pytest.mark.parametrize('invalid_df', INVALID_DFS)
     def test_invalid_dfs(self, invalid_df: pd.DataFrame) -> None:
-        column_value = fill_column(invalid_df, CODE_TRACKER_COLUMN.EXPERIENCE,
-                                   CODE_TRACKER_COLUMN.EXPERIENCE.fits_restrictions, DEFAULT_VALUE.EXPERIENCE)
+        column_value = fill_column(invalid_df, CODE_TRACKER_COLUMN.EXPERIENCE)
         assert INVALID_FILE_FOR_PREPROCESSING == column_value
 
     @pytest.mark.parametrize('valid_df', VALID_DFS)
     def test_valid_dfs(self, valid_df: pd.DataFrame) -> None:
-        column_value = fill_column(valid_df, CODE_TRACKER_COLUMN.EXPERIENCE,
-                                   CODE_TRACKER_COLUMN.EXPERIENCE.fits_restrictions, DEFAULT_VALUE.EXPERIENCE)
+        column_value = fill_column(valid_df, CODE_TRACKER_COLUMN.EXPERIENCE)
         assert EXPERIENCE.FROM_FOUR_TO_SIX_YEARS.value == column_value
 
     @pytest.mark.parametrize('default_df', DEFAULT_DFS)
     def test_default_dfs(self, default_df: pd.DataFrame) -> None:
-        column_value = fill_column(default_df, CODE_TRACKER_COLUMN.EXPERIENCE,
-                                   CODE_TRACKER_COLUMN.EXPERIENCE.fits_restrictions, DEFAULT_VALUE.EXPERIENCE)
+        column_value = fill_column(default_df, CODE_TRACKER_COLUMN.EXPERIENCE)
         assert INVALID_FILE_FOR_PREPROCESSING == column_value
 

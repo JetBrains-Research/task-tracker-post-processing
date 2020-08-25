@@ -1,4 +1,4 @@
-date,timestamp,fileName,fileHashCode,documentHashCode,fragment,chosenTask,writtenTask,age,programExperience,taskStatus,activePane,language,timestampAti,eventType,eventData,atiId,testsResults,intExperience
+date,timestamp,fileName,fileHashCode,documentHashCode,fragment,chosenTask,writtenTask,age,programExperience,taskStatus,activePane,language,timestampAti,eventType,eventData,atiId,testsResults,intExperience,programExperienceYears,programExperienceMonths,gender,country
 2020-05-14T22:53:53.919+03:00,4202,di_758_test_4275.py,4275,1805376686,"a=int(input())
 b=int(input())
 n=int(input())

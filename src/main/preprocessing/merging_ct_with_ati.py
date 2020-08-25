@@ -13,7 +13,7 @@ from src.main.preprocessing.code_tracker_handler import handle_ct_file
 from src.main.preprocessing.activity_tracker_handler import handle_ati_file, get_ct_name_from_ati_data, \
     get_files_from_ati
 from src.main.util.file_util import get_original_file_name, get_all_file_system_items, data_subdirs_condition, \
-    get_parent_folder_name, get_output_directory, write_result, extension_file_condition
+    get_parent_folder_name, get_output_directory, write_result, extension_file_condition, user_subdirs_condition
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -58,7 +58,7 @@ def __separate_ati_and_other_files(files: List[str]) -> Tuple[List[str], Optiona
     return files, ati_file
 
 
-def handle_ct_and_at(ct_file: str, ct_df: pd.DataFrame, ati_file: str, ati_df: pd.DataFrame,
+def handle_ct_and_at(ct_file: str, ct_df: pd.DataFrame, ati_df: pd.DataFrame,
                      language: consts.LANGUAGE = consts.LANGUAGE.PYTHON) -> pd.DataFrame:
     files_from_at = None
     if ati_df is not None:
@@ -70,8 +70,7 @@ def handle_ct_and_at(ct_file: str, ct_df: pd.DataFrame, ati_file: str, ati_df: p
     ct_df[consts.CODE_TRACKER_COLUMN.FILE_NAME.value], does_contain_ct_name \
         = get_ct_name_from_ati_data(ct_file, language, files_from_at)
     if ati_df is not None and does_contain_ct_name:
-        ati_id = get_parent_folder_name(ati_file).split('_')[1]
-        ct_df = ath.merge_code_tracker_and_activity_tracker_data(ct_df, ati_df, ati_id)
+        ct_df = ath.merge_code_tracker_and_activity_tracker_data(ct_df, ati_df)
         return ct_df
 
     ati_new_data = pd.DataFrame(ath.get_full_default_columns_for_at(ct_df.shape[0]))
@@ -79,26 +78,26 @@ def handle_ct_and_at(ct_file: str, ct_df: pd.DataFrame, ati_file: str, ati_df: p
     return ct_df
 
 
-def merge_ct_with_ati(path: str) -> str:
+def merge_ct_with_ati(path: str, to_filter_ati_data: bool = True) -> str:
     output_directory = get_output_directory(path, consts.MERGING_CT_AND_ATI_OUTPUT_DIRECTORY)
-    folders = get_all_file_system_items(path, data_subdirs_condition, consts.FILE_SYSTEM_ITEM.SUBDIR)
-    for folder in folders:
-        log.info(f'Start handling the folder {folder}')
-        files = get_all_file_system_items(folder, extension_file_condition(consts.EXTENSION.CSV))
-        try:
-            ct_files, ati_file = __separate_ati_and_other_files(files)
-        # Drop the current folder
-        except ValueError:
-            continue
+    user_folders = get_all_file_system_items(path, user_subdirs_condition, consts.FILE_SYSTEM_ITEM.SUBDIR)
+    for user_folder in user_folders:
+        log.info(f'Start handling the folder {user_folder}')
+        task_folders = get_all_file_system_items(user_folder, item_type=consts.FILE_SYSTEM_ITEM.SUBDIR)
+        for task_folder in task_folders:
+            log.info(f'Start handling the folder {task_folder}')
+            files = get_all_file_system_items(task_folder, extension_file_condition(consts.EXTENSION.CSV))
+            try:
+                ct_files, ati_file = __separate_ati_and_other_files(files)
+            # Drop the current folder
+            except ValueError:
+                continue
 
-        ati_df = handle_ati_file(ati_file)
+            ati_df = handle_ati_file(ati_file, to_filter_ati_data)
+            for ct_file in ct_files:
+                ct_df, language = handle_ct_file(ct_file)
+                ct_df = handle_ct_and_at(ct_file, ct_df, ati_df, language)
+                write_result(output_directory, path, ct_file, ct_df)
 
-        for ct_file in ct_files:
-            ct_df, language = handle_ct_file(ct_file)
-
-            ct_df = handle_ct_and_at(ct_file, ct_df, ati_file, ati_df, language)
-
-            write_result(output_directory, path, ct_file, ct_df)
-
-        log.info(f'Finish handling the folder {folder}')
+        log.info(f'Finish handling the folder {user_folder}')
     return output_directory

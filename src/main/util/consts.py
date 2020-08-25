@@ -14,16 +14,21 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 class CODE_TRACKER_COLUMN(Enum):
     AGE = 'age'
     EXPERIENCE = 'programExperience'
+    EXPERIENCE_YEARS = 'programExperienceYears'
+    EXPERIENCE_MONTHS = 'programExperienceMonths'
+    TASK_STATUS = 'taskStatus'
+    GENDER = 'gender'
+    COUNTRY = 'country'
     FILE_NAME = 'fileName'
     DATE = 'date'
     TIMESTAMP = 'timestamp'
     LANGUAGE = 'language'
     FRAGMENT = 'fragment'
     CHOSEN_TASK = 'chosenTask'
-    TASK_STATUS = 'taskStatus'
     TESTS_RESULTS = 'testsResults'
     INT_EXPERIENCE = 'intExperience'
     TEST_MODE = 'testMode'
+    USER_ID = 'userId'
 
     def fits_restrictions(self, value: Any) -> bool:
         if self is CODE_TRACKER_COLUMN.AGE:
@@ -33,6 +38,10 @@ class CODE_TRACKER_COLUMN(Enum):
         # Todo: implement restrictions for other columns
         else:
             raise NotImplementedError(f"Cannot find any restrictions for {self}")
+
+    @classmethod
+    def get_columns_for_filling(cls) -> List['CODE_TRACKER_COLUMN']:
+        return [cls.AGE, cls.EXPERIENCE_YEARS, cls.EXPERIENCE_MONTHS, cls.GENDER, cls.COUNTRY]
 
 
 class TEST_MODE(Enum):
@@ -161,7 +170,7 @@ class TASK(Enum):
     PIES = 'pies'
     MAX_3 = 'max_3'
     ZERO = 'is_zero'
-    ELECTION = 'election'
+    VOTING = 'voting'
     BRACKETS = 'brackets'
     MAX_DIGIT = 'max_digit'
 

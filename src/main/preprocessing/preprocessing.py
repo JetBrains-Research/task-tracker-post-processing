@@ -11,7 +11,7 @@ from src.main.util.consts import EXTENSION, CODE_TRACKER_COLUMN, TEST_MODE, ACTI
     ACTIVITY_TRACKER_FILE_NAME
 from src.main.util.file_util import get_output_directory, get_all_file_system_items, all_items_condition, \
     extension_file_condition, get_file_with_max_size, create_directory, get_name_from_path, create_file, \
-    get_content_from_file
+    get_content_from_file, user_subdirs_condition
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -54,7 +54,7 @@ def __handle_ct_files(ct_files: List[str], output_task_path: str) -> bool:
 # Delete files with test mode = ON
 def preprocess_data(path: str) -> str:
     output_directory = get_output_directory(path, consts.PREPROCESSING_DIRECTORY)
-    user_folders = get_all_file_system_items(path, lambda dir: 'user' in dir, consts.FILE_SYSTEM_ITEM.SUBDIR)
+    user_folders = get_all_file_system_items(path, user_subdirs_condition, consts.FILE_SYSTEM_ITEM.SUBDIR)
     for user_folder in user_folders:
         output_user_path = os.path.join(output_directory, get_name_from_path(user_folder, False))
         log.info(f'Start handling the path {user_folder}')

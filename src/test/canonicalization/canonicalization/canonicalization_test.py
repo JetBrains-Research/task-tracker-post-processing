@@ -48,7 +48,7 @@ class TestCanonicalizationTool:
                         (CANONICALIZATION_TESTS_TYPES.STUDENT_CODE, get_canonicalized_code_from_file, TASK.MAX_3),
                         (CANONICALIZATION_TESTS_TYPES.STUDENT_CODE, get_canonicalized_code_from_file, TASK.ZERO),
                         (CANONICALIZATION_TESTS_TYPES.STUDENT_CODE, get_canonicalized_code_from_file, TASK.MAX_DIGIT),
-                        (CANONICALIZATION_TESTS_TYPES.STUDENT_CODE, get_canonicalized_code_from_file, TASK.ELECTION),
+                        (CANONICALIZATION_TESTS_TYPES.STUDENT_CODE, get_canonicalized_code_from_file, TASK.VOTING),
                         (CANONICALIZATION_TESTS_TYPES.STUDENT_CODE, get_canonicalized_code_from_file, TASK.BRACKETS),
                     ],
                     ids=[
