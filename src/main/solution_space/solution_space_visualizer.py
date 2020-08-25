@@ -47,6 +47,9 @@ class SolutionSpaceVisualizer:
         vertices.sort()
         return ', '.join(list(map(str, vertices)))
 
+    def __get_graph_representation(self, font_name: str = 'Arial') -> str:
+        return get_graph_representation(self.__get_labels(), self.__get_graph_structure(), font_name)
+
     def __get_graph_structure(self) -> str:
         structure = ''
         for vertex in self._graph.get_traversal():
@@ -58,7 +61,7 @@ class SolutionSpaceVisualizer:
     def visualize_graph(self, name_prefix: str = 'graph',
                         to_create_vertices_content: bool = True,
                         output_format: consts.EXTENSION = consts.EXTENSION.PNG) -> str:
-        graph_representation = get_graph_representation(self.__get_labels(), self.__get_graph_structure())
+        graph_representation = self.__get_graph_representation()
         folder_path = os.path.join(consts.GRAPH_REPRESENTATION_PATH, f'{name_prefix}_{self._graph.id}')
         # Remove older graph with the same name
         remove_directory(folder_path)
