@@ -27,6 +27,7 @@ def anonymize_code_in_df(df: pd.DataFrame) -> pd.DataFrame:
     # Todo: add other languages???
     # Delete incorrect fragments
     df = df[df.apply(lambda row: not is_incorrect_fragment(row[TESTS_RESULTS]), axis=1)]
+    df[TESTS_RESULTS] = df[TESTS_RESULTS].apply(lambda x: max(unpack_tests_results(x, TASK.tasks())))
     df[FRAGMENT] = df[FRAGMENT].apply(get_anonymized_code)
     return df
 
