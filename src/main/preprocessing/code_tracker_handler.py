@@ -17,7 +17,7 @@ log = logging.getLogger(LOGGER_NAME)
 
 def delete_default_values(values: List[Any], default_value: int = -1) -> List[Any]:
     return [x for x in values if x not in [np.nan, None, np.datetime64('NaT'),
-                                             default_value, str(default_value)] and not pd.isna(x)]
+                                           default_value, str(default_value)] and not pd.isna(x)]
 
 
 def fill_column(data: pd.DataFrame, column: CODE_TRACKER_COLUMN, default_value: int = -1) -> Any:
@@ -57,6 +57,7 @@ def handle_ct_file(ct_file: str) -> Tuple[pd.DataFrame, LANGUAGE]:
     ct_df[CODE_TRACKER_COLUMN.LANGUAGE.value] = language.value
 
     for column in CODE_TRACKER_COLUMN.get_columns_for_filling():
-        ct_df[column.value] = fill_column(ct_df, column)
+        if column in ct_df.columns:
+            ct_df[column.value] = fill_column(ct_df, column)
     return ct_df, language
 
