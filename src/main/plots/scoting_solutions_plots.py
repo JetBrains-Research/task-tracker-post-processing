@@ -14,7 +14,7 @@ def __find_next_score_index(scores: List[float], start_index: int = 0) -> int:
     for i in range(start_index, len(scores)):
         if scores[i] != scores[start_index]:
             return i
-    return -1
+    return len(scores)
 
 
 def __get_label_for_score(id: int, label: Union[str, int], score: float) -> str:
@@ -35,18 +35,18 @@ def get_labels_and_graph_structure(scores: List[float]) -> Tuple[str, str]:
 
         # Add the current vertex
         labels += __get_label_for_score(i + 1, i + 1, scores[i])
-        # If the current vertex is not first, add en edge with the previous one
+        # If the current vertex is not the first, add en edge with the previous one
         if i != 0:
             structure += __get_edge(i, i + 1)
 
         # If we need to add an intermediate vertex
-        if len(scores) - i > 2:
+        if i < next_score_index - 2:
             # Add an intermediate vertex
             labels += __get_label_for_score(i + 2, '...', scores[i])
             structure += __get_edge(i + 1, i + 2)
 
-            # If the current score is last
-            if next_score_index == -1:
+            # If the current score is the last
+            if next_score_index == len(scores):
                 labels += __get_label_for_score(len(scores), len(scores), scores[i])
                 structure += __get_edge(i + 2, len(scores))
                 i = len(scores)
