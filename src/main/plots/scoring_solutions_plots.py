@@ -45,15 +45,10 @@ def get_labels_and_graph_structure(scores: List[float]) -> Tuple[str, str]:
             labels += __get_label_for_score(i + 2, '...', scores[i])
             structure += __get_edge(i + 1, i + 2)
 
-            # If the current score is the last
-            if next_score_index == len(scores):
-                labels += __get_label_for_score(len(scores), len(scores), scores[i])
-                structure += __get_edge(i + 2, len(scores))
-                i = len(scores)
-            else:
-                labels += __get_label_for_score(next_score_index, next_score_index, scores[i])
-                structure += __get_edge(i + 2, next_score_index)
-                i = next_score_index - 1
+            labels += __get_label_for_score(next_score_index, next_score_index, scores[i])
+            structure += __get_edge(i + 2, next_score_index)
+            i = next_score_index - 1
+
         i += 1
     return labels, structure
 
