@@ -51,7 +51,7 @@ def __get_experience(ct_df: pd.DataFrame) -> Profile:
         # New data structure
         experience_years = __get_profile_info(ct_df, STATISTICS_KEY.EXPERIENCE_YEARS)
         experience_months = __get_profile_info(ct_df, STATISTICS_KEY.EXPERIENCE_MONTHS)
-        if 1 <= experience_months < 6:
+        if 0 <= experience_months < 6:
             return EXPERIENCE.LESS_THAN_HALF_YEAR.value
         elif 6 <= experience_months <= 11:
             return EXPERIENCE.FROM_HALF_TO_ONE_YEAR.value
