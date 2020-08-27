@@ -7,8 +7,9 @@ import pandas as pd
 
 from src.main.plots.util import consts as plot_consts
 from src.main.util.strings_util import crop_string, convert_camel_case_to_snake_case
-from src.main.util.consts import EXTENSION, DEFAULT_VALUE, INVALID_FILE_FOR_PREPROCESSING
-from src.main.plots.util.consts import STATISTICS_KEY, STATISTICS_FREQ, STATISTICS_SHOWING_KEY
+from src.main.util.consts import EXTENSION, DEFAULT_VALUE, INVALID_FILE_FOR_PREPROCESSING, CODE_TRACKER_COLUMN
+from src.main.plots.util.consts import STATISTICS_KEY, STATISTICS_FREQ, STATISTICS_SHOWING_KEY, \
+    CT_SECONDS_COL
 from src.main.util.file_util import get_parent_folder_name, get_name_from_path, create_directory, get_parent_folder, \
     get_file_and_parent_folder_names, change_extension_to
 
@@ -54,3 +55,13 @@ def get_readable_key(key: str, default_value: Optional[DEFAULT_VALUE] = None) ->
     # turn to snake_case if it was in camelCase
     key = convert_camel_case_to_snake_case(key)
     return key.replace('_', ' ').capitalize()
+
+
+def fill_seconds_columns(data: pd.DataFrame) -> None:
+    first_datetime = pd.to_datetime(data[CODE_TRACKER_COLUMN.DATE.value].iloc[0])
+    data[CT_SECONDS_COL] = pd.to_datetime(data[CODE_TRACKER_COLUMN.DATE.value], errors='ignore')
+    data[CT_SECONDS_COL] = data[CT_SECONDS_COL].map(lambda d: (d - first_datetime).total_seconds())
+
+
+
+
