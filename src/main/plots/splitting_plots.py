@@ -78,7 +78,7 @@ def __create_splitting_plot(ax: plt.axes, data: pd.DataFrame, title: str,
     __add_task_status_to_plot(ax, data, status_x_dict)
 
     add_legend_to_the_right(ax)
-    ax.set_xlabel("seconds")
+    ax.set_xlabel(CT_SECONDS_COL)
     ax.set_ylabel(FRAGMENT_LENGTH_COL)
     ax.set_title(title)
 

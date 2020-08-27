@@ -81,7 +81,7 @@ TASK_STATUS_COLOR_DICT: Dict[TASK_STATUS, str] = {
 }
 
 FRAGMENT_LENGTH_COL = 'fragment_length'
-CT_SECONDS_COL = 'ctSeconds'
+CT_SECONDS_COL = 'seconds'
 
 FRAGMENT_LENGTH_COLOR = '#737DBB'
 

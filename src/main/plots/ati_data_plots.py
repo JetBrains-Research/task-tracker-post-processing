@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 from src.main.util import consts
 from src.main.plots.util.plots_common import get_short_name, fill_seconds_columns
 from src.main.plots.util.consts import FRAGMENT_LENGTH_COL, ATI_RUN_EVENT, ATI_EDITOR_EVENT_COLOR_DICT, LARGE_SIZE, \
-    ATI_EDITOR_EVENT, ATI_RUN_EVENT_COLOR_DICT
+    ATI_EDITOR_EVENT, ATI_RUN_EVENT_COLOR_DICT, CT_SECONDS_COL
 from src.main.plots.util.pyplot_util import add_fragments_length_plot, EVENT_DATA_COL, TIMESTAMP_COL, FRAGMENT_COL, \
     save_and_show_if_needed, add_legend_to_the_right
 
@@ -27,7 +27,7 @@ def __create_ati_events_plot(ax: plt.axes, df: pd.DataFrame, event_data: List[At
         add_fragments_length_plot(ax, event_df, event_colors[event], LARGE_SIZE, event.value)
     add_legend_to_the_right(ax)
     ax.set_ylabel(FRAGMENT_LENGTH_COL)
-    ax.set_xlabel("seconds")
+    ax.set_xlabel(CT_SECONDS_COL)
     ax.set_title(title)
 
 
