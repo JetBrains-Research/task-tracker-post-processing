@@ -9,9 +9,10 @@ import matplotlib.pyplot as plt
 from src.main.util import consts
 from src.main.util.consts import ISO_ENCODING
 from src.main.splitting.splitting import find_splits
-from src.main.plots.util.plots_common import get_short_name
+from src.main.plots.util.plots_common import get_short_name, fill_seconds_columns
 from src.main.util.strings_util import convert_camel_case_to_snake_case
-from src.main.plots.util.consts import TASK_COLOR_DICT, FRAGMENT_LENGTH_COL, TASK_STATUS_COLOR_DICT, LARGE_SIZE
+from src.main.plots.util.consts import TASK_COLOR_DICT, FRAGMENT_LENGTH_COL, TASK_STATUS_COLOR_DICT, LARGE_SIZE, \
+    CT_SECONDS_COL
 from src.main.util.file_util import get_name_from_path, get_all_file_system_items, ct_file_condition, get_parent_folder
 from src.main.plots.util.pyplot_util import CHOSEN_TASK_COL, TIMESTAMP_COL, TASK_STATUS_COL, FRAGMENT_COL, \
     add_fragments_length_plot, save_and_show_if_needed, add_legend_to_the_right
@@ -25,7 +26,7 @@ log = logging.getLogger(consts.LOGGER_NAME)
 def __create_task_split_x_dict(data: pd.DataFrame) -> Dict[consts.TASK, pd.Series]:
     task_split_x_dict = {}
     for task in consts.TASK:
-        task_split_x_dict[task] = data.loc[data[CHOSEN_TASK_COL] == task.value][TIMESTAMP_COL]
+        task_split_x_dict[task] = data.loc[data[CHOSEN_TASK_COL] == task.value][CT_SECONDS_COL]
     return task_split_x_dict
 
 
@@ -34,7 +35,7 @@ def __create_task_split_x_dict(data: pd.DataFrame) -> Dict[consts.TASK, pd.Serie
 def __create_status_x_dict(data: pd.DataFrame) -> Dict[consts.TASK_STATUS, pd.Series]:
     status_x_dict = {}
     for status in consts.TASK_STATUS:
-        status_x_dict[status] = data.loc[data[TASK_STATUS_COL] == status.value][TIMESTAMP_COL]
+        status_x_dict[status] = data.loc[data[TASK_STATUS_COL] == status.value][CT_SECONDS_COL]
     return status_x_dict
 
 
@@ -77,7 +78,7 @@ def __create_splitting_plot(ax: plt.axes, data: pd.DataFrame, title: str,
     __add_task_status_to_plot(ax, data, status_x_dict)
 
     add_legend_to_the_right(ax)
-    ax.set_xlabel(TIMESTAMP_COL)
+    ax.set_xlabel(CT_SECONDS_COL)
     ax.set_ylabel(FRAGMENT_LENGTH_COL)
     ax.set_title(title)
 
@@ -98,6 +99,7 @@ def __create_comparative_plot(first_df: pd.DataFrame, second_df: pd.DataFrame, f
 def create_comparative_splitting_plot(data_path: str, to_snake_case: bool = True, folder_to_save: str = None,
                                       to_show: bool = False) -> None:
     original_splits_data = pd.read_csv(data_path, encoding=consts.ISO_ENCODING)
+    fill_seconds_columns(original_splits_data)
     original_splits_title = f'{get_short_name(data_path)} with original splits'
 
     real_splits_data = find_splits(original_splits_data.copy())
@@ -110,14 +112,16 @@ def create_comparative_splitting_plot(data_path: str, to_snake_case: bool = True
 def create_comparative_filtering_plot(original_data_path: str, filtered_data_path: str, to_snake_case: bool = True,
                                       folder_to_save: Optional[str] = None, to_show: bool = False) -> None:
     original_data = pd.read_csv(original_data_path, encoding=consts.ISO_ENCODING)
+    fill_seconds_columns(original_data)
     original_data_title = f'Original data {get_short_name(original_data_path)}'
 
-    filtered_data_data = pd.read_csv(filtered_data_path, encoding=consts.ISO_ENCODING)
+    filtered_data = pd.read_csv(filtered_data_path, encoding=consts.ISO_ENCODING)
+    fill_seconds_columns(filtered_data)
     filtered_data_title = f'Filtered data {get_short_name(filtered_data_path)}'
 
     result_name_prefix = 'comparative_filtering_' + get_short_name(get_name_from_path(original_data_path))
 
-    __create_comparative_plot(original_data, filtered_data_data, original_data_title, filtered_data_title,
+    __create_comparative_plot(original_data, filtered_data, original_data_title, filtered_data_title,
                               folder_to_save=folder_to_save, to_snake_case=to_snake_case, to_show=to_show,
                               name_prefix=result_name_prefix)
 
@@ -126,5 +130,7 @@ def create_splitting_plot_for_each_file(path: str) -> None:
     files = get_all_file_system_items(path, ct_file_condition)
     for file in files:
         fig, ax = plt.subplots(figsize=(20, 10))
-        __create_splitting_plot(ax, pd.read_csv(file, encoding=ISO_ENCODING), 'splits')
+        data = pd.read_csv(file, encoding=ISO_ENCODING)
+        fill_seconds_columns(data)
+        __create_splitting_plot(ax, data, 'splits')
         save_and_show_if_needed(get_parent_folder(file), False, fig, file, 'split')

@@ -4,6 +4,7 @@ import os
 import re
 import pickle
 import shutil
+
 from shutil import copyfile
 from typing import Callable, Any, List, Tuple, Type, Optional
 
@@ -70,7 +71,8 @@ def get_name_from_path(path: str, with_extension: bool = True) -> str:
 # Not empty extensions are returned with a dot, for example, '.txt'
 # If file has no extensions, an empty one ('') is returned
 def get_extension_from_file(file: str) -> EXTENSION:
-    return EXTENSION(os.path.splitext(file)[1])
+        return EXTENSION(os.path.splitext(file)[1])
+
 
 
 def add_dot_to_not_empty_extension(extension: EXTENSION) -> str:
