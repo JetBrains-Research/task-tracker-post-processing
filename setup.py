@@ -1,4 +1,4 @@
-# Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
+# Copyright (c) by anonymous author(s)
 
 import sys
 import argparse
@@ -30,8 +30,7 @@ if test_level_param in args:
 setup(name='codetracker-data',
       # version='1.0.0',
       description='Data preprocessing, hint generation algorithm',
-      url='https://github.com/elena-lyulina/codetracker-data',
-      author='Anastasiia Birillo, Elena Lyulina',
+      author='anonymous author(s)',
       long_description_content_type='text/markdown',
       long_description=readme,
       license='MIT',

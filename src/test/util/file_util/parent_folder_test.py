@@ -1,4 +1,4 @@
-# Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
+# Copyright (c) by anonymous author(s)
 
 from enum import Enum
 from typing import Dict, Union, List, Callable

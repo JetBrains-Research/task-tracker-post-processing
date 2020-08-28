@@ -1,4 +1,4 @@
-# Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
+# Copyright (c) by anonymous author(s)
 
 """
   We need the util because the pickle module cannot serialize/deserialize defaultdict with lambda functions

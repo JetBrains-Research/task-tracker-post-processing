@@ -1,5 +1,5 @@
 # Copyright (c) 2017 Kelly Rivers
-# Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
+# Copyright (c) by anonymous author(s)
 
 from src.main.canonicalization.consts import TREE_TYPE
 from src.main.util.log_util import log_and_raise_error

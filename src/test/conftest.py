@@ -1,4 +1,4 @@
-# Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
+# Copyright (c) by anonymous author(s)
 
 from src.main.util.log_util import configure_logger
 

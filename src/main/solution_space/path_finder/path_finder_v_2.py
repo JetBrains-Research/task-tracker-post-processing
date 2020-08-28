@@ -1,4 +1,4 @@
-# Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
+# Copyright (c) by anonymous author(s)
 
 import ast
 from typing import List, Optional

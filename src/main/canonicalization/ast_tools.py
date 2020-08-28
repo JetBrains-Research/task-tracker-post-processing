@@ -1,5 +1,5 @@
 # Copyright (c) 2017 Kelly Rivers
-# Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
+# Copyright (c) by anonymous author(s)
 from __future__ import annotations
 
 import logging
