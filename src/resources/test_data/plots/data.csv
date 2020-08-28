@@ -1,5 +1,9 @@
-date,timestamp,fileName,fileHashCode,documentHashCode,fragment,chosenTask,writtenTask,age,programExperience,taskStatus,activePane,testsResults,language,timestampAti,eventType,eventData,atiId
-2019-12-20T13:47:36.596+03:00,0,main.cpp,6007,601516113,"#include <iostream>
+
+timestamp,fragment,chosenTask,writtenTask,age,programExperience,taskStatus,testsResults,language,timestampAti,eventType,eventData,,programExperienceYears,programExperienceMonths,gender,country
+0,,pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+33,"
+",pies,,-1,FROM_HALF_TO_ONE_YEAR,,"[0, 0, 0, 0, 0, 0]",python,,,,
+39,"
 
 using namespace std;
 

@@ -1,4 +1,4 @@
-age,programExperience,language,fileName,chosenTask
+age,programExperience,language,fileName,chosenTask,programExperienceYears,programExperienceMonths,gender,country
 13.0,LESS_THAN_HALF_YEAR,python,test.py,pies
 13.0,LESS_THAN_HALF_YEAR,python,test.py,pies
 13.0,LESS_THAN_HALF_YEAR,python,test.py,pies

@@ -6,8 +6,8 @@ from enum import Enum
 from typing import List
 
 from src.main.splitting.tasks_tests_handler import run_tests
-from src.main.preprocessing.preprocessing import preprocess_data
-from src.main.splitting.splitting import split_tasks_into_separate_files
+from src.main.preprocessing.merging_ct_with_ati import merge_ct_with_ati
+from src.main.splitting.splitting import reorganize_files_structure
 from src.main.preprocessing.int_experience_adding import add_int_experience
 from src.main.preprocessing.intermediate_diffs_removing import remove_intermediate_diffs
 from src.main.preprocessing.inefficient_statements_removing import remove_inefficient_statements
@@ -52,9 +52,9 @@ class PREPROCESSING_LEVEL(Enum):
     @property
     def __level_actions(self):
         return {
-            self.MERGE: preprocess_data,
+            self.MERGE: merge_ct_with_ati,
             self.TESTS_RESULTS: run_tests,
-            self.SPLIT: split_tasks_into_separate_files,
+            self.SPLIT: reorganize_files_structure,
             self.INTERMEDIATE_DIFFS: remove_intermediate_diffs,
             self.INEFFICIENT_STATEMENTS: remove_inefficient_statements,
             self.INT_EXPERIENCE: add_int_experience
