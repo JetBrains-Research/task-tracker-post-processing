@@ -8,12 +8,14 @@ import pandas as pd
 
 from src.main.util import consts
 from src.main.plots.util.consts import STATISTICS_KEY
+from src.main.util.consts import CODE_TRACKER_COLUMN, EXPERIENCE
 from src.main.util.log_util import log_and_raise_error
 from src.main.preprocessing.code_tracker_handler import handle_ct_file, delete_default_values
 from src.main.statistics_gathering.util import Profile, AgeAndExperience, InvalidProfile, InvalidAgeAndExperience, \
     Statistics, InvalidAge, InvalidExperience, StatisticsValue, TaskStatistics
-from src.main.util.file_util import get_name_from_path, ct_file_condition, get_output_directory, change_extension_to,\
-    serialize_data_and_write_to_file, data_subdirs_condition, get_all_file_system_items, contains_substrings_condition
+from src.main.util.file_util import get_name_from_path, ct_file_condition, get_output_directory, change_extension_to, \
+    serialize_data_and_write_to_file, data_subdirs_condition, get_all_file_system_items, contains_substrings_condition, \
+    user_subdirs_condition
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -30,7 +32,7 @@ def __get_profile_info(ct_df: pd.DataFrame, column: STATISTICS_KEY) -> Profile:
     values = delete_default_values(values)
     if len(values) == 0:
         # If it's a default value, return consts.DEFAULT_VALUE
-        return column.get_default()
+        return column.get_default().value
     if len(values) == 1:
         return values[0]
     log_and_raise_error(f'Have found {len(values)}: {values} unique value in profile column {column.value}', log)
@@ -44,10 +46,32 @@ def __get_ct_df(ct_file: str, needs_handling: bool = True) -> pd.DataFrame:
     return pd.read_csv(ct_file, encoding=consts.ISO_ENCODING)
 
 
+def __get_experience(ct_df: pd.DataFrame) -> Profile:
+    if STATISTICS_KEY.EXPERIENCE.value not in ct_df.columns:
+        # New data structure
+        experience_years = __get_profile_info(ct_df, STATISTICS_KEY.EXPERIENCE_YEARS)
+        experience_months = __get_profile_info(ct_df, STATISTICS_KEY.EXPERIENCE_MONTHS)
+        if 0 <= experience_months < 6:
+            return EXPERIENCE.LESS_THAN_HALF_YEAR.value
+        elif 6 <= experience_months <= 11:
+            return EXPERIENCE.FROM_HALF_TO_ONE_YEAR.value
+        elif 1 <= experience_years < 2:
+            return EXPERIENCE.FROM_ONE_TO_TWO_YEARS.value
+        elif 2 <= experience_years < 4:
+            return EXPERIENCE.FROM_TWO_TO_FOUR_YEARS.value
+        elif 4 <= experience_years < 6:
+            return EXPERIENCE.FROM_FOUR_TO_SIX_YEARS.value
+        elif experience_years >= 6:
+            return EXPERIENCE.MORE_THAN_SIX.value
+        else:
+            return STATISTICS_KEY.EXPERIENCE.get_default()
+    return __get_profile_info(ct_df, STATISTICS_KEY.EXPERIENCE)
+
+
 def __get_age_and_experience(ct_file: str, needs_preprocessing: bool = True) -> AgeAndExperience:
     ct_df = __get_ct_df(ct_file, needs_preprocessing)
     age = __get_profile_info(ct_df, STATISTICS_KEY.AGE)
-    experience = __get_profile_info(ct_df, STATISTICS_KEY.EXPERIENCE)
+    experience = __get_experience(ct_df)
     log.info(f'File: {ct_file}, age is {age}, experience is {experience}')
     return age, experience
 
@@ -56,7 +80,8 @@ def __get_age_and_experience(ct_file: str, needs_preprocessing: bool = True) -> 
 # Return default_value if files with the same code tracker id (or the same activity tracker id) have different values
 # for profile data (age or experience for example)
 # Note: you should run it for each profile column
-def __handle_profile_data_of_one_user(profile_data: Set[Profile], default_value: consts.DEFAULT_VALUE) -> InvalidProfile:
+def __handle_profile_data_of_one_user(profile_data: Set[Profile],
+                                      default_value: consts.DEFAULT_VALUE) -> InvalidProfile:
     if default_value in profile_data:
         profile_data.remove(default_value)
     if len(profile_data) == 1:
@@ -103,7 +128,7 @@ def __write_results(output_directory: str, statistics: Statistics) -> None:
 
 def get_profile_statistics(path: str) -> str:
     output_directory = get_output_directory(path, consts.STATISTICS_OUTPUT_DIRECTORY)
-    folders = get_all_file_system_items(path, data_subdirs_condition, consts.FILE_SYSTEM_ITEM.SUBDIR)
+    folders = get_all_file_system_items(path, user_subdirs_condition, consts.FILE_SYSTEM_ITEM.SUBDIR)
     statistics = __get_empty_statistics_dict()
     for folder in folders:
         log.info(f'Start handling the folder {folder}')
