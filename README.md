@@ -181,7 +181,7 @@ Use `-h` option to show help for each module.
 
 See description: [usage](#usage)
 
-File for running: [preprocessing.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/preprocessing.py)
+File for running: [preprocessing.py](src/main/cli/preprocessing.py)
 
 **Required arguments:**
 1. **path** — the path to data.
@@ -192,14 +192,15 @@ __--level__ — use to set the level for the preprocessing. Available levels:
 
 Value | Description
 --- | ---
-**0** |  merge _codetracker files_ and _activity-tracker files_
-**1** |  find tests results for the tasks
-**2** |  split the data
-**3** |  remove intermediate diffs
-**4** |  remove inefficient statements
-**5** |  add _int experience_ column, default value
+**0** |  primary data processing 
+**1** |  merge _codetracker files_ and _activity-tracker files_
+**2** |  find tests results for the tasks
+**3** |  reorganize files structure 
+**4** |  remove intermediate diffs
+**5** |  [only for Python language] remove inefficient statements
+**6** |  add _int experience_ column, default value
 
-**Note**: the Nth level runs all the levels before it. The default value is the max level value.
+**Note**: the Nth level runs all the levels before it. The default value is 3.
 
 ### Plots module
 

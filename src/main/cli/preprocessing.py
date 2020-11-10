@@ -23,8 +23,7 @@ class PreprocessingCli(ICli):
 
     def configure_args(self) -> None:
         self._parser.add_argument(PREPROCESSING_PARAMS.PATH.value, type=str, nargs=1, help='data path')
-        self._parser.add_argument(PREPROCESSING_PARAMS.LEVEL.value, nargs='?', const=PREPROCESSING_LEVEL.max_value(),
-                                  default=PREPROCESSING_LEVEL.max_value(),
+        self._parser.add_argument(PREPROCESSING_PARAMS.LEVEL.value, nargs='?', const=3, default=3,
                                   help=PREPROCESSING_LEVEL.description())
 
     def parse_args(self) -> None:
