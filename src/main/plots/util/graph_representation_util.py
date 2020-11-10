@@ -42,7 +42,7 @@ def get_graph_representation(labels: str, graph_structure: str, font_name: str =
 
 
 def get_color_by_rate(rate: float) -> str:
-    hue = str((rate) * 0.33)
+    hue = str(rate * 0.33)
     return f'"{hue} 0.7 1.0"'
 
 

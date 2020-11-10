@@ -14,6 +14,7 @@ from src.main.util.strings_util import add_symbol_to_begin
 from src.main.plots.util.consts import STATISTICS_KEY, CHART_TYPE
 from src.main.util.log_util import configure_logger, add_console_stream
 from src.main.plots.tasks_statistics_plots import plot_tasks_statistics
+from src.main.plots.scoring_solutions_plots import plot_scoring_solutions
 from src.main.plots.profile_statistics_plots import plot_profile_statistics
 from src.main.statistics_gathering.statistics_gathering import get_profile_statistics
 
@@ -107,6 +108,9 @@ class PlotsCli(ICli):
             plot_tasks_statistics(self._path, format=self._format, auto_open=self._auto_open)
         elif self._plot_type == PLOT_TYPE.SPLITTING_PLOTS:
             # Todo
+            pass
+        elif self._plot_type == PLOT_TYPE.SCORING_SOLUTIONS:
+            plot_scoring_solutions(self._path)
             pass
         else:
             raise NotImplemented

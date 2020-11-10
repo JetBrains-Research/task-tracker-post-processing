@@ -4,10 +4,14 @@ from typing import List, Union, Tuple
 
 import pandas as pd
 
-from src.main.util.consts import ISO_ENCODING, CODE_TRACKER_COLUMN
+from src.main.util import consts
+from src.main.splitting.splitting import unpack_tests_results
+from src.main.util.consts import ISO_ENCODING, CODE_TRACKER_COLUMN, TEST_RESULT, TASK
 from src.main.util.file_util import get_parent_folder, get_name_from_path
-from src.main.preprocessing.code_anonimization import anonymize_code_in_df
 from src.main.plots.util.graph_representation_util import get_color_by_rate, get_graph_representation, create_dot_graph
+
+TESTS_RESULTS = consts.CODE_TRACKER_COLUMN.TESTS_RESULTS.value
+FILE_NAME = consts.CODE_TRACKER_COLUMN.FILE_NAME.value
 
 
 def __find_next_score_index(scores: List[float], start_index: int = 0) -> int:
@@ -53,10 +57,23 @@ def get_labels_and_graph_structure(scores: List[float]) -> Tuple[str, str]:
     return labels, structure
 
 
+def __is_incorrect_fragment(tests_results: str) -> bool:
+    return TEST_RESULT.INCORRECT_CODE.value in unpack_tests_results(tests_results, TASK.tasks())
+
+
+def __calculate_current_task_rate(df: pd.DataFrame) -> pd.DataFrame:
+    file_name = df[FILE_NAME].unique()[0]
+    current_task = TASK(get_name_from_path(file_name, False))
+    return df[TESTS_RESULTS].apply(lambda x: unpack_tests_results(x, TASK.tasks())[TASK.tasks().index(current_task)])
+
+
 def plot_scoring_solutions(ct_file_path: str, name_prefix: str = 'scoring_solution') -> str:
     ct_df = pd.read_csv(ct_file_path, encoding=ISO_ENCODING)
-    anon_ct_df = anonymize_code_in_df(ct_df)
-    scores = anon_ct_df[CODE_TRACKER_COLUMN.TESTS_RESULTS.value].values
+    # Delete incorrect fragments
+    correct_df = ct_df[ct_df.apply(lambda row: not __is_incorrect_fragment(row[TESTS_RESULTS]), axis=1)]
+
+    correct_df[TESTS_RESULTS] = __calculate_current_task_rate(correct_df)
+    scores = correct_df[CODE_TRACKER_COLUMN.TESTS_RESULTS.value].values
     labels, graph_structure = get_labels_and_graph_structure(scores)
     solutions_representation = get_graph_representation(labels, graph_structure)
     output_path = get_parent_folder(ct_file_path)

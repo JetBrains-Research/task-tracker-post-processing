@@ -94,10 +94,10 @@ You can visualize different parts of the pipeline.
 
 #### Participants distribution
 
-**Note**: Run _before_ 'split_tasks_into_separate_files' because the old files structure is used to count unique users.
+**Note**: Run _before_ 'reorganize_files_structure' because the old files structure is used to count unique users.
 
-Use **get_profile_statistics** method from [statistics_gathering.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/statistics_gathering/statistics_gathering.py)
-to get the age and experience statistics. After that, run **plot_profile_statistics** method from [profile_statistics_plots.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/plots/profile_statistics_plots.py)
+Use **get_profile_statistics** method from [statistics_gathering.py](src/main/statistics_gathering/statistics_gathering.py)
+to get the age and experience statistics. After that, run **plot_profile_statistics** method from [profile_statistics_plots.py](src/main/plots/profile_statistics_plots.py)
 with the necessary column and options. Use serialized files with statistic as a parameter.
 
 Two column types are available:
@@ -119,9 +119,9 @@ The default value is `PLOTTY_CATEGORY_ORDER.TOTAL_ASCENDING`.
 
 #### Tasks distribution
 
-**Note**: Run _after_ 'split_tasks_into_separate_files'.
+**Note**: Run _after_ 'reorganize_files_structure'.
 
-Use **plot_tasks_statistics** method from [tasks_statistics_plots.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/plots/tasks_statistics_plots.py)
+Use **plot_tasks_statistics** method from [tasks_statistics_plots.py](src/main/plots/tasks_statistics_plots.py)
 to plot tasks statistics.
 
 Available options:
@@ -135,9 +135,16 @@ interactive.
 Todo
 
 
+#### Scoring solutions plots
+
+**Note**: Run _after_ 'run_tests'.
+
+Use **plot_scoring_solutions** method from [scoring_solutions_plots.py](src/main/plots/scoring_solutions_plots.py)
+to plot scoring solutions.
+
 #### Graph visualization
 
-You can use the [SolutionSpaceVisualizer](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/solution_space/solution_space_visualizer.py) 
+You can use the [SolutionSpaceVisualizer](src/main/solution_space/solution_space_visualizer.py) 
 class for graph visualization.
 The graph visualization process uses [Graphviz](https://www.graphviz.org/) library and additionally stores trees after 
 anonymization and canonicalization process for each vertex.
@@ -147,7 +154,7 @@ anonymization and canonicalization process for each vertex.
 
 You can visualize the number of nodes in trees statistics (for each vertex and in general). You should use 
 **plot_node_numbers_statistics** and **plot_node_numbers_freq_for_each_vertex** 
-from [solution_graph_statistics_plots.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/plots/solution_graph_statistics_plots.py).
+from [solution_graph_statistics_plots.py](src/main/plots/solution_graph_statistics_plots.py).
 
 
 ---
@@ -169,7 +176,7 @@ Run the necessary file for available modules:
 File| Module | Description
 --- | --- | --- 
 [preprocessing.py](src/main/cli/preprocessing.py) | [Data preprocessing module](#data-preprocessing-module) | Includes all steps from the [Data preprocessing](#data-preprocessing) section
-[plots.py](src/main/cli/plots.py) | [Plots module](#plots-module) | Includes _Participants distribution_, _Tasks distribution_ and _Splitting plots_ from the [Visualization](#visualization) section
+[plots.py](src/main/cli/plots.py) | [Plots module](#plots-module) | Includes _Participants distribution_, _Tasks distribution_, _Splitting plots_, and _Scoring solutions plots_ from the [Visualization](#visualization) section
 [algo.py](src/main/cli/algo.py) | [Hint generation module](#hint-generation-module) | Includes all steps from the [Hint generation](#hint-generation) section
 [path_finder_test_system.py](src/main/cli/path_finder_test_system.py) | [Path finder test system module](#path-finder-test-system-module) | Run the path finder test system
 
@@ -206,7 +213,7 @@ Value | Description
 
 See description: [usage](#usage)
 
-File for running: [plots.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/plots.py)
+File for running: [plots.py](src/main/cli/plots.py)
 
 **Required arguments:**
 1. **path** — the path to data.
@@ -216,7 +223,8 @@ Value | Description
 --- | ---
 **participants_distr** |  use to visualize [Participants distribution](#participants-distribution)
 **tasks_distr**        |  use to visualize [Tasks distribution](#tasks-distribution)
-**splitting_plots**    |  use to visualize [Splitting plots](#splitting-plots)
+**splitting**          |  use to visualize [Splitting plots](#splitting-plots)
+**scoring**            |  use to visualize [Scoring solutions plots](#scoring-solutions-plots)
 
 **Optional arguments**:
 
@@ -234,7 +242,7 @@ _TODO_: **splitting_plots**
 
 See description: [usage](#usage)
 
-File for running: [algo.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/algo.py)
+File for running: [algo.py](src/main/cli/algo.py)
 
 **Required arguments:**
 1. **path** — the path of the folder with files to construct the solution graph or path of the serialized solution graph
@@ -265,7 +273,7 @@ Parameter | Description
 
 See description: [usage](#usage)
 
-File for running: [path_finder_test_system.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/path_finder_test_system.py)
+File for running: [path_finder_test_system.py](src/main/cli/path_finder_test_system.py)
 
 **Required arguments:**
 1. **path** — the path of the folder with files to construct the solution graph or path of the serialized solution graph
@@ -292,7 +300,7 @@ We use [`pytest`](https://docs.pytest.org/en/latest/contents.html) library for t
 __Note__: If you have `ModuleNotFoundError` while you try to run tests, please call `pip install -e .`
  before using the test system.
  
- __Note__: We use different compilers for checking tasks. You can find all of them in the [Dockerfile](https://github.com/JetBrains-Research/codetracker-data/blob/master/Dockerfile). 
+ __Note__: We use different compilers for checking tasks. You can find all of them in the [Dockerfile](Dockerfile). 
  But we also use [kotlin compiler](https://kotlinlang.org/docs/tutorials/command-line.html) for checking kotlin tasks, 
  you need to install it too if you have kotlin files.
 

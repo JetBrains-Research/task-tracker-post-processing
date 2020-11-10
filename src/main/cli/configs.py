@@ -17,7 +17,8 @@ from src.main.preprocessing.inefficient_statements_removing import remove_ineffi
 class PLOT_TYPE(Enum):
     PARTICIPANTS_DISTRIBUTION = 'participants_distr'
     TASKS_DISTRIBUTION = 'tasks_distr'
-    SPLITTING_PLOTS = 'splitting_plots'
+    SPLITTING_PLOTS = 'splitting'
+    SCORING_SOLUTIONS = 'scoring'
 
     @classmethod
     def plot_types(cls) -> List[PLOT_TYPE]:
@@ -31,7 +32,8 @@ class PLOT_TYPE(Enum):
     def description(cls) -> str:
         return f'{PLOT_TYPE.PARTICIPANTS_DISTRIBUTION.value} - visualize participants distribution; ' \
                f'{PLOT_TYPE.TASKS_DISTRIBUTION.value} - visualize tasks distribution; ' \
-               f'{PLOT_TYPE.SPLITTING_PLOTS.value} - visualize splitting plots;'
+               f'{PLOT_TYPE.SPLITTING_PLOTS.value} - visualize splitting plots; ' \
+               f'{PLOT_TYPE.SCORING_SOLUTIONS.value} - visualize scoring of the solutions;'
 
     @classmethod
     def str_to_plot_type(cls, value: str) -> PLOT_TYPE:
