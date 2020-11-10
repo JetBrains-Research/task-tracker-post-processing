@@ -168,10 +168,10 @@ Run the necessary file for available modules:
 
 File| Module | Description
 --- | --- | --- 
-[preprocessing.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/preprocessing.py) | [Data preprocessing module](#data-preprocessing-module) | Includes all steps from the [Data preprocessing](#data-preprocessing) section
-[plots.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/plots.py) | [Plots module](#plots-module) | Includes _Participants distribution_, _Tasks distribution_ and _Splitting plots_ from the [Visualization](#visualization) section
-[algo.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/algo.py) | [Hint generation module](#hint-generation-module) | Includes all steps from the [Hint generation](#hint-generation) section
-[path_finder_test_system.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/path_finder_test_system.py) | [Path finder test system module](#path-finder-test-system-module) | Run the path finder test system
+[preprocessing.py](src/main/cli/preprocessing.py) | [Data preprocessing module](#data-preprocessing-module) | Includes all steps from the [Data preprocessing](#data-preprocessing) section
+[plots.py](src/main/cli/plots.py) | [Plots module](#plots-module) | Includes _Participants distribution_, _Tasks distribution_ and _Splitting plots_ from the [Visualization](#visualization) section
+[algo.py](src/main/cli/algo.py) | [Hint generation module](#hint-generation-module) | Includes all steps from the [Hint generation](#hint-generation) section
+[path_finder_test_system.py](src/main/cli/path_finder_test_system.py) | [Path finder test system module](#path-finder-test-system-module) | Run the path finder test system
 
 A simple configuration: `python <file> <args>`
 
