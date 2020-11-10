@@ -187,6 +187,10 @@ def __remove_nan(items: List[Any]) -> List[Any]:
 
 
 def get_files_from_ati(activity_tracker_data: pd.DataFrame) -> List[str]:
+    """
+    Get all the filenames that were tracked by the activity tracker plugin. At the same time, check that no files
+    with the same name, but in a different path were tracked.
+    """
     paths = __remove_nan(activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.CURRENT_FILE.value].unique())
     paths_dict = {}
     for current_path in paths:
@@ -205,6 +209,9 @@ def get_files_from_ati(activity_tracker_data: pd.DataFrame) -> List[str]:
 
 
 def get_ct_name_from_ati_data(ct_file: str, language: consts.LANGUAGE, files_from_at: List[str]) -> Tuple[str, bool]:
+    """
+    Try to find the current name of the code tracker file among those tracked by the activity tracker plugin.
+    """
     log.info('Start getting project file name')
     extension = get_extension_by_language(language)
     hashed_file_name = get_name_from_path(ct_file)

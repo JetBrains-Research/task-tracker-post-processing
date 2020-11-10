@@ -102,4 +102,3 @@ def reorganize_files_structure(path: str, output_directory_suffix: str = 'separa
         log.info(f'Destination for the file {file} is {dst_path}')
         copy_file(file, dst_path)
     return output_directory
-

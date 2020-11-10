@@ -12,6 +12,7 @@ from src.main.util.file_util import get_all_file_system_items, get_file_and_pare
 log = logging.getLogger(LOGGER_NAME)
 
 
+# TODO: should we delete this file?
 # To find all '.csv' files in root with the same names as in result folder and replace them
 def replace_ct_files(path: str, tested_path: str) -> None:
     files = get_all_file_system_items(path, extension_file_condition(consts.EXTENSION.CSV))

@@ -69,6 +69,21 @@ def remove_intermediate_diffs_from_df(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def remove_intermediate_diffs(path: str, output_directory_prefix: str = 'remove_intermediate_diffs') -> str:
+    """
+    This function allows to remove intermediate diffs in the files. This means deleting all intermediate code snapshots
+    that are collected during the writing of a code fragment.
+
+    For example, if we have three consecutive snapshots:
+
+    ...
+    prin
+    print
+    print(5)
+    ...
+
+    we would like to delete the first 2 fragments because these are not final states.
+    The final state is a completed row entered by the user.
+    """
     languages = get_all_file_system_items(path, language_item_condition, FILE_SYSTEM_ITEM.SUBDIR)
     output_directory = get_output_directory(path, output_directory_prefix)
     for _ in languages:
