@@ -67,6 +67,7 @@ def __calculate_current_task_rate(df: pd.DataFrame) -> pd.DataFrame:
     return df[TESTS_RESULTS].apply(lambda x: unpack_tests_results(x, TASK.tasks())[TASK.tasks().index(current_task)])
 
 
+# For more details see https://github.com/JetBrains-Research/codetracker-data/wiki/Visualization:-scoring-solutions-plots
 def plot_scoring_solutions(ct_file_path: str, name_prefix: str = 'scoring_solution') -> str:
     ct_df = pd.read_csv(ct_file_path, encoding=ISO_ENCODING)
     # Delete incorrect fragments

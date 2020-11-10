@@ -20,6 +20,8 @@ def add_int_experience(path: str, output_directory_prefix: str = 'int_exp') -> s
     by the users' experience. Int experience values can be found in the const file (the INT_EXPERIENCE Enum class).
 
     Note: It may be necessary for files with old data format
+
+    For more details see https://github.com/JetBrains-Research/codetracker-data/wiki/Data-preprocessing:-add-int-experience-column
     """
     output_directory = get_output_directory(path, output_directory_prefix)
     files = get_all_file_system_items(path)

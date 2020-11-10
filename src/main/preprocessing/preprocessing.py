@@ -24,7 +24,7 @@ def __partition_into_ct_and_ati_files(files: List[str]) -> Tuple[List[str], List
 
 def __merge_ati_files(ati_files: List[str]) -> pd.DataFrame:
     """
-    Combine all active tracker files according to timestamps, excluding duplicates.
+    Combine all activity tracker files according to timestamps, excluding duplicates.
     """
     ati_df = pd.DataFrame(columns=consts.ACTIVITY_TRACKER_COLUMN.activity_tracker_columns())
     for ati_file in ati_files:
@@ -52,6 +52,8 @@ def __handle_ct_files(ct_files: List[str], output_task_path: str) -> bool:
     if the file was full, then it will be sent additionally and new files will contain a new history.
     In this case, it is necessary to find the last states of all files with a unique history, combine according to
     timestamps and write to a new final file.
+
+    For more details see https://github.com/JetBrains-Research/codetracker-data/wiki/Data-preprocessing:-primary-data-processing
     """
     # TODO: handle the case with additional files
     max_ct_file = get_file_with_max_size(ct_files)

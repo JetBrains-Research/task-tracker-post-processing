@@ -188,24 +188,9 @@ def __remove_nan(items: List[Any]) -> List[Any]:
 
 def get_files_from_ati(activity_tracker_data: pd.DataFrame) -> List[str]:
     """
-    Get all the filenames that were tracked by the activity tracker plugin. At the same time, check that no files
-    with the same name, but in a different path were tracked.
+    Get all the filenames that were tracked by the activity tracker plugin.
     """
-    paths = __remove_nan(activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.CURRENT_FILE.value].unique())
-    paths_dict = {}
-    for current_path in paths:
-        path = get_parent_folder(current_path)
-        try:
-            file = get_name_from_path(current_path)
-        except ValueError:
-            # If the file has an invalid extension, we should miss it
-            continue
-        if file not in paths_dict.keys():
-            paths_dict[file] = path
-        else:
-            if paths_dict[file] != path:
-                log_and_raise_error('Activity tracker data contains several files with the same names', log)
-    return list(paths_dict.keys())
+    return __remove_nan(activity_tracker_data[consts.ACTIVITY_TRACKER_COLUMN.CURRENT_FILE.value].unique())
 
 
 def get_ct_name_from_ati_data(ct_file: str, language: consts.LANGUAGE, files_from_at: List[str]) -> Tuple[str, bool]:

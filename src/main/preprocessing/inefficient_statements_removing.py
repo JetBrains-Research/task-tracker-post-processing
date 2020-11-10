@@ -64,6 +64,8 @@ def remove_inefficient_statements(path: str, output_directory_prefix: str = 'rem
     the statement print is an inefficient statement.
 
     Note: available only for Python language.
+
+    For more details see https://github.com/JetBrains-Research/codetracker-data/wiki/Data-preprocessing:-remove-inefficient-statements
     """
     languages = get_all_file_system_items(path, language_item_condition, FILE_SYSTEM_ITEM.SUBDIR)
     output_directory = get_output_directory(path, output_directory_prefix)

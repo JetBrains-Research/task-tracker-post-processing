@@ -20,7 +20,7 @@ log = logging.getLogger(consts.LOGGER_NAME)
 
 def is_ct_file(csv_file: str, column: consts.CODE_TRACKER_COLUMN = consts.CODE_TRACKER_COLUMN.CHOSEN_TASK) -> bool:
     """
-    Check if the file with a name that has the activity tracker file name is codetracker file.
+    Check if the file is a codetracker file.
     To do this, let's try to create a data frame with columns of the codetracker file.
     If it didn't work, then the file is not a code tracker file.
     """
@@ -38,7 +38,7 @@ def __get_real_ati_file_index(files: List[str]) -> int:
     """
     Find the index of the activity tracker file and return it.
     If there are more than one active tracker files in the folder, then throw an exception.
-    If there is no such file, then return -1.
+    If there is no such a file, then return -1.
     """
     count_ati = 0
     ati_index = -1
@@ -103,6 +103,8 @@ def merge_ct_with_ati(path: str, to_filter_ati_data: bool = True) -> str:
     """
     At this stage, merging data from the codetracker plugin and activity tracker plugin takes place.
     Code snapshots that did not find activity tracker events are assigned empty values.
+
+    For more details see https://github.com/JetBrains-Research/codetracker-data/wiki/Data-preprocessing:-merge-activity-tracker-and-code-tracker-files
     """
     output_directory = get_output_directory(path, consts.MERGING_CT_AND_ATI_OUTPUT_DIRECTORY)
     user_folders = get_all_file_system_items(path, user_subdirs_condition, consts.FILE_SYSTEM_ITEM.SUBDIR)

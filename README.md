@@ -49,13 +49,13 @@ the same time with the activity tracker plugin.
 #### Preprocessing
 
 The correct order for data preprocessing is:
-1. Primary data processing (use **preprocess_data** method from [preprocessing.py](src/main/preprocessing/preprocessing.py)).
-1. Merge _codetracker files_ and _activity-tracker_ files (use **merge_ct_with_ati** method from [preprocessing.py](src/main/preprocessing/merging_ct_with_ati.py)).
-2. Find tests results for the tasks (use **run_tests** method from [tasks_tests_handler.py](src/main/splitting/tasks_tests_handler.py)).
-3. Reorganize files structure (use **reorganize_files_structure** method from [splitting.py](src/main/splitting/splitting.py)).
-4. [Optional] Remove intermediate diffs (use **remove_intermediate_diffs** method from [intermediate_diffs_removing.py](src/main/preprocessing/intermediate_diffs_removing.py)).
-5. [Optional, only for Python language] Remove inefficient statements (use **remove_inefficient_statements** method from [inefficient_statements_removing.py](src/main/preprocessing/inefficient_statements_removing.py)).
-6. [Optional] Add _int experience_ column (use **add_int_experience** method from [int_experience_adding.py](src/main/preprocessing/int_experience_adding.py)).
+1. Do primary data preprocessing (use **preprocess_data** method from [preprocessing.py](src/main/preprocessing/preprocessing.py)).
+2. Merge _codetracker files_ and _activity-tracker_ files (use **merge_ct_with_ati** method from [preprocessing.py](src/main/preprocessing/merging_ct_with_ati.py)).
+3. Find tests results for the tasks (use **run_tests** method from [tasks_tests_handler.py](src/main/splitting/tasks_tests_handler.py)).
+4. Reorganize files structure (use **reorganize_files_structure** method from [splitting.py](src/main/splitting/splitting.py)).
+5. [Optional] Remove intermediate diffs (use **remove_intermediate_diffs** method from [intermediate_diffs_removing.py](src/main/preprocessing/intermediate_diffs_removing.py)).
+6. [Optional, only for Python language] Remove inefficient statements (use **remove_inefficient_statements** method from [inefficient_statements_removing.py](src/main/preprocessing/inefficient_statements_removing.py)).
+7. [Optional] Add _int experience_ column (use **add_int_experience** method from [int_experience_adding.py](src/main/preprocessing/int_experience_adding.py)).
 
 **Note:** you can use the actions independently, the data for the Nth step must have passed all the steps before it.
 
