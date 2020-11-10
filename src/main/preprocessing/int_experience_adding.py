@@ -25,10 +25,9 @@ def add_int_experience(path: str, output_directory_prefix: str = 'int_exp') -> s
     files = get_all_file_system_items(path)
     for file in files:
         df = pd.read_csv(file, encoding=ISO_ENCODING)
-        if CODE_TRACKER_COLUMN.EXPERIENCE.value not in df.columns:
-            # It is new file structure
-            continue
-        df[CODE_TRACKER_COLUMN.INT_EXPERIENCE.value] = \
-            df[CODE_TRACKER_COLUMN.EXPERIENCE.value].apply(convert_to_int_experience)
+        if CODE_TRACKER_COLUMN.EXPERIENCE.value in df.columns:
+            # It is old file structure
+            df[CODE_TRACKER_COLUMN.INT_EXPERIENCE.value] = \
+                df[CODE_TRACKER_COLUMN.EXPERIENCE.value].apply(convert_to_int_experience)
         write_result(output_directory, path, file, df)
     return output_directory
