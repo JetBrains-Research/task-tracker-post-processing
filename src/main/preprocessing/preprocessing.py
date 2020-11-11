@@ -74,7 +74,7 @@ def __handle_ct_files(ct_files: List[str], output_task_path: str) -> bool:
     if len(dataframes) == 0:
         return False
     new_ct_path = os.path.join(output_task_path, get_name_from_path(dataframes[0]))
-    __merge_dataframes(dataframes).to_csv(new_ct_path)
+    __merge_dataframes(dataframes, sorted_column=CODE_TRACKER_COLUMN.TIMESTAMP.value).to_csv(new_ct_path)
     return True
 
 
