@@ -112,7 +112,7 @@ def run_tests(path: str) -> str:
     The test result is an array containing values for all tasks from the TASK enum class.
     If the code snapshot is incorrect, then the value -1 is specified.
     To deserialize this array of ratings, use the function unpack_tests_results from splitting.py.
-    TODO: should we add a function to get the tests results by the current task?
+    To get the rate only for the current task use the calculate_current_task_rate function from plots/scoring_solutions_plots.py
 
     For more details see https://github.com/JetBrains-Research/codetracker-data/wiki/Data-preprocessing:-find-tests-results-for-the-tasks
     """

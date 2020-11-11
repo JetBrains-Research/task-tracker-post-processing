@@ -61,7 +61,7 @@ def __is_incorrect_fragment(tests_results: str) -> bool:
     return TEST_RESULT.INCORRECT_CODE.value in unpack_tests_results(tests_results, TASK.tasks())
 
 
-def __calculate_current_task_rate(df: pd.DataFrame) -> pd.DataFrame:
+def calculate_current_task_rate(df: pd.DataFrame) -> pd.DataFrame:
     file_name = df[FILE_NAME].unique()[0]
     current_task = TASK(get_name_from_path(file_name, False))
     return df[TESTS_RESULTS].apply(lambda x: unpack_tests_results(x, TASK.tasks())[TASK.tasks().index(current_task)])
@@ -73,7 +73,7 @@ def plot_scoring_solutions(ct_file_path: str, name_prefix: str = 'scoring_soluti
     # Delete incorrect fragments
     correct_df = ct_df[ct_df.apply(lambda row: not __is_incorrect_fragment(row[TESTS_RESULTS]), axis=1)]
 
-    correct_df[TESTS_RESULTS] = __calculate_current_task_rate(correct_df)
+    correct_df[TESTS_RESULTS] = calculate_current_task_rate(correct_df)
     scores = correct_df[CODE_TRACKER_COLUMN.TESTS_RESULTS.value].values
     labels, graph_structure = get_labels_and_graph_structure(scores)
     solutions_representation = get_graph_representation(labels, graph_structure)
