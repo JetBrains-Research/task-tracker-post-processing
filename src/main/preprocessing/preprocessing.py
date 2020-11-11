@@ -67,13 +67,17 @@ def __handle_ct_files(ct_files: List[str], output_task_path: str) -> bool:
     For more details see https://github.com/JetBrains-Research/codetracker-data/wiki/Data-preprocessing:-primary-data-processing
     """
     dataframes = []
+    file_name = None
     for ct_file in ct_files:
-        current_df = dataframes.append(pd.read_csv(ct_file, encoding=consts.ISO_ENCODING))
+        current_df = pd.read_csv(ct_file, encoding=consts.ISO_ENCODING)
         if not is_test_mode(current_df):
             dataframes.append(current_df)
+            if file_name is None:
+                file_name = get_name_from_path(ct_file)
     if len(dataframes) == 0:
         return False
-    new_ct_path = os.path.join(output_task_path, get_name_from_path(dataframes[0]))
+    new_ct_path = os.path.join(output_task_path, file_name)
+    create_file("", new_ct_path)
     __merge_dataframes(dataframes, sorted_column=CODE_TRACKER_COLUMN.TIMESTAMP.value).to_csv(new_ct_path)
     return True
 
