@@ -19,8 +19,8 @@ class TEST_LEVEL(Enum):
     # Run only preprocessing tests
     PREPROCESSING = 'preprocessing tests'
 
-    # Run only splitting tests
-    SPLITTING = 'splitting tests'
+    # Run only test_scoring tests
+    TEST_SCORING = 'test scoring'
 
     # Run only util tests
     UTIL = 'util tests'
@@ -45,7 +45,7 @@ PARAMS_AND_TEST_LEVEL_DICT = {
     'solution_space': TEST_LEVEL.SOLUTION_SPACE,
     'plots': TEST_LEVEL.PLOTS,
     'preprocess': TEST_LEVEL.PREPROCESSING,
-    'splitting': TEST_LEVEL.SPLITTING,
+    'test_scoring': TEST_LEVEL.TEST_SCORING,
     'util': TEST_LEVEL.UTIL,
     'cli': TEST_LEVEL.CLI
 }

@@ -6,10 +6,10 @@ import pytest
 
 from src.main.util.consts import TEST_DATA_PATH, TASK
 from src.main.util.language_util import get_language_by_extension
-from src.main.splitting.tasks_tests_handler import create_in_and_out_dict, check_tasks, run_tests
+from src.main.task_scoring.tasks_tests_handler import create_in_and_out_dict, check_tasks, run_tests
 from src.main.util.file_util import get_all_file_system_items, get_extension_from_file, get_content_from_file
 
-PREVIOUS_ERRORS_TEST_DATA = os.path.join(TEST_DATA_PATH, 'splitting/tasks_tests_handler/previous_errors')
+PREVIOUS_ERRORS_TEST_DATA = os.path.join(TEST_DATA_PATH, 'task_scoring/tasks_tests_handler/previous_errors')
 
 REASON = 'These tests aren\'t included in all tests running because the stage of getting tasks rates has already ' \
          'passed. \nAll previous cases when some fragments had raised any errors while getting rates are fixed now.'

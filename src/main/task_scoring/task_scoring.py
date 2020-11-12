@@ -42,19 +42,6 @@ def get_solved_task(tests_results: str) -> Union[TASK, consts.DEFAULT_VALUE]:
         log_and_raise_error(f'Several tasks are solved: {solved_tasks}, tests results: {tests_results}', log)
 
 
-def find_splits(ct_df: pd.DataFrame) -> pd.DataFrame:
-    # Fill chosen task according to solved task
-    ct_df[CHOSEN_TASK] = ct_df.apply(lambda row: get_solved_task(row[TESTS_RESULTS]).value, axis=1)
-
-    # Change task status according to chosen task
-    ct_df.loc[ct_df[CHOSEN_TASK].isnull(), TASK_STATUS] = consts.DEFAULT_VALUE.TASK_STATUS.value
-    ct_df.loc[ct_df[CHOSEN_TASK].notnull(), TASK_STATUS] = consts.TASK_STATUS.SOLVED.value
-
-    # Backward fill chosen task
-    ct_df[CHOSEN_TASK] = ct_df[CHOSEN_TASK].bfill()
-    return ct_df
-
-
 # To find start index for each group of rows with the same task
 def find_task_start_indices(df: pd.DataFrame, task: consts.TASK) -> List[int]:
     # An index is the start index for some task, if CHOSEN_TASK at this index equals task, but at index-1 -- doesn't,

@@ -17,7 +17,7 @@ from src.main.util.helper_classes.id_counter import IdCounter
 from src.main.solution_space.data_classes import CodeInfo, User
 from src.main.util.language_util import get_extension_by_language
 from src.main.util.helper_classes.pretty_string import PrettyString
-from src.main.splitting.tasks_tests_handler import check_tasks, create_in_and_out_dict
+from src.main.task_scoring.tasks_tests_handler import check_tasks, create_in_and_out_dict
 from src.main.util.file_util import create_file, is_file, add_suffix_to_file, remove_directory, create_directory
 from src.main.canonicalization.canonicalization import are_asts_equal, get_code_from_tree, get_trees, AstStructure
 

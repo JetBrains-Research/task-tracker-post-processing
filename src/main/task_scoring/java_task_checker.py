@@ -10,7 +10,7 @@ from javalang.parser import JavaSyntaxError, JavaParserError
 from src.main.util import consts
 from src.main.util.consts import LANGUAGE
 from src.main.util.file_util import get_name_from_path
-from src.main.splitting.task_checker import ITaskChecker, check_call_safely, check_output_safely, SOURCE_OBJECT_NAME, \
+from src.main.task_scoring.task_checker import ITaskChecker, check_call_safely, check_output_safely, SOURCE_OBJECT_NAME, \
     SOURCE_FOLDER
 
 

@@ -7,6 +7,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 from src.main.util import consts
+from src.main.util.file_util import get_all_file_system_items
 from src.main.plots.util.plots_common import get_short_name, fill_seconds_columns
 from src.main.plots.util.consts import FRAGMENT_LENGTH_COL, ATI_RUN_EVENT, ATI_EDITOR_EVENT_COLOR_DICT, LARGE_SIZE, \
     ATI_EDITOR_EVENT, ATI_RUN_EVENT_COLOR_DICT, CT_SECONDS_COL
@@ -21,10 +22,10 @@ AtiEvent = Union[ATI_RUN_EVENT, ATI_EDITOR_EVENT]
 
 def __create_ati_events_plot(ax: plt.axes, df: pd.DataFrame, event_data: List[AtiEvent],
                              event_colors: Dict[AtiEvent, str], title: str) -> None:
-    add_fragments_length_plot(ax, df)
     for event in event_data:
         event_df = df.loc[df[EVENT_DATA_COL] == event.value]
         add_fragments_length_plot(ax, event_df, event_colors[event], LARGE_SIZE, event.value)
+    add_fragments_length_plot(ax, df, to_connect=True)
     add_legend_to_the_right(ax)
     ax.set_ylabel(FRAGMENT_LENGTH_COL)
     ax.set_xlabel(CT_SECONDS_COL)
@@ -45,4 +46,3 @@ def create_ati_data_plot(path: str, folder_to_save: str = None, to_show: bool = 
     __create_ati_events_plot(ax_editor, data, ATI_EDITOR_EVENT.get_events(), ATI_EDITOR_EVENT_COLOR_DICT, editor_title)
 
     save_and_show_if_needed(folder_to_save, to_show, fig, data_path=path, name_prefix='ati_events')
-

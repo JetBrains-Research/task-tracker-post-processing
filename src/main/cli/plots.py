@@ -5,6 +5,9 @@ import sys
 import logging
 import argparse
 
+from src.main.plots.ati_data_plots import create_ati_data_plot
+from src.main.util.file_util import get_parent_folder
+
 sys.path.append('.')
 from src.main.util import consts
 from src.main.cli.util import ICli
@@ -106,12 +109,10 @@ class PlotsCli(ICli):
                                     format=self._format, auto_open=self._auto_open)
         elif self._plot_type == PLOT_TYPE.TASKS_DISTRIBUTION:
             plot_tasks_statistics(self._path, format=self._format, auto_open=self._auto_open)
-        elif self._plot_type == PLOT_TYPE.SPLITTING_PLOTS:
-            # Todo
-            pass
+        elif self._plot_type == PLOT_TYPE.ATI_PLOTS:
+            create_ati_data_plot(self._path, folder_to_save=get_parent_folder(self._path), to_show=self._auto_open)
         elif self._plot_type == PLOT_TYPE.SCORING_SOLUTIONS:
             plot_scoring_solutions(self._path)
-            pass
         else:
             raise NotImplemented
 
