@@ -79,21 +79,28 @@ def __get_dst_path(src_file: str, output_directory: str) -> str:
     return os.path.join(output_directory, language, task, file_name)
 
 
-# 3.0 version: reorganize the file structure
-# Before the function calling:
-# -root
-# --user_N1
-# ---task1
-# ----user_N1_files
-# --user_N2
-# ---task1
-# ----user_N2_files
-# After the function calling:
-# -root
-# --task1
-# ----user_N1_files
-# ----user_N2_files
 def reorganize_files_structure(path: str, output_directory_suffix: str = 'separated_tasks') -> str:
+    """
+    3.0 version: reorganize the file structure
+    Before the function calling:
+
+    -root
+     --user_N1
+      ---task1
+       ----user_N1_files
+     --user_N2
+      ---task1
+       ----user_N2_files
+
+    After the function calling:
+
+    -root
+     --task1
+      ----user_N1_files
+      ----user_N2_files
+
+    For more details see https://github.com/JetBrains-Research/codetracker-data/wiki/Data-preprocessing:-reorganize-files-structure
+    """
     output_directory = get_output_directory(path, output_directory_suffix)
     files = get_all_file_system_items(path, ct_file_condition)
     for file in files:
@@ -102,4 +109,3 @@ def reorganize_files_structure(path: str, output_directory_suffix: str = 'separa
         log.info(f'Destination for the file {file} is {dst_path}')
         copy_file(file, dst_path)
     return output_directory
-

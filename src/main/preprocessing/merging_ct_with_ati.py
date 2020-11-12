@@ -12,13 +12,18 @@ from src.main.preprocessing import activity_tracker_handler as ath
 from src.main.preprocessing.code_tracker_handler import handle_ct_file
 from src.main.preprocessing.activity_tracker_handler import handle_ati_file, get_ct_name_from_ati_data, \
     get_files_from_ati
-from src.main.util.file_util import get_original_file_name, get_all_file_system_items, data_subdirs_condition, \
-    get_parent_folder_name, get_output_directory, write_result, extension_file_condition, user_subdirs_condition
+from src.main.util.file_util import get_original_file_name, get_all_file_system_items, get_output_directory, \
+    write_result, extension_file_condition, user_subdirs_condition
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
 
 def is_ct_file(csv_file: str, column: consts.CODE_TRACKER_COLUMN = consts.CODE_TRACKER_COLUMN.CHOSEN_TASK) -> bool:
+    """
+    Check if the file is a codetracker file.
+    To do this, let's try to create a data frame with columns of the codetracker file.
+    If it didn't work, then the file is not a code tracker file.
+    """
     with open(csv_file, encoding=consts.ISO_ENCODING) as f:
         reader = csv.reader(f)
         try:
@@ -30,6 +35,11 @@ def is_ct_file(csv_file: str, column: consts.CODE_TRACKER_COLUMN = consts.CODE_T
 
 
 def __get_real_ati_file_index(files: List[str]) -> int:
+    """
+    Find the index of the activity tracker file and return it.
+    If there are more than one active tracker files in the folder, then throw an exception.
+    If there is no such a file, then return -1.
+    """
     count_ati = 0
     ati_index = -1
     for i, f in enumerate(files):
@@ -46,12 +56,17 @@ def __has_files_with_same_names(files: List[str]) -> bool:
     return len(original_files) != len(set(original_files))
 
 
-def __separate_ati_and_other_files(files: List[str]) -> Tuple[List[str], Optional[str]]:
+def __separate_ati_and_ct_files(files: List[str]) -> Tuple[List[str], Optional[str]]:
+    """
+    Find the activity tracker file and separate it from the codetracker files.
+    """
     ati_file_index = __get_real_ati_file_index(files)
     ati_file = None
     if ati_file_index != -1:
         ati_file = files[ati_file_index]
         del files[ati_file_index]
+    # We assume that by this step the preprocessing (see preprocessing.py) has already been completed,
+    # so there should not be several files with the same name.
     if __has_files_with_same_names(files):
         log.info('The number of the code tracker files with the same names is more than 1')
         ati_file = None
@@ -60,6 +75,12 @@ def __separate_ati_and_other_files(files: List[str]) -> Tuple[List[str], Optiona
 
 def handle_ct_and_at(ct_file: str, ct_df: pd.DataFrame, ati_df: pd.DataFrame,
                      language: consts.LANGUAGE = consts.LANGUAGE.PYTHON) -> pd.DataFrame:
+    """
+    Try to find the current codetracker file among the files tracked by the activity tracker plugin.
+    If this file was found, combine the active tracker data with the codetracker data.
+    If no activities were found for the given codetracker file,
+    fill the information about events in IDE with empty values.
+    """
     files_from_at = None
     if ati_df is not None:
         try:
@@ -79,6 +100,12 @@ def handle_ct_and_at(ct_file: str, ct_df: pd.DataFrame, ati_df: pd.DataFrame,
 
 
 def merge_ct_with_ati(path: str, to_filter_ati_data: bool = True) -> str:
+    """
+    At this stage, merging data from the codetracker plugin and activity tracker plugin takes place.
+    Code snapshots that did not find activity tracker events are assigned empty values.
+
+    For more details see https://github.com/JetBrains-Research/codetracker-data/wiki/Data-preprocessing:-merge-activity-tracker-and-code-tracker-files
+    """
     output_directory = get_output_directory(path, consts.MERGING_CT_AND_ATI_OUTPUT_DIRECTORY)
     user_folders = get_all_file_system_items(path, user_subdirs_condition, consts.FILE_SYSTEM_ITEM.SUBDIR)
     for user_folder in user_folders:
@@ -88,8 +115,8 @@ def merge_ct_with_ati(path: str, to_filter_ati_data: bool = True) -> str:
             log.info(f'Start handling the folder {task_folder}')
             files = get_all_file_system_items(task_folder, extension_file_condition(consts.EXTENSION.CSV))
             try:
-                ct_files, ati_file = __separate_ati_and_other_files(files)
-            # Drop the current folder
+                ct_files, ati_file = __separate_ati_and_ct_files(files)
+            # Skip the current folder
             except ValueError:
                 continue
 

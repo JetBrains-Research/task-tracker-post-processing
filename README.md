@@ -43,18 +43,19 @@ preprocessing data steps.
 2. _Activity-tracker files_ have a prefix **ide-events**. We use [activity-tracker plugin](https://plugins.jetbrains.com/plugin/8126-activity-tracker).
 3. _Codetracker files_ can have any names. We use [codetracker-plugin](https://github.com/elena-lyulina/codetracker) at 
 the same time with the activity tracker plugin.
-4. Columns for the _activity-tracker files_ can be found in the [const file](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/util/consts.py) (the **CODE_TRACKER_COLUMN** const).
-5. Columns for the _codetracker files_ can be found in the [const file](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/util/consts.py) (the **ACTIVITY_TRACKER_COLUMN** const).
+4. Columns for the _activity-tracker files_ can be found in the [const file](src/main/util/consts.py) (the **CODE_TRACKER_COLUMN** const).
+5. Columns for the _codetracker files_ can be found in the [const file](src/main/util/consts.py) (the **ACTIVITY_TRACKER_COLUMN** const).
 
 #### Preprocessing
 
 The correct order for data preprocessing is:
-1. Merge _codetracker files_ and _activity-tracker_ files (use **preprocess_data** method from [preprocessing.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/preprocessing/preprocessing.py)).
-2. Find tests results for the tasks (use **run_tests** method from [tasks_tests_handler.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/splitting/tasks_tests_handler.py)).
-3. Split data (use **split_tasks_into_separate_files** method from [splitting.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/splitting/splitting.py)).
-4. Remove intermediate diffs (use **remove_intermediate_diffs** method from [intermediate_diffs_removing.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/preprocessing/intermediate_diffs_removing.py)).
-5. Remove inefficient statements (use **remove_inefficient_statements** method from [inefficient_statements_removing.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/preprocessing/inefficient_statements_removing.py)).
-6. Add _int experience_ column (use **add_int_experience** method from [int_experience_adding.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/preprocessing/int_experience_adding.py)).
+1. Do primary data preprocessing (use **preprocess_data** method from [preprocessing.py](src/main/preprocessing/preprocessing.py)).
+2. Merge _codetracker files_ and _activity-tracker_ files (use **merge_ct_with_ati** method from [preprocessing.py](src/main/preprocessing/merging_ct_with_ati.py)).
+3. Find tests results for the tasks (use **run_tests** method from [tasks_tests_handler.py](src/main/splitting/tasks_tests_handler.py)).
+4. Reorganize files structure (use **reorganize_files_structure** method from [splitting.py](src/main/splitting/splitting.py)).
+5. [Optional] Remove intermediate diffs (use **remove_intermediate_diffs** method from [intermediate_diffs_removing.py](src/main/preprocessing/intermediate_diffs_removing.py)).
+6. [Optional, only for Python language] Remove inefficient statements (use **remove_inefficient_statements** method from [inefficient_statements_removing.py](src/main/preprocessing/inefficient_statements_removing.py)).
+7. [Optional] Add _int experience_ column (use **add_int_experience** method from [int_experience_adding.py](src/main/preprocessing/int_experience_adding.py)).
 
 **Note:** you can use the actions independently, the data for the Nth step must have passed all the steps before it.
 
@@ -70,13 +71,13 @@ The correct order for data preprocessing is:
 ### Hint generation
 
 The steps for the hint generation:
-1. Construct or deserialize a **Solution graph** (use **construct_solution_graph** method from [solution_space_handler.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/solution_space/solution_space_handler.py) or **deserialize** method from [solution_space_serializer.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/solution_space/solution_space_serializer.py)).
-2. Serialize the graph if you want. Use the [SolutionSpaceSerializer](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/solution_space/solution_space_serializer.py) class.
+1. Construct or deserialize a **Solution graph** (use **construct_solution_graph** method from [solution_space_handler.py](src/main/solution_space/solution_space_handler.py) or **deserialize** method from [solution_space_serializer.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/solution_space/solution_space_serializer.py)).
+2. Serialize the graph if you want. Use the [SolutionSpaceSerializer](src/main/solution_space/solution_space_serializer.py) class.
 3. Generate a hint by using the path finder algorithm.
 
 
 
-**Note**: you can use the [Path Finder Test System](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/solution_space/path_finder_test_system.py) 
+**Note**: you can use the [Path Finder Test System](src/main/solution_space/path_finder_test_system.py) 
 for testing all current version of the path finder algorithm.
 You have to create an instance of **TestSystem** for it with necessary ages, experiences, and sources.
 
@@ -93,10 +94,10 @@ You can visualize different parts of the pipeline.
 
 #### Participants distribution
 
-**Note**: Run _before_ 'split_tasks_into_separate_files' because the old files structure is used to count unique users.
+**Note**: Run _before_ 'reorganize_files_structure' because the old files structure is used to count unique users.
 
-Use **get_profile_statistics** method from [statistics_gathering.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/statistics_gathering/statistics_gathering.py)
-to get the age and experience statistics. After that, run **plot_profile_statistics** method from [profile_statistics_plots.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/plots/profile_statistics_plots.py)
+Use **get_profile_statistics** method from [statistics_gathering.py](src/main/statistics_gathering/statistics_gathering.py)
+to get the age and experience statistics. After that, run **plot_profile_statistics** method from [profile_statistics_plots.py](src/main/plots/profile_statistics_plots.py)
 with the necessary column and options. Use serialized files with statistic as a parameter.
 
 Two column types are available:
@@ -118,9 +119,9 @@ The default value is `PLOTTY_CATEGORY_ORDER.TOTAL_ASCENDING`.
 
 #### Tasks distribution
 
-**Note**: Run _after_ 'split_tasks_into_separate_files'.
+**Note**: Run _after_ 'reorganize_files_structure'.
 
-Use **plot_tasks_statistics** method from [tasks_statistics_plots.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/plots/tasks_statistics_plots.py)
+Use **plot_tasks_statistics** method from [tasks_statistics_plots.py](src/main/plots/tasks_statistics_plots.py)
 to plot tasks statistics.
 
 Available options:
@@ -134,9 +135,16 @@ interactive.
 Todo
 
 
+#### Scoring solutions plots
+
+**Note**: Run _after_ 'run_tests'.
+
+Use **plot_scoring_solutions** method from [scoring_solutions_plots.py](src/main/plots/scoring_solutions_plots.py)
+to plot scoring solutions.
+
 #### Graph visualization
 
-You can use the [SolutionSpaceVisualizer](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/solution_space/solution_space_visualizer.py) 
+You can use the [SolutionSpaceVisualizer](src/main/solution_space/solution_space_visualizer.py) 
 class for graph visualization.
 The graph visualization process uses [Graphviz](https://www.graphviz.org/) library and additionally stores trees after 
 anonymization and canonicalization process for each vertex.
@@ -146,7 +154,7 @@ anonymization and canonicalization process for each vertex.
 
 You can visualize the number of nodes in trees statistics (for each vertex and in general). You should use 
 **plot_node_numbers_statistics** and **plot_node_numbers_freq_for_each_vertex** 
-from [solution_graph_statistics_plots.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/plots/solution_graph_statistics_plots.py).
+from [solution_graph_statistics_plots.py](src/main/plots/solution_graph_statistics_plots.py).
 
 
 ---
@@ -167,10 +175,10 @@ Run the necessary file for available modules:
 
 File| Module | Description
 --- | --- | --- 
-[preprocessing.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/preprocessing.py) | [Data preprocessing module](#data-preprocessing-module) | Includes all steps from the [Data preprocessing](#data-preprocessing) section
-[plots.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/plots.py) | [Plots module](#plots-module) | Includes _Participants distribution_, _Tasks distribution_ and _Splitting plots_ from the [Visualization](#visualization) section
-[algo.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/algo.py) | [Hint generation module](#hint-generation-module) | Includes all steps from the [Hint generation](#hint-generation) section
-[path_finder_test_system.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/path_finder_test_system.py) | [Path finder test system module](#path-finder-test-system-module) | Run the path finder test system
+[preprocessing.py](src/main/cli/preprocessing.py) | [Data preprocessing module](#data-preprocessing-module) | Includes all steps from the [Data preprocessing](#data-preprocessing) section
+[plots.py](src/main/cli/plots.py) | [Plots module](#plots-module) | Includes _Participants distribution_, _Tasks distribution_, _Splitting plots_, and _Scoring solutions plots_ from the [Visualization](#visualization) section
+[algo.py](src/main/cli/algo.py) | [Hint generation module](#hint-generation-module) | Includes all steps from the [Hint generation](#hint-generation) section
+[path_finder_test_system.py](src/main/cli/path_finder_test_system.py) | [Path finder test system module](#path-finder-test-system-module) | Run the path finder test system
 
 A simple configuration: `python <file> <args>`
 
@@ -180,7 +188,7 @@ Use `-h` option to show help for each module.
 
 See description: [usage](#usage)
 
-File for running: [preprocessing.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/preprocessing.py)
+File for running: [preprocessing.py](src/main/cli/preprocessing.py)
 
 **Required arguments:**
 1. **path** — the path to data.
@@ -191,20 +199,21 @@ __--level__ — use to set the level for the preprocessing. Available levels:
 
 Value | Description
 --- | ---
-**0** |  merge _codetracker files_ and _activity-tracker files_
-**1** |  find tests results for the tasks
-**2** |  split the data
-**3** |  remove intermediate diffs
-**4** |  remove inefficient statements
-**5** |  add _int experience_ column, default value
+**0** |  primary data processing 
+**1** |  merge _codetracker files_ and _activity-tracker files_
+**2** |  find tests results for the tasks
+**3** |  reorganize files structure 
+**4** |  remove intermediate diffs
+**5** |  [only for Python language] remove inefficient statements
+**6** |  add _int experience_ column, default value
 
-**Note**: the Nth level runs all the levels before it. The default value is the max level value.
+**Note**: the Nth level runs all the levels before it. The default value is 3.
 
 ### Plots module
 
 See description: [usage](#usage)
 
-File for running: [plots.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/plots.py)
+File for running: [plots.py](src/main/cli/plots.py)
 
 **Required arguments:**
 1. **path** — the path to data.
@@ -214,7 +223,8 @@ Value | Description
 --- | ---
 **participants_distr** |  use to visualize [Participants distribution](#participants-distribution)
 **tasks_distr**        |  use to visualize [Tasks distribution](#tasks-distribution)
-**splitting_plots**    |  use to visualize [Splitting plots](#splitting-plots)
+**splitting**          |  use to visualize [Splitting plots](#splitting-plots)
+**scoring**            |  use to visualize [Scoring solutions plots](#scoring-solutions-plots)
 
 **Optional arguments**:
 
@@ -232,7 +242,7 @@ _TODO_: **splitting_plots**
 
 See description: [usage](#usage)
 
-File for running: [algo.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/algo.py)
+File for running: [algo.py](src/main/cli/algo.py)
 
 **Required arguments:**
 1. **path** — the path of the folder with files to construct the solution graph or path of the serialized solution graph
@@ -263,7 +273,7 @@ Parameter | Description
 
 See description: [usage](#usage)
 
-File for running: [path_finder_test_system.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/cli/path_finder_test_system.py)
+File for running: [path_finder_test_system.py](src/main/cli/path_finder_test_system.py)
 
 **Required arguments:**
 1. **path** — the path of the folder with files to construct the solution graph or path of the serialized solution graph
@@ -290,7 +300,7 @@ We use [`pytest`](https://docs.pytest.org/en/latest/contents.html) library for t
 __Note__: If you have `ModuleNotFoundError` while you try to run tests, please call `pip install -e .`
  before using the test system.
  
- __Note__: We use different compilers for checking tasks. You can find all of them in the [Dockerfile](https://github.com/JetBrains-Research/codetracker-data/blob/master/Dockerfile). 
+ __Note__: We use different compilers for checking tasks. You can find all of them in the [Dockerfile](Dockerfile). 
  But we also use [kotlin compiler](https://kotlinlang.org/docs/tutorials/command-line.html) for checking kotlin tasks, 
  you need to install it too if you have kotlin files.
 

@@ -11,6 +11,7 @@ from src.main.preprocessing.inefficient_statements_removing import remove_ineffi
 pd.options.mode.chained_assignment = None
 
 FRAGMENT = consts.CODE_TRACKER_COLUMN.FRAGMENT.value
+LANGUAGE = consts.CODE_TRACKER_COLUMN.LANGUAGE.value
 
 source_1 = 'g3 = int(input())\nprint((g3 // 1))\nprint'
 source_2 = 'g3 = int\nprint()'
@@ -33,13 +34,15 @@ class TestPylintChecker:
         # 1                           g3 = int\nprint()
         # 2                        g3 = int\n0\nprint()
         input_df = pd.DataFrame({
-            FRAGMENT: [source_1, source_2, source_3]
+            FRAGMENT: [source_1, source_2, source_3],
+            LANGUAGE: [consts.LANGUAGE.PYTHON] * 3
         })
 
         #             fragment
         # 0  g3 = int\nprint()
         expected_df = pd.DataFrame({
-            FRAGMENT: [source_2]
+            FRAGMENT: [source_2],
+            LANGUAGE: [consts.LANGUAGE.PYTHON]
         })
 
         assert run_test(input_df, expected_df)

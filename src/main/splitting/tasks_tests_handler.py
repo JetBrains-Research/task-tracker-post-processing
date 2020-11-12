@@ -101,6 +101,21 @@ def __get_user_folder_name_from_path(file: str) -> str:
 
 
 def run_tests(path: str) -> str:
+    """
+    Run tests on all code snapshots in the data for the task.
+    Note: the enum class TASK (see consts.py file)  must have the task key.
+    It also must match the name of the folder with test files in the resources/tasks_tests.
+
+    For example, if your task has key [my_key], you should add a new value into TASK const with value [my_key]
+    and add a new folder [my_key] with input and output files for tests in the resources/tasks_tests folder.
+
+    The test result is an array containing values for all tasks from the TASK enum class.
+    If the code snapshot is incorrect, then the value -1 is specified.
+    To deserialize this array of ratings, use the function unpack_tests_results from splitting.py.
+    TODO: should we add a function to get the tests results by the current task?
+
+    For more details see https://github.com/JetBrains-Research/codetracker-data/wiki/Data-preprocessing:-find-tests-results-for-the-tasks
+    """
     log.info(f'Start running tests on path {path}')
     output_directory = get_output_directory(path, consts.RUNNING_TESTS_OUTPUT_DIRECTORY)
 
@@ -120,7 +135,7 @@ def run_tests(path: str) -> str:
         log.info(f'Start running tests on {file_log_info}, {file}')
         current_task = __get_task_by_ct_file(file)
         if not current_task:
-            # We don't need to handle other files
+            # We don't need to handle other files with tasks which are not in the TASK enum class
             continue
         data = pd.read_csv(file, encoding=consts.ISO_ENCODING)
         language, data = __check_tasks_on_correct_fragments(data, tasks, in_and_out_files_dict, file_log_info,
