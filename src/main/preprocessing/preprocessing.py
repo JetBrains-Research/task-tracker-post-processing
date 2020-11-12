@@ -2,7 +2,7 @@
 
 import os
 import logging
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 
 import pandas as pd
 
@@ -22,18 +22,29 @@ def __partition_into_ct_and_ati_files(files: List[str]) -> Tuple[List[str], List
     return ct_files, ati_files
 
 
+def __merge_dataframes(dataframes: List[pd.DataFrame], empty_df: pd.DataFrame = pd.DataFrame(),
+                       sorted_column: Optional[str] = None) -> pd.DataFrame:
+    """
+    Combine all dataframes according to timestamps, excluding duplicates.
+    """
+    for df in dataframes:
+        empty_df = empty_df.append(df, ignore_index=True)
+    empty_df.drop_duplicates(keep='first')
+    if sorted_column is not None:
+        empty_df.sort_values(by=[sorted_column])
+    return empty_df
+
+
 def __merge_ati_files(ati_files: List[str]) -> pd.DataFrame:
     """
     Combine all activity tracker files according to timestamps, excluding duplicates.
     """
     ati_df = pd.DataFrame(columns=consts.ACTIVITY_TRACKER_COLUMN.activity_tracker_columns())
+    dataframes = []
     for ati_file in ati_files:
-        current_ati_df = pd.read_csv(ati_file, encoding=consts.ISO_ENCODING,
-                                     names=consts.ACTIVITY_TRACKER_COLUMN.activity_tracker_columns())
-        ati_df = ati_df.append(current_ati_df, ignore_index=True)
-    ati_df.drop_duplicates(keep='first')
-    ati_df.sort_values(by=[ACTIVITY_TRACKER_COLUMN.TIMESTAMP_ATI.value])
-    return ati_df
+        dataframes.append(pd.read_csv(ati_file, encoding=consts.ISO_ENCODING,
+                                      names=consts.ACTIVITY_TRACKER_COLUMN.activity_tracker_columns()))
+    return __merge_dataframes(dataframes, ati_df, ACTIVITY_TRACKER_COLUMN.TIMESTAMP_ATI.value)
 
 
 def is_test_mode(ct_df: pd.DataFrame) -> bool:
@@ -55,15 +66,20 @@ def __handle_ct_files(ct_files: List[str], output_task_path: str) -> bool:
 
     For more details see https://github.com/JetBrains-Research/codetracker-data/wiki/Data-preprocessing:-primary-data-processing
     """
-    # TODO: handle the case with additional files
-    max_ct_file = get_file_with_max_size(ct_files)
-    if max_ct_file:
-        new_ct_path = os.path.join(output_task_path, get_name_from_path(max_ct_file))
-        ct_df = pd.read_csv(max_ct_file)
-        if not is_test_mode(ct_df):
-            create_file(get_content_from_file(max_ct_file), new_ct_path)
-            return True
-    return False
+    dataframes = []
+    file_name = None
+    for ct_file in ct_files:
+        current_df = pd.read_csv(ct_file, encoding=consts.ISO_ENCODING)
+        if not is_test_mode(current_df):
+            dataframes.append(current_df)
+            if file_name is None:
+                file_name = get_name_from_path(ct_file)
+    if len(dataframes) == 0:
+        return False
+    new_ct_path = os.path.join(output_task_path, file_name)
+    create_file("", new_ct_path)
+    __merge_dataframes(dataframes, sorted_column=CODE_TRACKER_COLUMN.TIMESTAMP.value).to_csv(new_ct_path)
+    return True
 
 
 def preprocess_data(path: str) -> str:
@@ -81,6 +97,8 @@ def preprocess_data(path: str) -> str:
     history of solving the current problem.
     - In addition, for each codetracker file, a unique file of the activity tracker is sent. In this step,
     all files of the activity tracker are combined into one.
+
+    For more details see https://github.com/JetBrains-Research/codetracker-data/wiki/Data-preprocessing:-primary-data-processing
     """
     # TODO: add a link to the documentation
     output_directory = get_output_directory(path, consts.PREPROCESSING_DIRECTORY)
