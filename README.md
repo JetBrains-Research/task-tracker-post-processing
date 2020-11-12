@@ -234,10 +234,9 @@ Parameter | Description
 **&#8209;&#8209;type_distr**   |  distribution type. Only for **plot_type**: `participants_distr`. Available values are `programExperience` and `age`. The default value is `programExperience`.
 **&#8209;&#8209;chart_type**  |  chart type. Only for **plot_type**: `participants_distr`. Available values are `bar` and `pie`. The default value is `bar`.
 **&#8209;&#8209;to_union_rare**| use to merge the rare values. Only for **plot_type**: `participants_distr`.
-**&#8209;&#8209;format**      |  use to save the output into a file in different formats. Available values are `html` and `png`. The default value is `html`.
+**&#8209;&#8209;format**      |  use to save the output into a file in different formats. For all plots except **plot_type**: `ati` Available values are `html` and `png`. The default value is `html`. 
 **&#8209;&#8209;auto_open**   |  use to open plots automatically.
 
-_TODO_: **splitting_plots** (I'm not sure what this todo means)
 
 ### Hint generation module
 
