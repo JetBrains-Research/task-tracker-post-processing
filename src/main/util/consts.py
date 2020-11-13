@@ -14,15 +14,21 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 class CODE_TRACKER_COLUMN(Enum):
     AGE = 'age'
     EXPERIENCE = 'programExperience'
+    EXPERIENCE_YEARS = 'programExperienceYears'
+    EXPERIENCE_MONTHS = 'programExperienceMonths'
+    TASK_STATUS = 'taskStatus'
+    GENDER = 'gender'
+    COUNTRY = 'country'
     FILE_NAME = 'fileName'
     DATE = 'date'
     TIMESTAMP = 'timestamp'
     LANGUAGE = 'language'
     FRAGMENT = 'fragment'
     CHOSEN_TASK = 'chosenTask'
-    TASK_STATUS = 'taskStatus'
     TESTS_RESULTS = 'testsResults'
     INT_EXPERIENCE = 'intExperience'
+    TEST_MODE = 'testMode'
+    USER_ID = 'userId'
 
     def fits_restrictions(self, value: Any) -> bool:
         if self is CODE_TRACKER_COLUMN.AGE:
@@ -32,6 +38,15 @@ class CODE_TRACKER_COLUMN(Enum):
         # Todo: implement restrictions for other columns
         else:
             raise NotImplementedError(f"Cannot find any restrictions for {self}")
+
+    @classmethod
+    def get_columns_for_filling(cls) -> List['CODE_TRACKER_COLUMN']:
+        return [cls.AGE, cls.EXPERIENCE_YEARS, cls.EXPERIENCE_MONTHS, cls.GENDER, cls.COUNTRY]
+
+
+class TEST_MODE(Enum):
+    ON = 'ON'
+    OFF = 'OFF'
 
 
 class TMP_COLUMN(Enum):
@@ -107,6 +122,17 @@ class EXPERIENCE(Enum):
     def values(cls) -> List[str]:
         return [member.value for _, member in EXPERIENCE.__members__.items()]
 
+    @classmethod
+    def sorted_values(cls) -> List[str]:
+        return [
+            cls.LESS_THAN_HALF_YEAR.value,
+            cls.FROM_HALF_TO_ONE_YEAR.value,
+            cls.FROM_ONE_TO_TWO_YEARS.value,
+            cls.FROM_TWO_TO_FOUR_YEARS.value,
+            cls.FROM_FOUR_TO_SIX_YEARS.value,
+            cls.MORE_THAN_SIX.value
+        ]
+
 
 class INT_EXPERIENCE(Enum):
     LESS_THAN_HALF_YEAR = 0
@@ -122,20 +148,19 @@ class INT_EXPERIENCE(Enum):
 
     def get_short_str(self) -> str:
         if self is INT_EXPERIENCE.LESS_THAN_HALF_YEAR:
-            return '<0.5 year'
+            return '< 0.5'
         elif self is INT_EXPERIENCE.FROM_HALF_TO_ONE_YEAR:
-            return '0.5-1 years'
+            return '0.5 - 1'
         elif self is INT_EXPERIENCE.FROM_ONE_TO_TWO_YEARS:
-            return '1-2 years'
+            return '1 - 2'
         elif self is INT_EXPERIENCE.FROM_TWO_TO_FOUR_YEARS:
-            return '2-4 years'
+            return '2 - 4'
         elif self is INT_EXPERIENCE.FROM_FOUR_TO_SIX_YEARS:
-            return '4-6 years'
+            return '4 - 6'
         elif self is INT_EXPERIENCE.MORE_THAN_SIX:
-            return '>6 years'
+            return '> 6'
         else:
             raise NotImplementedError
-
 
     def get_str_experience(self) -> str:
         return EXPERIENCE.values()[self.value]
@@ -145,7 +170,7 @@ class TASK(Enum):
     PIES = 'pies'
     MAX_3 = 'max_3'
     ZERO = 'is_zero'
-    ELECTION = 'election'
+    VOTING = 'voting'
     BRACKETS = 'brackets'
     MAX_DIGIT = 'max_digit'
 
@@ -259,8 +284,9 @@ SERIALIZED_GRAPH_PATH = os.path.join(RESOURCES_PATH, 'serialized_graph')
 SOLUTION_SPACE_TEST_RESULT_PATH = os.path.join(RESOURCES_PATH, 'solution_space')
 CLI_PATH = os.path.join(ROOT_DIR + '/../', 'cli')
 
-PREPROCESSING_OUTPUT_DIRECTORY = 'preprocessing_result'
+MERGING_CT_AND_ATI_OUTPUT_DIRECTORY = 'merged_ct_and_ati_result'
 STATISTICS_OUTPUT_DIRECTORY = 'statistics_result'
+PREPROCESSING_DIRECTORY = 'preprocessing_result'
 
 # Todo: use zip
 GUMTREE_PATH = os.path.join(RESOURCES_PATH, 'gumtree/bin/gumtree')

@@ -9,8 +9,8 @@ from src.main.util import consts
 from src.main.util.consts import TASK, LANGUAGE
 from src.main.util.consts import TEST_DATA_PATH
 from src.main.util.file_util import get_content_from_file
-from src.main.splitting.task_checker import remove_compiled_files, FilesDict
-from src.main.splitting.tasks_tests_handler import check_tasks, create_in_and_out_dict
+from src.main.task_scoring.task_checker import remove_compiled_files, FilesDict
+from src.main.task_scoring.tasks_tests_handler import check_tasks, create_in_and_out_dict
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -27,7 +27,7 @@ def get_actual_rate(task: TASK, language: consts.LANGUAGE, code: str, in_and_out
 
 
 def get_source_code(task: TASK, language: consts.LANGUAGE, solution: str) -> str:
-    return get_content_from_file(os.path.join(TEST_DATA_PATH, "splitting/tasks_tests_handler", task.value,
+    return get_content_from_file(os.path.join(TEST_DATA_PATH, "task_scoring/tasks_tests_handler", task.value,
                                               language.value, solution + ".txt"))
 
 

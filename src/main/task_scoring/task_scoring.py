@@ -1,5 +1,6 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
+import os
 import ast
 import logging
 from typing import List, Union
@@ -9,9 +10,8 @@ import pandas as pd
 from src.main.util import consts
 from src.main.util.consts import TASK
 from src.main.util.log_util import log_and_raise_error
-from src.main.preprocessing.code_tracker_handler import get_ct_language
 from src.main.util.file_util import get_all_file_system_items, ct_file_condition, get_output_directory, \
-    write_based_on_language, get_name_from_path, get_parent_folder_name, get_extension_from_file
+    get_name_from_path, get_parent_folder, copy_file, get_parent_folder_name
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -42,19 +42,6 @@ def get_solved_task(tests_results: str) -> Union[TASK, consts.DEFAULT_VALUE]:
         log_and_raise_error(f'Several tasks are solved: {solved_tasks}, tests results: {tests_results}', log)
 
 
-def find_splits(ct_df: pd.DataFrame) -> pd.DataFrame:
-    # Fill chosen task according to solved task
-    ct_df[CHOSEN_TASK] = ct_df.apply(lambda row: get_solved_task(row[TESTS_RESULTS]).value, axis=1)
-
-    # Change task status according to chosen task
-    ct_df.loc[ct_df[CHOSEN_TASK].isnull(), TASK_STATUS] = consts.DEFAULT_VALUE.TASK_STATUS.value
-    ct_df.loc[ct_df[CHOSEN_TASK].notnull(), TASK_STATUS] = consts.TASK_STATUS.SOLVED.value
-
-    # Backward fill chosen task
-    ct_df[CHOSEN_TASK] = ct_df[CHOSEN_TASK].bfill()
-    return ct_df
-
-
 # To find start index for each group of rows with the same task
 def find_task_start_indices(df: pd.DataFrame, task: consts.TASK) -> List[int]:
     # An index is the start index for some task, if CHOSEN_TASK at this index equals task, but at index-1 -- doesn't,
@@ -71,21 +58,41 @@ def find_task_dfs(df: pd.DataFrame, task: consts.TASK) -> List[pd.DataFrame]:
     return [split_df[split_df[CHOSEN_TASK] == task.value] for split_df in split_dfs]
 
 
-# 2.0 version with a different task_df extraction
-def split_tasks_into_separate_files(path: str, output_directory_suffix: str = 'separated_tasks') -> str:
-    files = get_all_file_system_items(path, ct_file_condition)
+def __get_dst_path(src_file: str, output_directory: str) -> str:
+    file_name = get_name_from_path(src_file)
+    task_path = get_parent_folder(src_file)
+    task = get_name_from_path(task_path, with_extension=False)
+    language = get_parent_folder_name(task_path)
+    return os.path.join(output_directory, language, task, file_name)
+
+
+def reorganize_files_structure(path: str, output_directory_suffix: str = 'separated_tasks') -> str:
+    """
+    3.0 version: reorganize the file structure
+    Before the function calling:
+
+    -root
+     --user_N1
+      ---task1
+       ----user_N1_files
+     --user_N2
+      ---task1
+       ----user_N2_files
+
+    After the function calling:
+
+    -root
+     --task1
+      ----user_N1_files
+      ----user_N2_files
+
+    For more details see https://github.com/JetBrains-Research/codetracker-data/wiki/Data-preprocessing:-reorganize-files-structure
+    """
     output_directory = get_output_directory(path, output_directory_suffix)
+    files = get_all_file_system_items(path, ct_file_condition)
     for file in files:
         log.info(f'Start splitting file {file}')
-        ct_df = pd.read_csv(file, encoding=consts.ISO_ENCODING)
-        language = get_ct_language(ct_df)
-        split_df = find_splits(ct_df)
-        for task in consts.TASK:
-            task_dfs = find_task_dfs(split_df, task)
-            for i, task_df in enumerate(task_dfs):
-                if not task_df.empty:
-                    # Change name to get something like pies/ati_207_test_5894859_i.csv
-                    filename = task.value + '/' + get_parent_folder_name(file) + '_' + get_name_from_path(file, False) \
-                               + f'_{i}' + get_extension_from_file(file).value
-                    write_based_on_language(output_directory, filename, task_df, language)
+        dst_path = __get_dst_path(file, output_directory)
+        log.info(f'Destination for the file {file} is {dst_path}')
+        copy_file(file, dst_path)
     return output_directory

@@ -9,7 +9,7 @@ import pytest
 
 from src.main.util import consts
 from src.test.test_config import to_skip, TEST_LEVEL
-from src.main.preprocessing.preprocessing import __separate_ati_and_other_files
+from src.main.preprocessing.merging_ct_with_ati import __separate_ati_and_ct_files
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -54,7 +54,7 @@ without_ati_case = {
 
 def separate_files(files: List[str]) -> Tuple[Union[List[str], str], Optional[List[str]]]:
     try:
-        ct_files, at_file = __separate_ati_and_other_files(files)
+        ct_files, at_file = __separate_ati_and_ct_files(files)
     except ValueError:
         return VALUE_ERROR, None
     return ct_files, at_file

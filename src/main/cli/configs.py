@@ -5,9 +5,10 @@ from __future__ import annotations
 from enum import Enum
 from typing import List
 
-from src.main.splitting.tasks_tests_handler import run_tests
 from src.main.preprocessing.preprocessing import preprocess_data
-from src.main.splitting.splitting import split_tasks_into_separate_files
+from src.main.task_scoring.tasks_tests_handler import run_tests
+from src.main.preprocessing.merging_ct_with_ati import merge_ct_with_ati
+from src.main.task_scoring.task_scoring import reorganize_files_structure
 from src.main.preprocessing.int_experience_adding import add_int_experience
 from src.main.preprocessing.intermediate_diffs_removing import remove_intermediate_diffs
 from src.main.preprocessing.inefficient_statements_removing import remove_inefficient_statements
@@ -16,7 +17,8 @@ from src.main.preprocessing.inefficient_statements_removing import remove_ineffi
 class PLOT_TYPE(Enum):
     PARTICIPANTS_DISTRIBUTION = 'participants_distr'
     TASKS_DISTRIBUTION = 'tasks_distr'
-    SPLITTING_PLOTS = 'splitting_plots'
+    ATI_PLOTS = 'ati'
+    SCORING_SOLUTIONS = 'scoring'
 
     @classmethod
     def plot_types(cls) -> List[PLOT_TYPE]:
@@ -30,7 +32,8 @@ class PLOT_TYPE(Enum):
     def description(cls) -> str:
         return f'{PLOT_TYPE.PARTICIPANTS_DISTRIBUTION.value} - visualize participants distribution; ' \
                f'{PLOT_TYPE.TASKS_DISTRIBUTION.value} - visualize tasks distribution; ' \
-               f'{PLOT_TYPE.SPLITTING_PLOTS.value} - visualize splitting plots;'
+               f'{PLOT_TYPE.ATI_PLOTS.value} - visualize activity tracker plots; ' \
+               f'{PLOT_TYPE.SCORING_SOLUTIONS.value} - visualize scoring of the solutions;'
 
     @classmethod
     def str_to_plot_type(cls, value: str) -> PLOT_TYPE:
@@ -42,19 +45,21 @@ class PLOT_TYPE(Enum):
 
 # Todo: create an interface for such kind of classes?
 class PREPROCESSING_LEVEL(Enum):
-    MERGE = 0
-    TESTS_RESULTS = 1
-    SPLIT = 2
-    INTERMEDIATE_DIFFS = 3
-    INEFFICIENT_STATEMENTS = 4
-    INT_EXPERIENCE = 5
+    PRIMARY = 0
+    MERGE = 1
+    TESTS_RESULTS = 2
+    REORGANIZE = 3
+    INTERMEDIATE_DIFFS = 4
+    INEFFICIENT_STATEMENTS = 5
+    INT_EXPERIENCE = 6
 
     @property
     def __level_actions(self):
         return {
-            self.MERGE: preprocess_data,
+            self.PRIMARY: preprocess_data,
+            self.MERGE: merge_ct_with_ati,
             self.TESTS_RESULTS: run_tests,
-            self.SPLIT: split_tasks_into_separate_files,
+            self.REORGANIZE: reorganize_files_structure,
             self.INTERMEDIATE_DIFFS: remove_intermediate_diffs,
             self.INEFFICIENT_STATEMENTS: remove_inefficient_statements,
             self.INT_EXPERIENCE: add_int_experience
@@ -74,11 +79,12 @@ class PREPROCESSING_LEVEL(Enum):
     @classmethod
     def description(cls) -> str:
         return f'the Nth level runs all the level before it; ' \
+               f'{PREPROCESSING_LEVEL.PRIMARY.value} - primary data processing; ' \
                f'{PREPROCESSING_LEVEL.MERGE.value} - merge activity-tracker and code-tracker files; ' \
                f'{PREPROCESSING_LEVEL.TESTS_RESULTS.value} - find tests results for the tasks; ' \
-               f'{PREPROCESSING_LEVEL.SPLIT.value} - split data; ' \
+               f'{PREPROCESSING_LEVEL.REORGANIZE.value} - reorganize files structure; ' \
                f'{PREPROCESSING_LEVEL.INTERMEDIATE_DIFFS.value} - remove intermediate diffs; ' \
-               f'{PREPROCESSING_LEVEL.INEFFICIENT_STATEMENTS.value} - remove inefficient statements; ' \
+               f'{PREPROCESSING_LEVEL.INEFFICIENT_STATEMENTS.value} - [only for Python language] remove inefficient statements; ' \
                f'{PREPROCESSING_LEVEL.INT_EXPERIENCE.value} - add int experience column; '
 
 

@@ -3,8 +3,9 @@
 import os
 from typing import Set, Dict, List
 
+from src.main.plots.util.graph_representation_util import get_graph_representation, create_dot_graph
 from src.main.util import consts
-from src.main.splitting.task_checker import check_call_safely
+from src.main.task_scoring.task_checker import check_call_safely
 from src.main.util.file_util import create_file, remove_directory
 from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 from src.main.canonicalization.canonicalization import get_code_from_tree
@@ -46,45 +47,15 @@ class SolutionSpaceVisualizer:
         vertices.sort()
         return ', '.join(list(map(str, vertices)))
 
+    def __get_graph_representation(self, font_name: str = 'Arial') -> str:
+        return get_graph_representation(self.__get_labels(), self.__get_graph_structure(), font_name)
+
     def __get_graph_structure(self) -> str:
         structure = ''
         for vertex in self._graph.get_traversal():
             if vertex.children:
                 structure += f'{vertex.id} -> {self.__class__.__get_vertices_list(vertex.children)}\n'
         return structure
-
-    # We want to get a graph representation in the dot format for the graphviz library
-    #
-    # A simple example is:
-    #
-    # digraph D {
-    #
-    #  node [shape=record fontname=Arial];
-    #
-    #   A [label = "Vertex A"]
-    #   B [label = "Vertex B"]
-    #   C [label = "Vertex C"]
-    #   D [label = "Vertex D"]
-    #   F [label = "Vertex F"]
-    #
-    #   A -> B, C, D
-    #   B -> F
-    #
-    # }
-    #
-    # For the graph:
-    #                 Vertex A
-    #           /         |         \
-    #       Vertex B    Vertex C   Vertex D
-    #           |
-    #       Vertex F
-    #
-    def __get_graph_representation(self, font_name: str = 'Arial') -> str:
-        return f'digraph  D {{\n\n' \
-               f'node [shape=record fontname={font_name}];\n\n' \
-               f'{self.__get_labels()}\n\n' \
-               f'{self.__get_graph_structure()}' \
-               f'\n\n}}'
 
     # Returns result's folder path
     def visualize_graph(self, name_prefix: str = 'graph',
@@ -94,13 +65,7 @@ class SolutionSpaceVisualizer:
         folder_path = os.path.join(consts.GRAPH_REPRESENTATION_PATH, f'{name_prefix}_{self._graph.id}')
         # Remove older graph with the same name
         remove_directory(folder_path)
-        file_path = os.path.join(folder_path, f'{name_prefix}{consts.EXTENSION.DOT.value}')
-        # Create dot file
-        create_file(graph_representation, file_path)
-        dst_path = os.path.join(folder_path, f'{name_prefix}{output_format.value}')
-        args = ['dot', f'-T{output_format.value[1:]}', file_path, '-o', dst_path]
-        # Generate graph representation
-        check_call_safely(args)
+        create_dot_graph(folder_path, name_prefix, graph_representation, output_format)
         if to_create_vertices_content:
             self.__create_vertices_content(folder_path)
         return folder_path

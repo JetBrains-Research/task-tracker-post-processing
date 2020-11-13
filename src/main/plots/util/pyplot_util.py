@@ -7,6 +7,7 @@ from typing import Optional
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from src.main.plots.util.consts import CT_SECONDS_COL
 from src.main.util import consts
 from src.main.plots.util import consts as plot_consts
 from src.main.plots.util.plots_common import get_result_file_name
@@ -24,15 +25,18 @@ log = logging.getLogger(consts.LOGGER_NAME)
 def save_plot(folder_to_save: str, fig: plt.figure, name_prefix: str, data_path: Optional[str] = None,
               extension: consts.EXTENSION = consts.EXTENSION.PNG) -> None:
     name = get_result_file_name(name_prefix, data_path, extension)
-    log.info('Saving' + name)
+    log.info('Saving ' + name)
     # 'tight' is used to alter the size of the bounding box (whitespace) around the output image
     fig.savefig(os.path.join(folder_to_save, name), bbox_inches='tight')
 
 
 # Add fragments lengths to the plot
 def add_fragments_length_plot(ax: plt.axes, data: pd.DataFrame, color: str = plot_consts.FRAGMENT_LENGTH_COLOR,
-                              s: int = plot_consts.SMALL_SIZE, label: Optional[str] = None) -> None:
-    ax.scatter(data[TIMESTAMP_COL], data[plot_consts.FRAGMENT_LENGTH_COL], color=color, s=s, label=label)
+                              s: int = plot_consts.SMALL_SIZE, label: Optional[str] = None,
+                              to_connect: bool = False) -> None:
+    ax.scatter(data[CT_SECONDS_COL], data[plot_consts.FRAGMENT_LENGTH_COL], color=color, s=s, label=label)
+    if to_connect:
+        ax.plot(data[CT_SECONDS_COL], data[plot_consts.FRAGMENT_LENGTH_COL])
 
 
 def add_legend_to_the_right(ax: plt.axes) -> None:

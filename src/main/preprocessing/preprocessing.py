@@ -1,103 +1,118 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
-import csv
+import os
 import logging
 from typing import List, Tuple, Optional
 
 import pandas as pd
 
 from src.main.util import consts
-from src.main.util.log_util import log_and_raise_error
-from src.main.preprocessing import activity_tracker_handler as ath
-from src.main.preprocessing.code_tracker_handler import handle_ct_file
-from src.main.preprocessing.activity_tracker_handler import handle_ati_file, get_ct_name_from_ati_data, \
-    get_files_from_ati
-from src.main.util.file_util import get_original_file_name, get_all_file_system_items, data_subdirs_condition, \
-    get_parent_folder_name, get_output_directory, write_result, extension_file_condition
+from src.main.util.consts import EXTENSION, CODE_TRACKER_COLUMN, TEST_MODE, ACTIVITY_TRACKER_COLUMN, \
+    ACTIVITY_TRACKER_FILE_NAME
+from src.main.util.file_util import get_output_directory, get_all_file_system_items, all_items_condition, \
+    extension_file_condition, get_file_with_max_size, get_name_from_path, create_file, get_content_from_file, \
+    user_subdirs_condition
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
 
-def is_ct_file(csv_file: str, column: consts.CODE_TRACKER_COLUMN = consts.CODE_TRACKER_COLUMN.CHOSEN_TASK) -> bool:
-    with open(csv_file, encoding=consts.ISO_ENCODING) as f:
-        reader = csv.reader(f)
-        try:
-            if column.value in next(reader):
-                return True
-        except StopIteration:
-            return False
-    return False
+def __partition_into_ct_and_ati_files(files: List[str]) -> Tuple[List[str], List[str]]:
+    ati_files = [f for f in files if ACTIVITY_TRACKER_FILE_NAME in f]
+    ct_files = [f for f in files if f not in ati_files]
+    return ct_files, ati_files
 
 
-def __get_real_ati_file_index(files: List[str]) -> int:
-    count_ati = 0
-    ati_index = -1
-    for i, f in enumerate(files):
-        if consts.ACTIVITY_TRACKER_FILE_NAME in f and not is_ct_file(f):
-            count_ati += 1
-            ati_index = i
-            if count_ati >= 2:
-                log_and_raise_error('The number of activity tracker files is more than 1', log)
-    return ati_index
+def __merge_dataframes(dataframes: List[pd.DataFrame], empty_df: pd.DataFrame = pd.DataFrame(),
+                       sorted_column: Optional[str] = None) -> pd.DataFrame:
+    """
+    Combine all dataframes according to timestamps, excluding duplicates.
+    """
+    for df in dataframes:
+        empty_df = empty_df.append(df, ignore_index=True)
+    empty_df.drop_duplicates(keep='first')
+    if sorted_column is not None:
+        empty_df.sort_values(by=[sorted_column])
+    return empty_df
 
 
-def __has_files_with_same_names(files: List[str]) -> bool:
-    original_files = list(map(get_original_file_name, files))
-    return len(original_files) != len(set(original_files))
+def __merge_ati_files(ati_files: List[str]) -> pd.DataFrame:
+    """
+    Combine all activity tracker files according to timestamps, excluding duplicates.
+    """
+    ati_df = pd.DataFrame(columns=consts.ACTIVITY_TRACKER_COLUMN.activity_tracker_columns())
+    dataframes = []
+    for ati_file in ati_files:
+        dataframes.append(pd.read_csv(ati_file, encoding=consts.ISO_ENCODING,
+                                      names=consts.ACTIVITY_TRACKER_COLUMN.activity_tracker_columns()))
+    return __merge_dataframes(dataframes, ati_df, ACTIVITY_TRACKER_COLUMN.TIMESTAMP_ATI.value)
 
 
-def __separate_ati_and_other_files(files: List[str]) -> Tuple[List[str], Optional[str]]:
-    ati_file_index = __get_real_ati_file_index(files)
-    ati_file = None
-    if ati_file_index != -1:
-        ati_file = files[ati_file_index]
-        del files[ati_file_index]
-    if __has_files_with_same_names(files):
-        log.info('The number of the code tracker files with the same names is more than 1')
-        ati_file = None
-    return files, ati_file
+def is_test_mode(ct_df: pd.DataFrame) -> bool:
+    # The old version of the data does not contains the test mode column. We should handle this case correctly anyway.
+    if CODE_TRACKER_COLUMN.TEST_MODE.value not in ct_df.columns:
+        return False
+    return ct_df[CODE_TRACKER_COLUMN.TEST_MODE.value].values[0] == TEST_MODE.ON.value
 
 
-def handle_ct_and_at(ct_file: str, ct_df: pd.DataFrame, ati_file: str, ati_df: pd.DataFrame,
-                     language: consts.LANGUAGE = consts.LANGUAGE.PYTHON) -> pd.DataFrame:
-    files_from_at = None
-    if ati_df is not None:
-        try:
-            files_from_at = get_files_from_ati(ati_df)
-        except ValueError:
-            ati_df = None
+def __handle_ct_files(ct_files: List[str], output_task_path: str) -> bool:
+    """
+    The function returns True if new code tracker file was created and False otherwise
+    We should choose the last state of the code tracker files for the task or all last states and create a new file
+    where we union them. The student can submit the solution several times, while the history of the codetracker file
+    is not erased. In this way, we only need to select the final file with the entire history. On the other hand,
+    if the file was full, then it will be sent additionally and new files will contain a new history.
+    In this case, it is necessary to find the last states of all files with a unique history, combine according to
+    timestamps and write to a new final file.
 
-    ct_df[consts.CODE_TRACKER_COLUMN.FILE_NAME.value], does_contain_ct_name \
-        = get_ct_name_from_ati_data(ct_file, language, files_from_at)
-    if ati_df is not None and does_contain_ct_name:
-        ati_id = get_parent_folder_name(ati_file).split('_')[1]
-        ct_df = ath.merge_code_tracker_and_activity_tracker_data(ct_df, ati_df, ati_id)
-        return ct_df
-
-    ati_new_data = pd.DataFrame(ath.get_full_default_columns_for_at(ct_df.shape[0]))
-    ct_df = ct_df.join(ati_new_data)
-    return ct_df
+    For more details see https://github.com/JetBrains-Research/codetracker-data/wiki/Data-preprocessing:-primary-data-processing
+    """
+    dataframes = []
+    file_name = None
+    for ct_file in ct_files:
+        current_df = pd.read_csv(ct_file, encoding=consts.ISO_ENCODING)
+        if not is_test_mode(current_df):
+            dataframes.append(current_df)
+            if file_name is None:
+                file_name = get_name_from_path(ct_file)
+    if len(dataframes) == 0:
+        return False
+    new_ct_path = os.path.join(output_task_path, file_name)
+    create_file("", new_ct_path)
+    __merge_dataframes(dataframes, sorted_column=CODE_TRACKER_COLUMN.TIMESTAMP.value).to_csv(new_ct_path)
+    return True
 
 
 def preprocess_data(path: str) -> str:
-    output_directory = get_output_directory(path, consts.PREPROCESSING_OUTPUT_DIRECTORY)
-    folders = get_all_file_system_items(path, data_subdirs_condition, consts.FILE_SYSTEM_ITEM.SUBDIR)
-    for folder in folders:
-        log.info(f'Start handling the folder {folder}')
-        files = get_all_file_system_items(folder, extension_file_condition(consts.EXTENSION.CSV))
-        try:
-            ct_files, ati_file = __separate_ati_and_other_files(files)
-        # Drop the current folder
-        except ValueError:
-            continue
+    """
+    We use codetracker plugin (see https://github.com/JetBrains-Research/codetracker)
+    and activity tracker plugin (see https://plugins.jetbrains.com/plugin/8126-activity-tracker)
+    to gather the source data. The data gathering consists of us collecting code snapshots and actions during
+    the solving of various programming tasks by students. The data also contains information about the age,
+    programming experience and so on of the student (student profile), and the current task that the student is solving.
 
-        ati_df = handle_ati_file(ati_file)
+    - At this stage, the test files that were created during the testing phase are deleted. They have ON value in the
+    test mode column in the codetracker file.
+    - Also, the student could send several files with the history of solving the task, each of which can include
+    the previous ones. At this stage, unnecessary files are deleted. Ultimately, there is only one file with a unique
+    history of solving the current problem.
+    - In addition, for each codetracker file, a unique file of the activity tracker is sent. In this step,
+    all files of the activity tracker are combined into one.
 
-        for ct_file in ct_files:
-            ct_df, language = handle_ct_file(ct_file)
-            ct_df = handle_ct_and_at(ct_file, ct_df, ati_file, ati_df, language)
-
-            write_result(output_directory, path, ct_file, ct_df)
-
-        log.info(f'Finish handling the folder {folder}')
+    For more details see https://github.com/JetBrains-Research/codetracker-data/wiki/Data-preprocessing:-primary-data-processing
+    """
+    # TODO: add a link to the documentation
+    output_directory = get_output_directory(path, consts.PREPROCESSING_DIRECTORY)
+    user_folders = get_all_file_system_items(path, user_subdirs_condition, consts.FILE_SYSTEM_ITEM.SUBDIR)
+    for user_folder in user_folders:
+        output_user_path = os.path.join(output_directory, get_name_from_path(user_folder, False))
+        log.info(f'Start handling the path {user_folder}')
+        task_folders = get_all_file_system_items(user_folder, all_items_condition, consts.FILE_SYSTEM_ITEM.SUBDIR)
+        for task_folder in task_folders:
+            output_task_path = os.path.join(output_user_path, get_name_from_path(task_folder, False))
+            log.info(f'Start handling the folder {task_folder}')
+            files = get_all_file_system_items(task_folder, extension_file_condition(EXTENSION.CSV))
+            ct_files, ati_files = __partition_into_ct_and_ati_files(files)
+            if __handle_ct_files(ct_files, output_task_path) and ati_files:
+                new_ati_path = os.path.join(output_task_path, get_name_from_path(ati_files[0]))
+                __merge_ati_files(ati_files).to_csv(new_ati_path)
     return output_directory

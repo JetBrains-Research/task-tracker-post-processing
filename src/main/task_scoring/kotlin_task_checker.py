@@ -6,7 +6,7 @@ from typing import List
 from src.main.util import consts
 from src.main.util.consts import LANGUAGE, EXTENSION
 from src.main.util.file_util import change_extension_to
-from src.main.splitting.task_checker import ITaskChecker, check_call_safely, check_output_safely, SOURCE_OBJECT_NAME
+from src.main.task_scoring.task_checker import ITaskChecker, check_call_safely, check_output_safely, SOURCE_OBJECT_NAME
 
 log = logging.getLogger(consts.LOGGER_NAME)
 

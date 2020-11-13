@@ -5,6 +5,9 @@ import sys
 import logging
 import argparse
 
+from src.main.plots.ati_data_plots import create_ati_data_plot
+from src.main.util.file_util import get_parent_folder
+
 sys.path.append('.')
 from src.main.util import consts
 from src.main.cli.util import ICli
@@ -14,6 +17,7 @@ from src.main.util.strings_util import add_symbol_to_begin
 from src.main.plots.util.consts import STATISTICS_KEY, CHART_TYPE
 from src.main.util.log_util import configure_logger, add_console_stream
 from src.main.plots.tasks_statistics_plots import plot_tasks_statistics
+from src.main.plots.scoring_solutions_plots import plot_scoring_solutions
 from src.main.plots.profile_statistics_plots import plot_profile_statistics
 from src.main.statistics_gathering.statistics_gathering import get_profile_statistics
 
@@ -105,9 +109,10 @@ class PlotsCli(ICli):
                                     format=self._format, auto_open=self._auto_open)
         elif self._plot_type == PLOT_TYPE.TASKS_DISTRIBUTION:
             plot_tasks_statistics(self._path, format=self._format, auto_open=self._auto_open)
-        elif self._plot_type == PLOT_TYPE.SPLITTING_PLOTS:
-            # Todo
-            pass
+        elif self._plot_type == PLOT_TYPE.ATI_PLOTS:
+            create_ati_data_plot(self._path, folder_to_save=get_parent_folder(self._path), to_show=self._auto_open)
+        elif self._plot_type == PLOT_TYPE.SCORING_SOLUTIONS:
+            plot_scoring_solutions(self._path)
         else:
             raise NotImplemented
 
