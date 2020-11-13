@@ -1,25 +1,24 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import os
-import re
 import logging
-from typing import List, Dict, Tuple, Optional
+from typing import List, Tuple, Optional
 
 import pandas as pd
 
 from src.main.util import consts
 from src.main.util.consts import LANGUAGE, TASK
 from src.main.util.log_util import log_and_raise_error
-from src.main.splitting.cpp_task_checker import CppTaskChecker
-from src.main.splitting.java_task_checker import JavaTaskChecker
-from src.main.splitting.kotlin_task_checker import KotlinTaskChecker
-from src.main.splitting.python_task_checker import PythonTaskChecker
+from src.main.task_scoring.cpp_task_checker import CppTaskChecker
+from src.main.task_scoring.java_task_checker import JavaTaskChecker
+from src.main.task_scoring.kotlin_task_checker import KotlinTaskChecker
+from src.main.task_scoring.python_task_checker import PythonTaskChecker
 from src.main.preprocessing.code_tracker_handler import get_ct_language
-from src.main.splitting.task_checker import TASKS_TESTS_PATH, FilesDict
-from src.main.splitting.undefined_task_checker import UndefinedTaskChecker
+from src.main.task_scoring.task_checker import TASKS_TESTS_PATH, FilesDict
+from src.main.task_scoring.undefined_task_checker import UndefinedTaskChecker
 from src.main.util.file_util import get_all_file_system_items, ct_file_condition, get_output_directory, \
     write_based_on_language, get_file_and_parent_folder_names, pair_in_and_out_files, match_condition, \
-    get_name_from_path, get_original_file_name, get_parent_folder, get_parent_folder_name
+    get_name_from_path, get_parent_folder, get_parent_folder_name
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -111,7 +110,7 @@ def run_tests(path: str) -> str:
 
     The test result is an array containing values for all tasks from the TASK enum class.
     If the code snapshot is incorrect, then the value -1 is specified.
-    To deserialize this array of ratings, use the function unpack_tests_results from splitting.py.
+    To deserialize this array of ratings, use the function unpack_tests_results from task_scoring.py.
     To get the rate only for the current task use the calculate_current_task_rate function from plots/scoring_solutions_plots.py
 
     For more details see https://github.com/JetBrains-Research/codetracker-data/wiki/Data-preprocessing:-find-tests-results-for-the-tasks

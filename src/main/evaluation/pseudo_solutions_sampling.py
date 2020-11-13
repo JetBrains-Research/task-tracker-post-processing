@@ -8,7 +8,7 @@ import pandas as pd
 
 from src.main.solution_space.consts import TEST_INPUT
 from src.main.canonicalization.consts import TREE_TYPE
-from src.main.splitting.splitting import find_task_dfs
+from src.main.task_scoring.task_scoring import find_task_dfs
 from src.main.util.log_util import log_and_raise_error
 from src.main.solution_space.path_finder_test_system import TestInput
 from src.main.canonicalization.canonicalization import get_trees, are_asts_equal
@@ -137,7 +137,7 @@ def sample_n_correct_test_inputs(pseudo_solutions_path: str,
     test_inputs = []
     for i, row in n_random_rows.iterrows():
         log.info(f'random row {i}')
-        # Add index in the dataframe to the test_input to ba able identify it later.
+        # Add index in the dataframe to the test_input to ba able to identify it later.
         # For example, if we want to sample specific indices again, we can take such indices from previous test_inputs
         test_inputs.append({TEST_INPUT.SOURCE_CODE: row[CODE_TRACKER_COLUMN.FRAGMENT.value].rstrip('\n'),
                             TEST_INPUT.RATE: row[CODE_TRACKER_COLUMN.TESTS_RESULTS.value],

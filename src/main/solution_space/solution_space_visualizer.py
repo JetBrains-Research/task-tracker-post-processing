@@ -5,7 +5,7 @@ from typing import Set, Dict, List
 
 from src.main.plots.util.graph_representation_util import get_graph_representation, create_dot_graph
 from src.main.util import consts
-from src.main.splitting.task_checker import check_call_safely
+from src.main.task_scoring.task_checker import check_call_safely
 from src.main.util.file_util import create_file, remove_directory
 from src.main.solution_space.solution_graph import SolutionGraph, Vertex
 from src.main.canonicalization.canonicalization import get_code_from_tree

@@ -49,13 +49,13 @@ the same time with the activity tracker plugin.
 #### Preprocessing
 
 The correct order for data preprocessing is:
-1. Do primary data preprocessing (use **preprocess_data** method from [preprocessing.py](src/main/preprocessing/preprocessing.py)).
-2. Merge _codetracker files_ and _activity-tracker_ files (use **merge_ct_with_ati** method from [preprocessing.py](src/main/preprocessing/merging_ct_with_ati.py)).
-3. Find tests results for the tasks (use **run_tests** method from [tasks_tests_handler.py](src/main/splitting/tasks_tests_handler.py)).
-4. Reorganize files structure (use **reorganize_files_structure** method from [splitting.py](src/main/splitting/splitting.py)).
-5. [Optional] Remove intermediate diffs (use **remove_intermediate_diffs** method from [intermediate_diffs_removing.py](src/main/preprocessing/intermediate_diffs_removing.py)).
-6. [Optional, only for Python language] Remove inefficient statements (use **remove_inefficient_statements** method from [inefficient_statements_removing.py](src/main/preprocessing/inefficient_statements_removing.py)).
-7. [Optional] Add _int experience_ column (use **add_int_experience** method from [int_experience_adding.py](src/main/preprocessing/int_experience_adding.py)).
+1. Do primary data preprocessing (use **preprocess_data** function from [preprocessing.py](src/main/preprocessing/preprocessing.py)).
+2. Merge _codetracker files_ and _activity-tracker_ files (use **merge_ct_with_ati** function from [preprocessing.py](src/main/preprocessing/merging_ct_with_ati.py)).
+3. Find tests results for the tasks (use **run_tests** function from [tasks_tests_handler.py](src/main/task_scoring/tasks_tests_handler.py)).
+4. Reorganize files structure (use **reorganize_files_structure** function from [task_scoring.py](src/main/task_scoring/task_scoring.py)).
+5. [Optional] Remove intermediate diffs (use **remove_intermediate_diffs** function from [intermediate_diffs_removing.py](src/main/preprocessing/intermediate_diffs_removing.py)).
+6. [Optional, only for Python language] Remove inefficient statements (use **remove_inefficient_statements** function from [inefficient_statements_removing.py](src/main/preprocessing/inefficient_statements_removing.py)).
+7. [Optional] Add _int experience_ column (use **add_int_experience** function from [int_experience_adding.py](src/main/preprocessing/int_experience_adding.py)).
 
 **Note:** you can use the actions independently, the data for the Nth step must have passed all the steps before it.
 
@@ -71,7 +71,7 @@ The correct order for data preprocessing is:
 ### Hint generation
 
 The steps for the hint generation:
-1. Construct or deserialize a **Solution graph** (use **construct_solution_graph** method from [solution_space_handler.py](src/main/solution_space/solution_space_handler.py) or **deserialize** method from [solution_space_serializer.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/solution_space/solution_space_serializer.py)).
+1. Construct or deserialize a **Solution graph** (use **construct_solution_graph** function from [solution_space_handler.py](src/main/solution_space/solution_space_handler.py) or **deserialize** function from [solution_space_serializer.py](https://github.com/JetBrains-Research/codetracker-data/blob/master/src/main/solution_space/solution_space_serializer.py)).
 2. Serialize the graph if you want. Use the [SolutionSpaceSerializer](src/main/solution_space/solution_space_serializer.py) class.
 3. Generate a hint by using the path finder algorithm.
 
@@ -96,8 +96,8 @@ You can visualize different parts of the pipeline.
 
 **Note**: Run _before_ 'reorganize_files_structure' because the old files structure is used to count unique users.
 
-Use **get_profile_statistics** method from [statistics_gathering.py](src/main/statistics_gathering/statistics_gathering.py)
-to get the age and experience statistics. After that, run **plot_profile_statistics** method from [profile_statistics_plots.py](src/main/plots/profile_statistics_plots.py)
+Use **get_profile_statistics** function from [statistics_gathering.py](src/main/statistics_gathering/statistics_gathering.py)
+to get the age and experience statistics. After that, run **plot_profile_statistics** function from [profile_statistics_plots.py](src/main/plots/profile_statistics_plots.py)
 with the necessary column and options. Use serialized files with statistic as a parameter.
 
 Two column types are available:
@@ -121,7 +121,7 @@ The default value is `PLOTTY_CATEGORY_ORDER.TOTAL_ASCENDING`.
 
 **Note**: Run _after_ 'reorganize_files_structure'.
 
-Use **plot_tasks_statistics** method from [tasks_statistics_plots.py](src/main/plots/tasks_statistics_plots.py)
+Use **plot_tasks_statistics** function from [tasks_statistics_plots.py](src/main/plots/tasks_statistics_plots.py)
 to plot tasks statistics.
 
 Available options:
@@ -130,16 +130,17 @@ Available options:
 interactive.
 3. **auto_open** use to open plots automatically. 
 
-#### Splitting plots
+#### Activity tracker plots
 
-Todo
+Use **create_ati_data_plot** function from [ati_data_plots](src/main/plots/ati_data_plots.py) to plot length of the current fragment together with the actions performed in IDE.
+
 
 
 #### Scoring solutions plots
 
 **Note**: Run _after_ 'run_tests'.
 
-Use **plot_scoring_solutions** method from [scoring_solutions_plots.py](src/main/plots/scoring_solutions_plots.py)
+Use **plot_scoring_solutions** function from [scoring_solutions_plots.py](src/main/plots/scoring_solutions_plots.py)
 to plot scoring solutions.
 
 #### Graph visualization
@@ -176,7 +177,7 @@ Run the necessary file for available modules:
 File| Module | Description
 --- | --- | --- 
 [preprocessing.py](src/main/cli/preprocessing.py) | [Data preprocessing module](#data-preprocessing-module) | Includes all steps from the [Data preprocessing](#data-preprocessing) section
-[plots.py](src/main/cli/plots.py) | [Plots module](#plots-module) | Includes _Participants distribution_, _Tasks distribution_, _Splitting plots_, and _Scoring solutions plots_ from the [Visualization](#visualization) section
+[plots.py](src/main/cli/plots.py) | [Plots module](#plots-module) | Includes _Participants distribution_, _Tasks distribution_, _Activity tracker plots_, and _Scoring solutions plots_ from the [Visualization](#visualization) section
 [algo.py](src/main/cli/algo.py) | [Hint generation module](#hint-generation-module) | Includes all steps from the [Hint generation](#hint-generation) section
 [path_finder_test_system.py](src/main/cli/path_finder_test_system.py) | [Path finder test system module](#path-finder-test-system-module) | Run the path finder test system
 
@@ -223,7 +224,7 @@ Value | Description
 --- | ---
 **participants_distr** |  use to visualize [Participants distribution](#participants-distribution)
 **tasks_distr**        |  use to visualize [Tasks distribution](#tasks-distribution)
-**splitting**          |  use to visualize [Splitting plots](#splitting-plots)
+**ati**                |  use to visualize [Activity tracker plots](#activity-tracker-plots)
 **scoring**            |  use to visualize [Scoring solutions plots](#scoring-solutions-plots)
 
 **Optional arguments**:
@@ -233,10 +234,9 @@ Parameter | Description
 **&#8209;&#8209;type_distr**   |  distribution type. Only for **plot_type**: `participants_distr`. Available values are `programExperience` and `age`. The default value is `programExperience`.
 **&#8209;&#8209;chart_type**  |  chart type. Only for **plot_type**: `participants_distr`. Available values are `bar` and `pie`. The default value is `bar`.
 **&#8209;&#8209;to_union_rare**| use to merge the rare values. Only for **plot_type**: `participants_distr`.
-**&#8209;&#8209;format**      |  use to save the output into a file in different formats. Available values are `html` and `png`. The default value is `html`.
+**&#8209;&#8209;format**      |  use to save the output into a file in different formats. For all plots except **plot_type**: `ati` Available values are `html` and `png`. The default value is `html`. 
 **&#8209;&#8209;auto_open**   |  use to open plots automatically.
 
-_TODO_: **splitting_plots**
 
 ### Hint generation module
 
@@ -316,5 +316,5 @@ __canon__ | tests from the canonicalization module
 __solution_space__ | tests from the solution space module 
 __plots__ | tests from the plots module 
 __preprocess__ | tests from the preprocessing module 
-__splitting__ | tests from the splitting module 
+__test_scoring__ | tests from the test scoring module 
 __util__ | tests from the util module 

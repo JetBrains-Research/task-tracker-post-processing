@@ -5,7 +5,7 @@ from typing import List, Union, Tuple
 import pandas as pd
 
 from src.main.util import consts
-from src.main.splitting.splitting import unpack_tests_results
+from src.main.task_scoring.task_scoring import unpack_tests_results
 from src.main.util.consts import ISO_ENCODING, CODE_TRACKER_COLUMN, TEST_RESULT, TASK
 from src.main.util.file_util import get_parent_folder, get_name_from_path
 from src.main.plots.util.graph_representation_util import get_color_by_rate, get_graph_representation, create_dot_graph

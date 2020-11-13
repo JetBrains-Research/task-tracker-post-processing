@@ -1,5 +1,0 @@
-date,timestamp,fragment,chosenTask
-2019-12-20T14:44:42.630+04:00,919,"s = input()mm = 0",max_digit
-2019-12-20T14:44:43.176+04:00,923,"s = input()mm = 0",max_digit
-2019-12-20T14:44:43.325+04:00,926,"s = input()mm = 0f",max_digit
-2019-12-20T14:44:43.377+04:00,940,"s = input()mm = 0fo",max_digit

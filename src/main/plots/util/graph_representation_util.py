@@ -28,7 +28,7 @@
 #
 import os
 
-from src.main.splitting.task_checker import check_call_safely
+from src.main.task_scoring.task_checker import check_call_safely
 from src.main.util import consts
 from src.main.util.file_util import create_file
 

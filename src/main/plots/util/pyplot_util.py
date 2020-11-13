@@ -32,8 +32,11 @@ def save_plot(folder_to_save: str, fig: plt.figure, name_prefix: str, data_path:
 
 # Add fragments lengths to the plot
 def add_fragments_length_plot(ax: plt.axes, data: pd.DataFrame, color: str = plot_consts.FRAGMENT_LENGTH_COLOR,
-                              s: int = plot_consts.SMALL_SIZE, label: Optional[str] = None) -> None:
+                              s: int = plot_consts.SMALL_SIZE, label: Optional[str] = None,
+                              to_connect: bool = False) -> None:
     ax.scatter(data[CT_SECONDS_COL], data[plot_consts.FRAGMENT_LENGTH_COL], color=color, s=s, label=label)
+    if to_connect:
+        ax.plot(data[CT_SECONDS_COL], data[plot_consts.FRAGMENT_LENGTH_COL])
 
 
 def add_legend_to_the_right(ax: plt.axes) -> None:
