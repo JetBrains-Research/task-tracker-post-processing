@@ -1,7 +1,6 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import subprocess
-from typing import Optional
 
 import pandas as pd
 
@@ -12,30 +11,34 @@ from src.main.util.file_util import remove_slash, get_parent_folder, get_all_fil
     get_name_from_path, extension_file_condition, get_content_from_file, create_file, remove_directory
 
 
-def __anonymize_code_fragment(code_fragment: str, local_gorshochek_path: str) -> Optional[str]:
-    """
-    gorshochek works only with folders with cpp files. We create a folder with the code fragment and run gorshochek.
+class GorshochekAnonymizer:
 
-    Note: the default scripts/run.sh file in the gorshochek repository requires sudo access for docker running.
-    We remove it for the anonymization process to avoid running sudo processes from an external process.
+    def __init__(self, local_gorshochek_path: str):
+        self._local_gorshochek_path = remove_slash(local_gorshochek_path)
+        self._input_name = 'input'
+        self._data_name = 'data'
+        self._out_name = f'{self._data_name}_out'
+        self._input_dir = f'{local_gorshochek_path}/{self._data_name}'
+        self._output_dir = f'{local_gorshochek_path}/{self._out_name}'
 
-    After getting the result we delete the crested folders.
-    """
-    print(f'Start handling the code fragment:\n{code_fragment}\n\n')
-    input_name = 'input'
-    data_name = 'data'
-    out_name = f'{data_name}_out'
-    local_gorshochek_path = remove_slash(local_gorshochek_path)
-    input_dir = f'{local_gorshochek_path}/{data_name}'
-    create_file(code_fragment, f'{input_dir}/{input_name}.cpp')
-    output_dir = f'{local_gorshochek_path}/{out_name}'
-    p = subprocess.Popen(['sh', f'./scripts/run.sh', data_name, out_name], cwd=local_gorshochek_path)
-    p.wait()
-    print('Try to get the result')
-    anonymized_code = get_content_from_file(f'{output_dir}/{input_name}/transformation_1.cpp')
-    remove_directory(input_dir)
-    remove_directory(output_dir)
-    return anonymized_code
+    def anonymize_code_fragment(self, code_fragment: str):
+        """
+        gorshochek works only with folders with cpp files. We create a folder with the code fragment and run gorshochek.
+
+        Note: the default scripts/run.sh file in the gorshochek repository requires sudo access for docker running.
+        We remove it for the anonymization process to avoid running sudo processes from an external process.
+
+        After getting the result we delete the created folders.
+        """
+        create_file(code_fragment, f'{self._input_dir}/{self._input_name}.cpp')
+        p = subprocess.Popen(['sh', f'./scripts/run.sh', self._data_name, self._out_name],
+                             cwd=self._local_gorshochek_path)
+        p.wait()
+        return get_content_from_file(f'{self._output_dir}/{self._input_name}/transformation_1.cpp')
+
+    def remove_directories(self):
+        remove_directory(self._input_dir)
+        remove_directory(self._output_dir)
 
 
 def is_incorrect_fragment(tests_results: str) -> bool:
@@ -70,6 +73,7 @@ def anonymize_cpp_code(root: str, local_gorshochek_path: str, output_folder_name
     task_dirs = get_all_file_system_items(cpp_path,
                                           item_condition=task_item_condition,
                                           item_type=FILE_SYSTEM_ITEM.SUBDIR)
+    gorshochek_anonymizer = GorshochekAnonymizer(local_gorshochek_path)
     for task_dir in task_dirs:
         task = get_name_from_path(task_dir, with_extension=False)
         print(f'Start handling the task {task}')
@@ -81,7 +85,9 @@ def anonymize_cpp_code(root: str, local_gorshochek_path: str, output_folder_name
             # Delete incorrect fragments
             df = df[df.apply(lambda row: not is_incorrect_fragment(row[TESTS_RESULTS]), axis=1)]
             df[CODE_TRACKER_COLUMN.FRAGMENT.value] = \
-                df[CODE_TRACKER_COLUMN.FRAGMENT.value].apply(lambda code: __anonymize_code_fragment(code, local_gorshochek_path))
+                df[CODE_TRACKER_COLUMN.FRAGMENT.value].apply(gorshochek_anonymizer.anonymize_code_fragment)
             current_output_path = f'{output_path}/{task}/{get_name_from_path(file)}'
             create_file('', current_output_path)
             df.to_csv(current_output_path)
+
+    gorshochek_anonymizer.remove_directories()
