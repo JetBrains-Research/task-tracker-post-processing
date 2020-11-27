@@ -100,7 +100,6 @@ def preprocess_data(path: str) -> str:
 
     For more details see https://github.com/JetBrains-Research/codetracker-data/wiki/Data-preprocessing:-primary-data-processing
     """
-    # TODO: add a link to the documentation
     output_directory = get_output_directory(path, consts.PREPROCESSING_DIRECTORY)
     user_folders = get_all_file_system_items(path, user_subdirs_condition, consts.FILE_SYSTEM_ITEM.SUBDIR)
     for user_folder in user_folders:

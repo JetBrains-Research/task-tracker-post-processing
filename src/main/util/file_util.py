@@ -12,7 +12,7 @@ import pandas as pd
 
 from src.main.util.strings_util import contains_any_of_substrings
 from src.main.util.consts import ACTIVITY_TRACKER_FILE_NAME, FILE_SYSTEM_ITEM, ATI_DATA_FOLDER, \
-    DI_DATA_FOLDER, ISO_ENCODING, LANGUAGE, UTF_ENCODING, EXTENSION
+    DI_DATA_FOLDER, ISO_ENCODING, LANGUAGE, UTF_ENCODING, EXTENSION, TASK
 
 '''
 To understand correctly these functions' behavior you can see examples in a corresponding test folder.
@@ -181,11 +181,19 @@ def all_items_condition(name: str) -> bool:
     return True
 
 
-def language_item_condition(name: str) -> bool:
-    for language in LANGUAGE:
-        if language.value == name:
+def __enum_item_condition(name: str, enum) -> bool:
+    for item in enum:
+        if item.value == name:
             return True
     return False
+
+
+def language_item_condition(name: str) -> bool:
+    return __enum_item_condition(name, LANGUAGE)
+
+
+def task_item_condition(name: str) -> bool:
+    return __enum_item_condition(name, TASK)
 
 
 # To get all files or subdirs (depends on the last parameter) from root that match item_condition
