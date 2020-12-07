@@ -1,5 +1,5 @@
 [![JetBrains Research](https://jb.gg/badges/research.svg)](https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub)
-[![CircleCI](https://circleci.com/gh/JetBrains-Research/codetracker-data.svg?style=shield)](https://circleci.com/gh/JetBrains-Research/task-tracker-post-processing)
+[![CircleCI](https://circleci.com/gh/JetBrains-Research/task-tracker-post-processing.svg?style=shield)](https://circleci.com/gh/JetBrains-Research/task-tracker-post-processing)
 
 
 # Table of Contents
