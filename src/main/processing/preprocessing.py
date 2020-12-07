@@ -97,7 +97,8 @@ def preprocess_data(path: str) -> str:
     - In addition, for each task-tracker file, a unique file of the activity tracker is sent. In this step,
     all files of the activity tracker are combined into one.
 
-    For more details see https://github.com/JetBrains-Research/codetracker-data/wiki/Data-preprocessing:-primary-data-processing
+    For more details see
+    https://github.com/JetBrains-Research/task-tracker-post-processing/wiki/Data-processing:-primary-data-processing
     """
     output_directory = get_output_directory(path, consts.PREPROCESSING_DIRECTORY)
     user_folders = get_all_file_system_items(path, user_subdirs_condition, consts.FILE_SYSTEM_ITEM.SUBDIR)

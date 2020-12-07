@@ -84,7 +84,8 @@ def remove_intermediate_diffs(path: str, output_directory_prefix: str = 'remove_
     we would like to delete the first 2 fragments because these are not final states.
     The final state is a completed line entered by the user.
 
-    For more details see https://github.com/JetBrains-Research/codetracker-data/wiki/Data-preprocessing:-remove-intermediate-diffs
+    For more details see
+    https://github.com/JetBrains-Research/task-tracker-post-processing/wiki/Data-processing:-remove-intermediate-diffs
     """
     languages = get_all_file_system_items(path, language_item_condition, FILE_SYSTEM_ITEM.SUBDIR)
     output_directory = get_output_directory(path, output_directory_prefix)

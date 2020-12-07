@@ -104,7 +104,8 @@ def merge_tt_with_ati(path: str, to_filter_ati_data: bool = True) -> str:
     At this stage, merging data from the task-tracker plugin and activity tracker plugin takes place.
     Code snapshots that did not find activity tracker events are assigned empty values.
 
-    For more details see https://github.com/JetBrains-Research/codetracker-data/wiki/Data-preprocessing:-merge-activity-tracker-and-code-tracker-files
+    For more details see
+    https://github.com/JetBrains-Research/codetracker-data/wiki/Data-preprocessing:-merge-activity-tracker-and-code-tracker-files
     """
     output_directory = get_output_directory(path, consts.MERGING_TT_AND_ATI_OUTPUT_DIRECTORY)
     user_folders = get_all_file_system_items(path, user_subdirs_condition, consts.FILE_SYSTEM_ITEM.SUBDIR)

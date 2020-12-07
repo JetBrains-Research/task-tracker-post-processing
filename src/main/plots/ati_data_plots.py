@@ -32,6 +32,8 @@ def __create_ati_events_plot(ax: plt.axes, df: pd.DataFrame, event_data: List[At
 
 
 # Create plots with different event types (running events and editor events), taken from ati data
+# For more details see
+# https://github.com/JetBrains-Research/task-tracker-post-processing/wiki/Visualization:-activity-tracker-plots
 def create_ati_data_plot(path: str, folder_to_save: str = None, to_show: bool = False) -> None:
     data = pd.read_csv(path, encoding=consts.ISO_ENCODING)
     fill_seconds_columns(data)

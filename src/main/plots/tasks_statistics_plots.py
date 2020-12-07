@@ -58,7 +58,8 @@ def __plot_bar_chart(bars: List[go.Bar], path: str, plot_name: str = 'bar_plot',
     save_plot(fig, path, plot_consts.CHART_TYPE.BAR, plot_name, format, auto_open)
 
 
-# For more details see https://github.com/JetBrains-Research/codetracker-data/wiki/Visualization:-tasks-distribution
+# For more details see
+# https://github.com/JetBrains-Research/task-tracker-post-processing/wiki/Visualization:-tasks-distribution
 def plot_tasks_statistics(path: str, plot_name: str = 'task_distribution_plot',
                           format: consts.EXTENSION = consts.EXTENSION.HTML,
                           auto_open: bool = False) -> None:

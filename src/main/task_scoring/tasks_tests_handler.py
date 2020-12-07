@@ -113,7 +113,8 @@ def run_tests(path: str) -> str:
     To deserialize this array of ratings, use the function unpack_tests_results from task_scoring.py.
     To get the rate only for the current task use the calculate_current_task_rate function from plots/scoring_solutions_plots.py
 
-    For more details see https://github.com/JetBrains-Research/codetracker-data/wiki/Data-preprocessing:-find-tests-results-for-the-tasks
+    For more details see
+    https://github.com/JetBrains-Research/task-tracker-post-processing/wiki/Data-processing:-find-tests-results-for-the-tasks
     """
     log.info(f'Start running tests on path {path}')
     output_directory = get_output_directory(path, consts.RUNNING_TESTS_OUTPUT_DIRECTORY)

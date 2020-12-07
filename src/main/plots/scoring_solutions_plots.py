@@ -67,9 +67,10 @@ def calculate_current_task_rate(df: pd.DataFrame) -> pd.DataFrame:
     return df[TESTS_RESULTS].apply(lambda x: unpack_tests_results(x, TASK.tasks())[TASK.tasks().index(current_task)])
 
 
-# For more details see https://github.com/JetBrains-Research/codetracker-data/wiki/Visualization:-scoring-solutions-plots
-def plot_scoring_solutions(ct_file_path: str, name_prefix: str = 'scoring_solution') -> str:
-    ct_df = pd.read_csv(ct_file_path, encoding=ISO_ENCODING)
+# For more details see
+# https://github.com/JetBrains-Research/task-tracker-post-processing/wiki/Visualization:-scoring-solutions-plots
+def plot_scoring_solutions(tt_file_path: str, name_prefix: str = 'scoring_solution') -> str:
+    ct_df = pd.read_csv(tt_file_path, encoding=ISO_ENCODING)
     # Delete incorrect fragments
     correct_df = ct_df[ct_df.apply(lambda row: not __is_incorrect_fragment(row[TESTS_RESULTS]), axis=1)]
 
@@ -77,8 +78,8 @@ def plot_scoring_solutions(ct_file_path: str, name_prefix: str = 'scoring_soluti
     scores = correct_df[TASK_TRACKER_COLUMN.TESTS_RESULTS.value].values
     labels, graph_structure = get_labels_and_graph_structure(scores)
     solutions_representation = get_graph_representation(labels, graph_structure)
-    output_path = get_parent_folder(ct_file_path)
+    output_path = get_parent_folder(tt_file_path)
     output_path = create_dot_graph(output_path,
-                                   f'{get_name_from_path(ct_file_path, False)}_{name_prefix}',
+                                   f'{get_name_from_path(tt_file_path, False)}_{name_prefix}',
                                    solutions_representation)
     return output_path
