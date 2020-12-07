@@ -197,7 +197,7 @@ def task_item_condition(name: str) -> bool:
 
 
 # To get all files or subdirs (depends on the last parameter) from root that match item_condition
-# Can be used to get all codetracker files, all data folders, etc.
+# Can be used to get all task-tracker files, all data folders, etc.
 # Note that all subdirs or files already contain the full path for them
 def get_all_file_system_items(root: str, item_condition: ItemCondition = all_items_condition,
                               item_type: FILE_SYSTEM_ITEM = FILE_SYSTEM_ITEM.FILE) -> List[str]:
@@ -216,8 +216,8 @@ def extension_file_condition(extension: EXTENSION) -> ItemCondition:
     return has_this_extension
 
 
-# To get all codetracker files
-def ct_file_condition(name: str) -> bool:
+# To get all task-tracker files
+def tt_file_condition(name: str) -> bool:
     return ACTIVITY_TRACKER_FILE_NAME not in name and extension_file_condition(EXTENSION.CSV)(name)
 
 
@@ -265,7 +265,7 @@ def create_folder_and_write_df_to_file(folder_to_write: str, file_to_write: str,
 
 
 # To write a dataframe to the output_directory remaining the same file structure as it was before
-# For example, for path home/codetracker/data and file home/codetracker/data/folder1/folder2/ati_566/file.csv
+# For example, for path home/task-tracker/data and file home/task-tracker/data/folder1/folder2/ati_566/file.csv
 # the dataframe will be written to output_directory/folder1/folder2/ati_566/file.csv
 def write_result(output_directory: str, path: str, file: str, df: pd.DataFrame) -> None:
     # check if file is in a path, otherwise we cannot reproduce its structure inside of output_directory

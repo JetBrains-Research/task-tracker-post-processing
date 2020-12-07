@@ -7,11 +7,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 from src.main.util import consts
-from src.main.util.file_util import get_all_file_system_items
 from src.main.plots.util.plots_common import get_short_name, fill_seconds_columns
 from src.main.plots.util.consts import FRAGMENT_LENGTH_COL, ATI_RUN_EVENT, ATI_EDITOR_EVENT_COLOR_DICT, LARGE_SIZE, \
     ATI_EDITOR_EVENT, ATI_RUN_EVENT_COLOR_DICT, CT_SECONDS_COL
-from src.main.plots.util.pyplot_util import add_fragments_length_plot, EVENT_DATA_COL, TIMESTAMP_COL, FRAGMENT_COL, \
+from src.main.plots.util.pyplot_util import add_fragments_length_plot, EVENT_DATA_COL, FRAGMENT_COL, \
     save_and_show_if_needed, add_legend_to_the_right
 
 

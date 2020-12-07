@@ -7,17 +7,11 @@ class TEST_LEVEL(Enum):
     # Run all tests in the project
     ALL = 'all tests'
 
-    # Run only canonicalization tests
-    CANONICALIZATION = 'canonicalization tests'
-
-    # Run only solution space tests
-    SOLUTION_SPACE = 'solution space tests'
-
     # Run only plots tests
     PLOTS = 'plots tests'
 
-    # Run only preprocessing tests
-    PREPROCESSING = 'preprocessing tests'
+    # Run only processing tests
+    PROCESSING = 'processing tests'
 
     # Run only test_scoring tests
     TEST_SCORING = 'test scoring'
@@ -41,10 +35,8 @@ def to_skip(current_module_level: TEST_LEVEL) -> bool:
 
 PARAMS_AND_TEST_LEVEL_DICT = {
     'all': TEST_LEVEL.ALL,
-    'canon': TEST_LEVEL.CANONICALIZATION,
-    'solution_space': TEST_LEVEL.SOLUTION_SPACE,
     'plots': TEST_LEVEL.PLOTS,
-    'preprocess': TEST_LEVEL.PREPROCESSING,
+    'process': TEST_LEVEL.PROCESSING,
     'test_scoring': TEST_LEVEL.TEST_SCORING,
     'util': TEST_LEVEL.UTIL,
     'cli': TEST_LEVEL.CLI

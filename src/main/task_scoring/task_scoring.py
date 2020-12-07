@@ -10,14 +10,14 @@ import pandas as pd
 from src.main.util import consts
 from src.main.util.consts import TASK
 from src.main.util.log_util import log_and_raise_error
-from src.main.util.file_util import get_all_file_system_items, ct_file_condition, get_output_directory, \
+from src.main.util.file_util import get_all_file_system_items, tt_file_condition, get_output_directory, \
     get_name_from_path, get_parent_folder, copy_file, get_parent_folder_name
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
-CHOSEN_TASK = consts.CODE_TRACKER_COLUMN.CHOSEN_TASK.value
-TASK_STATUS = consts.CODE_TRACKER_COLUMN.TASK_STATUS.value
-TESTS_RESULTS = consts.CODE_TRACKER_COLUMN.TESTS_RESULTS.value
+CHOSEN_TASK = consts.TASK_TRACKER_COLUMN.CHOSEN_TASK.value
+TASK_STATUS = consts.TASK_TRACKER_COLUMN.TASK_STATUS.value
+TESTS_RESULTS = consts.TASK_TRACKER_COLUMN.TESTS_RESULTS.value
 
 
 def unpack_tests_results(tests_results: str, tasks: List[TASK]) -> List[float]:
@@ -89,7 +89,7 @@ def reorganize_files_structure(path: str, output_directory_suffix: str = 'separa
     For more details see https://github.com/JetBrains-Research/codetracker-data/wiki/Data-preprocessing:-reorganize-files-structure
     """
     output_directory = get_output_directory(path, output_directory_suffix)
-    files = get_all_file_system_items(path, ct_file_condition)
+    files = get_all_file_system_items(path, tt_file_condition)
     for file in files:
         log.info(f'Start splitting file {file}')
         dst_path = __get_dst_path(file, output_directory)

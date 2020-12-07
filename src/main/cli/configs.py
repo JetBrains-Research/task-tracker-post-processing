@@ -5,13 +5,13 @@ from __future__ import annotations
 from enum import Enum
 from typing import List
 
-from src.main.preprocessing.preprocessing import preprocess_data
+from src.main.processing.preprocessing import preprocess_data
 from src.main.task_scoring.tasks_tests_handler import run_tests
-from src.main.preprocessing.merging_ct_with_ati import merge_ct_with_ati
+from src.main.processing.merging_tt_with_ati import merge_tt_with_ati
 from src.main.task_scoring.task_scoring import reorganize_files_structure
-from src.main.preprocessing.int_experience_adding import add_int_experience
-from src.main.preprocessing.intermediate_diffs_removing import remove_intermediate_diffs
-from src.main.preprocessing.inefficient_statements_removing import remove_inefficient_statements
+from src.main.processing.int_experience_adding import add_int_experience
+from src.main.processing.intermediate_diffs_removing import remove_intermediate_diffs
+from src.main.processing.inefficient_statements_removing import remove_inefficient_statements
 
 
 class PLOT_TYPE(Enum):
@@ -44,7 +44,7 @@ class PLOT_TYPE(Enum):
 
 
 # Todo: create an interface for such kind of classes?
-class PREPROCESSING_LEVEL(Enum):
+class PROCESSING_LEVEL(Enum):
     PRIMARY = 0
     MERGE = 1
     TESTS_RESULTS = 2
@@ -57,7 +57,7 @@ class PREPROCESSING_LEVEL(Enum):
     def __level_actions(self):
         return {
             self.PRIMARY: preprocess_data,
-            self.MERGE: merge_ct_with_ati,
+            self.MERGE: merge_tt_with_ati,
             self.TESTS_RESULTS: run_tests,
             self.REORGANIZE: reorganize_files_structure,
             self.INTERMEDIATE_DIFFS: remove_intermediate_diffs,
@@ -70,22 +70,22 @@ class PREPROCESSING_LEVEL(Enum):
 
     @classmethod
     def min_value(cls) -> int:
-        return min([a_t.value for a_t in PREPROCESSING_LEVEL])
+        return min([a_t.value for a_t in PROCESSING_LEVEL])
 
     @classmethod
     def max_value(cls) -> int:
-        return max([a_t.value for a_t in PREPROCESSING_LEVEL])
+        return max([a_t.value for a_t in PROCESSING_LEVEL])
 
     @classmethod
     def description(cls) -> str:
         return f'the Nth level runs all the level before it; ' \
-               f'{PREPROCESSING_LEVEL.PRIMARY.value} - primary data processing; ' \
-               f'{PREPROCESSING_LEVEL.MERGE.value} - merge activity-tracker and code-tracker files; ' \
-               f'{PREPROCESSING_LEVEL.TESTS_RESULTS.value} - find tests results for the tasks; ' \
-               f'{PREPROCESSING_LEVEL.REORGANIZE.value} - reorganize files structure; ' \
-               f'{PREPROCESSING_LEVEL.INTERMEDIATE_DIFFS.value} - remove intermediate diffs; ' \
-               f'{PREPROCESSING_LEVEL.INEFFICIENT_STATEMENTS.value} - [only for Python language] remove inefficient statements; ' \
-               f'{PREPROCESSING_LEVEL.INT_EXPERIENCE.value} - add int experience column; '
+               f'{PROCESSING_LEVEL.PRIMARY.value} - primary data processing; ' \
+               f'{PROCESSING_LEVEL.MERGE.value} - merge activity-tracker and task-tracker files; ' \
+               f'{PROCESSING_LEVEL.TESTS_RESULTS.value} - find tests results for the tasks; ' \
+               f'{PROCESSING_LEVEL.REORGANIZE.value} - reorganize files structure; ' \
+               f'{PROCESSING_LEVEL.INTERMEDIATE_DIFFS.value} - remove intermediate diffs; ' \
+               f'{PROCESSING_LEVEL.INEFFICIENT_STATEMENTS.value} - [only for Python language] remove inefficient statements; ' \
+               f'{PROCESSING_LEVEL.INT_EXPERIENCE.value} - add int experience column; '
 
 
 class ALGO_LEVEL(Enum):
@@ -121,13 +121,13 @@ class ALGO_PARAMS(Enum):
         return [p for p in ALGO_PARAMS]
 
 
-class PREPROCESSING_PARAMS(Enum):
+class PROCESSING_PARAMS(Enum):
     LEVEL = '--level'
     PATH = 'path'
 
     @classmethod
-    def params(cls) -> List[PREPROCESSING_PARAMS]:
-        return [p for p in PREPROCESSING_PARAMS]
+    def params(cls) -> List[PROCESSING_PARAMS]:
+        return [p for p in PROCESSING_PARAMS]
 
 
 class PLOTS_PARAMS(Enum):

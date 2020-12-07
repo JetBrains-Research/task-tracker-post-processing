@@ -6,11 +6,11 @@ import pytest
 import pandas as pd
 
 from src.test.test_config import to_skip, TEST_LEVEL
-from src.main.util.consts import CODE_TRACKER_COLUMN
+from src.main.util.consts import TASK_TRACKER_COLUMN
 from src.main.util.data_util import crop_data_by_timestamp
 
 END_INDEX = 100
-COLUMN = CODE_TRACKER_COLUMN.TIMESTAMP
+COLUMN = TASK_TRACKER_COLUMN.TIMESTAMP
 
 
 def get_source_data() -> pd.DataFrame:

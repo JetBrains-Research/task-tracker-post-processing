@@ -10,10 +10,3 @@ javalang
 # For plots:
 plotly
 matplotlib
-
-# For GumTreeDiff:
-jsontree
-asttokens
-
-# For solution graph test system
-PTable

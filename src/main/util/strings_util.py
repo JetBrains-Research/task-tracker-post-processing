@@ -1,7 +1,7 @@
 # Copyright (c) 2020 Anastasiia Birillo, Elena Lyulina
 
 import re
-from typing import List, Any
+from typing import List
 
 
 def add_symbol_to_begin(string: str, symbol: str) -> str:

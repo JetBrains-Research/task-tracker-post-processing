@@ -7,15 +7,14 @@ from typing import Any, Set, List
 import pandas as pd
 
 from src.main.util import consts
+from src.main.util.consts import EXPERIENCE
 from src.main.plots.util.consts import STATISTICS_KEY
-from src.main.util.consts import CODE_TRACKER_COLUMN, EXPERIENCE
 from src.main.util.log_util import log_and_raise_error
-from src.main.preprocessing.code_tracker_handler import handle_ct_file, delete_default_values
+from src.main.processing.task_tracker_handler import handle_tt_file, delete_default_values
 from src.main.statistics_gathering.util import Profile, AgeAndExperience, InvalidProfile, InvalidAgeAndExperience, \
     Statistics, InvalidAge, InvalidExperience, StatisticsValue, TaskStatistics
-from src.main.util.file_util import get_name_from_path, ct_file_condition, get_output_directory, change_extension_to, \
-    serialize_data_and_write_to_file, data_subdirs_condition, get_all_file_system_items, contains_substrings_condition, \
-    user_subdirs_condition
+from src.main.util.file_util import get_name_from_path, tt_file_condition, get_output_directory, change_extension_to, \
+    serialize_data_and_write_to_file, get_all_file_system_items, contains_substrings_condition, user_subdirs_condition
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
@@ -27,8 +26,8 @@ def is_statistics_key_default_value(value: Any, column: STATISTICS_KEY) -> bool:
 
 
 # We must have one value in a profile column otherwise it is an incorrect case
-def __get_profile_info(ct_df: pd.DataFrame, column: STATISTICS_KEY) -> Profile:
-    values = ct_df[column.value].unique()
+def __get_profile_info(tt_df: pd.DataFrame, column: STATISTICS_KEY) -> Profile:
+    values = tt_df[column.value].unique()
     values = delete_default_values(values)
     if len(values) == 0:
         # If it's a default value, return consts.DEFAULT_VALUE
@@ -38,19 +37,19 @@ def __get_profile_info(ct_df: pd.DataFrame, column: STATISTICS_KEY) -> Profile:
     log_and_raise_error(f'Have found {len(values)}: {values} unique value in profile column {column.value}', log)
 
 
-def __get_ct_df(ct_file: str, needs_handling: bool = True) -> pd.DataFrame:
+def __get_tt_df(tt_file: str, needs_handling: bool = True) -> pd.DataFrame:
     # If we need handling we do it else we read the data
     if needs_handling:
-        ct_df, _ = handle_ct_file(ct_file)
-        return ct_df
-    return pd.read_csv(ct_file, encoding=consts.ISO_ENCODING)
+        tt_df, _ = handle_tt_file(tt_file)
+        return tt_df
+    return pd.read_csv(tt_file, encoding=consts.ISO_ENCODING)
 
 
-def __get_experience(ct_df: pd.DataFrame) -> Profile:
-    if STATISTICS_KEY.EXPERIENCE.value not in ct_df.columns:
+def __get_experience(tt_df: pd.DataFrame) -> Profile:
+    if STATISTICS_KEY.EXPERIENCE.value not in tt_df.columns:
         # New data structure
-        experience_years = __get_profile_info(ct_df, STATISTICS_KEY.EXPERIENCE_YEARS)
-        experience_months = __get_profile_info(ct_df, STATISTICS_KEY.EXPERIENCE_MONTHS)
+        experience_years = __get_profile_info(tt_df, STATISTICS_KEY.EXPERIENCE_YEARS)
+        experience_months = __get_profile_info(tt_df, STATISTICS_KEY.EXPERIENCE_MONTHS)
         if 0 <= experience_months < 6:
             return EXPERIENCE.LESS_THAN_HALF_YEAR.value
         elif 6 <= experience_months <= 11:
@@ -65,19 +64,19 @@ def __get_experience(ct_df: pd.DataFrame) -> Profile:
             return EXPERIENCE.MORE_THAN_SIX.value
         else:
             return STATISTICS_KEY.EXPERIENCE.get_default()
-    return __get_profile_info(ct_df, STATISTICS_KEY.EXPERIENCE)
+    return __get_profile_info(tt_df, STATISTICS_KEY.EXPERIENCE)
 
 
-def __get_age_and_experience(ct_file: str, needs_preprocessing: bool = True) -> AgeAndExperience:
-    ct_df = __get_ct_df(ct_file, needs_preprocessing)
-    age = __get_profile_info(ct_df, STATISTICS_KEY.AGE)
-    experience = __get_experience(ct_df)
-    log.info(f'File: {ct_file}, age is {age}, experience is {experience}')
+def __get_age_and_experience(tt_file: str, needs_preprocessing: bool = True) -> AgeAndExperience:
+    tt_df = __get_tt_df(tt_file, needs_preprocessing)
+    age = __get_profile_info(tt_df, STATISTICS_KEY.AGE)
+    experience = __get_experience(tt_df)
+    log.info(f'File: {tt_file}, age is {age}, experience is {experience}')
     return age, experience
 
 
 # Handle set of profile data values
-# Return default_value if files with the same code tracker id (or the same activity tracker id) have different values
+# Return default_value if files with the same task-tracker id (or the same activity tracker id) have different values
 # for profile data (age or experience for example)
 # Note: you should run it for each profile column
 def __handle_profile_data_of_one_user(profile_data: Set[Profile],
@@ -132,7 +131,7 @@ def get_profile_statistics(path: str) -> str:
     statistics = __get_empty_statistics_dict()
     for folder in folders:
         log.info(f'Start handling the folder {folder}')
-        ct_files = get_all_file_system_items(folder, ct_file_condition)
+        ct_files = get_all_file_system_items(folder, tt_file_condition)
         age, experience = __get_age_and_experience_of_one_user(list(map(__get_age_and_experience, ct_files)))
         log.info(f'Folder: {folder}, age is {age}, experience is {experience}')
         __add_values_in_statistics_dict(statistics, age, experience)

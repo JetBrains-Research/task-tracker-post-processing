@@ -4,10 +4,8 @@ import logging
 from typing import Dict, Any, List, Optional
 
 import pandas as pd
-import numpy as np
 import plotly.express as px
 
-from src.main.preprocessing.int_experience_adding import convert_to_int_experience
 from src.main.util import consts
 from src.main.util.consts import INT_EXPERIENCE, EXPERIENCE
 from src.main.util.log_util import log_and_raise_error

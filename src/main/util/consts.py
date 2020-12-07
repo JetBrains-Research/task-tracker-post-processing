@@ -11,7 +11,7 @@ from numpy import nan, datetime64, isnat
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-class CODE_TRACKER_COLUMN(Enum):
+class TASK_TRACKER_COLUMN(Enum):
     AGE = 'age'
     EXPERIENCE = 'programExperience'
     EXPERIENCE_YEARS = 'programExperienceYears'
@@ -31,16 +31,16 @@ class CODE_TRACKER_COLUMN(Enum):
     USER_ID = 'userId'
 
     def fits_restrictions(self, value: Any) -> bool:
-        if self is CODE_TRACKER_COLUMN.AGE:
+        if self is TASK_TRACKER_COLUMN.AGE:
             return isinstance(value, float)
-        elif self is CODE_TRACKER_COLUMN.EXPERIENCE:
+        elif self is TASK_TRACKER_COLUMN.EXPERIENCE:
             return str(value) in EXPERIENCE.values()
         # Todo: implement restrictions for other columns
         else:
             raise NotImplementedError(f"Cannot find any restrictions for {self}")
 
     @classmethod
-    def get_columns_for_filling(cls) -> List['CODE_TRACKER_COLUMN']:
+    def get_columns_for_filling(cls) -> List['TASK_TRACKER_COLUMN']:
         return [cls.AGE, cls.EXPERIENCE_YEARS, cls.EXPERIENCE_MONTHS, cls.GENDER, cls.COUNTRY]
 
 
@@ -50,7 +50,7 @@ class TEST_MODE(Enum):
 
 
 class TMP_COLUMN(Enum):
-    SHIFTED_FRAGMENT = f'shift_{CODE_TRACKER_COLUMN.FRAGMENT.value}'
+    SHIFTED_FRAGMENT = f'shift_{TASK_TRACKER_COLUMN.FRAGMENT.value}'
     DIFFS = 'diffs'
     SHIFTED_DIFFS = 'shift_diffs'
 
@@ -284,7 +284,7 @@ SERIALIZED_GRAPH_PATH = os.path.join(RESOURCES_PATH, 'serialized_graph')
 SOLUTION_SPACE_TEST_RESULT_PATH = os.path.join(RESOURCES_PATH, 'solution_space')
 CLI_PATH = os.path.join(ROOT_DIR + '/../', 'cli')
 
-MERGING_CT_AND_ATI_OUTPUT_DIRECTORY = 'merged_ct_and_ati_result'
+MERGING_TT_AND_ATI_OUTPUT_DIRECTORY = 'merged_ct_and_ati_result'
 STATISTICS_OUTPUT_DIRECTORY = 'statistics_result'
 PREPROCESSING_DIRECTORY = 'preprocessing_result'
 
