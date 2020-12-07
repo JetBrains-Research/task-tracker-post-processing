@@ -11,19 +11,19 @@ from src.main.util.consts import LANGUAGE, TASK
 from src.main.util.log_util import log_and_raise_error
 from src.main.task_scoring.cpp_task_checker import CppTaskChecker
 from src.main.task_scoring.java_task_checker import JavaTaskChecker
+from src.main.processing.task_tracker_handler import get_tt_language
 from src.main.task_scoring.kotlin_task_checker import KotlinTaskChecker
 from src.main.task_scoring.python_task_checker import PythonTaskChecker
-from src.main.preprocessing.code_tracker_handler import get_ct_language
 from src.main.task_scoring.task_checker import TASKS_TESTS_PATH, FilesDict
 from src.main.task_scoring.undefined_task_checker import UndefinedTaskChecker
-from src.main.util.file_util import get_all_file_system_items, ct_file_condition, get_output_directory, \
+from src.main.util.file_util import get_all_file_system_items, tt_file_condition, get_output_directory, \
     write_based_on_language, get_file_and_parent_folder_names, pair_in_and_out_files, match_condition, \
     get_name_from_path, get_parent_folder, get_parent_folder_name
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
-FRAGMENT = consts.CODE_TRACKER_COLUMN.FRAGMENT.value
-TESTS_RESULTS = consts.CODE_TRACKER_COLUMN.TESTS_RESULTS.value
+FRAGMENT = consts.TASK_TRACKER_COLUMN.FRAGMENT.value
+TESTS_RESULTS = consts.TASK_TRACKER_COLUMN.TESTS_RESULTS.value
 
 
 def create_in_and_out_dict(tasks: List[TASK]) -> FilesDict:
@@ -60,8 +60,8 @@ def __check_tasks_on_correct_fragments(data: pd.DataFrame, tasks: List[TASK], in
                                        file_log_info: str = '',
                                        current_task: Optional[TASK] = None) -> Tuple[LANGUAGE, pd.DataFrame]:
     data[FRAGMENT] = data[FRAGMENT].fillna('')
-    # If run after preprocessing, this value can be taken from 'language' column
-    language = get_ct_language(data)
+    # If run after processing, this value can be taken from 'language' column
+    language = get_tt_language(data)
     log.info(f'{file_log_info}, language is {language.value}, found {str(data.shape[0])} fragments')
 
     if language == consts.LANGUAGE.UNDEFINED:
@@ -80,7 +80,7 @@ def __check_tasks_on_correct_fragments(data: pd.DataFrame, tasks: List[TASK], in
 
 
 def filter_already_tested_files(files: List[str], output_directory_path: str) -> List[str]:
-    tested_files = get_all_file_system_items(output_directory_path, ct_file_condition)
+    tested_files = get_all_file_system_items(output_directory_path, tt_file_condition)
     tested_folder_and_file_names = list(map(lambda f: get_file_and_parent_folder_names(f), tested_files))
     return list(filter(lambda f: get_file_and_parent_folder_names(f) not in tested_folder_and_file_names, files))
 
@@ -113,12 +113,13 @@ def run_tests(path: str) -> str:
     To deserialize this array of ratings, use the function unpack_tests_results from task_scoring.py.
     To get the rate only for the current task use the calculate_current_task_rate function from plots/scoring_solutions_plots.py
 
-    For more details see https://github.com/JetBrains-Research/codetracker-data/wiki/Data-preprocessing:-find-tests-results-for-the-tasks
+    For more details see
+    https://github.com/JetBrains-Research/task-tracker-post-processing/wiki/Data-processing:-find-tests-results-for-the-tasks
     """
     log.info(f'Start running tests on path {path}')
     output_directory = get_output_directory(path, consts.RUNNING_TESTS_OUTPUT_DIRECTORY)
 
-    files = get_all_file_system_items(path, ct_file_condition)
+    files = get_all_file_system_items(path, tt_file_condition)
     str_len_files = str(len(files))
     log.info(f'Found {str_len_files} files to run tests on them')
 

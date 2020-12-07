@@ -1,1 +1,0 @@
-print(max([int(input()) for new_var_0 in range(3)]))

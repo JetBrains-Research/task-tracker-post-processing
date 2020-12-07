@@ -5,7 +5,7 @@ import subprocess
 import pandas as pd
 
 from src.main.task_scoring.task_scoring import unpack_tests_results, TESTS_RESULTS
-from src.main.util.consts import LANGUAGE, FILE_SYSTEM_ITEM, EXTENSION, ISO_ENCODING, CODE_TRACKER_COLUMN, TEST_RESULT, \
+from src.main.util.consts import LANGUAGE, FILE_SYSTEM_ITEM, EXTENSION, ISO_ENCODING, TASK_TRACKER_COLUMN, TEST_RESULT, \
     TASK
 from src.main.util.file_util import remove_slash, get_parent_folder, get_all_file_system_items, task_item_condition, \
     get_name_from_path, extension_file_condition, get_content_from_file, create_file, remove_directory
@@ -58,12 +58,11 @@ def anonymize_cpp_code(root: str, local_gorshochek_path: str, output_folder_name
           p: 1.0
       - rename entities:
           p: 1
-          seed: 9
-          max tokens: 2
-          max token len: 3
           rename functions: true
           rename variables: true
-          test: false
+          strategy:
+              name: hash
+              hash prefix: d
 
     You can change 'seed', 'max tokens', 'max token len' params if you want.
     """
@@ -84,8 +83,8 @@ def anonymize_cpp_code(root: str, local_gorshochek_path: str, output_folder_name
             df = pd.read_csv(file, encoding=ISO_ENCODING)
             # Delete incorrect fragments
             df = df[df.apply(lambda row: not is_incorrect_fragment(row[TESTS_RESULTS]), axis=1)]
-            df[CODE_TRACKER_COLUMN.FRAGMENT.value] = \
-                df[CODE_TRACKER_COLUMN.FRAGMENT.value].apply(gorshochek_anonymizer.anonymize_code_fragment)
+            df[TASK_TRACKER_COLUMN.FRAGMENT.value] = \
+                df[TASK_TRACKER_COLUMN.FRAGMENT.value].apply(gorshochek_anonymizer.anonymize_code_fragment)
             current_output_path = f'{output_path}/{task}/{get_name_from_path(file)}'
             create_file('', current_output_path)
             df.to_csv(current_output_path)

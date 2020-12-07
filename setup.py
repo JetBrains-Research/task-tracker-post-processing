@@ -29,7 +29,7 @@ if test_level_param in args:
 
 setup(name='codetracker-data',
       # version='1.0.0',
-      description='Data preprocessing, hint generation algorithm',
+      description='Data processing, hint generation algorithm',
       url='https://github.com/elena-lyulina/codetracker-data',
       author='Anastasiia Birillo, Elena Lyulina',
       long_description_content_type='text/markdown',

@@ -6,12 +6,12 @@ import pandas as pd
 
 from src.main.util import consts
 from src.main.task_scoring.task_scoring import unpack_tests_results
-from src.main.util.consts import ISO_ENCODING, CODE_TRACKER_COLUMN, TEST_RESULT, TASK
 from src.main.util.file_util import get_parent_folder, get_name_from_path
+from src.main.util.consts import ISO_ENCODING, TASK_TRACKER_COLUMN, TEST_RESULT, TASK
 from src.main.plots.util.graph_representation_util import get_color_by_rate, get_graph_representation, create_dot_graph
 
-TESTS_RESULTS = consts.CODE_TRACKER_COLUMN.TESTS_RESULTS.value
-FILE_NAME = consts.CODE_TRACKER_COLUMN.FILE_NAME.value
+TESTS_RESULTS = consts.TASK_TRACKER_COLUMN.TESTS_RESULTS.value
+FILE_NAME = consts.TASK_TRACKER_COLUMN.FILE_NAME.value
 
 
 def __find_next_score_index(scores: List[float], start_index: int = 0) -> int:
@@ -67,18 +67,19 @@ def calculate_current_task_rate(df: pd.DataFrame) -> pd.DataFrame:
     return df[TESTS_RESULTS].apply(lambda x: unpack_tests_results(x, TASK.tasks())[TASK.tasks().index(current_task)])
 
 
-# For more details see https://github.com/JetBrains-Research/codetracker-data/wiki/Visualization:-scoring-solutions-plots
-def plot_scoring_solutions(ct_file_path: str, name_prefix: str = 'scoring_solution') -> str:
-    ct_df = pd.read_csv(ct_file_path, encoding=ISO_ENCODING)
+# For more details see
+# https://github.com/JetBrains-Research/task-tracker-post-processing/wiki/Visualization:-scoring-solutions-plots
+def plot_scoring_solutions(tt_file_path: str, name_prefix: str = 'scoring_solution') -> str:
+    ct_df = pd.read_csv(tt_file_path, encoding=ISO_ENCODING)
     # Delete incorrect fragments
     correct_df = ct_df[ct_df.apply(lambda row: not __is_incorrect_fragment(row[TESTS_RESULTS]), axis=1)]
 
     correct_df[TESTS_RESULTS] = calculate_current_task_rate(correct_df)
-    scores = correct_df[CODE_TRACKER_COLUMN.TESTS_RESULTS.value].values
+    scores = correct_df[TASK_TRACKER_COLUMN.TESTS_RESULTS.value].values
     labels, graph_structure = get_labels_and_graph_structure(scores)
     solutions_representation = get_graph_representation(labels, graph_structure)
-    output_path = get_parent_folder(ct_file_path)
+    output_path = get_parent_folder(tt_file_path)
     output_path = create_dot_graph(output_path,
-                                   f'{get_name_from_path(ct_file_path, False)}_{name_prefix}',
+                                   f'{get_name_from_path(tt_file_path, False)}_{name_prefix}',
                                    solutions_representation)
     return output_path

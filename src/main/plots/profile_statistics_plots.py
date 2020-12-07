@@ -4,10 +4,8 @@ import logging
 from typing import Dict, Any, List, Optional
 
 import pandas as pd
-import numpy as np
 import plotly.express as px
 
-from src.main.preprocessing.int_experience_adding import convert_to_int_experience
 from src.main.util import consts
 from src.main.util.consts import INT_EXPERIENCE, EXPERIENCE
 from src.main.util.log_util import log_and_raise_error
@@ -74,7 +72,8 @@ def __plot_pie_chart(statistics_df: pd.DataFrame, title: str, path: str, column:
     save_plot(fig, path, CHART_TYPE.PIE, plot_name, format, auto_open)
 
 
-# For more details see https://github.com/JetBrains-Research/codetracker-data/wiki/Visualization:-participants-distribution
+# For more details see
+# https://github.com/JetBrains-Research/task-tracker-post-processing/wiki/Visualization:-participants-distribution
 def plot_profile_statistics(file: str, column: STATISTICS_KEY, plot_type: CHART_TYPE, to_union_rare: bool = False,
                             format: consts.EXTENSION = consts.EXTENSION.HTML, auto_open: bool = False,
                             x_category_order: PLOTTY_CATEGORY_ORDER = PLOTTY_CATEGORY_ORDER.TOTAL_ASCENDING,

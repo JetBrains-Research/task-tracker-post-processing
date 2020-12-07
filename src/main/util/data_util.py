@@ -6,13 +6,13 @@ from typing import Any, Union, Callable
 import pandas as pd
 
 from src.main.util import consts
-from src.main.util.consts import CODE_TRACKER_COLUMN, ACTIVITY_TRACKER_COLUMN, ISO_ENCODING, EXTENSION
+from src.main.util.consts import TASK_TRACKER_COLUMN, ACTIVITY_TRACKER_COLUMN, ISO_ENCODING, EXTENSION
 from src.main.util.file_util import get_output_directory, get_all_file_system_items, write_result, \
     extension_file_condition
 
 log = logging.getLogger(consts.LOGGER_NAME)
 
-Column = Union[CODE_TRACKER_COLUMN, ACTIVITY_TRACKER_COLUMN]
+Column = Union[TASK_TRACKER_COLUMN, ACTIVITY_TRACKER_COLUMN]
 
 
 def crop_data_by_timestamp(data: pd.DataFrame, column: Column, start_value: Any, end_value: Any = None) -> pd.DataFrame:

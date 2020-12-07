@@ -7,13 +7,13 @@ from abc import ABCMeta, abstractmethod
 
 from src.main.util import consts
 from src.main.util.file_util import add_slash
-from src.main.cli.configs import ALGO_LEVEL, PREPROCESSING_LEVEL
+from src.main.cli.configs import ALGO_LEVEL, PROCESSING_LEVEL
 from src.main.util.consts import TASK, TRUE_VALUES_SET, FALSE_VALUES_SET
 from src.main.util.log_util import configure_logger, log_and_raise_error
 
 
 class ICli(object, metaclass=ABCMeta):
-    description = 'Coding Assistant project.'
+    description = 'TaskTracker postprocessing.'
 
     def __init__(self):
         self._parser = argparse.ArgumentParser(description=self.description)
@@ -50,22 +50,12 @@ class ICli(object, metaclass=ABCMeta):
             log_and_raise_error(f'Task value has to be one from the values: {TASK.tasks_values()}', self._log)
 
     @classmethod
-    def str_to_algo_level(cls, level: str) -> ALGO_LEVEL:
-        message = f'Algo level has to be an integer number from {ALGO_LEVEL.min_value()} ' \
-                  f'to {ALGO_LEVEL.max_value()}'
+    def str_to_preprocessing_level(cls, level: str) -> PROCESSING_LEVEL:
+        message = f'Preprocessing level has to be an integer number from {PROCESSING_LEVEL.min_value()} ' \
+                  f'to {PROCESSING_LEVEL.max_value()}'
         try:
             level = int(level)
-            return ALGO_LEVEL(level)
-        except ValueError:
-            raise argparse.ArgumentTypeError(message)
-
-    @classmethod
-    def str_to_preprocessing_level(cls, level: str) -> PREPROCESSING_LEVEL:
-        message = f'Preprocessing level has to be an integer number from {PREPROCESSING_LEVEL.min_value()} ' \
-                  f'to {PREPROCESSING_LEVEL.max_value()}'
-        try:
-            level = int(level)
-            return PREPROCESSING_LEVEL(level)
+            return PROCESSING_LEVEL(level)
         except ValueError:
             raise argparse.ArgumentTypeError(message)
 
