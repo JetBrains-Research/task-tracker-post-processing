@@ -30,6 +30,9 @@ class TASK_TRACKER_COLUMN(Enum):
     TEST_MODE = 'testMode'
     USER_ID = 'userId'
 
+    TASK = 'task'
+    ROW_NUMBER = 'id'
+
     def fits_restrictions(self, value: Any) -> bool:
         if self is TASK_TRACKER_COLUMN.AGE:
             return isinstance(value, float)
