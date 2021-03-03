@@ -26,7 +26,7 @@ def is_statistics_key_default_value(value: Any, column: STATISTICS_KEY) -> bool:
 
 
 # We must have one value in a profile column otherwise it is an incorrect case
-def __get_profile_info(tt_df: pd.DataFrame, column: STATISTICS_KEY) -> Profile:
+def get_profile_info(tt_df: pd.DataFrame, column: STATISTICS_KEY) -> Profile:
     values = tt_df[column.value].unique()
     values = delete_default_values(values)
     if len(values) == 0:
@@ -48,8 +48,8 @@ def __get_tt_df(tt_file: str, needs_handling: bool = True) -> pd.DataFrame:
 def __get_experience(tt_df: pd.DataFrame) -> Profile:
     if STATISTICS_KEY.EXPERIENCE.value not in tt_df.columns:
         # New data structure
-        experience_years = __get_profile_info(tt_df, STATISTICS_KEY.EXPERIENCE_YEARS)
-        experience_months = __get_profile_info(tt_df, STATISTICS_KEY.EXPERIENCE_MONTHS)
+        experience_years = get_profile_info(tt_df, STATISTICS_KEY.EXPERIENCE_YEARS)
+        experience_months = get_profile_info(tt_df, STATISTICS_KEY.EXPERIENCE_MONTHS)
         if 0 <= experience_months < 6:
             return EXPERIENCE.LESS_THAN_HALF_YEAR.value
         elif 6 <= experience_months <= 11:
@@ -64,12 +64,12 @@ def __get_experience(tt_df: pd.DataFrame) -> Profile:
             return EXPERIENCE.MORE_THAN_SIX.value
         else:
             return STATISTICS_KEY.EXPERIENCE.get_default()
-    return __get_profile_info(tt_df, STATISTICS_KEY.EXPERIENCE)
+    return get_profile_info(tt_df, STATISTICS_KEY.EXPERIENCE)
 
 
 def __get_age_and_experience(tt_file: str, needs_preprocessing: bool = True) -> AgeAndExperience:
     tt_df = __get_tt_df(tt_file, needs_preprocessing)
-    age = __get_profile_info(tt_df, STATISTICS_KEY.AGE)
+    age = get_profile_info(tt_df, STATISTICS_KEY.AGE)
     experience = __get_experience(tt_df)
     log.info(f'File: {tt_file}, age is {age}, experience is {experience}')
     return age, experience
