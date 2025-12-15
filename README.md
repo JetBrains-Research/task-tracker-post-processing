@@ -1,6 +1,10 @@
 [![JetBrains Research](https://jb.gg/badges/research.svg)](https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub)
 [![CircleCI](https://circleci.com/gh/JetBrains-Research/task-tracker-post-processing.svg?style=shield)](https://circleci.com/gh/JetBrains-Research/task-tracker-post-processing)
 
+# Status: Archived 
+
+No longer maintained
+
 
 # Table of Contents
 
